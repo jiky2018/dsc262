@@ -1,0 +1,132 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="pay_card.php?act=list" class="s-back">{$lang.back}</a>{$lang.promotion} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content_common}</li>
+                    <li>{$lang.operation_prompt_content.pc_type_info.0}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+						<form action="pay_card.php?act={$form_act}" id="myForm" method="post" name="theForm" enctype="multipart/form-data" >
+                            <div class="switch_info">
+                                 <div class="items">
+                                    <div class="item">
+                                        <div class="label">{$lang.require_field}&nbsp;{$lang.type_name}：</div>
+                                        <div class="label_value">
+                                        	<input type='text' name='type_name' id="type_name" class="text" value="{$bonus_arr.type_name}"  autocomplete="off" />
+											<div class="notic"></div>
+                                            <div class="form_prompt"></div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.require_field}&nbsp;{$lang.type_money}：</div>
+                                        <div class="label_value">
+											<input type='text' name='type_money' id="type_money" class="text w50" value="{$bonus_arr.type_money}"  autocomplete="off" />
+											<div class="notic"></div>
+                                            <div class="form_prompt"></div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.require_field}&nbsp;{$lang.type_prefix}：</div>
+                                        <div class="label_value">
+                                        	<input type="text" name="type_prefix" id="type_prefix" class="text w100" value="{$bonus_arr.type_prefix}" autocomplete="off" />
+											<div class="notic">{$lang.notice_prefix}</div>
+                                            <div class="form_prompt"></div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.require_field}&nbsp;{$lang.use_enddate}：</div>
+                                        <div class="label_value">
+										  <div class="text_time" id="text_time1">
+											  <input type="text" name="use_end_date" value="{$bonus_arr.use_end_date}" id="use_end_date" class="text" autocomplete="off" readonly />
+										  </div>
+                                        </div>
+                                    </div>
+									<div class="item">
+										<div class="label">&nbsp;</div>
+										<div class="label_value info_btn">
+											<input type="submit" value="{$lang.button_submit}" class="button" id="submitBtn" />
+											<input type="hidden" name="act" value="{$form_act}" />
+											<input type="hidden" name="type_id" value="{$bonus_arr.type_id}" />
+										</div>
+									</div>
+                                </div>
+                            </div>
+						</form>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+	{include file ='library/pagefooter.lbi'}
+	<script language="javascript">
+	$(function(){
+		//表单验证
+		$("#submitBtn").click(function(){
+			if($("#myForm").valid()){
+				$("#myForm").submit();
+			}
+		});
+		$('#myForm').validate({
+			errorPlacement:function(error, element){
+				var error_div = element.parents('div.label_value').find('div.form_prompt');
+				element.parents('div.label_value').find(".notic").hide();
+				error_div.append(error);
+			},
+			rules:{
+				type_name :{
+					required : true
+				},
+				type_money:{
+					required : true,
+					number:true
+				},
+				type_prefix:{
+					required : true,
+					isRightfulString: true
+				},
+				use_end_date:{
+					required : true
+				}
+			},
+			messages:{
+				type_name:{
+					 required : '<i class="icon icon-exclamation-sign"></i>'+type_name_null
+				},
+				type_money:{
+					required : '<i class="icon icon-exclamation-sign"></i>'+type_money_null,
+					number : '<i class="icon icon-exclamation-sign"></i>'+type_money_number
+				},
+				type_prefix:{
+					required : '<i class="icon icon-exclamation-sign"></i>'+type_prefix_null,
+					isRightfulString: '<i class="icon icon-exclamation-sign"></i>'+type_prefix_gs
+				},
+				use_end_date:{
+					required : '<i class="icon icon-exclamation-sign"></i>'+use_end_date_null,
+				}
+			}			
+		});
+	});
+    
+    //时间选择
+    var opts1 = {
+        'targetId':'use_end_date',
+        'triggerId':['use_end_date'],
+        'alignId':'text_time1',
+        'format':'-',
+        'hms':'off',
+        'min':''
+    }
+    xvDate(opts1);
+    </script>
+</body>
+</html>

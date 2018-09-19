@@ -1,0 +1,550 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$lang.19_merchants_store} - {$lang.02_merchants_users_list}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content_common}</li>
+                    <li>{$lang.operation_prompt_content.info.0}</li>
+                    <li>{$lang.operation_prompt_content.info.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+				<form method="post" enctype="multipart/form-data" action="merchants_users_list.php" name="theForm" id="merchants_users_list_form">
+                	<div class="mian-info">
+                    	<div class="switch_info business_info">
+							{if $user_id eq 0}
+                        	<div class="step">
+                            	<div class="tit"><h4>{$lang.user_select_please}</h4></div>
+                               	<div class="items">
+                                	<div class="item">
+                                    	<div class="label"><em class="require-field">*</em>{$lang.steps_user_name}</div>
+                                        <div class="value nt_value">
+                                        	<div class="selection_select">
+                                                <div class="selection">
+                                                    <input type="text" name="user_name" id="user_name" class="text w140 valid" autocomplete="off" value="" readonly>
+                                                    <input type="hidden" name="user_id" id="user_id" value="">
+                                                </div>
+                                                <div class="select-container" style="display:none;">
+                                                    <div class="select-top2">
+                                                        <div class="s_search"><input name="userName" id="userName" type="text" class="s_text" placeholder="{$lang.search_key}"><a href="javascript:void(0);" onclick="get_search_user()" class="btn-mini"><i class="icon icon-search"></i></a></div>
+                                                    </div>
+                                                    <div class="select-list2" id="user_list">
+                                                        <ul >
+														{foreach from=$user_list item=user}
+                                                            <li data-name="{$user.user_name}" data-id="{$user.user_id}">{$user.user_name}</li>
+														{/foreach}
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <div class="form_prompt"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+							{/if}
+							{foreach from=$shopInfo_list item=shopInfo}
+								{foreach from=$shopInfo.steps_title item=title}  
+									{if $title.steps_style eq 0}
+										{include file="merchants_steps_basicType.dwt"}
+									{elseif $title.steps_style eq 1}
+										{include file="merchants_steps_shopType.dwt"}
+									{elseif $title.steps_style eq 2}
+										{include file="merchants_steps_cateType.dwt"}
+									{elseif $title.steps_style eq 3 && $title.fields_titles neq '$lang.search_wap_brand'}
+										<div id="brandList">{include file="merchants_steps_brankType.dwt"}</div>
+									{elseif $title.steps_style eq 4}
+										{include file="merchants_steps_shopInfo.dwt"}
+									{/if}
+								{/foreach}
+							{/foreach}
+							<div class="step">
+								<div class="tit"><h4>{$lang.admin_operation}</h4></div>
+								<div class="items items_w60">
+									{if $user_id > 0}
+									<div class="item">
+										<div class="label">{$lang.user_sub_status}：</div>
+										<div class="value red">{if $merchants.steps_audit eq 1}{$lang.already_sub}{else}{$lang.not_sub}{/if}</div>
+									</div>
+									{/if}
+									<div class="item">
+										<div class="label">{$lang.setup_audit}：</div>
+										<div class="value">
+                                        	<div class="checkbox_items">
+                                                {if $user_id > 0}
+                                                <div class="checkbox_item">
+                                                    <input name="review_goods" type="radio" value="0" class="ui-radio" id="review_no" {if $merchants.review_goods eq 0}checked="checked"{/if} />
+                                                    <label for="review_no" class="ui-radio-label">{$lang.no}</label>
+                                                </div>
+                                                <div class="checkbox_item">
+                                                    <input name="review_goods" type="radio" value="1" class="ui-radio" id="review_yes" {if $merchants.review_goods eq 1}checked="checked"{/if} />
+                                                    <label for="review_yes" class="ui-radio-label">{$lang.yes}</label>
+                                                </div>
+                                                {else}
+                                                <div class="checkbox_item">
+                                                    <input name="review_goods" type="radio" value="0" class="ui-radio" id="review_no" />
+                                                    <label for="review_no" class="ui-radio-label">{$lang.no}</label>
+                                                </div>
+                                                <div class="checkbox_item">
+                                                    <input name="review_goods" type="radio" value="1" class="ui-radio" id="review_yes" checked="checked" />
+                                                    <label for="review_yes" class="ui-radio-label">{$lang.yes}</label>
+                                                </div>
+                                                {/if}
+                                            </div>
+										</div>
+									</div>
+									<div class="item">
+										<div class="label">{$lang.is_self_run}：</div>
+										<div class="value">
+                                        	<div class="checkbox_items">
+                                                <div class="checkbox_item">
+                                                    <input name="self_run" type="radio" value="0" class="ui-radio" id="self_run_no"  {if !$merchants.self_run}checked="checked"{/if} />
+                                                    <label for="self_run_no" class="ui-radio-label">{$lang.no}</label>
+                                                </div>
+                                                <div class="checkbox_item">
+                                                    <input name="self_run" type="radio" value="1" class="ui-radio" id="self_run_yes" {if $merchants.self_run}checked="checked"{/if}/>
+                                                    <label for="self_run_yes" class="ui-radio-label">{$lang.yes}</label>
+                                                </div>
+                                            </div>
+										</div>
+									</div>
+									
+									<div class="item">
+										<div class="label">{$lang.is_close_store}：</div>
+										<div class="value">
+                                        	<div class="checkbox_items">
+                                            	<div class="checkbox_item">
+                                                    <input name="shop_close" type="radio" value="0" class="ui-radio" id="shop_close_yes" {if $merchants.shop_close eq 0}checked="checked"{/if}/>
+                                                    <label for="shop_close_yes" class="ui-radio-label">{$lang.close}</label>
+                                                </div>
+                                                <div class="checkbox_item">
+                                                    <input name="shop_close" type="radio" value="1" class="ui-radio" id="shop_close_no"  {if $merchants.shop_close eq 1}checked="checked"{/if} />
+                                                    <label for="shop_close_no" class="ui-radio-label">{$lang.open}</label>
+                                                </div>
+                                            </div>
+										</div>
+									</div>
+									
+									{if $seller_shopinfo.shopname_audit eq 0}
+									<div class="item">
+										<div class="label">{$lang.audit_shop}：</div>
+										<div class="value">
+                                        	<div class="checkbox_items">
+                                                <div class="checkbox_item">
+                                                    <input type="radio" name="shopname_audit" value="0" id="shopname_audit_0" class="ui-radio" {if $shop_info.shopname_audit eq 0}checked="checked"{/if} />
+                                                    <label for="shopname_audit_0" class="ui-radio-label">{$lang.not_audited}</label>
+                                                </div>
+                                                <div class="checkbox_item">
+                                                    <input type="radio" name="shopname_audit" value="1" id="shopname_audit_1" class="ui-radio" {if $shop_info.check_sellername eq 1}checked="checked"{/if} />
+                                                    <label for="shopname_audit_1" class="ui-radio-label">{$lang.have_audited}</label>
+                                                </div>
+                                                <font class="red">（{$lang.audit_shop_1}：{if $seller_shopinfo.check_sellername eq 1}{$lang.audit_shop_2}{elseif $seller_shopinfo.check_sellername eq 2}{$lang.audit_shop_3}{else}{$lang.audit_shop_4}{/if}）</font>
+                                            </div>
+										</div>
+									</div>
+									{else}
+									<div class="item">
+										<div class="label">{$lang.seller_shop_name_type}：</div>
+										<div class="value red">{if $seller_shopinfo.check_sellername eq 1}{$lang.audit_shop_2}{elseif $seller_shopinfo.check_sellername eq 2}{$lang.audit_shop_3}{else}{$lang.audit_shop_4}{/if}({$lang.have_audited})</div>
+									</div>
+									{/if}
+									{if $merchants.steps_audit eq 1}
+									<div class="item">
+										<div class="label">{$lang.seller_updata_apply}：</div>
+										<div class="value">
+                                        	<div class="checkbox_items">
+                                        	<div class="checkbox_item">
+                                                <input type="radio" name="merchants_allow" value="0" id="merchants_allow_0" class="ui-radio" checked="checked" />
+                                                <label for="merchants_allow_0" class="ui-radio-label">{$lang.not_allow}</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                                <input type="radio" name="merchants_allow" value="1" id="merchants_allow_1" class="ui-radio" />
+                                                <label for="merchants_allow_1" class="ui-radio-label">{$lang.allow}</label>
+                                            </div>
+                                            </div>
+										</div>
+									</div>
+									{/if}
+									<div class="item">
+										<div class="label">{$lang.seller_info_audit}：</div>
+										<div class="value">
+                                        	<div class="checkbox_items">
+											{if $user_id > 0}
+												{if $merchants.steps_audit eq 1}
+                                                <div class="checkbox_item">
+                                                    <input type="radio" name="merchants_audit" value="0" id="merchants_audit_0" class="ui-radio" {if $merchants.merchants_audit eq 0}checked="checked"{/if} onclick="get_merchants_audit(this.value)" />
+                                                    <label for="merchants_audit_0" class="ui-radio-label">{$lang.not_audited}</label>
+                                                </div>
+                                                <div class="checkbox_item">
+                                                    <input type="radio" name="merchants_audit" value="1" id="merchants_audit_1" class="ui-radio" {if $merchants.merchants_audit eq 1}checked="checked"{/if} onclick="get_merchants_audit(this.value)" />
+                                                    <label for="merchants_audit_1" class="ui-radio-label">{$lang.yes_through}</label>
+                                                </div>
+                                                <div class="checkbox_item">
+                                                    <input type="radio" name="merchants_audit" value="2" id="merchants_audit_2" class="ui-radio" {if $merchants.merchants_audit eq 2}checked="checked"{/if} onclick="get_merchants_audit(this.value)" />
+                                                    <label for="merchants_audit_2" class="ui-radio-label">{$lang.not_through}</label>
+                                                </div>
+												{else}
+												<font class="red">{$lang.not_apply}</font>
+												{/if}
+											 {else}
+                                             	<div class="checkbox_item">
+                                                    <input type="radio" name="merchants_audit" value="0" id="merchants_audit_0" class="ui-radio"  checked="checked" onclick="get_merchants_audit(this.value)" />
+                                                    <label for="merchants_audit_0" class="ui-radio-label">{$lang.not_audited}</label>
+                                                </div>
+                                                <div class="checkbox_item">
+                                                    <input type="radio" name="merchants_audit" value="1" id="merchants_audit_1" class="ui-radio" onclick="get_merchants_audit(this.value)" />
+                                                    <label for="merchants_audit_1" class="ui-radio-label">{$lang.yes_through}</label>
+                                                </div>
+                                                <div class="checkbox_item">
+                                                    <input type="radio" name="merchants_audit" value="2" id="merchants_audit_2" class="ui-radio" onclick="get_merchants_audit(this.value)" />
+                                                    <label for="merchants_audit_2" class="ui-radio-label">{$lang.not_through}</label>
+                                                </div>
+											 {/if}
+                                             </div>
+										</div>
+									</div>	
+									
+									<div class="item" {if $merchants.merchants_audit neq 1}style="display:none" {/if} id="grade_id">
+										<div class="clearfix mb10">
+                                            <div class="label">{$lang.store_grade}：</div>
+                                            <div class="value">
+                                                <div id="grade_id" class="imitate_select select_w320">
+                                                    <div class="cite">{$lang.select_please}</div>
+                                                    <ul>
+                                                    {foreach from=$seller_grade_list item=grade_list}
+                                                        <li><a href='javascript:;' data-value='{$grade_list.id}' class='ftx-01'>{$grade_list.grade_name}</a></li>
+                                                    {/foreach}
+                                                    </ul>
+                                                    <input name="grade_id" type="hidden" value="{$grade.grade_id}" id="grade_id_val">
+                                                </div>  
+                                            </div>
+                                        </div>
+                                        <div class="clearfix mb5">
+                                            <div class="label">{$lang.grade_life}：</div>
+                                            <div class="value">
+                                                <input name="year_num" class="text w120" type="text" value="{$grade.year_num|default:1}"/>
+                                            </div>
+                                        </div>
+									</div>	
+
+									{if $merchants.steps_audit eq 1}									
+									<div class="item" style="display:{if $merchants.merchants_audit eq 2}block{else}none{/if}" id="tr_merchantsAudit">
+										<div class="label">{$lang.reply_seller}：</div>
+										<div class="value">
+											<textarea name="merchants_message" class="textarea h100">{$merchants.merchants_message}</textarea>
+										</div>
+									</div>
+									{/if}
+								</div>
+							</div>
+							<div class="step">
+								<div class="items">
+                                    <div class="item">
+                                        <div class="label">&nbsp;</div>
+                                        <div class="value info_btn">
+                                        <input name="numAdd" value="1" id="numAdd" type="hidden" />
+                                        <input type="submit" value="{$lang.button_submit}" class="button" id="submitBtn" />
+                                        <input type="reset" value="{$lang.button_reset}" class="button button_reset" />
+                                        <input type="hidden" name="act" value="{$form_action}" />
+                                        <input type="hidden" name="copy_action" value="{$copy_action}" />
+                                        
+                                        {if $user_id > 0}
+                                        <input type="hidden" name="user_id" value="{$user_id}" id="user_id" /> 
+                                        {/if}
+                                        </div>
+                                    </div>
+								</div>
+							</div>
+							<!--<ul ectype="region" style="display:none;">
+							{foreach from=$regions item=v key=k}
+							<li data-index='{$k}'>{$v}</li>
+							{/foreach}
+							</ul>-->
+                        </div>
+                    </div>
+				</form>
+                </div>
+            </div>
+        </div>
+    </div>
+ 	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript" src="js/region.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			//点击查看图片
+			$('.nyroModal').nyroModal();
+			
+			//表单验证
+			$("#submitBtn").click(function(){
+				if($("#merchants_users_list_form").valid()){
+					$("#merchants_users_list_form").submit();
+				}
+			});
+		
+			$('#merchants_users_list_form').validate({
+				errorPlacement:function(error, element){
+					var error_div = element.parents('div.nt_value').find('div.form_prompt');
+					element.parents('div.nt_value').find(".notic").hide();
+					error_div.append(error);
+                                        var error_div = element.parents('div.label_value').find('div.form_prompt');
+					element.parents('div.label_value').find(".notic").hide();
+					error_div.append(error);
+				},
+                                ignore:"",
+				rules:{
+					user_name :{
+						required : true
+					},
+					ec_rz_shopName:{
+						required : true
+					},
+					ec_hopeLoginName:{
+						required : true
+					},
+					ec_shoprz_type:{
+						min:1
+					}
+				},
+				messages:{
+					user_name:{
+						 required : '<i class="icon icon-exclamation-sign"></i>'+error_expect_user_name
+					},
+					ec_rz_shopName:{
+						required : '<i class="icon icon-exclamation-sign"></i>'+error_expect_shop_name
+					},
+					ec_hopeLoginName:{
+						required : '<i class="icon icon-exclamation-sign"></i>'+error_expect_shop_login
+					},
+				    ec_shoprz_type:{
+						min : '<i class="icon icon-exclamation-sign"></i>'+error_expect_shop_cate
+					}
+				}			
+			});
+			
+			//全选
+			$("input[name='all_list']").click(function(){
+				if($(this).prop("checked")==true){
+					$(this).parents(".category_checkbox_list").find("input[type='checkbox']").prop("checked",true);
+				}else{
+					$(this).parents(".category_checkbox_list").find("input[type='checkbox']").prop("checked",false);
+				}
+			});
+		});
+		
+		//地区三级联动
+		$.levelLink();
+        
+		//添加品牌
+		function saveBrandQualificationBtn(bid){
+			var title = $(bid).attr('data-title');
+			var user_id = '{$user_id}';
+			if(bid){
+				Ajax.call('merchants_users_list.php?is_ajax=1&act=addBrand&brandView=brandView','user_id='+user_id+'&ec_shop_bid='+bid+'#brandId_edit',addBrandResponse, "GET", "JSON")
+			}else{
+				Ajax.call('merchants_users_list.php?is_ajax=1&act=addBrand&brandView=brandView#brandId_edit','user_id='+user_id,addBrandResponse, "GET", "JSON")
+			}
+			
+			function addBrandResponse(result){
+				pb({
+					id:"addBrand_dialog",
+					title:title,
+					content:result.content,
+					ok_title:"{$lang.button_submit_alt}",
+					cl_title:"{$lang.cancel}",
+					width:1200,
+					drag:false,
+					onOk:function(){
+                        if(addBrand()== false){
+                            return false;
+                        }else{
+                            return true;
+                        };
+					}
+				});
+			}
+		}
+		
+		//删除二级类目
+		function get_deleteBrand(ct_id){
+			var filter = new Object;
+			filter.ct_id  = ct_id;
+			filter.user_id  = '{$user_id}';
+			
+			if (confirm(confirm_delect_brand_qua)){
+				Ajax.call('merchants_users_list.php?is_ajax=1&act=deleteBrand', filter, responseDeleteBrand, 'GET', 'JSON');
+			}
+		}
+		function responseDeleteBrand(result){
+            console.log(result);
+			if(result.error == 0){
+				document.getElementById('brandList').innerHTML = result.content;
+			}
+		}
+    
+		function addBrand(){
+			var ec_bank_name_letter = $("#ec_bank_name_letter").val();
+			var ec_brandName=$("#ec_brandName").val();
+			var ec_brandFirstChar=$("#ec_brandFirstChar").val();
+			var ec_brandLogo =$("#ec_brandLogo_text").val();
+            var fald = true;
+			
+			if(ec_brandName.length == 0){
+				alert(error_brand_china_name);
+                fald = false;
+			/*}else if(ec_bank_name_letter.length == 0){
+				alert(error_brand_english_name);*/
+			}else if(ec_brandFirstChar.length == 0){
+				alert(error_brand_letter);
+                fald = false;
+			}else if(ec_brandLogo.length == 0){
+                alert(error_file_img_type); 
+                fald = false;
+            }else{
+				var actionUrl = "merchants_users_list.php?is_ajax=1&act=addImg&user_id={$user_id}";  
+				$("#addBatchImg_from").ajaxSubmit({
+					type: "POST",
+					dataType: "json",
+					url: actionUrl,
+					data: { "action": "TemporaryImage" },
+					success: function (data) {
+						if (data.error == "1") {
+						  alert(data.massege);
+						} else if (data.error == "2") {
+						   $("*[ectype='barend_content']").html(data.content);
+						}
+                        fald = true;
+					},
+					async: true  
+				});
+			}
+            return fald;
+		}
+		
+		function addBrandTable(obj)
+		{
+			var add_num = 3;
+			var num = $('#numAdd').val();
+			var obj = $(obj);
+			var tbl = obj.parents('.zizhi_item');
+			if(num < add_num){
+				var input = tbl.clone();
+				input.find('.up').attr('onclick','removeBrandTable(this)');
+				input.find('.up').removeClass().addClass('down');
+				tbl.parents('#parentNode_dateTimeDiv').append(input);
+				num++;
+				$('#numAdd').val(num);
+			}else{
+				alert('{$lang.batch_add}' + add_num +'{$lang.ci}');
+			}
+			
+			for(i=0;i<num;i++){
+				var expiredDate = document.getElementsByName("ec_expiredDateInput[]");
+				expiredDate[i].id = 'expiredDateInput_' + i;
+			}
+		}
+		function removeBrandTable(obj,b_fid)
+		{
+			var num = $('#numAdd').val();
+			if(b_fid > 0){
+			   if (confirm(confirm_delect_brand_qua)){
+				   location.href = 'merchants_users_list.php?is_ajax=1&act=brand_edit&ec_shop_bid={$ec_shop_bid}&del_bFid=' + b_fid + '&user_id={$user_id}&brandView=brandView#brandId_edit';
+			   }
+			}else{
+				var obj = $(obj);
+				var tbl = obj.parents('.zizhi_item');
+				tbl.remove();
+				num--;
+				$('#numAdd').val(num);
+				for(i=0;i<num;i++){
+					var radioCheckbox_val = document.getElementsByName("radioCheckbox_val[]");
+					radioCheckbox_val[i].value = i;
+				}
+			}
+		}
+	
+		function get_merchants_audit(val){
+			var audit = $('#tr_merchantsAudit');
+			var grade_id = $('#grade_id');
+			if(val == 2){
+				audit.show();
+			}else{
+				audit.hide();
+			}
+			if(val == 1){
+				 grade_id.show();
+			}else{
+				grade_id.hide();
+			}
+		}
+		
+		function get_categoryId_permanent(f, permanent_date, dt_id){
+			var categoryId = document.getElementById('categoryId_date_' + dt_id);
+			if(f.checked){
+				categoryId.value = '';
+			}else{
+				if(permanent_date != ''){
+					categoryId.value = permanent_date;
+				}
+			}
+		}
+		
+		function get_expiredDate_permanent(f, expiredDateInput, b_fid){
+			if(b_fid > 0){
+				var expiredDate = document.getElementById('expiredDateInput_' + b_fid);
+				if(f.checked){
+					expiredDate.value = '';
+				}else{
+					if(expiredDateInput != ''){
+						expiredDate.value = expiredDateInput;
+					}
+				}
+			}else{
+				
+				var DateInput = document.getElementsByName("ec_expiredDateInput[]");
+				var permanent = document.getElementsByName("ec_expiredDate_permanent[]");
+				for(i=0; i<permanent.length; i++){
+					if(permanent[i].checked){
+						if(DateInput[i].value != ''){
+							DateInput[i].value = '';
+						}
+					}
+				}
+			}
+		}
+		
+		function get_brandEndTime_permanent(f, brandEndTime){
+			var ec_brandEndTime = document.getElementById('ec_brandEndTime');
+			if(f.checked){
+				ec_brandEndTime.value = '';
+			}else{
+				if(brandEndTime != ''){
+					ec_brandEndTime.value = brandEndTime;
+				}
+			}
+		}
+		
+		//查询会员
+		function get_search_user(){
+			var user_name = $("#userName").val();
+			Ajax.call('merchants_users_list.php?is_ajax=1&act=get_user_name', "user_name="+user_name, user_nameResponse, "GET", "JSON");
+		}
+		
+		function user_nameResponse(result)
+		{
+		  if (result.error == 0)
+		  {
+			  document.getElementById('user_list').innerHTML = result.content;
+			  $(".select-list2").perfectScrollbar("destroy");
+			  $(".select-list2").perfectScrollbar();
+		  }
+		}
+	</script>
+</body>
+</html>

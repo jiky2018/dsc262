@@ -1,0 +1,238 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.goods_alt} - {$ur_here}</div>
+        <div class="content">
+            {include file="library/common_tabs_info.lbi"}
+        	<div class="explanation mb10" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.trash.0}</li>
+                    <li>{$lang.operation_prompt_content.trash.1}</li>
+                </ul>
+            </div>            
+        	<div class="tabs_info">
+            	<ul>
+                    <li {if $menu_select.current eq '01_goods_list'}class="curr"{/if}>
+                    	<a href="goods.php?act=list{$seller_list}">{$lang.ordinary_goods} {if $menu_select.current neq '01_goods_list'}{if $goods_list_type}<em class="li_color">({$goods_list_type.ordinary|default:0})</em>{/if}{/if}</a>
+                    </li>
+                    <li {if $menu_select.current eq '50_virtual_card_list'}class="curr"{/if}>
+                    	<a href="goods.php?act=list&extension_code=virtual_card{$seller_list}">{$lang.virtual_goods} {if $menu_select.current neq '50_virtual_card_list'}{if $goods_list_type}<em class="li_color">({$goods_list_type.virtual_card|default:0})</em>{/if}{/if}</a>
+                    </li>
+                    {if $cfg.review_goods && $filter.seller_list eq 1}
+                	<li {if $menu_select.current eq '01_review_status'}class="curr"{/if}>
+                    	<a href="goods.php?act=review_status{$seller_list}">{$lang.01_review_status} {if $menu_select.current neq '01_review_status'}{if $goods_list_type}<em class="li_color">({$goods_list_type.review_status|default:0})</em>{/if}{/if}</a>
+                    </li>
+                    {/if}
+					<li {if $menu_select.current eq '11_goods_trash'}class="curr"{/if}>
+                    	<a href="goods.php?act=trash{$seller_list}">{$lang.11_goods_trash} {if $menu_select.current neq '11_goods_trash'}{if $goods_list_type}<em class="li_color">({$goods_list_type.delete|default:0})</em>{/if}{/if}</a>
+                    </li>
+                    <li {if $menu_select.current eq '19_is_sale'}class="curr"{/if}>
+                    	<a href="goods.php?act=is_sale{$seller_list}">{$lang.shelves_goods} {if $menu_select.current neq '19_is_sale'}{if $goods_list_type}<em class="li_color">({$goods_list_type.is_sale|default:0})</em>{/if}{/if}</a>
+                    </li>
+                    
+                    <li {if $menu_select.current eq '20_is_sale'}class="curr"{/if}>
+                    	<a href="goods.php?act=on_sale{$seller_list}">{$lang.off_the_shelf_goods} {if $menu_select.current neq '20_is_sale'}{if $goods_list_type}<em class="li_color">({$goods_list_type.on_sale|default:0})</em>{/if}{/if}</a>
+                    </li>
+                </ul>
+            </div>			
+            <div class="flexilist">
+            	<!--商品列表-->
+                <div class="common-head">
+                    <div class="refresh ml0">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+					<div class="search">
+                    	<form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+                    	<div class="input">
+                        	<input type="text" name="keyword" class="text nofocus" placeholder="{$lang.goods_name}" autocomplete="off">
+							<input type="submit" class="btn" name="secrch_btn" ectype="secrch_btn" value="" />
+                        </div>
+                        </form>
+                    </div>						
+                </div>
+                <div class="common-content">
+					<form method="post" action="" name="listForm">
+                	<div class="list-div" id="listDiv">
+						{/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                	<th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars"></label></div></th>
+                                	<th width="5%"><div class="tDiv">{$lang.record_id}</div></th>
+                                    <th width="35%"><div class="tDiv">{$lang.goods_name}</div></th>
+									<th width="15%"><div class="tDiv">{$lang.goods_steps_name}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.goods_type}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.goods_sn}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.shop_price}</div></th>
+                                    <th width="12%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+								{foreach from=$goods_list item=goods}
+                            	<tr>
+                                    <td class="sign">
+                                        <div class="tDiv">
+                                            <input type="checkbox" name="checkboxes[]" value="{$goods.goods_id}" class="checkbox" id="checkbox_{$goods.goods_id}" />
+                                            <label for="checkbox_{$goods.goods_id}" class="checkbox_stars"></label>
+                                        </div>
+                                    </td>
+                                    <td><div class="tDiv">{$goods.goods_id}</div></td>
+									<td>
+                                        <div class="tDiv goods_list_info">
+											<div class="img"><a href="../goods.php?id={$goods.goods_id}" target="_blank" title="{$goods.goods_name|escape:html}"><img src="{$goods.goods_thumb}" width="68" height="68" /></a></div>
+                                            <div class="desc">
+                                        	<div class="name">
+                                                	<span onclick="listTable.edit(this, 'edit_goods_name', {$goods.goods_id})" title="{$goods.goods_name|escape:html}" data-toggle="tooltip" class="span">{$goods.goods_name|escape:html}</span>
+                                                </div>
+                                            	{if $goods.brand_name}<p class="brand">{$lang.brand}：<em>{$goods.brand_name}</em></p>{/if}
+                                                <p class="activity"> 
+                                                    {if $goods.is_shipping}
+                                                    <em class="free">{$alng.free_shipping_alt}</em>
+                                                    {/if}
+    
+                                                    {if $goods.stages}
+                                                    <em class="byStage">{$lang.by_stages}</em>
+                                                    {/if}
+                                                    {if !$goods.is_alone_sale}
+                                                    <em class="parts">{$lang.tab_groupgoods}</em>
+                                                    {/if}
+                                                    
+                                                    {if $goods.is_promote}
+                                                        {if $nowTime gte $goods.promote_end_date}
+                                                    <em class="saleEnd">{$lang.promote_end_date}</em>
+                                                        {else}
+                                                    <em class="sale">{$lang.promote_date}</em>    
+                                                        {/if}
+                                                    {/if}
+                                                    
+                                                    {if $goods.is_xiangou}
+                                                        {if $nowTime gte $goods.xiangou_end_date}
+                                                    <em class="purchaseEnd">{$lang.xiangou_end}</em>
+                                                        {else}
+                                                    <em class="purchase">{$lang.xiangou}</em>    
+                                                        {/if}
+                                                    {/if}
+													
+                                                    {if $goods.is_distribution}
+                                                    <em class="distribution">{$lang.distribution}</em>
+                                                    {/if}													
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><div class="tDiv">{if $goods.user_name}<font class="red">{$goods.user_name}</font>{else}<font class="blue3">{$lang.self}</font>{/if}</div></td>                           
+                                    <td><div class="tDiv">{if $goods.is_real}{$lang.material_object}{else}{$lang.virtual_card}{/if}</div></td>
+                                    <td><div class="tDiv">{$goods.goods_sn}</div></td>
+                                    <td><div class="tDiv">{$goods.shop_price}</div></td>                               
+                                    <td class="handle">
+                                        <div class="tDiv a2">
+                                            <a href="javascript:;" onclick="listTable.remove({$goods.goods_id}, '{$lang.restore_goods_confirm}', 'restore_goods')" class="btn_see"><i class="sc_icon sc_icon_see"></i>{$lang.reduction}</a>
+                                            <a href="javascript:;" onclick="listTable.remove({$goods.goods_id}, '{$lang.drop_goods_confirm}', 'drop_goods')" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>									
+                                        </div>
+                                    </td>
+                                </tr>
+								{foreachelse}
+								<tr><td class="no-records" colspan="20">{$lang.no_records}</td></tr>								
+								{/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                	<td colspan="12">
+                                        <div class="tDiv">
+                                            <div class="tfoot_btninfo">
+                                                <div class="shenhe">
+                                                    <div class="checkbox_item fl font12 mt5 mr5">
+                                                	<input type="checkbox" name="all_list" class="ui-checkbox" id="all_list"><label for="all_list" class="ui-label">{$lang.check_all}</label>
+                                                </div>
+                                                  <input type="hidden" name="act" value="batch" />
+                                                    <div id="" class="imitate_select select_w120">
+                                                        <div class="cite">{$lang.please_select}</div>
+                                                        <ul>
+                                                            <li><a href="javascript:;" data-value="" class="ftx-01">{$lang.select_please}</a></li>
+                                                            <li><a href="javascript:;" data-value="restore" class="ftx-01">{$lang.restore}</a></li>
+                                                            <li><a href="javascript:;" data-value="drop" class="ftx-01">{$lang.drop}</a></li>
+                                                        </ul>
+                                                        <input name="type" type="hidden" value="" id="">
+                                                    </div>											  
+                                                  <select name="target_cat" style="display:none" onchange="checkIsLeaf(this)" class="select mr10">
+                                                    <option value="0">{$lang.select_please}</option>
+                                                    {$cat_list}
+                                                  </select>
+                                                  <input type="submit" value="{$lang.button_submit}" id="btnSubmit" name="btnSubmit" class="btn btn_disabled" disabled="true" onclick="changeAction();" ectype="btnSubmit" />
+                                                </div> 										
+                                            </div>
+                                            <div class="list-page">
+                                               {include file="library/page.lbi"}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+						{if $full_page}
+                    </div>
+					</form>
+                </div>
+                <!--商品列表end-->
+            </div>
+		</div>
+	</div>
+	<!--高级搜索 start-->
+	{include file="library/goods_search.lbi"}
+	<!--高级搜索 end-->
+	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+	  listTable.recordCount = {$record_count|default:0};
+	  listTable.pageCount = {$page_count|default:1};
+
+	  {foreach from=$filter item=item key=key}
+	  listTable.filter.{$key} = '{$item}';
+	  {/foreach}
+
+	  {literal}
+	  
+	  function confirmSubmit(frm, ext)
+	  {
+		if (frm.elements['type'].value == 'restore')
+		{
+		  {/literal}
+		  return confirm("{$lang.restore_goods_confirm}");
+		  {literal}
+		}
+		else if (frm.elements['type'].value == 'drop')
+		{
+		  {/literal}
+		  return confirm("{$lang.batch_drop_confirm}");
+		  {literal}
+		}
+		else if (frm.elements['type'].value == '')
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	  }
+
+	  function changeAction()
+	  {
+		  var frm = document.forms['listForm'];
+
+		  if (!document.getElementById('btnSubmit').disabled &&
+			  confirmSubmit(frm, false))
+		  {
+			  frm.submit();
+		  }
+	  }
+	  {/literal}
+	</script>
+</body>
+</html>
+{/if}

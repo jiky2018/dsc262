@@ -1,0 +1,165 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- {if $comments} -->
+<!-- {foreach from=$comments item=comment name=no} -->
+<div class="com-list-item" id="comment_show">
+	<div class="com-user-name">
+		<div class="user-ico">
+			{if $comment.user_picture}
+			<img src="{$comment.user_picture}" width="50" height="50">
+			{else}
+			<img src="images/touxiang.jpg" width="50" height="50" />
+			{/if}
+		</div>
+		<div class="user-txt">{$comment.username|escape:html}</div>
+	</div>
+	<div class="com-item-warp">
+		<div class="ciw-top">
+			<div class="grade-star"><span class="grade-star-bg" style="width:{if $comment.rank eq 1}20{elseif $comment.rank eq 2}40{elseif $comment.rank eq 3}60{elseif $comment.rank eq 4}80{elseif $comment.rank eq 5}100{/if}%"></span></div>
+			<div class="ciw-actor-info">
+				<!-- {foreach from=$comment.goods_tag item=tag name=no} -->
+                <!-- {if $tag.txt} -->			
+				<span><e>{$tag.txt}</e></span>
+                <!-- {/if} -->			
+				<!-- {/foreach} -->			
+			</div>
+			<div class="ciw-time">{$comment.add_time}</div>
+		</div>
+		<div class="ciw-content">
+			<div class="com-warp">
+				<div class="com-txt">{$comment.content}</div>
+				<div class="com-operate">
+                	<div class="com-operate-warp">
+                        <a href="javascript:void(0);" class="nice comment_nice{if $comment.useful > 0} selected{/if}" data-commentid="{$comment.id}" data-idvalue="{$comment.id_value}"><i class="iconfont icon-thumb"></i><em class='reply-nice{$comment.id}'>{$comment.useful}</em></a>
+                        <a href="javascript:void(0);" class="reply{if $comment.reply_count > 0} selected{/if}" ectype="reply"><i class="iconfont icon-comment"></i><font class="reply-count{$comment.id}">{$comment.reply_count}</font></a>
+                    </div>
+				</div>
+                <div class="comment-content reply-textarea hide" id="reply-textarea{$comment.id}">
+                    <div class="reply-arrow"><b class="layer"></b></div>
+                    <div class="inner">
+                        <textarea class="reply-input" name="reply_content{$comment.id}" id="reply_content{$comment.id}" placeholder="{$comment.username|escape:html}："></textarea>
+                    </div>
+                    <div class="btnbox">
+                        <span id="reply-error{$comment.id}"></span>
+                        <input name="comment_goods{$comment.id}" id="comment_goods{$comment.id}" type="hidden" value="{$comment.id_value}">
+                        <input name="comment_user{$comment.id}" id="comment_user{$comment.id}" type="hidden" value="{$comment.user_id}">
+                        <a href="javascript:void(0);" class="btn sc-redBg-btn btn25 mt10 mr0" ectype="replySubmit" data-value="{$comment.id}">{$lang.submit_goods}</a>
+                    </div>
+                </div>
+				{if $comment.img_list}
+				<div class="com-imgs">
+					<div class="p-imgs-warp">
+						<div class="p-thumb-img">
+							<ul>
+								{foreach from=$comment.img_list item=img key=key name=img}
+								<li data-src="{$img.comment_img}" data-count="{$smarty.foreach.img.iteration}"><a href="javascript:void(0);"><img src="{$img.comment_img}"></a></li>
+								{/foreach}
+							</ul>
+						</div>
+						<div class="p-view-img" style="display:none;">
+							<img src="">
+							<a href="javascript:void(0);" class="p-prev"><i></i></a>
+							<a href="javascript:void(0);" class="p-next"><i></i></a>
+						</div>
+					</div>
+				</div>
+				{/if}
+        <div class="com_goods_attr fl">{if $comment.goods_attr} [{$comment.goods_attr}]{/if}</div>
+			</div>
+			{if $comment.re_content}
+			<div class="reply_info">
+				<div class="item"><em>{$comment.shop_name}：</em>{$comment.re_content}</div>
+			</div>
+			{/if}
+			<div class="reply_info comment-reply{$comment.id}" id="reply_comment_ECS_COMMENT{$comment.id}">
+				{foreach from=$comment.reply_list item=reply}
+				<div class="item">                                          
+                    <em>{$reply.user_name}：</em>
+                    <span class="words">{$reply.content}</span>
+                    <span class="time fr">&#12288;{$reply.add_time}</span>                                              
+				</div>
+				{/foreach}
+				{if $comment.reply_count > $comment.reply_size}
+				<div class="pages26">
+					<div class="pages">
+						<div class="pages-it">
+							{$comment.reply_pager}
+						</div>
+					</div>
+				</div>
+				{/if}
+			</div>			
+		</div>
+	</div>
+</div>
+<!-- {/foreach} -->
+<!--{else}-->
+<div class="no_records no_comments_qt">
+    <i class="no_icon no_icon_three"></i>
+    <span class="block">暂无评价</span>
+</div>
+<!--{/if}-->
+
+{if $count > $size}
+<div class="pages26">
+    <div class="pages">
+        <div class="pages-it">
+        {$pager}
+        </div>
+    </div>
+</div>
+{/if}
+<script type="text/javascript">
+	$(function(){
+		$("*[ectype='replySubmit']").click(function(){
+			var T = $(this);
+			var comment_id = T.data("value");
+			var reply_content = $("#reply_content" + comment_id).val();
+			var user_id = $("#comment_user" + comment_id).val();
+			var goods_id = $("#comment_goods" + comment_id).val();
+			
+			if(reply_content == ''){
+				$("#reply-error" + comment_id).html(json_languages.please_message_input);
+				return false;
+			}
+
+			Ajax.call('comment.php', 'act=comment_reply&comment_id=' + comment_id + '&reply_content=' + reply_content + '&goods_id=' + goods_id + '&user_id=' + user_id, commentReplyResponse, 'POST', 'JSON');
+		});
+		
+		$('.comment_nice').click(function(){
+			var T = $(this);
+			var comment_id = T.data('commentid');
+			var goods_id = T.data('idvalue');
+			var type = 'comment';
+			
+			Ajax.call('comment.php', 'act=add_useful&id=' + comment_id + '&goods_id=' + goods_id + '&type=' + type, niceResponse, 'GET', 'JSON');
+		});
+	});
+	
+	function commentReplyResponse(res){
+		if(res.err_no == 1){
+			var back_url = res.url;
+			$.notLogin("get_ajax_content.php?act=get_login_dialog",back_url);
+			return false;
+		}else if(res.err_no == 2){
+			$("#reply-error" + res.comment_id).html(json_languages.been_evaluated);
+		}else{
+			$("#reply-error" + res.comment_id).html(json_languages.Add_success);
+			$("#reply_content" + res.comment_id).val('');
+			$("#reply-textarea" + res.comment_id).addClass('hide');
+            $(".reply-count").addClass('red');
+		}
+		$(".comment-reply" + res.comment_id).html(res.content);
+		$(".reply-count" + res.comment_id).html(res.reply_count);
+	}
+	
+	function niceResponse(res){
+		if(res.err_no == 1){
+			var back_url = res.url;
+			$.notLogin("get_ajax_content.php?act=get_login_dialog",back_url);
+			return false;
+		}else if(res.err_no == 0){
+			$(".reply-nice" + res.id).html(res.useful);
+            $(".comment_nice").addClass("selected");
+		}
+	}
+</script>

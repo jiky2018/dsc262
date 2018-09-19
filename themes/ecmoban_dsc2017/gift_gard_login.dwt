@@ -1,0 +1,151 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<!-- #BeginLibraryItem "/library/js_languages_new.lbi" --><!-- #EndLibraryItem -->
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/css/other/gift.css" />
+</head>
+<body>
+<!-- #BeginLibraryItem "/library/page_header_common.lbi" --><!-- #EndLibraryItem -->
+<div class="ecsc-breadcrumb w1200 w">
+    <!-- #BeginLibraryItem "/library/ur_here.lbi" --><!-- #EndLibraryItem -->
+</div>
+<div class="w1200 w">
+    <div class="usBox clearfix">
+        <div class="usBox_1 fl">
+            <form name="formGift" action="gift_gard.php" method="post" id="gift_gard_form">
+                <div class="items">
+                	<div class="item">
+                    	<div class="label">{$lang.gift_gard_number}：</div>
+                        <div class="value"><input name="gift_card" id="gift_card" type="text" size="20" class="text" /><div class="form_prompt"></div></div>
+                    </div>
+                    <div class="item">
+                    	<div class="label">{$lang.gift_gard_password}：</div>
+                        <div class="value"><input type="password" style="display:none"/><input name="gift_pwd" id="gift_pwd" type="password" size="20" class="text"/><div class="form_prompt"></div></div>
+                    </div>
+                    <!-- 判断是否启用验证码{if $enabled_captcha} -->
+                    <div class="item">
+                    	<div class="label">{$lang.comment_captcha}：</div>
+                        <div class="value">
+                        	<div class="captcha_input">
+                            	<input name="captcha" id="captcha" type="text" size="20" class="text" />
+                            	<img src="captcha_verify.php?captcha=is_common&{$rand}" alt="captcha" class="captcha_img" onClick="this.src='captcha_verify.php?captcha=is_common&'+Math.random()" data-key="captcha_common" />
+                            </div>
+                            <div class="form_prompt"></div>
+                        </div>
+                    </div>
+                    <!--{/if}-->
+                    <div class="item">
+                    	<div class="label">&nbsp;</div>
+                        <div class="value">
+                        	<input type="hidden" name="act" value="check_gift" />
+                            <input type="hidden" name="back_act" value="{$back_act}" />
+                            <input type="submit" name="submit" value="{$lang.submit}" class="us_Submit" ectype="submitBtn"/>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="usTxt"><img src="images/gift_gard.png" width="360"/></div>
+    </div>
+</div>
+
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+{insert_scripts files='jquery.validation.min.js'}
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/dsc-common.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.purebox.js"></script>
+<script type="text/javascript">
+	$(function(){
+		$("*[ectype='submitBtn']").click(function(){
+			var user_id = '{$user_id}';
+			
+			//判断用户是否登录
+			if(user_id > 0){
+				if($("#gift_gard_form").valid()){
+					$("#gift_gard_form").submit();
+				}
+			}else{
+				var back_url = "gift_gard.php";
+				$.notLogin("get_ajax_content.php?act=get_login_dialog",back_url);
+				return false;
+			}
+		});
+		
+		$('#gift_gard_form').validate({
+			errorPlacement:function(error, element){
+				var error_div = element.parents('div.value').find('div.form_prompt');
+				error_div.html("").append(error);
+			},
+			rules : {
+				gift_card : {
+					required : true
+				},
+				gift_pwd:{
+					required : true
+				}
+				<!--{if $enabled_captcha}-->
+				,captcha:{
+					required : true,
+					maxlength : 4,
+					remote : {
+						cache: false,
+						async:false,
+						type:'POST',
+						url:'ajax_dialog.php?act=ajax_captcha&seKey='+$("input[name='captcha']").siblings(".captcha_img").data("key"),
+						data:{
+							captcha:function(){
+								return $("input[name='captcha']").val();
+							}
+						},
+						dataFilter:function(data,type){
+							if(data == "false"){
+								$("input[name='captcha']").siblings(".captcha_img").click();
+							}
+							return data;
+						}
+					}
+				}
+				<!--{/if}-->
+			},
+			messages : {
+				gift_card : {
+					required : json_languages.gift_gard_number_null
+				},
+				gift_pwd : {
+					required : json_languages.gift_gard_password_null
+				}
+				<!--{if $enabled_captcha}-->
+				,captcha:{
+					required : json_languages.captcha_not,
+					maxlength: json_languages.captcha_xz,
+					remote : json_languages.captcha_cw
+				}
+				<!--{/if}-->
+			},
+			success:function(label){
+				label.removeClass().addClass("succeed").html("<i></i>");
+			},
+			onkeyup:function(element,event){
+				var name = $(element).attr("name");
+				if(name == "captcha"){
+					//不可去除，当是验证码输入必须失去焦点才可以验证（错误刷新验证码）
+					return true;
+				}else{
+					$(element).valid();
+				}
+			}
+		});
+	});
+</script>
+</body>
+</html>
+
+

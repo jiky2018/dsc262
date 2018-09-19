@@ -1,0 +1,232 @@
+{if $full_page}
+<!doctype html>
+<html>
+{include file='pageheader.dwt'}
+<div class="content">
+	<div class="title">{$page_title}</div>
+    <div class="explanation" id="explanation">
+        <i class="sc_icon"></i>
+        <ul>
+            <li>通过前台门店自提的商品订单，可验证提货码进行付款自提操作。</li>
+            <li>平台设置该门店为抢单门店，可操作订单抢单，请及时操作，以免耽误发货。</li>
+        </ul>
+    </div>
+    <div class="common-head">
+    	<div class="search">
+        	<input type="text" class="text mr10" name="mobile" placeholder="手机号码" />
+        	<input type="text" class="text mr10" name="pick_code" placeholder="提货码" />
+        	<input type="text" class="text" name="order_sn" placeholder="请输入订单号" />
+            <button class="btn" name="search" onclick="searchOrder()">搜索</button>
+        </div>
+    </div>
+    <div class="clear"></div>
+  <div class="order_state_tab">
+    <a href="order.php?act=list&order_type=-1" {if $order_type eq -1}class="current"{/if}>全部</a>
+    <a href="order.php?act=list&order_type=0" {if $order_type eq 0}class="current"{/if}>待抢单</a>
+    <a href="order.php?act=list&order_type=1" {if $order_type eq 1}class="current"{/if}>待发货</a>
+    <a href="order.php?act=list&order_type=2" {if $order_type eq 2}class="current"{/if}>配货中</a> 
+    <a href="order.php?act=list&order_type=3" {if $order_type eq 3}class="current"{/if}>已发货</a>
+  </div>
+    <div class="list-div" id="listDiv">
+    {/if}
+    <table class="table">
+        <thead>
+            <tr>
+            	<th width="78" class="first">编号</th>
+                <th width="443" class="tl">{$lang.goods_name}</th>
+                <th width="116">{$lang.goods_price}</th>
+                <th width="50">{$lang.goods_number}</th>
+                <th width="100">{$lang.order_fee}</th>
+                <th width="100">{$lang.consignee}</th>
+                <th width="120">配送方式</th>
+                <th width="100">{$lang.order_status}</th>
+                <th width="100" class="last">{$lang.handler}</th>
+            </tr>
+        </thead>
+        {foreach from=$order_list item=order name=sn}
+        <tbody>
+        	<tr class="sep-row">
+                <td colspan="10"></td>
+            </tr>
+            <tr class="order-hd">
+            	<td class="first">{$smarty.foreach.sn.iteration}</td>
+                <td colspan="10" class="hd-info last">
+                    <span>{$lang.order_sn}：{$order.order_sn}</span>
+                    <span class="ml50">{$lang.add_time}：{$order.add_time}</span>
+                    <span class="ml50">{if $order.is_grab_order eq 1}{if $order.invoice_no}快递单号：{$order.invoice_no}{/if}{else}自提时间：{$order.take_time}{/if}</span>
+                    <em class="grab-icon">{if $order.is_grab_order eq 1}抢{else}自{/if}</em>
+                </td>
+            </tr>
+            {foreach from=$order.order_goods_list item=goods name=goods}
+            <tr>
+            	<td class="first">&nbsp;</td>
+                <td>
+                	<div class="order_product">
+                        <div class="img"><img src="{$goods.goods_thumb}" width="50" height="50"></div>
+                        <div class="name">
+                        	<p><a href="../goods.php?id={$goods.goods_id}" target="_blank">{$goods.goods_name}</a></p>
+                            {if $goods.goods_sn}
+                            <p style="color:#999">货号：{$goods.goods_sn}</p>
+                            {/if}
+                            {if $goods.goods_attr}
+                            <p style="color:#999">【{$goods.goods_attr}】</p>
+                            {/if}
+                        </div>
+                    </div>
+                </td>
+                <td>{$goods.formated_goods_price}</td>
+                <td>{$goods.goods_number}</td>
+            	{if $smarty.foreach.goods.iteration eq 1}
+                    <td rowspan="{$order.rowspan}" {if $order.rowspan>1}class="border-left"{/if}>{$order.formated_total_fee}<br />(运费{$order.shipping_fee})</td>
+                    <td rowspan="{$order.rowspan}">
+                    {$order.consignee}
+                    {if $order.mobile}</br>{$lang.phone}:{$order.mobile}{/if}
+                    </td>
+                    <td rowspan="{$order.rowspan}">
+                        {if $order.is_grab_order eq 1}
+                            {$order.shipping_name}
+                        {else}
+                            门店自提
+                        {/if}
+                    </td>
+                    <td rowspan="{$order.rowspan}">{$lang.os[$order.order_status]}<br>{$lang.ps[$order.pay_status]}<br>{$lang.ss[$order.shipping_status]}</td>
+                    <td rowspan="{$order.rowspan}" class="handle last">
+                    {if $order.order_status eq 2}
+                    <strong>已取消</strong>
+                    {elseif $order.order_status eq 3}
+                    <strong>无效</strong>
+                    {else}
+                        {if $order.store_id eq 0}
+                            <a href="javascript:deal_store_order({$order.id}, 'grab_order');">{$lang.grab_order}</a>
+                            <br>
+                            <br>
+                            <a href="javascript:deal_store_order({$order.id}, 'back');" style="margin-right: 15px;">退回抢单</a>
+                        {else}
+                            {if $order.is_grab_order eq 1}
+                                {if $order.shipping_status gt 0}
+                                    <!--<strong>{$lang.delivery_finished}</strong>-->
+                                    <a href="javascript:deal_store_order({$order.id}, 'achieve');">查看订单</a>
+                                {else}
+                                    <a href="javascript:deal_store_order({$order.id}, 'delivery');">{$lang.store_delivery}</a>
+                                {/if}
+                            {else}
+                            	{if $order.order_status neq 4}
+                                    {if $order.shipping_status gt 0}
+                                        <strong>{$lang.pick_finished}</strong>
+                                    {else}
+                                        <a href="javascript:deal_store_order({$order.id}, 'pick_goods');">{$lang.pay_pick}</a>
+                                    {/if}
+                                {else}
+                                <a href="javascript:deal_store_order({$order.id}, 'achieve');">查看订单</a>    
+                                {/if}
+                            {/if}	
+                        {/if}
+                    {/if}
+                    </td>
+            	{/if}		  
+            </tr>
+            {/foreach}
+        </tbody>
+        {foreachelse}
+        <tbody>
+			<tr class="tfoot"><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+        </tbody>  
+		{/foreach}
+        <tfoot>
+            <tr>
+                <td colspan="10">{include file='page.dwt'}</td>
+            </tr>
+        </tfoot>
+    </table>
+    {if $full_page}
+    </div>
+</div>
+
+<script type="text/javascript">
+listTable.recordCount = {$record_count};
+listTable.pageCount = {$page_count};
+
+{foreach from=$filter item=item key=key}
+listTable.filter.{$key} = '{$item}';
+{/foreach}
+
+function searchOrder()
+{
+	var order_sn = $("input[name='order_sn']").val();
+	var pick_code = $("input[name='pick_code']").val();
+	var mobile = $("input[name='mobile']").val();
+	listTable.filter['order_sn'] = Utils.trim(order_sn);
+	listTable.filter['pick_code'] = Utils.trim(pick_code);
+	listTable.filter['mobile'] = Utils.trim(mobile);
+	listTable.filter['page'] = 1;
+	listTable.loadList();	  
+}
+
+/*门店订单操作*/
+function deal_store_order(id, operate)
+{
+	$.ajax({
+		type:'get',
+		url:'order.php',
+		data:'act=deal_store_order&id='+id+'&operate='+operate,
+		dataType:'json',
+		success:function(data){
+            if(data.error == 0)
+            {
+    		  pb({
+    			 id:operate,
+    			 title:"",
+    			 content:data.content,
+    			 drag:false,
+    			 foot:false
+    		  });
+            }else{
+                pbDialog(data.message,"",1);
+                setTimeout("window.location.href = window.location.href",2000);
+            }
+		}
+	});
+}
+function resize(){
+	var height = $(".content").height();
+	var wheight = $(window).height();
+	if(wheight>height){
+		$(".footer").css({"position":"absolute","bottom":0});
+	}else{
+		$(".footer").css({"position":"static","bottom":0});
+	}
+}
+// 订单切换
+$(document).on("click",".order-tb-tab a",function(){ 
+    var val = $(this).data("value");
+    $(this).addClass("current").siblings().removeClass("current");
+    searchOrder(val);
+})
+
+//操作
+function check()
+{
+  var snArray = new Array();
+  var eles = document.forms['listForm'].elements;
+  for (var i=0; i<eles.length; i++)
+  {
+    if (eles[i].tagName == 'INPUT' && eles[i].type == 'checkbox' && eles[i].checked && eles[i].value != 'on')
+    {
+      snArray.push(eles[i].value);
+    }
+  }
+  
+  if (snArray.length == 0)
+  {
+    return false;
+  }
+  else
+  {
+    //eles['order_id'].value = snArray.toString();
+    $("input[name='order_id']").val(snArray.toString());
+    return true;
+  }
+}
+</script>
+{include file='pagefooter.dwt'}
+{/if}

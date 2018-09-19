@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>商品搜索</title>
+<link rel="shortcut icon" href="favicon.ico" />
+<link rel="icon" href="animated_favicon.gif" type="image/gif" />
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/base.css" />
+<link href="{$ecs_css_path}" rel="stylesheet" type="text/css" />
+<link href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/select.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/quickLinks.css" />
+<link rel="alternate" type="application/rss+xml" title="RSS|{$page_title}" href="{$feed_url}" />
+<link rel="stylesheet" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/purebox.css">
+
+<link rel="stylesheet" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/perfect-scrollbar/perfect-scrollbar.min.css">
+
+{* 包含脚本文件 *}
+{insert_scripts files='jquery-1.9.1.min.js,jquery.json.js,transport_jquery.js,cart_common.js,cart_quick_links.js'}
+{insert_scripts files='common.js,global.js,utils.js,compare.js,jd_choose.js,parabola.js'}
+
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/sc_common.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.tabso_yeso.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.yomi.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/rotate3di.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/scroll_city.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/notLogin.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/asyLoadfloor.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+<style>.suspension{ display:none;}</style>
+<!-- #BeginLibraryItem "/library/js_languages.lbi" --><!-- #EndLibraryItem -->
+</head>
+
+<body>
+<!-- #BeginLibraryItem "/library/page_header_w1390.lbi" --><!-- #EndLibraryItem -->
+<div class="ecsc-breadcrumb w1390">
+    <!-- #BeginLibraryItem "/library/ur_here.lbi" --><!-- #EndLibraryItem -->
+</div>
+
+<div id="filter">
+    <div class="filter-section-wrapper mt-component-2 w1390">
+		<!-- #BeginLibraryItem "/library/category_screening.lbi" --><!-- #EndLibraryItem -->
+    </div>
+    
+</div>
+
+<div id="content" class="w1390">
+	<!-- TemplateBeginEditable name="商品列表" -->
+    <!-- #BeginLibraryItem "/library/goods_list.lbi" --> <!-- #EndLibraryItem -->
+    <!-- TemplateEndEditable -->
+</div>
+{if !$category_load_type}
+<!-- TemplateBeginEditable name="列表分页" -->
+<!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+<!-- TemplateEndEditable -->
+{/if}
+{* DSC 提醒您：动态载入user_menu_position.lbi，显示首页分类小广告 *}{insert name='user_menu_position'} 
+    <!-- @authro guan start	添加对比文件 start -->	 
+<!-- #BeginLibraryItem "/library/duibi.lbi" --><!-- #EndLibraryItem -->
+<!-- @authro guan start	添加对比文件 end -->
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.purebox.js"></script>
+<input name="script_name" value="{$script_name}" type="hidden" />
+<input name="cur_url" value="{$cur_url}" type="hidden" />
+<script type="text/javascript">
+	//异步加载更多商品 by wu start	
+	{if $category_load_type}
+		var query_string = '{$query_string}';
+		$.goodsLoad('.goods_network_list .goods-list','.gl-item','.goods-spread',query_string,0);
+	{/if}
+	//异步加载更多商品 by wu end
+	
+	//商品列表页 商品小图轮播 图片数量大于6个
+	sildeImg(0);
+	
+	$(function(){
+		var obj = $("#filter-sortbar .styles").find(".item");
+		var imtes = $(".category_left");
+		obj.click(function(){
+			var index = $(this).index();
+			$(this).addClass("current").siblings().removeClass("current");
+			imtes.find(".car_goods_list").eq(index).show().siblings(".car_goods_list").hide();
+			//需要开启异步加载
+			{if $category_load_type}
+				if(index == 1){
+					$.goodsLoad('.goods_switch_list .goods-list','.item','.goods-spread',query_string,1);
+				}
+			{/if}
+		});
+		
+		$(".zimu_list").hover(function(){
+			$(".zimu_list").perfectScrollbar();
+		});
+		
+		$(".wrap_brand").hover(function(){
+			$(".extend .wrap_brand").perfectScrollbar();
+		});
+	});
+</script>
+</body>
+</html>

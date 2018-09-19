@@ -1,0 +1,127 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.goods_alt} - {$ur_here}</div>
+        <div class="content">		
+        	{include file ='library/seller_comment_tab.lbi'}
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit">
+					<i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span>
+                    {if $open eq 1}
+                    <div class="view-case">
+                    	<div class="view-case-tit"><i></i>{$lang.view_tutorials}</div>
+                        <div class="view-case-info">
+                        	<a href="http://help.ecmoban.com/article-4709.html" target="_blank">{$lang.tutorials_bonus_list_one}</a>
+                        </div>
+                    </div>			
+                    {/if}				
+				</div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.list.0}</li>
+                    <li>{$lang.operation_prompt_content.list.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-head">
+                    <div class="fl">
+                    	<a href="comment_seller.php?act=baseline"><div class="fbutton"><div class="add" title="{$lang.seller_industry_baseline}"><span><i class="icon icon-plus"></i>{$lang.seller_industry_baseline}</span></div></div></a>
+                    </div>				
+                    <div class="refresh">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+					<div class="search">
+                    	<form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+						{include file ='library/search_store.lbi'}
+                    	<div class="input">
+                        	<input type="text" name="keywords" class="text nofocus" placeholder="{$lang.user_name}" autocomplete="off">
+							<input type="submit" class="btn" name="secrch_btn" ectype="secrch_btn" value="" />
+                        </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="common-content">
+                	<div class="list-div" id="listDiv">
+						{/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                	<th width="5%"><div class="tDiv">{$lang.record_id}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.user_name}</div></th>
+                                    <th width="15%"><div class="tDiv">{$lang.order_id}</div></th>
+                                    <th width="15%"><div class="tDiv">{$lang.goods_steps_name}</div></th>
+                                    <th width="8%"><div class="tDiv">{$lang.product_desc}</div></th>
+                                    <th width="8%"><div class="tDiv">{$lang.seller_fwtd}</div></th>
+                                    <th width="8%"><div class="tDiv">{$lang.logistics_speed}</div></th>
+                                    <th width="8%"><div class="tDiv">{$lang.logistics_senders}</div></th>
+                                    <th width="12%"><div class="tDiv">{$lang.comment_time}</div></th>
+                                    <th width="7%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+								{foreach from=$rank_list item=comment}
+                            	<tr>
+                                    <td><div class="tDiv">{$comment.sid}</div></td>
+									<td><div class="tDiv">{if $comment.user_name}{$comment.user_name}{else}{$lang.anonymous}{/if}</div></td>
+									<td><div class="tDiv">{$comment.order_sn}</div></td>
+									<td><div class="tDiv">{if $comment.ru_name}<font style="color:#F00;">{$comment.ru_name}</font>{else}{$lang.self}{/if}</div></td>
+									<td><div class="tDiv">{$comment.desc_rank}</div></td>
+									<td><div class="tDiv">{$comment.service_rank}</div></td>
+                                    <td><div class="tDiv">{$comment.delivery_rank}</div></td>
+                                    <td><div class="tDiv">{$comment.sender_rank}</div></td>
+                                    <td><div class="tDiv">{$comment.add_time}</div></td>                             
+                                    <td class="handle">
+                                        <div class="tDiv a1">
+                                            <a href="javascript:;" onclick="listTable.remove({$comment.sid}, '{$lang.drop_confirm}')" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>								
+                                        </div>
+                                    </td>
+                                </tr>
+								{foreachelse}
+								<tr><td class="no-records" colspan="20">{$lang.no_records}</td></tr>								
+								{/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                	<td colspan="10">
+                                        <div class="list-page">
+                                           {include file="library/page.lbi"}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+						{if $full_page}
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+ 	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+	cfm = new Object();
+	cfm['allow'] = '{$lang.cfm_allow}';
+	cfm['remove'] = '{$lang.cfm_remove}';
+	cfm['deny'] = '{$lang.cfm_deny}';
+	
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+	
+	{literal}
+	
+	function confirm_bath()
+	{
+		var action = document.forms['listForm'].elements['sel_action'].value;
+		
+		return confirm(cfm[action]);
+	}
+	</script>
+</body>
+</html>
+{/if}

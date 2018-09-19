@@ -1,0 +1,1592 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{$page_title}</title>
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/base.css" />
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/user.css" />
+<link rel="stylesheet" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/purebox.css">
+{* 包含脚本文件 *}
+{insert_scripts files='jquery-1.9.1.min.js,jquery.json.js,transport_jquery.js,common.js,utils.js,plupload.full.min.js'}
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/sc_memake.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/sc_common.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.tabso_yeso.js"></script>
+
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.yomi.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/rotate3di.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/ecsc-nav.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/checkAll.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/scroll_city.js"></script>
+<!-- #BeginLibraryItem "/library/js_languages.lbi" --><!-- #EndLibraryItem -->
+</head>
+
+<body id="user">
+<!-- #BeginLibraryItem "/library/page_header_user.lbi" --><!-- #EndLibraryItem -->
+<!-- {if $action eq 'default'} -->
+<div id="user-info">
+    <div class="user-info-wrap w1200">
+        <div class="user-info-l">
+            <a href="user.php?act=profile" class="u-pic"><img src="{if $info.user_picture}{$info.user_picture}{else}themes/<?php echo $GLOBALS['_CFG']['template']; ?>/images/touxiang.jpg{/if}" width="85" height="85"></a>
+            <div class="info-m">
+                <div class="u-name"><a href="user.php?act=profile" class="ecsc-vip ecsc-vip{$rank.user_rank.rank_id}"><s></s></a><a href="user.php?act=profile" class="name"><em>{$rank.time_reminder}，</em>{$info.nick_name}</a></div>
+                <div class="u-growth">
+                    <span class="tel">{if $info.mobile_phone}{$lang.backup_phone}：{$info.mobile_phone}{else}<a href="user.php?act=profile">{$lang.bind_Mobile}</a>{/if}</span>
+                    <span class="email">{$lang.email_user}：{if $info.email}{$info.email}{else}<a href="user.php?act=profile">{$lang.binding}</a>{/if}</span>
+                </div>
+            </div>
+        </div>
+        <div class="user-info-r">
+            <div class="info-item info-fore1">
+                <span>{$lang.your_surplus}</span>
+                <a href="user.php?act=account_log" class="ftx-01">{$info.surplus}</a>
+            </div>
+            <div class="info-item info-fore2">
+                <span>{$lang.bonus_user}</span>
+                <a href="user.php?act=bonus" class="pink ftx-01">{$info.bonus}</a>
+            </div>
+            <div class="info-item info-fore3">
+                <span>{$lang.consume_integral}</span>
+                <span class="ftx-02">{$info.integral}</span>
+            </div>
+            <div class="info-item info-fore4">
+                <span>{$lang.affiliate_lever}</span>
+				{if $special_rank}
+				<span class="ftx-02">{$rank.rank_name}</span>
+				{else}
+                <span class="ftx-02">{$rank.user_rank.rank_name}（{$rank.user_rank.rank_points}/{$rank.user_rank.max_points}）</span>
+				{/if}
+            </div>
+        </div>
+    </div>
+</div>
+<!--{/if}--> 
+<div class="main w1200 user_home user_tran">
+    <div class="user-left">
+        <!-- #BeginLibraryItem "/library/user_menu.lbi" --><!-- #EndLibraryItem -->
+    </div>
+    <!-- *用户中心默认显示页面 start-->
+    <!-- {if $action eq 'default'} -->
+    <div class="user-right">
+        <div class="user-counts">
+            <ul>
+            	<li class="user-count3">
+                    <div class="count-item">
+                        <a href="user.php?act=order_list&order_type=toBe_unconfirmed"><i class="count-icon"></i><span>{$lang.confirmation_not}(&nbsp;{$unconfirmed}&nbsp;)</span></a>
+                    </div>
+                </li>
+                <li class="user-count1">
+                    <div class="count-item">
+                        <a href="user.php?act=order_list&order_type=toBe_pay"><i class="count-icon"></i><span>{$lang.piad_not} <em>(&nbsp;{$pay_count}&nbsp;)</em></span></a>
+                    </div>
+                </li>
+                <li class="user-count2">
+                    <div class="count-item">
+                        <a href="user.php?act=order_list&order_type=toBe_confirmed"><i class="count-icon"></i><span>{$lang.Receipt_receipt} <em>(&nbsp;{$to_confirm_order}&nbsp;)</em></span></a>
+                    </div>
+                </li>
+                <li class="user-count4">
+                    <div class="count-item">
+                        <a href="user.php?act=order_list&order_type=toBe_finished"><i class="count-icon"></i><span>{$lang.cs.102} <em>(&nbsp;{$to_finished}&nbsp;)</em></span></a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="user-main">
+            <div class="user-item-temp user-item-temp1">
+                <div class="user-item-title">
+                    <h3>近期订单</h3>
+                    <a href="user.php?act=order_list" class="user-more">{$lang.see_all_order} ></a>
+                </div>
+                <div class="user-order-list">
+                    <div class="thead">
+                        <div class="th u-number">{$lang.order_number}</div>
+                        <div class="th u-status">{$lang.is_paid}</div>
+                        <div class="th u-total">{$lang.order_total}</div>
+                        <div class="th u-name">{$lang.consignee}</div>
+                        <div class="th u-time">{$lang.order_time}</div>
+                        <div class="th u-operate">{$lang.handle}</div>
+                    </div>
+                    <div class="tbody">
+                        {foreach from=$order_list item=order}
+                        <div class="tr">
+                            <div class="td u-number"><a href="user.php?act=order_detail&order_id={$order.order_id}" class="ftx-01">{$order.order_sn}</a></div>
+                            <div class="td u-status"><span class="ftx-02">{$order.order_status}</span></div>
+                            <div class="td u-total"><span class="ftx-01">{$order.total_fee}</span></div>
+                            <div class="td u-name"><span class="ftx-06">{$order.consignee}</span></div>
+                            <div class="td u-time"><span class="ftx-03">{$order.order_time}</span></div>
+                            <div class="td u-operate"><a href="user.php?act=order_detail&order_id={$order.order_id}" class="ftx-07">{$lang.order_detail}</a></div>
+                        </div>
+                        {/foreach}
+                    </div>
+                </div>
+            </div>
+            <div class="user-item-temp user-item-temp2">
+                <div class="user-item-title">
+                    <h3>{$lang.Recent_collection}</h3>
+                    <a href="user.php?act=collection_list" class="user-more">{$lang.see_all_Collection} &gt;</a>
+                </div>
+                <table class="user-product-list" cellpadding="0" cellspacing="0">
+                    <thead class="thead">
+                        <th class="th u-product first">{$lang.goods}</th>
+                        <th class="th u-price">{$lang.unit_price_user}</th>
+                        <th class="th u-time">{$lang.Collection_time}</th>
+                        <th class="th u-operate">{$lang.handle}</th>
+                        <th class="th u-delete">{$lang.drop}</th>
+                    </thead>
+                    <tbody class="tbody">
+                        {foreach from=$collection_goods item=goods}
+                        <tr class="tr">
+                            <td class="td u-product first">
+                                <div class="product-item first">
+                                    <div class="p-img"><a href="{$goods.url}" target="_blank"><img src="{$goods.goods_thumb}" width="55" height="55" /></a></div>
+                                    <div class="p-name"><a href="{$goods.url}" target="_blank">{$goods.goods_name}</a></div>
+                                </div>
+                            </td>
+                            <td class="td u-price">
+                                <span class="ftx-02">
+                                    {if $goods.promote_price neq ''}
+                                        {$goods.promote_price}
+                                    {else}
+                                        {$goods.shop_price}
+                                    {/if}
+                                </span>
+                            </td>
+                            <td class="td u-time"><span class="ftx-03">{$goods.add_time}</span></td>
+                            <td class="td u-operate"><a href="{$goods.url}" class="operate-btn" target="_blank">立即购买</a></td>
+                            <td class="td u-delete"><i class="icon-delete" data-dialog="goods_collect_dialog" data-divid="delete_goods_collect" data-url="user.php?act=delete_collection&collection_id={$goods.rec_id}" data-goodsid="0" data-width="455" data-height="58" data-padding="17px 0px 0px 10px" data-title="提示"></i></td>
+                        </tr>
+                        {/foreach}
+                    </tbody>
+                </table>
+            </div>
+            <div class="user-item-temp user-item-temp3">
+                <div class="user-item-title">
+                    <h3>{$lang.calendar_help}</h3>
+                </div>
+                <div class="user-help-list">
+                    <div class="user-help-item">
+						{foreach from=$helpart_list item=help}
+                        <div class="user-help-fore user-help-fore1"><i class="icon-help icon-help01"></i><a href="{$help.url}" target="_blank">{$help.title}</a></div>
+						{/foreach}
+                    </div>
+                </div>
+            </div>
+            {if $guess_goods}
+            <div class="user-item-temp user-item-temp4">
+                <div class="user-item-title">
+                    <h3>{$lang.guess_love}</h3>
+                </div>
+                <div class="goods-list">
+                    <ul class="gl-warp">
+                        <!-- {foreach from=$guess_goods item=goods} -->
+                        <li class="gl-item">
+                            <div class="gl-i-wrap">
+                                <div class="p-img">
+                                    <a href="{$goods.url}" target="_blank"><img src="{$goods.goods_thumb}" width="180" height="180"></a>
+                                </div>
+                                <div class="p-price">{$goods.shop_price}</div>
+                                <div class="p-name"><a href="{$goods.url}" target="_blank" title="{$goods.goods_name}">{$goods.short_name}</a></div>
+                                
+                                <div class="p-num">{$lang.sale_amount}：{$goods.sales_volume}</div>
+                                <div class="p-commit">
+                                    {if $goods.comment_percent}<span class="p-nice"><i class="icon"></i><span class="nice-stars">{$goods.comment_percent}%</span></span>{/if}
+                                </div>
+                            </div>
+                        </li>
+                        <!--{/foreach}-->
+                    </ul>
+                </div>
+            </div>
+            {/if}
+        </div>
+    </div>
+    <!-- {/if} -->
+    <!-- #用户中心默认显示页面 end-->
+    <!--#缺货登记页面 -->
+    <!--{if $action eq 'booking_list'} -->
+    <div class="user-right">
+        <div class="user-title"><h3>{$lang.label_booking}</h3></div>
+        <div class="user-main user_lack">
+            <div class="user-hangtit">
+                <span>{$lang.you_have}<strong class="box_red"> {$pager.record_count} </strong>{$lang.Out_stock_goods}</span>
+            </div>
+            <div class="user-item-temp mt10">
+                <table class="user-product-list" cellpadding="0" cellspacing="0">
+                    <thead class="thead">
+                        <th class="th u-product"><span>{$lang.valid_goods}</span></th>
+                        <th class="th u-number"><span>{$lang.booking_amount}</span></th>
+                        <th class="th u-time"><span>{$lang.booking_time}</span></th>
+                        <th class="th u-beizhu"><span>{$lang.process_desc}</span></th>
+                        <th class="th u-operate"><span>{$lang.handle}</span></th>
+                    </thead>
+                    <tbody class="tbody">
+                        <!-- {foreach from=$booking_list item=item} -->
+                        <tr class="tr">
+                            <td class="td u-product">
+                                <div class="product-item">
+                                    <div class="p-img"><a href="{$item.url}" target="_blank"><img src="{$item.goods_thumb}" width="55" height="55" /></a></div>
+                                    <div class="p-name"><a href="{$item.url}" class="ftx-05" target="_blank">{$item.goods_name}</a></div>
+                                </div>
+                            </td>
+                            <td class="td u-number"><span class="ftx-02">x{$item.goods_number}</span></td>
+                            <td class="td u-time"><span class="ftx-03">{$item.booking_time}</span></td>
+                            <td class="td u-beizhu"><span class="ftx-09">{$item.dispose_note}</span></td>
+                            
+                            <td class="td u-operate"><i class="icon-delete" data-dialog="goods_del_booking" data-divid="delete_del_booking" data-url="user.php?act=act_del_booking&id={$item.rec_id}" data-goodsid="0" data-width="455" data-height="58" data-confirmtitle="{$lang.confirm_remove_account}"></i></td>
+                        </tr>
+                        <!--{foreachelse}-->
+                        <tr class="tr">
+                        	<td class="td td_bf">{$lang.novalid_goods}</td>
+                        </tr>
+                        <!--{/foreach}-->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- {/if} -->
+    <!-- #缺货列表 end-->
+    <!--#缺货登记页面 -->
+    <!--{if $action eq 'add_booking'} -->
+    <div class="user-right">
+        <div class="user-title add_booking"><h3>{$lang.label_booking}</h3></div>
+        <div class="user-main user_lack">
+            <div class="user-hangtit"></div>
+            <div class="user-item-temp mt10">
+                <form action="user.php" method="post" name="formBooking" onsubmit="return addBooking();">
+                	<div class="booking_list">
+                        <div class="item">
+                            <div class="label">{$lang.booking_goods_name}：</div>
+                            <div class="item-right"><span class="ftx-05">{$info.goods_name}</span></div>
+                        </div>
+                        <div class="item">
+                            <div class="label">{$lang.booking_amount}：</div>
+                            <div class="item-right"><input name="number" type="text" value="{$info.goods_number}" class="text text1" /></div>
+                        </div>
+                        <div class="item">
+                            <div class="label" style="margin-top:0;">{$lang.describe}：</div>
+                            <div class="item-right"><textarea name="desc" cols="50" rows="5" wrap="virtual" class="textarea">{$goods_attr}{$info.goods_desc|escape}</textarea></div>
+                        </div>
+                        <div class="item">
+                            <div class="label">{$lang.contact_username}：</div>
+                            <div class="item-right"><input name="linkman" type="text" value="{$info.consignee|escape}" size="25"  class="text"/></div>
+                        </div>
+                        <div class="item">
+                            <div class="label">{$lang.email_address}：</div>
+                            <div class="item-right"><input name="email" type="text" value="{$info.email|escape}" size="25" class="text" /></div>
+                        </div>
+                        <div class="item">
+                            <div class="label">{$lang.contact_phone}：</div>
+                            <div class="item-right"><input name="tel" type="text" value="{$info.tel|escape}" size="25" class="text" /></div>
+                        </div>
+                        <div class="item">
+                            <div class="label">&nbsp;</div>
+                            <div class="item-right">
+                            	<input name="act" type="hidden" value="act_add_booking" />
+                                <input name="id" type="hidden" value="{$info.id}" />
+                                <input name="rec_id" type="hidden" value="{$info.rec_id}" />
+                                <input type="submit" name="submit" class="button operate-btn" value="{$lang.submit_booking_goods}" />
+                                <input type="reset" name="reset" class="button reset" value="{$lang.button_reset}" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- {/if} -->
+    <!-- #缺货登记页面 end-->
+    
+    <!-- 我的收藏界面 start-->
+    <!--{if $action eq 'collection_list' ||  $action eq 'store_list'}-->
+    <div class="user-right">
+        <div class="user-title pb0" style="*position:relative; *z-index:10;">
+            <ul class="tabs">
+                <li <!--{if $action eq 'collection_list'} -->class="on"<!--{/if} -->><a href="user.php?act=collection_list">{$lang.Collection_goods}</a></li>
+                <li <!--{if $action eq 'store_list'} -->class="on"<!--{/if} -->><a href="user.php?act=store_list">{$lang.store_list}</a></li>
+            </ul>
+        </div>
+        <div class="user-main" style="*position:relative; *z-index:9;">
+            <div class="user-main-list">
+                <!--{if $action eq 'collection_list'} -->
+                <div class="user-item-temp user-collection-list c-tab-box-ajax">
+                    <!-- #BeginLibraryItem "/library/collection_goods_list.lbi" --><!-- #EndLibraryItem -->
+                </div>
+                <!--{/if} -->
+                <!--{if $action eq 'store_list'} -->
+                <div class="user-item-temp user-attention-list c-tab-box-ajax">
+                    <!-- #BeginLibraryItem "/library/collection_store_list.lbi" --><!-- #EndLibraryItem -->
+                </div>
+                <!--{/if} -->
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        function get_coll_checkall(t, obj){
+                var chk = $(t).is(":checked");
+                var arr = new Array();
+
+                if(chk == true){
+                        $(".collcheck").each(function(index, element) {
+                                $(element).prop({ checked : true});
+								$(this).parent().addClass("order-checkbox-checked")
+                                if($(element).val() != 0){
+                                        arr.push($(element).val());
+                                }
+                        });
+                }else{
+                        $(".collcheck").each(function(index, element) {
+                                $(element).prop({ checked : false});
+								$(this).parent().removeClass("order-checkbox-checked")
+                                arr.pop($(element).val());
+                        });
+                }
+
+                $("input[name='" + obj + "']").val(arr);
+        }
+
+        function get_goods_check(t, obj){
+            var strArr = new Array();
+            var allgoods = $("input[name='" + obj + "']").val();
+
+            if(allgoods != ''){
+                    strArr = allgoods.split(',');
+            }
+
+            if($(t).is(':checked') == false){
+                    strArr.splice($.inArray($(t).val(),strArr),1);
+            }else{
+                    strArr.push($(t).val());
+            }
+
+            $("input[name='" + obj + "']").val(strArr);
+        }
+
+        function alertBatchFollow(type){
+
+            var length = $("input[name='goods_check']:checked").length;
+			var foot = true;
+			var ok_title, cl_title, divId;
+			
+			divId = "bacth_del_collection"; 
+			
+            if(length>0){
+                var message = '';
+                var goods_id = $("input[name='allgoods']").val();
+
+                if(type == 0){
+                    message = is_user_follow;
+                }else if(type == 1){
+                    message = cancel_user_follow;
+                }else if(type == 2){
+                    message = delete_user_follow;
+                }
+
+                ok_title = determine;
+				cl_title = cancel;
+            }else{
+				message = select_follow_goods;
+				foot = false;
+            }
+			
+			var content = '<div id="bacth_del_collection">' + 
+								'<div class="tip-box icon-box">' +
+									'<span class="warn-icon-wen m-icon"></span>' + 
+									'<div class="item-fore">' +
+										'<h3 class="ftx-04">' + message + '</h3>' +
+									'</div>' +
+								'</div>' +
+							'</div>';
+			
+			pb({
+				id:divId,
+				title:follow_Prompt,
+				width:445,
+				height:58,
+				ok_title:ok_title, 	//按钮名称
+				cl_title:cl_title, 	//按钮名称
+				content:content, 	//调取内容
+				drag:false,
+				foot:foot,
+				onOk:function(){
+					Ajax.call('user.php?act=ajax_BatchCancelFollow', 'goods_id=' + goods_id + '&type=' + type, function(data){
+						location.href = 'user.php?act=collection_list';
+					}, 'GET', 'JSON');
+				}
+			});	
+			
+			$('#' + divId + ' .ftx-04').css({'padding': '11px 0px 0px 10px'});
+			$('#' + divId + ' .tip-box').css({
+				'width': '330px',
+				'height': '50px',
+				'padding': '0px 0px 10px 0px'
+			});
+			
+			$('#' + divId + ' .item-fore').css({
+				'margin': '0px 0px 0px 47px'
+			});
+			
+			$('#' + divId + ' .pb-bd').css({
+				'padding-left': '65px'
+			});
+			
+			$('#' + divId + ' .pb-ft .pb-ok').addClass('color_df3134');
+        }
+    </script>
+    <script language="JavaScript">
+	
+		if(document.forms['theForm']){
+			var elements = document.forms['theForm'].elements;
+		}
+		
+		var url = '{$url}';
+		var u   = '{$user_id}';
+
+        
+        /**
+         * 生成代码
+         */
+        function genCode()
+        {
+            // 检查输入
+            if (isNaN(parseInt(elements['goods_num'].value)))
+            {
+                alert('{$lang.goods_num_must_be_int}');
+                return;
+            }
+            if (elements['goods_num'].value < 1)
+            {
+                alert('{$lang.goods_num_must_over_0}');
+                return;
+            }
+            if (isNaN(parseInt(elements['rows_num'].value)))
+            {
+                alert('{$lang.rows_num_must_be_int}');
+                return;
+            }
+            if (elements['rows_num'].value < 1)
+            {
+                alert('{$lang.rows_num_must_over_0}');
+                return;
+            }
+
+            // 生成代码
+            var code = '\<script src=\"' + url + 'goods_script.php?';
+            code += 'need_image=' + elements['need_image'].value + '&';
+            code += 'goods_num=' + elements['goods_num'].value + '&';
+            code += 'arrange=' + elements['arrange'].value + '&';
+            code += 'rows_num=' + elements['rows_num'].value + '&';
+            code += 'charset=' + elements['charset'].value + '&u=' + u;
+            code += '\"\>\</script\>';
+            elements['code'].value = code;
+            elements['code'].select();
+            if (Browser.isIE)
+            {
+                window.clipboardData.setData("Text",code);
+            }
+        }
+          var compare_no_goods = "{$lang.compare_no_goods}";
+    var btn_buy = "{$lang.btn_buy}";
+    var is_cancel = "{$lang.is_cancel}";
+    var select_spe = "{$lang.select_spe}";
+    </script>                                          	
+    <!-- {/if} -->
+    <!-- #我的收藏界面 end-->
+    
+    
+    <!-- 关注品牌 start-->
+    <!--{if $action eq 'focus_brand'}-->
+    <div class="user-right c-tab-box-ajax">
+    	<!-- #BeginLibraryItem "/library/collection_brands_list.lbi" --><!-- #EndLibraryItem -->
+    </div>
+    <script type="text/javascript">
+        function get_brands_checkall(t, obj){
+                var chk = $(t).is(":checked");
+                var arr = new Array();
+
+                if(chk == true){
+                        $(".collcheck").each(function(index, element) {
+                                $(element).prop({ checked : true});
+                                $(this).parent().addClass("order-checkbox-checked")
+                                if($(element).val() != 0){
+                                        arr.push($(element).val());
+                                }
+                        });
+                }else{
+                        $(".collcheck").each(function(index, element) {
+                                $(element).prop({ checked : false});
+                                $(this).parent().removeClass("order-checkbox-checked")
+                                arr.pop($(element).val());
+                        });
+                }
+
+                $("input[name='" + obj + "']").val(arr);
+        }
+
+        function get_brands_check(t, obj){
+            var strArr = new Array();
+            var allgoods = $("input[name='" + obj + "']").val();
+
+            if(allgoods != ''){
+                    strArr = allgoods.split(',');
+            }
+
+            if($(t).is(':checked') == false){
+                    strArr.splice($.inArray($(t).val(),strArr),1);
+            }else{
+                    strArr.push($(t).val());
+            }
+
+            $("input[name='" + obj + "']").val(strArr);
+        }
+        function alertBrandsBatch(type){
+            var length = $("input[name='brands_check']:checked").length;
+            var foot = true;
+            var ok_title, cl_title, divId;
+            
+            divId = "bacth_del_collection"; 
+            
+            if(length>0){
+                var message = '';
+                var brands_rec_id = $("input[name='allbrands']").val();
+
+                if(type == 1){
+                    message = delete_brand_follow;
+                }
+
+                ok_title = determine;
+                cl_title = cancel;
+            }else{
+                message = select_follow_brand;
+                foot = false;
+            }
+            
+            var content = '<div id="bacth_del_collection">' + 
+                                '<div class="tip-box icon-box">' +
+                                    '<span class="warn-icon-wen m-icon"></span>' + 
+                                    '<div class="item-fore">' +
+                                        '<h3 class="ftx-04">' + message + '</h3>' +
+                                    '</div>' +
+                                '</div>' +
+                            '</div>';
+            
+            pb({
+                id:divId,
+                title:follow_Prompt,
+                width:445,
+                height:58,
+                ok_title:ok_title,  //按钮名称
+                cl_title:cl_title,  //按钮名称
+                content:content,    //调取内容
+                drag:false,
+                foot:foot,
+                onOk:function(){
+                    Ajax.call('user.php?act=ajax_BrandBatchCancel', 'brands_rec_id=' + brands_rec_id + '&type=' + type, function(data){
+                        location.href = 'user.php?act=focus_brand';
+                    }, 'GET', 'JSON');
+                }
+            }); 
+            
+            $('#' + divId + ' .ftx-04').css({'padding': '11px 0px 0px 10px'});
+            $('#' + divId + ' .tip-box').css({
+                'width': '330px',
+                'height': '50px',
+                'padding': '0px 0px 10px 0px'
+            });
+            
+            $('#' + divId + ' .item-fore').css({
+                'margin': '0px 0px 0px 47px'
+            });
+            
+            $('#' + divId + ' .pb-bd').css({
+                'padding-left': '65px'
+            });
+            
+            $('#' + divId + ' .pb-ft .pb-ok').addClass('color_df3134');
+        }
+    </script>
+    <!--{/if}-->
+    <!--关注品牌 end-->
+    
+    <!-- 我的留言界面 start-->
+    <!--{if $action eq 'message_list'}-->
+    <div class="user-right">
+        <div class="user-main">
+            <div class="user-message-board">
+                <div class="message-board-content user-message-list">
+                    <form action="user.php" method="post" enctype="multipart/form-data" name="formMsg" onSubmit="return submitMsg()">
+                    	{if $order_info}
+                        <div class="item">
+                            <div class="label">{$lang.order_number}：</div>
+                            <div class="value value-checkbox">
+                            	<a href ="{$order_info.url}"><img src="images/note.gif" style="padding:0px 8px 0px 0px; position:relative; top:8px;" />{$order_info.order_sn}</a>
+                            </div>
+                        </div>    
+                        <input name="msg_type" type="hidden" value="5" />
+                      	<input name="order_id" type="hidden" value="{$order_info.order_id}" />
+                        {else}
+                        <div class="item">
+                            <div class="label">{$lang.message_type}：</div>
+                            <div class="value value-checkbox">
+                                <div class="value-item selected">
+                                    <input type="radio" checked="checked" id="checkbox-message" value="0" name="msg_type" class="ui-radio">
+                                    <label for="checkbox-message" class="ui-radio-label">{$lang.type[0]}</label>
+                                </div>
+                                <div class="value-item">
+                                    <input type="radio" id="checkbox-complaint" name="msg_type" value="1" class="ui-radio">
+                                    <label for="checkbox-complaint" class="ui-radio-label">{$lang.type[1]}</label>
+                                </div>
+                                <div class="value-item">
+                                    <input type="radio" id="checkbox-ask" name="msg_type" value="2" class="ui-radio">
+                                    <label for="checkbox-ask" class="ui-radio-label">{$lang.type[2]}</label>
+                                </div>
+                                <div class="value-item">
+                                    <input type="radio" id="checkbox-customer" name="msg_type" value="3" class="ui-radio">
+                                    <label for="checkbox-customer" class="ui-radio-label">{$lang.type[3]}</label>
+                                </div>
+                                <div class="value-item last">
+                                    <input type="radio" id="checkbox-buy" name="msg_type" value="4" class="ui-radio">
+                                    <label for="checkbox-buy" class="ui-radio-label">{$lang.type[4]}</label>
+                                </div>
+                            </div>
+                        </div>
+                        {/if}
+                        <div class="item">
+                            <div class="label">{$lang.message_title}：</div>
+                            <div class="value"><input type="text" name="msg_title" class="text"></div>
+                        </div>
+                        <div class="item">
+                            <div class="label">{$lang.message_content}：</div>
+                            <div class="value"><textarea rows="" cols="" name="msg_content"></textarea></div>
+                        </div>
+                        <div class="item">
+                            <div class="label">{$lang.upload_img}：</div>
+                            <div class="value">
+                                <input type="button" class="messageBtn" value="{$lang.Select_file}">
+                                <input type="text" name="textfield" id="textfield" class="txt">
+                                <input type="file" name="message_img" class="file" id="fileField" size="28" onchange="document.getElementById('textfield').value=this.value">
+                                <span class="remind">{$lang.message_type_list}</span>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="value">
+                                <input type="hidden" name="act" value="act_add_message" />
+                                <input type="submit" class="submit" value="{$lang.submit_goods}">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            {if $message_list}
+            <div class="user-title user-title16"><h3>{$lang.label_message}</h3></div>
+            <div class="user-content-list">
+                <!--{foreach from=$message_list item=message key=key name=message} -->
+                <div class="item{if $smarty.foreach.message.last} last{/if}">
+                    <div class="item-l"><h2>{$message.msg_type}</h2></div>
+                    <div class="item-r">
+                        <div class="content-item-tit">
+                            <h3>{$message.msg_title}</h3>
+                            <a href="user.php?act=del_msg&amp;id={$key}&amp;order_id={$message.order_id}" onclick="if (!confirm('{$lang.confirm_remove_msg}')) return false;" class="delete">{$lang.drop}</a>
+                            <span class="time ftx-03">{$message.msg_time}</span>
+                        </div>
+                        <div class="content-con">{$message.msg_content}
+                            <!-- {if $message.message_img} 如果上传了图片-->
+                            <div align="right">
+                            	<a href="data/feedbackimg/{$message.message_img}" target="_bank" class="f6">{$lang.view_upload_file}</a>
+                            </div>
+                            <!-- {/if} -->
+                            <br />
+                            <!-- {if $message.re_msg_content} -->
+                            <a href="mailto:{$message.re_user_email}" class="f6">{$lang.shopman_reply}</a> ({$message.re_msg_time})<br />
+                            {$message.re_msg_content}
+                            <!-- {/if} -->
+                        </div>
+                    </div>
+                </div>
+                <!-- {/foreach} -->
+                <!-- {if $message_list}-->
+                <div class="pager_tech pages26">
+                	<!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+                </div>
+                <!-- {/if}-->
+            </div>
+            {/if}
+        </div>
+    </div>
+    <!-- {/if} -->
+    <!-- #我的留言界面 end-->
+    <!-- 我的推荐界面 start-->
+    <!--{if $action eq 'affiliate'}-->
+    <div class="user-right">
+        <div class="user-title"><h3>{$lang.affiliate_detail}</h3></div>
+        <div class="ecsc-explain">{$affiliate_intro}</div>
+        <div class="user-main">
+            <div class="user-item-temp">
+                <div class="user-item-title">
+                    <h3>{$lang.affiliate_member}</h3>
+                </div>
+                <div class="user-vip-list">
+                    <div class="thead">
+                        <div class="tr">
+                            <div class="th u-grade">{$lang.affiliate_lever}</div>
+                            <div class="th u-number">{$lang.affiliate_num}</div>
+                            <div class="th u-percent">{$lang.level_point}</div>
+                            <div class="th u-price-percent">{$lang.level_money}</div>
+                        </div>
+                    </div>
+                    <div class="tbody">
+                        <!-- {foreach from=$affdb key=level item=val name=affdb} -->
+                        <div class="tr">
+                            <div class="td u-grade">{$level}</div>
+                            <div class="td u-number">{$val.num}</div>
+                            <div class="td u-percent">{$val.point}</div>
+                            <div class="td u-price-percent">{$val.money}</div>
+                        </div>
+                        <!-- {/foreach} -->
+                    </div>
+                </div>
+            </div>
+            <!-- {if $logdb} -->
+            <div class="user-item-temp">
+                <div class="user-item-title user-title16">
+                    <h3>{$lang.Split_rule}</h3>
+                </div>
+                <div class="user-vip-list">
+                    <div class="thead">
+                        <div class="tr">
+                            <div class="th u-order-number">{$lang.order_number}</div>
+                            <div class="th u-price">{$lang.affiliate_money}</div>
+                            <div class="th u-integral">{$lang.affiliate_point}</div>
+                            <div class="th u-pattern">{$lang.affiliate_mode}</div>
+                            <div class="th u-state">{$lang.affiliate_status}</div>
+                        </div>
+                    </div>
+                    <div class="tbody">
+                        <!-- {foreach from=$logdb item=val name=logdb} -->
+                        <div class="tr">
+                            <div class="td u-order-number">{$val.order_sn}</div>
+                            <div class="td u-price"><span class="ftx-01">{$val.money}</span></div>
+                            <div class="td u-integral"><span class="ftx-01">{$val.point}</span></div>
+                            <div class="td u-pattern"><!-- {if $val.separate_type == 1 || $val.separate_type === 0} -->{$lang.affiliate_type.$val.separate_type}<!-- {else} -->{$lang.affiliate_type.$affiliate_type}<!-- {/if} --></div>
+                            <div class="td u-state">{$lang.affiliate_stats[$val.is_separate]}</div>
+                        </div>
+                        <!-- {/foreach} -->
+                    </div>
+                    <div class="pager_tech pages26">
+                        <div class="pages">
+                            <div class="pages-it">
+                                <table>
+                                    <tr>
+                                        <td colspan="5" bgcolor="#ffffff">
+                                            <form action="{$smarty.server.PHP_SELF}" method="get">
+                                                <div id="pager"> 
+                                                {$lang.pager_1}{$pager.record_count}{$lang.pager_2}{$lang.pager_3}{$pager.page_count}{$lang.pager_4} 
+                                                <span> 
+                                                    <a href="{$pager.page_first}">{$lang.page_first}</a> 
+                                                    <a href="{$pager.page_prev}">{$lang.page_prev}</a> 
+                                                    <a href="{$pager.page_next}">{$lang.page_next}</a> 
+                                                    <a href="{$pager.page_last}">{$lang.page_last}</a> 
+                                                </span>
+                                                <select name="page" id="page" onchange="selectPage(this)">
+                                                        {html_options options=$pager.array selected=$pager.page}
+                                                </select>
+                                                <input type="hidden" name="act" value="affiliate" />
+                                                </div>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <script type="text/javascript" language="JavaScript">
+                                <!--
+                                {literal}
+                                function selectPage(sel)
+                                {
+                                  sel.form.submit();
+                                }
+                                {/literal}
+                                //-->
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- {/if} -->
+            <div class="user-item-temp mt0">
+                <div class="user-item-title user-title16 borderNone">
+                    <h3>{$lang.affiliate_code}</h3>
+                </div>
+                <div class="affiliate-code">
+                    <div class="aff-item">
+                        <div class="aff-title">{$lang.Web_signature}</div>
+                        <div class="aff-list">
+                            <div class="aff-list-top">
+                                <div class="aff-logo"><a href="{$shopurl}?u={$userid}" target="_blank"><img src="images/logo_2015.png" height="50" /></a></div>
+                                <div class="aff-form">
+                                    <textarea class="aff-textarea" name="" id="affTextarea" value='{$shopurl}?u={$userid}'>{$shopurl}?u={$userid}</textarea>
+                                </div>
+                                <div class="aff-btn" id="clip_container">
+                                    <a href="javascript:void(0);" class="sub" id="clip_button">{$lang.code_copy}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- {/if} -->
+    <!-- #我的推荐界面 end-->
+    
+    <!-- 我的评论界面 start-->
+    <!--{if $action eq 'comment_list'}-->
+    <div class="user-right">
+        <div class="user-title"><h3>{$lang.comment_list}</h3></div>
+        <div class="user-main comment_lists">
+            <div class="tabs">
+            	<ul>
+                    <li {if $sign == 0}class="curr"{/if}>
+                        <a href="user.php?act=comment_list">{$lang.stay_evaluate_goods}</a>
+                        <em>{$signNum0}</em>
+                    </li>
+                    <li {if $sign == 1}class="curr"{/if}>
+                        <a href="user.php?act=comment_list&sign=1">{$lang.stay_add_file}</a>
+                        <em>{$signNum1}</em>
+                    </li>
+                    <li {if $sign == 2}class="curr"{/if}>
+                        <a href="user.php?act=comment_list&sign=2">{$lang.Already_evaluated}</a>
+                        <em>{$signNum2}</em>
+                    </li>
+                </ul>
+            </div>
+            <div class="sc_mycomments">
+                {if $sign == 0}
+                <table class="sc-tb-void">
+                    <colgroup>
+                        <col width="570">
+                        <col width="165">
+                        <col width="165">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>{$lang.goods_info}</th>
+                            <th>{$lang.bought_time}</th>
+                            <th>{$lang.message_state}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- {if $comment_list} -->
+                        <!--{foreach from=$comment_list item=item name=foo}-->
+                        <tr>
+                            <td colspan="4">
+                                <ul class="pro-info">
+                                    <li class="fore1">
+                                        <div class="p-info">
+                                            <div class="p-img fl"><a href="goods.php?id={$item.goods_id}" target="_blank" title="{$item.goods_name}"><img src="{$item.goods_thumb}" width="50" height="50" title="{$item.goods_name}" alt="{$item.goods_name}"/></a></div>
+                                            <div class="p-name fl"><a href="goods.php?id={$item.goods_id}" target="_blank" title="{$item.goods_name}">{$item.goods_name}</a></div>
+                                        </div>
+                                    </li>
+                                    <li class="fore2"><span class="ftx03">{$item.add_time}</span></li>
+                                    <li class="fore3 forem"><a href="javascript:void(0);" class="btn-comment btn-10">{$lang.Click_review}</a></li>
+                                </ul>
+                                
+                                <div class="comment-box" style="display:{if $item.g_id eq 'com_1'}block{else}none{/if}" id="{$item.g_id}">
+                                    <div class="box-t"></div>
+                                    <!-- #BeginLibraryItem "/library/comments_form.lbi" --><!-- #EndLibraryItem -->
+                                </div>
+                            </td>
+                        </tr>
+                        <!--{/foreach}-->
+                        <script type="text/javascript">
+                            //<![CDATA[
+                            {foreach from=$lang.cmt_lang item=item key=key}
+                            var {$key} = "{$item}";
+                            {/foreach}
+                            {literal}
+                        </script>
+                        <!-- {else} -->
+                        <tr>
+                            <td align="center" colspan="3" class="td td_bf">{$lang.order_Prompt} <!--,&nbsp;现在&nbsp;<a href="user.php?act=single_sun" style="color:red; font-weight:bold;">去晒单</a> --></td>
+                        </tr>
+                        <!-- {/if} -->
+                    </tbody>
+                </table>
+                {/if}
+                {if $sign == 1}
+                <table class="sc-tb-void">
+                    <colgroup>
+                        <col width="570">
+                        <col width="165">
+                        <col width="165">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>{$lang.goods_info}</th>
+                            <th>{$lang.bought_time}</th>
+                            <th>{$lang.message_state}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- {if $comment_list} -->
+                        <!--{foreach from=$comment_list item=item name=foo}-->
+                        <tr>
+                            <td colspan="4">
+                                <ul class="pro-info">
+                                    <li class="fore1">
+                                        <div class="p-info">
+                                            <div class="p-img fl"><a href="goods.php?id={$item.goods_id}" target="_blank" title="{$item.goods_name}"><img src="{$item.goods_thumb}" width="50" height="50" title="{$item.goods_name}" alt="{$item.goods_name}"/></a></div>
+                                            <div class="p-name fl"><a href="goods.php?id={$item.goods_id}" target="_blank" title="{$item.goods_name}">{$item.goods_name}</a></div>
+                                        </div>
+                                    </li>
+                                    <li class="fore2"><span class="ftx03">{$item.add_time}</span></li>
+                                    <li class="fore3 forem"><a href="#none" class="btn-comment btn-10">{$lang.Continue_bask_single}</a></li>
+                                </ul>
+                                
+                                <div class="comment-box" style="display:{if $item.g_id eq 'com_1'}block{else}none{/if}" id="{$item.g_id}">
+                                    <div class="box-t"></div>
+                                    <!-- #BeginLibraryItem "/library/comments_form.lbi" --><!-- #EndLibraryItem -->
+                                </div>
+                                {if $item.is_comm}
+                                {/if}
+                            </td>
+                        </tr>
+                        <!--{/foreach}-->
+                        <!-- {else} -->
+                        <tr>
+                            <td colspan="3"><font size="2">{$lang.order_Prompt} <!--,&nbsp;现在&nbsp;<a href="user.php?act=single_sun" style="color:red; font-weight:bold;">去晒单</a> --></font></td>
+                        </tr>
+                        <!-- {/if} -->
+                    </tbody>
+                </table>
+                {/if}
+                {if $sign == 2}
+                <table class="sc-tb-void">
+                    <colgroup>
+                        <col width="570">
+                        <col width="165">
+                        <col width="165">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>{$lang.goods_info}</th>
+                            <th>{$lang.bought_time}</th>
+                            <th>{$lang.message_state}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- {if $comment_list} -->
+                        <!--{foreach from=$comment_list item=item}-->
+                        <tr>
+                            <td colspan="3">
+                                <ul class="pro-info">
+                                    <li class="fore1">
+                                        <div class="p-info">
+                                            <div class="p-img fl"><a href="goods.php?id={$item.goods_id}" target="_blank" title="{$item.goods_name}"><img src="{$item.goods_thumb}" width="50" height="50" title="{$item.goods_name}" alt="{$item.goods_name}"/></a></div>
+                                            <div class="p-name fl"><a href="goods.php?id={$item.goods_id}" target="_blank" title="{$item.goods_name}">{$item.goods_name}</a></div>
+                                        </div>
+                                    </li>
+                                    <li class="fore2"><span class="ftx03">{$item.add_time}</span></li>
+                                    <li class="fore3 forem"><a href="#none" class="btn-comment btn-10">{$lang.comment_see}</a></li>
+                                </ul>
+                                
+                                <div class="comment-box" style="display:{if $item.g_id eq 'com_1'}block{else}none{/if}" id="{$item.g_id}">
+                                    <div class="box-t"></div>
+                                    <!-- #BeginLibraryItem "/library/comments_form.lbi" --><!-- #EndLibraryItem -->
+                                </div>
+                            </td>
+                        </tr>
+                        <!--{/foreach}-->
+                        <!-- {else} -->
+                        <tr>
+                            <td colspan="3" align="center"><font size="2">{$lang.order_Prompt} <!--,&nbsp;现在&nbsp;<a href="user.php?act=single_sun" style="color:red; font-weight:bold;">{$lang.Sun_to_single}</a> --></font></td>
+                        </tr>
+                        <!-- {/if} -->
+                    </tbody>
+                </table>
+                {/if}
+            </div>
+            {if $comment_list}
+            <div class="pager_tech pages26">
+			<!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+            </div>
+            {/if}
+            <!--评论晒单模板end-->
+        </div>
+    </div>
+    <!-- {/if} -->
+    <!-- #我的评论界面 end-->
+    
+    <!-- 已晒单评论、满意度界面 start-->
+    <!--{if $action eq 'commented_view'}-->
+    <div class="user-right">
+        <div class="user-title"><h3>{$lang.comment_list}</h3></div>
+        <div class="user-main comment_lists">
+        	 <div class="tabs">
+            	<ul>
+                    <li {if $sign == 0}class="curr"{/if}>
+                        <a href="user.php?act=comment_list">{$lang.stay_evaluate_goods}</a>
+                        <em>{$signNum0}</em>
+                    </li>
+                    <li {if $sign == 1}class="curr"{/if}>
+                        <a href="user.php?act=comment_list&sign=1">{$lang.stay_add_file}</a>
+                        <em>{$signNum1}</em>
+                    </li>
+                    <li {if $sign == 2}class="curr"{/if}>
+                        <a href="user.php?act=comment_list&sign=2">{$lang.Already_evaluated}</a>
+                        <em>{$signNum2}</em>
+                    </li>
+                </ul>
+            </div>
+            <div class="sc_mycomments">
+                <table class="sc-tb-void">
+                    <colgroup>
+                        <col width="570">
+                        <col width="165">
+                        <col width="165">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>{$lang.goods_info}</th>
+                            <th>{$lang.bought_time}</th>
+                            <th>{$lang.message_state}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- {if $order_goods} -->
+                        <!--{foreach from=$order_goods item=item}-->
+                        <tr>
+                            <td colspan="4">
+                                <ul class="pro-info">
+                                    <li class="fore1">
+                                        <div class="p-info">
+                                            <div class="p-img fl"><a href="goods.php?id={$item.goods_id}" target="_blank" title="{$item.goods_name}"><img src="{$item.goods_thumb}" width="50" height="50" title="{$item.goods_name}" alt="{$item.goods_name}"/></a></div>
+                                            <div class="p-name fl"><a href="goods.php?id={$item.goods_id}" target="_blank" title="{$item.goods_name}">{$item.goods_name}</a></div>
+                                        </div>
+                                    </li>
+                                    <li class="fore2"><span class="ftx03">{$item.add_time}</span></li>
+                                    <li class="fore3 forem">
+                                        <a href="#none" class="btn-comment btn-10">
+                                             {if $item.comment_id > 0}
+                                                {if $item.comment_img != ""}{$lang.comment_see}{else}{$lang.comment_again}{/if}
+                                             {else}
+                                                {$lang.comment_add}
+                                             {/if}
+                                        </a>
+                                    </li>
+                                </ul>
+                                
+                                <div class="comment-box" style="display:{if $item.g_id eq 'com_1'}block{else}none{/if}" id="{$item.g_id}">
+                                    <div class="box-t"></div>
+                                    <!-- #BeginLibraryItem "/library/comments_form.lbi" --><!-- #EndLibraryItem -->
+                                </div>
+                            </td>
+                        </tr>
+                        <!--{/foreach}-->
+                        <!-- {else} -->
+                        <tr>
+                            <td colspan="3" align="center"><font size="2">{$lang.order_Prompt} <!--,&nbsp;现在&nbsp;<a href="user.php?act=single_sun" style="color:red; font-weight:bold;">去晒单</a> --></font></td>
+                        </tr>
+                        <!-- {/if} -->
+                    </tbody>
+                </table>
+            </div>
+            {if $shop_info.ru_id > 0}
+            <div class="mod-main mod-myd">
+                <div class="mt">
+                    <h3 class="ftx-01">{$lang.Satisfaction_evaluation}</h3>
+                    <div class="fl ml10"></div>
+                </div>
+                <div id="votelist">
+                    <div class="mc">
+                        <div class="service-lcol">
+                        	<div class="service-lcol-cont">
+                                <div class="shopper-img"><img width="100" height="100" src="{$shop_info.logo_thumb}" alt=""></div>
+                                <div class="shopper-info">
+                                    <div class="shopper-name"><span class="s-star sa{$shop_info.seller_score}"></span></div>
+                                    <div class="shopper-msg"> {$shop_info.shop_name}<br>{$lang.phone}：{if $shop_info.kf_tel}{$shop_info.kf_tel}{else}{$lang.No_comment}{/if}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="service-rcol">
+                            {if $degree_count == 0}
+                            <div class="score-cont">
+                                <div class="score">
+                                    <dl class="ev-list">
+                                        <dt><em>*</em>{$lang.product_desc}</dt>
+                                        <dd>
+                                            <span class="commstar">
+                                                <a href="javascript:;" class="star1"></a>
+                                                <a href="javascript:;" class="star2"></a>
+                                                <a href="javascript:;" class="star3"></a>
+                                                <a href="javascript:;" class="star4"></a>
+                                                <a href="javascript:;" class="star5"></a>
+                                            </span>
+                                            <input type="hidden" name="desc_rank" value="0">
+                                            <span class="degree-text" style="display: none;">{$lang.Like_ata}</span>
+                                            <span class="comt-error hide">{$lang.Please_rate}</span>
+                                        </dd>
+                                    </dl>
+                                    <dl class="ev-list">
+                                        <dt><em>*</em>{$lang.seller_fwtd}</dt>
+                                        <dd>
+                                            <span class="commstar">
+                                                <a href="javascript:;" class="star1"></a>
+                                                <a href="javascript:;" class="star2"></a>
+                                                <a href="javascript:;" class="star3"></a>
+                                                <a href="javascript:;" class="star4"></a>
+                                                <a href="javascript:;" class="star5"></a>
+                                            </span>
+                                            <input type="hidden" name="service_rank" value="0">
+                                            <span class="degree-text" style="display: none;">{$lang.Like_ata}</span>
+                                            <span class="comt-error hide">{$lang.Please_rate}</span>
+                                        </dd>
+                                    </dl>
+                                    <dl class="ev-list">
+                                        <dt><em>*</em>{$lang.logistics_speed}</dt>
+                                        <dd>
+                                            <span class="commstar">
+                                                <a href="javascript:;" class="star1"></a>
+                                                <a href="javascript:;" class="star2"></a>
+                                                <a href="javascript:;" class="star3"></a>
+                                                <a href="javascript:;" class="star4"></a>
+                                                <a href="javascript:;" class="star5"></a>
+                                            </span>
+                                            <input type="hidden" name="delivery_rank" value="0">
+                                            <span class="degree-text" style="display: none;">{$lang.Like_ata}</span>
+                                            <span class="comt-error hide">{$lang.Please_rate}</span>
+                                        </dd>
+                                    </dl>
+                                    <dl class="ev-list">
+                                        <dt><em>*</em>{$lang.logistics_senders}</dt>
+                                        <dd>
+                                            <span class="commstar">
+                                                <a href="javascript:;" class="star1"></a>
+                                                <a href="javascript:;" class="star2"></a>
+                                                <a href="javascript:;" class="star3"></a>
+                                                <a href="javascript:;" class="star4"></a>
+                                                <a href="javascript:;" class="star5"></a>
+                                            </span>
+                                            <input type="hidden" name="sender_rank" value="0">
+                                            <span class="degree-text" style="display: none;">{$lang.Like_ata}</span>
+                                            <span class="comt-error hide">{$lang.Please_rate}</span>
+                                        </dd>
+                                    </dl>
+                                    <div class="op-btn"><a href="#none" class="btn-5 SatisfactionDegree" data-orderid="{$order_id}">{$lang.submit_goods}</a></div>
+                                </div>
+                            </div>
+                            {else}
+                            <h3 class="ftx02"><s class="icon-02"></s>{$lang.comments_think}</h3>
+                            {/if}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {/if}
+        </div>
+    </div>
+    <script>
+		$(".SatisfactionDegree").click(function(){
+			var rank = new Object;
+			
+			rank.order_id = $(this).data('orderid');
+			rank.desc_rank = $("#votelist").find("input[name=desc_rank]").val();
+			rank.service_rank = $("#votelist").find("input[name=service_rank]").val();
+			rank.delivery_rank = $("#votelist").find("input[name=delivery_rank]").val();
+			rank.sender_rank = $("#votelist").find("input[name=sender_rank]").val();
+			
+			if(rank.desc_rank == 0){
+				$("#votelist").find("input[name=desc_rank]").nextAll(".comt-error").show();
+				return false;
+			}else if(rank.desc_ran==0){
+				$("#votelist").find("input[name=desc_ran]").nextAll(".comt-error").show();
+				return false;
+			}else if(rank.service_rank==0){
+				$("#votelist").find("input[name=service_rank]").nextAll(".comt-error").show();
+				return false;
+			}else if(rank.delivery_rank==0){
+				$("#votelist").find("input[name=delivery_rank]").nextAll(".comt-error").show();
+				return false;
+			}else if(rank.sender_rank==0){
+				$("#votelist").find("input[name=sender_rank]").nextAll(".comt-error").show();
+				return false;
+			}else{
+				Ajax.call('comment.php?act=satisfaction_degree', 'rank=' + $.toJSON(rank), SatisfactionDegreeResponse, 'POST', 'JSON');
+			}
+		});
+		
+		function SatisfactionDegreeResponse(result)
+		{
+			if(result.error > 0){
+				alert(result.msg);return false;
+			}else{
+				var _html = '<h3 class="ftx02"><s class="icon-02"></s>'+comments_think+'</h3>';
+				$("#votelist").find(".service-rcol").html(_html);
+			}
+		}
+    </script>
+    <!-- {/if} -->
+    <!-- 已晒单评论、满意度界面 end-->
+    
+    <!-- {if $action eq 'take_list'} -->
+    <div class="user-right">
+        <div class="user-title"><h3>{$lang.take_list}</h3></div>
+        <div class="blank"></div>
+        <div class="user-main comment_lists">
+            <div class="sc_mycomments">
+                <table width="100%" class="sc-tb-void">
+                  <tr align="center">
+                    <th width="15%">{$lang.gift_gard_number}</th>
+                    <th width="35%">{$lang.gift_goods_name}</th>
+                    <th width="15%">{$lang.tpnd_time}</th>
+                    <th width="20%">{$lang.gift_address}</th>
+                    <th width="15%">{$lang.gift_status}</th>
+                  </tr>
+                  <!-- {if $take_list} -->
+                  <!--{foreach from=$take_list item=take}-->
+                  <tr>
+                    <td align="center">{$take.gift_sn}</td>
+                    <td align="left" style="padding:10px;"><a href="goods.php?id={$take.goods_id}">{$take.goods_name}</td>
+                    <td align="center">{$take.user_time}</td>
+                    <td align="left" style="padding:10px;">{$take.address}</td>
+                    <td align="center"><font {if $take.status eq 2}style="cursor:pointer;"{elseif $take.status eq 3}style="color:red;"{/if} class="ftx-04">{if $take.status eq 1}提货成功，等待发货{elseif $take.status eq 2}<a onclick="if (confirm('你确认已经收到货物了吗？'))location.href='user.php?act=confim_goods&take_id={$take.gift_gard_id}'" class="ftx-01">确认收货</a>{else}<font class="">完成</font>{/if}</font></td>
+                  </tr>
+                  <!--{/foreach}-->
+                    <!-- {else} -->
+                    <tr>
+                        <td colspan="5" align="center" class="td_bf">{$lang.null_gift_Prompt}</td>
+                    </tr>
+                    <!-- {/if} -->
+                  </table>
+                <div class="blank5"></div>
+               <!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+               <div class="blank5"></div>
+            </div>
+        </div>
+    </div>         
+    <!--{/if}-->
+   
+    <!-- {if $action eq 'complaint_list'} -->
+    <!--{/if}-->
+    
+    <!-- {if $action eq 'complaint_info'} -->
+    <!--{/if}-->
+    
+    <!-- {if $action eq 'complaint_apply'} --> 
+    <!--{/if}-->
+</div>
+<!-- #BeginLibraryItem "/library/page_footer_flow.lbi" --><!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/common_html.lbi" --><!-- #EndLibraryItem -->
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.purebox.js"></script>
+{insert_scripts files='jquery.form.js'}
+<script type="text/javascript">
+	//复制粘贴邀请链接
+	$("#clip_button").click(function(){
+		var val = $("#affTextarea").val();
+		
+		copyTextToClipboard(val);
+	});
+
+	$(document).on("change",".file_div .file",function(){
+		var val = $(this).val();
+		$(this).parents(".file_div").find(".txt").val(val);
+	});
+	$(".addFileImg").click(function(){
+		if($(".file_div").length<10){
+			var div = $(this).parents(".value").find(".file_div").eq(0).clone();
+			div.find(".txt").val("");
+			$(this).parents(".value").find(".file_div:last").after(div);
+		}else{
+			alert(json_languages.comment_img_number);
+		}
+	});
+
+    {if $sign eq 0}
+    $("input[name='comment_rank']").val(0);
+    {/if}
+	
+	$(".sumy-area .area").focus(function(){
+		$(this).removeClass("area01");
+		$(this).text("");
+	});
+
+	var textarea = $(".sumy-area .area").val();
+	$(".pingjia_form").click(function(){
+		var cmt = new Object;
+
+		var comment_id = $(this).data('commentid');
+		var content = $(this).parents(".form").find("textarea[name='content']").val();
+		var impression = $(this).parents(".form").find("input[name='impression']").val();
+		var comment_rank = $(this).parents(".form").find("input[name='comment_rank']").val();
+		var is_impression = $(this).parents(".form").find("input[name='is_impression']").val();
+		var captcha = $(this).parents(".form").find("input[name='captcha']").val();
+        var rec_id = $(this).parents(".form").find("input[name='rec_id']").val();
+		
+		cmt.comment_rank = (typeof(comment_rank) == "undefined") ? 0 : comment_rank ;
+		cmt.comment_id = (typeof(comment_id) == "undefined") ? 0 : comment_id ;
+		cmt.impression = (typeof(impression) == "undefined") ? '' : impression ;
+		cmt.content = (typeof(content) == "undefined") ? '' : content ;
+		cmt.captcha = (typeof(captcha) == "undefined") ? '' : captcha ;
+		cmt.order_id = $(this).parents(".form").find("input[name='order_id']").val();
+		cmt.goods_id = $(this).parents(".form").find("input[name='goods_id']").val();
+		cmt.rec_id = (typeof(rec_id) == "undefined") ? '' : rec_id ;
+		cmt.sign = $(this).parents(".form").find("input[name='sign']").val();
+		
+		var content_err = $(this).parents(".form").find(".content-err .comt-error");
+		var captcha_err = $(this).parents(".form").find(".captcha-err .comt-error");
+		if(cmt.comment_rank == 0 && cmt.sign == 0){
+			$(this).parents(".form").find(".scoreerror-err").show();
+			return false;
+		}else if(cmt.impression == '' && cmt.sign == 0 && is_impression == 1){
+			content_err.html(json_languages.Label_number_null);
+			$(this).parents(".form").find(".content-err").show();
+			return false;
+		}else if((cmt.content == '' || cmt.content.length > 500) && cmt.sign == 0){
+			
+			if(cmt.content == ''){
+				content_err.html(json_languages.content_not);
+			}else{
+				content_err.html(json_languages.word_number);
+			}
+			
+			$(this).parents(".form").find(".content-err").show();
+			return false;
+		}else if(cmt.captcha == '' && typeof(captcha) != "undefined"){
+			captcha_err.html(json_languages.null_captcha_login);
+			$(this).parents(".form").find(".captcha-err").show();
+			return false;
+		}else{    
+
+			Ajax.call('comment.php?act=comm_order_goods', 'cmt=' + $.toJSON(cmt), commentSignOneResponse, 'POST', 'JSON');
+		}
+	});
+
+	function commentSignOneResponse(result){
+		
+		var sign = '';
+		if(result.sign > 0){
+			sign = "&sign=" + result.sign;
+		}
+		
+		var hrefCont = "user.php?act=comment_list" + sign;
+		var comments_user_divId = "dialog_comments_user"; 
+		var foot = false;
+		var cBtn = false;
+		var ok_title = json_languages.button_unremove;
+		var pb_div = '';
+		var pb_div_class = 'warn-icon';
+		
+		if(result.error > 0){
+			var pb_div_class = 'warn-icon';
+			height = 58;
+		}else{
+			foot = true;
+			pb_div = '<div class="ftx-03">'+json_languages.comments_Other+'</div>';
+			var pb_div_class = 'warn-icon-ok';
+			height = 78;
+		}
+		
+		var content = '<div id="dialog_comments_user">' + 
+							'<div class="tip-box icon-box">' +
+								'<span class="' + pb_div_class + ' m-icon"></span>' + 
+								'<div class="item-fore">' +
+									'<h3 class="rem ftx-04">' + result.message + '</h3>' +
+									pb_div +
+								'</div>' +
+							'</div>' +
+						'</div>';
+			
+		pb({
+			id:comments_user_divId,
+			title:result.message_type,
+			width:455,
+			height:height,
+			content:content, 	//调取内容
+			ok_title:ok_title,
+			drag:false,
+			foot:foot,
+			cl_cBtn:cBtn,
+			onOk:function(){
+				location.href = hrefCont;
+			}
+		});
+		
+		if(result.error == 0){
+			$('#' + comments_user_divId + ' .pb-bd').css({
+				'paddind' : '0px'
+			});
+			
+			$('#' + comments_user_divId + ' .pb-ct .tip-box').css({
+				'width' : '360px',
+				'padding-top' : '12px',
+				'top' : '16px'
+			});
+			
+			$('#' + comments_user_divId + ' .pb-ct .item-fore h3').css({
+				'line-height' : '18px'
+			});
+			
+			$('#' + comments_user_divId + ' .pb-hd').addClass('hide');
+		}
+	}
+	function dis_comment(id)
+	{
+		var gid  = document.getElementById('com_' + id);
+		if(gid.style.display == "block")
+		{
+			gid.style.display = 'none';
+		}
+		else
+		{
+			gid.style.display = "block";
+		}
+	}
+	
+	$(function(){
+            //晒单点击
+            $(".user-bonus-temp").slide({titCell:".bonus-tabs li",mainCell:".bonus_content_list",trigger:"click"});
+            $(".comment_lists").slide({titCell:".tabs li",mainCell:".sc_mycomments",trigger:"click",titOnClassName:"curr"});
+            
+            $(".btn-comment").click(function(){
+                    var $this = $(this);
+                    var tr =$this.parents("tr");
+                    var comment = tr.find(".comment-box");
+                    var uploadBtn = comment.find(".upload-img-box");
+                    if(comment.is(":hidden")){
+                            comment.show();
+                            tr.siblings().find(".comment-box").hide();
+                            tr.siblings().find(".comment-box .myupload .upload-img-box").unwrap();
+                            //uploadBtn.wrap("<form class='myupload' action='comment.php?act=ajax_return_images' method='post' enctype='multipart/form-data'></form>");//晒单按钮
+                    }else{
+                            comment.hide();
+                            //uploadBtn.unwrap();
+                    }
+            });
+            /* 晒单上传图片 */
+            $('.SWFUpload_1111').click(function(){
+                $(this).next("input[name='SWFUpload']").click();
+            });
+
+            $("input[name='SWFUpload_1111']").change(function(){
+                    var upimgbox = $(this).parents(".upload-btn").prev();
+                    var imgbigbox = $(this).parents(".upload-img-box").find(".img-bigbox");
+                    var img_num = $(this).parents(".upload-img-box").find("em");
+                    $(".myupload").ajaxSubmit({	
+                            dataType:  'json',
+                            success: function(data){
+                                    if(data.error == 1){
+                                            alert(data.msg);
+                                    }else if(data.error == 2){
+                                            alert(data.msg);
+                                            location.href = "user.php";
+                                    }else{
+                                            upimgbox.html(data.content); //小图
+                                            imgbigbox.find("img").attr("src", data.currentImg_path);
+                                            imgbigbox.find("img").attr("data-imgId", data.currentImg_id);
+                                            imgbigbox.show(); //大图
+                                            img_num.html(data.imglist_count);
+                                    }
+                            }
+                    });
+
+            });
+            /*评价星级*/
+            $("#p_rate a").on("click",function(e){
+                    $(this).addClass("select").siblings().removeClass("select");
+                    var index = $(this).index()+1;
+                    $(this).parent().next().val(index);
+                    $(this).parent().nextAll(".scoreerror").hide();
+            })
+
+            /*标签选择*/
+            $(".tips-list input[type='checkbox']").click(function(){
+                    if($(this).prop("checked")==true){
+                            $(this).parent().addClass("selected");
+                    }else{
+                            $(this).parent().removeClass("selected");
+                    }
+            });
+
+            $(".tag-item a").click(function(){
+                    var $this = $(this),val='',recid='';
+                    if($this.hasClass("tag-txt-selected")){
+                            $this.removeClass("tag-txt-selected");
+                    }else{
+                            $this.addClass("tag-txt-selected");
+                    }	
+                    $this.parent().find(".tag-txt-selected").each(function(){
+                            var tag_val=$(this).data('val');
+                            var tag_recid=$this.data('recid');
+                            val +=tag_val+",";
+                            recid += tag_recid+",";
+                    });
+
+                    val = val.substring(0,val.length-1);
+                    recid = recid.substring(0,recid.length-1);
+
+                    $this.siblings("#impression").val(val); //隐藏input value值
+            });
+            //删除图片
+            $(".delete_commentImg").click(function(){
+                    var box = $(this).parents(".upload-img-box");
+                    var cur_imgId = $(this).prev().attr("data-imgid");
+                    var order_id = box.find("input[name=order_id]").val();
+                    var goods_id = box.find("input[name=goods_id]").val();
+
+                    if(cur_imgId == ""){
+                            alert(json_languages.parameter_error);return false;
+                    }
+                    Ajax.call('comment.php?act=del_pictures', 'cur_imgId=' + cur_imgId+'&order_id='+order_id+'&goods_id='+goods_id, delCommentImgResponse, 'POST', 'JSON');
+
+                    function delCommentImgResponse(data){
+                            box.find(".img-list-ul").html(data.content);
+                            box.find(".img-bigbox").hide();
+                    }
+            });
+	});
+        
+	//满意度星级
+	$("#votelist .commstar a").click(function(){
+		var arr = [Poor,Dissatisfaction,commonly,Satisfied,Very_Satisfied];
+		var index = $(this).index()+1;
+		var i = index-1;
+		var text = $(this).parents("dd").find(".degree-text");
+		
+		$(this).addClass("active").siblings().removeClass("active");
+		$(this).parent().next().val(index);
+		text.next().hide();
+		switch(index){
+			case 1:
+			text.show();
+			text.addClass("d1");
+			text.text(arr[i]);
+			break;
+			
+			case 2:
+			text.show();
+			text.addClass("d2");
+			text.text(arr[i]);
+			break;
+			
+			case 3:
+			text.show();
+			text.addClass("d3");
+			text.text(arr[i]);
+			break;
+			
+			case 4:
+			text.show();
+			text.addClass("d4");
+			text.text(arr[i]);
+			break;
+			
+			case 5:
+			text.show();
+			text.addClass("d5");
+			text.text(arr[i]);
+			break;
+		}
+	});
+</script>
+</body>
+</html>

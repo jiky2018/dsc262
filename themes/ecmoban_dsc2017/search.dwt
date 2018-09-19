@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<!-- #BeginLibraryItem "/library/js_languages_new.lbi" --><!-- #EndLibraryItem -->
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/css/suggest.css" />
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/css/select.css" />
+<link rel="stylesheet" type="text/css" href="../js/perfect-scrollbar/perfect-scrollbar.min.css" />
+</head>
+
+<body>
+	<!-- #BeginLibraryItem "/library/page_header_category.lbi" --><!-- #EndLibraryItem -->
+	<div class="w w1390">
+    	<div class="crumbs-nav">
+            <div class="crumbs-nav-main clearfix">
+                 <!-- #BeginLibraryItem "/library/ur_here.lbi" --><!-- #EndLibraryItem -->
+            </div>
+        </div>
+    </div>
+    <div class="container">
+    	<div class="w w1390">
+            <div class="selector">
+                <!-- #BeginLibraryItem "/library/category_screening.lbi" --><!-- #EndLibraryItem -->
+            </div>
+            <!-- #BeginLibraryItem "/library/goods_list.lbi" --><!-- #EndLibraryItem -->
+            
+            <div class="p-panel-main guess-love">
+            	<div class="ftit ftit-delr"><h3>{$lang.guess_love}</h3></div>
+                <div class="gl-list clearfix">
+                	<ul class="clearfix">
+                        <!--{foreach from=$guess_goods item=goods}-->
+                    	<li class="opacity_img">
+                        	<div class="p-img"><a href="{$goods.url}" target="_blank"><img src="{$goods.goods_thumb}" width="190" height="190"></a></div>
+                            <div class="p-price">
+                                {if $goods.promote_price neq ''}
+                                    {$goods.promote_price}
+                                {else}
+                                    {$goods.shop_price}
+                                {/if}
+                            </div>
+                            <div class="p-name"><a href="{$goods.url}" target="_blank" title="{$goods.goods_name|escape:html}">{$goods.goods_name|escape:html}</a></div>
+                        	<div class="p-num">{$lang.Sold}<em>{$goods.sales_volume}</em>{$lang.jian}</div>
+                        </li>
+                        <!--{/foreach}-->
+                    </ul>
+                </div>
+            </div>
+            
+            <input name="script_name" value="{$script_name}" type="hidden" />
+			<input name="cur_url" value="{$cur_url}" type="hidden" />
+        </div>
+    </div>
+    {* DSC 提醒您：动态载入user_menu_position.lbi，显示首页分类小广告 *}{insert name='user_menu_position'}
+    <!-- @authro guan start	添加对比文件 start -->	 
+	<!-- #BeginLibraryItem "/library/duibi.lbi" --><!-- #EndLibraryItem -->
+    <!-- @authro guan start	添加对比文件 end -->
+    <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+    
+    {insert_scripts files='jquery.SuperSlide.2.1.1.js,common.js,compare.js,cart_common.js,parabola.js,shopping_flow.js,cart_quick_links.js,jd_choose.js,perfect-scrollbar/perfect-scrollbar.min.js'}
+	<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/dsc-common.js"></script>
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.purebox.js"></script>
+	<!-- {if $category_load_type}--><script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/asyLoadfloor.js"></script><!--{/if}-->
+	<script type="text/javascript">
+	$(function(){
+		$(".gl-i-wrap").slide({mainCell:".sider ul",effect:"left",pnLoop:false,autoPlay:false,autoPage:true,prevCell:".sider-prev",nextCell:".sider-next",vis:5});
+		
+		//对比初始化
+		Compare.init();
+		
+		<!-- {if $category_load_type} 异步加载更多商品 by wu start-->
+		var query_string = '{$query_string}';
+		$.itemLoad('.gl-warp-large .goods-list-warp','.gl-item','.goods-spread',query_string,0);
+		<!-- {/if} 异步加载更多商品 by wu end-->
+		
+		$("*[ectype='fsortTab'] .item").on("click",function(){
+			var index = $(this).index();
+			<!-- {if $category_load_type} 需要开启异步加载-->
+			if(index == 1){
+				$.itemLoad('.gl-warp-samll .goods-list-warp','.gl-h-item','.goods-spread',query_string,1);
+			}
+			<!--{/if}-->
+		});
+	});
+    </script>
+</body>
+</html>

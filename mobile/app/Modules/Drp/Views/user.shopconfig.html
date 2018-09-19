@@ -1,0 +1,176 @@
+
+{include file="page_header"}
+<style>
+    body{background:#F6F6F9;}
+</style>
+	<form action="{url('drp/user/shop_config')}" method="post" enctype="multipart/form-data" onsubmit="return check()">
+			<div class=" user-open open-box of-hidden user-open-set">
+				<section class="padding-all b-color-f user-open-set-nimg">
+					<div class="text-all dis-box j-text-all">
+						<label>店铺名称：</label>
+						<div class="box-flex input-text">
+							<input class="j-input-text" name="shop_name"  value="{$info.shop_name}" placeholder="请输入您的店名" type="text"/>
+							<i class="iconfont icon-guanbi1 close-common j-is-null"></i>
+						</div>
+					</div>
+					<div class="text-all dis-box j-text-all">
+						<label>真实姓名：</label>
+						<div class="box-flex input-text">
+							<input class="j-input-text" type="text" name="real_name" placeholder="请输入您的真实姓名" value="{$info.real_name}" />
+							<i class="iconfont icon-guanbi1 close-common j-is-null"></i>
+						</div>
+					</div>
+					<div class="text-all dis-box j-text-all">
+						<label>手机号：</label>
+						<div class="box-flex input-text">
+							<input class="j-input-text" type="text" name="mobile"  placeholder="请输入您的手机号码" value="{$info.mobile}" />
+							<i class="iconfont icon-guanbi1 close-common j-is-null"></i>
+						</div>
+					</div>
+					<div class="text-all dis-box j-text-all">
+						<label>QQ：</label>
+						<div class="box-flex input-text">
+							<input class="j-input-text" type="text" name="qq"  placeholder="选填" value="{$info.qq}" />
+							<i class="iconfont icon-guanbi1 close-common j-is-null"></i>
+						</div>
+					</div>
+					<div class=" dis-box j-text-all shopconfig-cate j-shopconfig-cate">
+						<label>分销选择：</label>
+						<div class="box-flex input-text">
+							<div class="dis-box ">
+							  <li class="box-flex p-r my-shopconfig-list">
+								  <label class="dis-box {if $info.type == 0}active{/if}">
+										<i class="select-btn"></i>
+										<span class="box-flex">全部</span>
+										<input type="radio" name="type" value="0" {if $info.type == 0}checked{/if}>
+								  </label>
+							  </li>
+							  <li class="box-flex p-r my-shopconfig-list">
+								  <label class="dis-box {if $info.type == 1}active{/if}">
+									  <i class="select-btn"></i>
+									  <span class="box-flex">分类</span>
+									  <input type="radio" name="type" value="1" {if $info.type == 1}checked{/if}>
+								  </label>
+							  </li>
+							  <li class="box-flex p-r my-shopconfig-list">
+								  <label class="dis-box {if $info.type == 2}active{/if}">
+									  <i class="select-btn"></i>
+									  <span class="box-flex">商品</span>
+									  <input type="radio" name="type" value="2" {if $info.type == 2}checked{/if}>
+								  </label>
+
+							  </li>
+							</div>
+						</div>
+					</div>
+				</section>
+				<section class="padding-all m-top12 b-color-f">
+					<div class="dis-box text-all span-file" style="padding-top:0;">
+						<label>店铺图片</label><input  type="file" name="shop_img" onchange="previewImage(this)" >
+						<div class="f-04"><span class="t-jiantou">更换<i class="iconfont icon-jiantou tf-180"></i></span>
+						</div>
+						<div id="preview">
+						   <img id="imghead" width=100% height="auto" border=0 src='{$info.shop_img}'>
+						</div>
+					</div>
+				</section>
+				<section class="dis-box  padding-t">
+                      <button type="submit" class="btn-submit min-btn br-5 box-flex">确认修改</button>
+				</section>
+			</div>
+        </form>
+			<!--引用js-->
+
+		<script type="text/javascript">
+            $(function(){
+                  /*单选consignee*/
+                  $(".j-shopconfig-cate label").click(function () {
+                      $(this).addClass("active").parents(".my-shopconfig-list").siblings().find("label").removeClass("active");
+                  });
+            });
+            function previewImage(file)
+            {
+                var MAXWIDTH  = $("#preview").width();
+                var MAXHEIGHT = 180;
+                var div = document.getElementById('preview');
+                if (file.files && file.files[0]){
+                    div.innerHTML ='<img id=imghead height=auto width=100%>';
+                    var img = document.getElementById('imghead');
+                    img.onload = function(){
+                    var rect = clacImgZoomParam(MAXWIDTH, MAXHEIGHT, img.offsetWidth, img.offsetHeight);
+                    img.style.marginTop = rect.top+'px';
+                  }
+                  var reader = new FileReader();
+                  reader.onload = function(evt){img.src = evt.target.result;}
+                  reader.readAsDataURL(file.files[0]);
+                }
+                 else //ݦɝIE
+                {
+                    var sFilter='filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod=scale,src="';
+                    file.select();
+                    var src = document.selection.createRange().text;
+                    div.innerHTML = '<img id=imghead>';
+                    var img = document.getElementById('imghead');
+                    img.filters.item('DXImageTransform.Microsoft.AlphaImageLoader').src = src;
+                    var rect = clacImgZoomParam(MAXWIDTH, MAXHEIGHT, img.offsetWidth, img.offsetHeight);
+                    status =('rect:'+rect.top+','+rect.left+','+rect.width+','+rect.height);
+                    div.innerHTML = "<div id=divhead style='width:"+rect.width+"px;height:"+rect.height+"px;margin-top:"+rect.top+"px;"+sFilter+src+"\"'></div>";
+                }
+            }
+            function clacImgZoomParam( maxWidth, maxHeight, width, height ){
+                var param = {top:0, left:0, width:width, height:height};
+                if( width>maxWidth || height>maxHeight )
+                {
+                    rateWidth = width / maxWidth;
+                    rateHeight = height / maxHeight;
+
+                    if( rateWidth > rateHeight )
+                    {
+                        param.width =  maxWidth;
+                        param.height = Math.round(height / rateWidth);
+                    }else
+                    {
+                        param.width = Math.round(width / rateHeight);
+                        param.height = maxHeight;
+                    }
+                }
+
+                param.left = 0;
+                param.top = 0;
+                return param;
+            }
+        </script>
+        <script >
+            function check(){
+				var shop_name       =$("input[name=shop_name]").val();
+				var real_name       =$("input[name=real_name]").val();
+				var mobile          =$("input[name=mobile]").val();　　
+                var myreg = '/^1(3[0-9]|4[57]|5[0-35-9]|7[0135678]|8[0-9])\\d{8}$/';
+                if( shop_name==''){
+	           	　　d_messages('店铺名不能为空',2);
+				    $("div[name=shop_namediv]").addClass("active");
+				    return false;
+           　　 }
+                if( real_name==''){
+	           	　　d_messages('真实名不能为空',2);
+				    $("div[name=real_namediv]").addClass("active");
+				    return false;
+           　　 }
+                       　
+         　　　 if( mobile==''){
+	           	　  d_messages('请输入手机号',2);
+				    $("div[name=mobilediv]").addClass("active");
+				    return false;
+           　　 }else if(!myreg.test(mobile)){
+				    d_messages('请输入有效的手机号',2);
+				    $("div[name=mobilediv]").addClass("active");
+				    return false;
+		 　　　 }
+                       　
+
+		　　}
+
+		</script>
+	</body>
+
+</html>

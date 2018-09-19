@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+		<title>聊天室</title>
+        <link href="{$plugin_themes}/css/wechat_wall_common.css" rel="stylesheet" type="text/css" />
+        <link href="{$plugin_themes}/css/wechat_wall_user.css" rel="stylesheet" type="text/css" />
+        <link href="{$plugin_themes}/css/fonts/iconfont.css" rel="stylesheet" type="text/css" />
+        <script type="text/javascript">var ROOT_URL = '__ROOT__/';</script>
+        <script src="__PUBLIC__/vendor/common/jquery.min.js"></script>
+        <script src="__PUBLIC__/vendor/layer/layer.js"></script>
+        <script src="{$plugin_themes}/js/jquery.nicescroll.js"></script>
+        <script src="{$plugin_themes}/js/jquery.scrollTo.min.js"></script>
+        <script src="{$plugin_themes}/js/wechat_wall.js"></script>
+	</head>
+<body>
+<div class="user-con">
+    <!--header-->
+    <header>
+        <a href="javascript:history.go(-1);" class="fl">
+            <i class="iconfont">&#xe600;</i>
+        </a>
+        <h1>当前聊天（<span>{$user_num}</span>人）</h1>
+    </header>
+    <!--main-->
+    <div class="main chat-main">
+        <div class="user-chat">
+            {foreach $list as $val}
+            {if $val.id == $user.id}
+            <div class="chat-me">
+                <div class="fr chat-img">
+                    <img src="{$val.headimg}"/>
+                </div>
+                <div class="fr chat-content">
+                    <h2><span>{$val.nickname}</span></h2>
+                    <div class="chat-others-content">
+                        <div class="arrow"></div>
+                        {$val.content}
+                    </div>
+                </div>
+            </div>
+            {else}
+            <div class="chat-others">
+                <div class="fl chat-img">
+                    <img src="{$val.headimg}"/>
+                </div>
+                <div class="fl chat-content">
+                    <h2><span>{$val.nickname}</span></h2>
+                    <div class="chat-others-content">
+                        <div class="arrow"></div>
+                        {$val.content}
+                    </div>
+                </div>
+            </div>
+            {/if}
+            {/foreach}
+        </div>
+    </div>
+    <div class="user-chat-comment">
+        <form action="{url('market_show', array('type' => 'wall', 'function' => 'wall_msg_wechat'))}" method="post" class="msg-form">
+            <input type="hidden" name="wall_id" value="{$wall_id}">
+            <input type="hidden" name="user_id" value="{$user.id}">
+            <textarea name="content" rows="2" placeholder="请输入信息"></textarea>
+            <a href="javascript:;" class="fr send">发送</a>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        var ISWeixin = !!navigator.userAgent.match(/MicroMessenger/i); //wp手机无法判断
+        if(!ISWeixin){
+            var rd_url = location.href.split('#')[0];  // remove hash
+            var oauth_url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri='+encodeURIComponent(rd_url) + '&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect';
+            location.href = oauth_url;
+            return false;
+        }
+
+        $(".send").click(function(){
+            var data = $(".msg-form").serialize();
+            $.post("{url('market_show', array('type' => 'wall', 'function' => 'wall_msg_wechat'))}", data, function(result){
+                layer.msg(result.errMsg);
+                $("textarea[name=content]").val("");
+                return false;
+            }, 'json');
+            refresh();
+        });
+        refresh();
+    })
+    var start = '{$msg_count}';
+    var num = 5;
+    var user = '{$user.id}';
+    var wall_id = '{$wall_id}';
+
+    var interval_time = 8000; // 间隔时间
+    var is_data = false;
+    function refresh(){
+        $.get("{url('market_show', array('type' => 'wall', 'function' => 'get_wall_msg'))}", {start:start, num:num, wall_id:wall_id}, function(result){
+            if(result.code == 0 && result.data.length > 0){
+                var html = '', j = 0;
+                for(var i = result.data.length; i > 0; i--){
+                    if(result['data'][j]['id'] == user){
+                        html += '<div class="chat-me"><div class="fr chat-img"><img src="'+result['data'][j]['headimg']+'"/></div><div class="fr chat-content"><h2><span>'+result['data'][j]['nickname']+'</span></h2><div class="chat-others-content"><div class="arrow"></div>'+result['data'][j]['content']+'</div></div></div>';
+                    }
+                    else{
+                        html += '<div class="chat-others"><div class="fl chat-img"><img src="'+result['data'][j]['headimg']+'"/></div><div class="fl chat-content"><h2><span>'+result['data'][j]['nickname']+'</span></h2><div class="chat-others-content"><div class="arrow"></div>'+result['data'][j]['content']+'</div></div></div>';
+                    }
+                    j++;
+                }
+                if(html){
+                    $(".user-chat").append(html);
+                }
+                start = parseInt(start) + parseInt(result.data.length);
+                is_data = true;
+            } else if(result.code == 2) {
+                is_data = false;
+            }
+        }, 'json');
+
+        interval_time = (is_data == true) ? 2000 : interval_time ; // 如果有数据缩短间隔时间
+        setTimeout("refresh()", interval_time);
+
+    }
+</script>
+</body>
+</html>

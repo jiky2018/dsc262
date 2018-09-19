@@ -1,0 +1,491 @@
+{include file="admin_pageheader"}
+
+<div class="wrapper">
+  <div class="title">名片二维码设置</div>
+  <div class="content_tips">
+    <div class="tabs_info">
+      <ul>
+        <li>
+          <a href="{url('config')}">基本设置</a>
+        </li>
+        <li>
+          <a href="{url('drp_set_config')}">比例设置</a>
+        </li>
+        <li class="curr">
+          <a href="{url('drp_set_qrcode')}">名片二维码设置</a>
+        </li>
+      </ul>
+    </div>
+    <div class="explanation" id="explanation">
+      <div class="ex_tit"><i class="sc_icon"></i>
+        <h4>操作提示</h4><span id="explanationZoom" title="收起提示"></span></div>
+      <ul>
+        <li>先上传背景图片或选择已有背景图片，再拖动中间二维码的位置，确定合适位置后点击保存。</li>
+        <li>背景图片，推荐大小 640(宽) * 1136(高)、单位（像素px），支持类型 jpg、 png。</li>
+        <li>文字内容，支持自定义颜色。</li>
+      </ul>
+    </div>
+    <div class="flexilist">
+      <div class="main-info">
+        <form action="{url('drp_set_qrcode')}" method="post" class="form-horizontal" enctype="multipart/form-data" id="picForm" onsubmit="return false;" >
+          <div class="switch_info">
+            <ul class="advocacy-warp">
+              <li class="left">
+                <div class="bg-iphone"><img src="{elixir('img/iphone.jpg')}" class="bg-img"></div>
+                <div class="advocacy-cont">
+                  <!-- 头像与文字 -->
+                  <div class="avater_text-box">
+                    <div class="avater_text" id="avater_text" style="left:{$info.av_position.left}px; top:{$info.av_position.top}px;">
+                      <div class="avater {if $info.avatar == 0}hidden{/if}" id="avater_text-cont">
+                        <img src="{elixir('img/get_avatar.png')}" />
+                      </div>
+                      <div class="text-desc" style="color:{$info.text.color}">{$show_text_desc}</div>
+                    </div>
+                  </div>
+                  <!--bg-->
+                  <div class="advocacy-bg tabcon">
+                  <!--切换背景-->
+                    <ul>
+                      <li class="on">
+                        <img src="{$info.backbround}" id="bg-img" />
+                      </li>
+                    </ul>
+                  </div>
+                  <!--二维码-->
+                  <div class="qr_code-box">
+                    <div class="qr_code" id="qr_code" style="left:{$info.qr_position.left}px; top:{$info.qr_position.top}px;">
+                      <div id="qr_code-cont">
+                        <img src="{elixir('img/ewm_296.png')}" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li class="right">
+                <div class="right-cont">
+                  <h4>选择背景图片：</h4>
+                  <div class="tabnav picScroll" >
+                    <div class="bd">
+                    <ul>
+                      {foreach $imglist as $val}
+                      <li {if $val == $info.backbround} class="on"{/if}>
+                          <img src="{$val}?v={$time}" />
+                          <div class="determine-icon"><img src="{elixir('img/determine-icon.png')}" /></div>
+                          <div class="determine-cont">
+                            <span>预览</span><label>当前选中</label>
+                          </div>
+                      </li>
+                      {/foreach}
+                    </ul>
+                    </div>
+                    <a href="javascript:void(0);" class="prev"></a>
+                    <a href="javascript:void(0);" class="next"></a>
+                  </div>
+
+                  <div class="item">
+                    <h4>用户头像：</h4>
+                      <div class="checkbox_items">
+                          <div class="checkbox_item ">
+                              <input type="radio" class="clicktype" name="data[avatar]" id="value_0"value="1" {if $info.avatar == 1}checked{/if}>
+                              <label for="value_0" class=" {if $info.avatar == 1}active{/if}">显示</label>
+                          </div>
+                          <div class="checkbox_item">
+                              <input type="radio" class="clicktype" name="data[avatar]" id="value_1" value="0" {if $info.avatar == 0}checked{/if} >
+                              <label for="value_1" class=" {if $info.avatar == 0}active{/if}">隐藏</label>
+                          </div>
+                      </div>
+                  </div>
+
+                  <div class="item">
+                      <h4>文字内容：</h4>
+                      <div class="">
+                          <textarea name="data[description]" class="textarea" rows="3" style="height:auto; color:{$info.text.color}" placeholder="按格式输入文字内容，不输入默认显示昵称">{$info.text.description}</textarea>
+                          <!-- 选择颜色 -->
+                          <div id="font_color" class="font_color mr10">
+                              <input type='text' id="full" value="{$info.text.color}" style="display: none;" />
+                          </div>
+                          <input type="hidden" id="text_color" name="data[color]" value="{$info.text.color}">
+                          <div class="notic" style="height:auto;">格式：变量名 请使用<code>[$nickname]</code>,保持原样不要修改，换行使用"回车键"，其他文字可以任意修改。但不要超过100个字符。
+                          <p>例如：我是 [$nickname] 快来参与分享二维码 和我一起成为分销商吧！</p> </div>
+                      </div>
+                  </div>
+
+                  <div class="item">
+                      <h4>上传背景图片：</h4>
+                      <div class="custom-bg">
+                        <div class="type-file-box">
+                          <div class="preview-img"></div>
+                          <a href="javascript:;" class="type-file-button updata_pic" style="margin-right:20px;">
+                            <img src="{elixir('img/custom-bg.png')}" />
+                          </a>
+                          <input type="file" name="pic" style="display: none;" />
+                          <input type="text" name="file_path" value="{$info.backbround}" style="display:none">
+                        </div>
+                      </div>
+                  </div>
+                  <div class="label_value info_btn">
+                      <input type="hidden" name="data[av_left]" value="{$info.av_position.left}">
+                      <input type="hidden" name="data[av_top]" value="{$info.av_position.top}">
+                      <input type="hidden" name="data[qr_left]" value="{$info.qr_position.left}">
+                      <input type="hidden" name="data[qr_top]" value="{$info.qr_position.top}">
+                      <input type="submit" name="submit" class="button btn-danger bg-red" value="保存" />
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+$(function(){
+    // 背景图滚动
+    $(".picScroll").slide({mainCell:"ul",effect:"leftLoop",interTime:5000,delayTime:500,vis:5,scroll:1,trigger:"click"});
+
+    // 上传图片
+    $(".updata_pic").click(function(){
+        $("input[name=pic]").click();
+    });
+    // 上传图片预览
+    $("input[name=pic]").change(function(event) {
+        // 根据这个 <input> 获取文件的 HTML5 js 对象
+        var files = event.target.files, file;
+        if (files && files.length > 0) {
+          // 获取目前上传的文件
+          file = files[0];
+
+          // 那么我们可以做一下诸如文件大小校验的动作
+          if(file.size > 1024 * 1024 * 5) {
+            alert('图片大小不能超过 5MB!');
+            return false;
+          }
+
+          // 预览图片
+          var reader = new FileReader();
+          // 将文件以Data URL形式进行读入页面
+          reader.readAsDataURL(file);
+          reader.onload = function(e){
+              // console.log(this.result);
+              $('.preview-img').html('<img src="'+this.result+'" />');
+          };
+        }
+    });
+
+    // 切换显示头像
+    $(".clicktype").click(function(){
+      // var val = $(this).find("input[type=radio]").val();
+      var val = $(this).val();
+      if('1' == val && $(".avater").hasClass("hidden")){
+        $(".avater").show().removeClass("hidden");
+      }
+      if('0' == val && !$(".avater").hasClass("hidden")){
+        $(".avater").hide().addClass("hidden");
+      }
+    });
+
+    // 文字颜色设置
+    $("#font_color input").spectrum({
+      showInitial: true,
+      showPalette: true,
+      showSelectionPalette: true,
+      showInput: true,
+      showSelectionPalette: true,
+      maxPaletteSize: 10,
+      preferredFormat: "hex",
+      palette: [
+        ["rgb(0, 0, 0)", "rgb(67, 67, 67)", "rgb(102, 102, 102)",
+        "rgb(204, 204, 204)", "rgb(217, 217, 217)","rgb(255, 255, 255)"],
+        ["rgb(152, 0, 0)", "rgb(255, 0, 0)", "rgb(255, 153, 0)", "rgb(255, 255, 0)", "rgb(0, 255, 0)",
+        "rgb(0, 255, 255)", "rgb(74, 134, 232)", "rgb(0, 0, 255)", "rgb(153, 0, 255)", "rgb(255, 0, 255)"],
+        ["rgb(230, 184, 175)", "rgb(244, 204, 204)", "rgb(252, 229, 205)", "rgb(255, 242, 204)", "rgb(217, 234, 211)",
+        "rgb(208, 224, 227)", "rgb(201, 218, 248)", "rgb(207, 226, 243)", "rgb(217, 210, 233)", "rgb(234, 209, 220)",
+        "rgb(221, 126, 107)", "rgb(234, 153, 153)", "rgb(249, 203, 156)", "rgb(255, 229, 153)", "rgb(182, 215, 168)",
+        "rgb(162, 196, 201)", "rgb(164, 194, 244)", "rgb(159, 197, 232)", "rgb(180, 167, 214)", "rgb(213, 166, 189)",
+        "rgb(204, 65, 37)", "rgb(224, 102, 102)", "rgb(246, 178, 107)", "rgb(255, 217, 102)", "rgb(147, 196, 125)",
+        "rgb(118, 165, 175)", "rgb(109, 158, 235)", "rgb(111, 168, 220)", "rgb(142, 124, 195)", "rgb(194, 123, 160)",
+        "rgb(166, 28, 0)", "rgb(204, 0, 0)", "rgb(230, 145, 56)", "rgb(241, 194, 50)", "rgb(106, 168, 79)",
+        "rgb(69, 129, 142)", "rgb(60, 120, 216)", "rgb(61, 133, 198)", "rgb(103, 78, 167)", "rgb(166, 77, 121)",
+        "rgb(91, 15, 0)", "rgb(102, 0, 0)", "rgb(120, 63, 4)", "rgb(127, 96, 0)", "rgb(39, 78, 19)",
+        "rgb(12, 52, 61)", "rgb(28, 69, 135)", "rgb(7, 55, 99)", "rgb(32, 18, 77)", "rgb(76, 17, 48)"]
+      ]
+    });
+    $('.sp-choose').click(function(){
+      var sp_color = $('.sp-input').val();
+      $('.textarea').css("color",sp_color);
+      $('input[name="data[color]"]').val(sp_color);
+      // 预览
+      $('.text-desc').css("color",sp_color);
+    });
+
+
+    // 背景切换选择
+    tab();
+
+    function tab()
+    {
+      $('.advocacy-warp .right .tabnav ul li').on('click',function(){
+         var index = $(this).index();
+         $(this).addClass('on').siblings().removeClass('on');
+         $(".advocacy-warp .left .tabcon ul li").eq(index).addClass('on').siblings().removeClass('on');
+
+         // 获得选中背景图 src
+         var img  = $(this).attr("class","on").children("img").attr("src");
+         // 保存选中背景图
+         $("input[name='file_path']").val(img);
+         // 预览选中背景图
+         $('.advocacy-bg ul li').attr("class","on").children("img").attr("src", img);
+      });
+    }
+
+    // 提交
+    $(".form-horizontal").submit(function(){
+        var form = document.getElementById("picForm");
+        var ajax_data = new FormData(form);
+
+        var img_src = $('.preview-img').children("img").attr("src");
+        if(img_src){
+            imgNatural = getImgNaturalStyle(img_src);
+            if(imgNatural[0] < 640 && imgNatural[1] < 1136){
+                layer.msg('图片宽度、高度不能小于640*1136px');
+                return false;
+            }
+        }
+
+        var zip_pic = zipImage(img_src);
+        if(zip_pic){
+            // 合并压缩文件file
+            ajax_data.append('zip_pic', zip_pic);
+        }
+
+        $.ajax({
+             url: "{url('drp_set_qrcode')}",
+             type: "POST",
+             data: ajax_data,
+             processData: false,  // 告诉jQuery不要去处理发送的数据
+             contentType: false,   // 告诉jQuery不要去设置Content-Type请求头
+             success: function(response){
+                var json = $.parseJSON(response);
+                layer.msg(json.msg);
+                if(json.error == 0){
+                    window.location.href = "{url('drp_set_qrcode')}";
+                }
+                return false;
+             }
+        });
+        return false;
+    });
+
+    function getImgNaturalStyle(img_src) {
+        var img = new Image();
+        img.src = img_src;
+        return [img.naturalWidth, img.naturalHeight];
+    }
+
+    /**
+     * 压缩图片函数
+     * @param  file 图片路径
+     * @param  只对 base64位图片进行压缩
+     * @return bool
+     */
+    function zipImage(file){
+        if(file) {
+            var hasScale, fileIsBase64 = /^data:/.test(file);
+            if(!fileIsBase64){
+                return false;
+            }
+            // 1. 创建一个图片和一个canvas对象
+            var image = new Image(), canvas = document.createElement("canvas"),ctx = canvas.getContext('2d');
+            image.src = file;
+
+            var maxWidth = '1024'; // 小于1024 不压缩
+            if(image.complete){
+                var w = image.naturalWidth, h = image.naturalHeight;
+                hasScale = maxWidth && w > maxWidth;
+                if(!hasScale){
+                    return false;
+                }
+                canvas.width = w;
+                canvas.height = h;
+                ctx.drawImage(image, 0, 0, w, h, 0, 0, w, h);
+            }else{
+               image.onload = function(){
+                  var w = image.naturalWidth, h = image.naturalHeight;
+                  canvas.width = w;
+                  canvas.height = h;
+                  ctx.drawImage(image, 0, 0, w, h, 0, 0, w, h);
+               };
+            };
+
+            var dataURI = canvas.toDataURL("image/jpeg", 0.7); // quality : 0.7 图片压缩质量，取值 0 - 1 数值越大 越清晰
+
+            var byteString;
+            if (dataURI.split(',')[0].indexOf('base64') >= 0){
+                byteString = atob(dataURI.split(',')[1]);
+            }else{
+                byteString = unescape(dataURI.split(',')[1]);
+            }
+            // write the bytes of the string to a typed array
+            var ia = new Uint8Array(byteString.length);
+            for (var i = 0; i < byteString.length; i++) {
+                ia[i] = byteString.charCodeAt(i);
+            }
+            // separate out the mime component
+            var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+            return new Blob([ia], {type: mimeString});
+        }else{
+            return false;
+        }
+    }
+
+});
+
+</script>
+
+<script type="text/javascript">
+  /**
+   * 纯js实现多div拖拽
+   * @param bar, 拖拽触柄
+   * @param target, 可拖动窗口
+   * @param inWindow, 为true时只能在屏幕范围内拖拽
+   * @param BG, 为指定范围内拖拽 例如是一张背景图片
+   * @param callback, 拖拽时执行的回调函数。包含两个参数，target的left和top
+   * @returns {*}
+   * @private
+   */
+  var startDrag = function(bar, target, inWindow, BG, callback) {
+     (function(bar, target, inWindow, BG, callback) {
+         var D = document,
+             DB = document.body,
+             params = {
+                 left: 0,
+                 top: 0,
+                 currentX: 0,
+                 currentY: 0
+             };
+         if(typeof bar == "string") {
+             bar = D.getElementById(bar);
+         }
+         if(typeof target == "string") {
+             target = D.getElementById(target);
+         }
+         bar.style.cursor = "move";
+         bindHandler(bar, "mousedown", function(e) {
+              if (e.preventDefault) {
+                  e.preventDefault();
+              }else {
+                  e.returnValue = false;
+              }
+
+             params.left = target.offsetLeft;
+             params.top = target.offsetTop;
+             if(!e){
+                 e = window.event;
+                 bar.onselectstart = function(){
+                     return false;
+                 }
+             }
+             params.currentX = e.clientX;
+             params.currentY = e.clientY;
+
+             var stopDrag = function() {
+                 removeHandler(DB, "mousemove", beginDrag);
+                 removeHandler(DB, "mouseup", stopDrag);
+             }, beginDrag = function(e) {
+                 var evt = e ? e: window.event,
+                     nowX = evt.clientX, nowY = evt.clientY,
+                     disX = nowX - params.currentX, disY = nowY - params.currentY,
+                     left = parseInt(params.left) + disX,
+                     top = parseInt(params.top) + disY;
+
+                 if(inWindow) {
+                      // 限制拖动范围 不能超出背景图的最大宽度与最大高度
+                     var maxTop = BG.offsetHeight - target.offsetHeight,
+                         maxLeft = BG.offsetWidth - target.offsetWidth;
+                     if(top < 0) { top = 0; return false;}
+                     if(top > maxTop) {top = maxTop;return false;}
+                     if(left < 0) {left = 0;return false;}
+                     if(left > maxLeft) {left = maxLeft;return false;}
+                 }
+                 target.style.left = left + "px";
+                 target.style.top = top + "px";
+
+                 if (typeof callback == "function") {
+                     callback(left, top);
+                 }
+             };
+
+             bindHandler(DB, "mouseup", stopDrag);
+             bindHandler(DB, "mousemove", beginDrag);
+         });
+
+         function bindHandler(elem, type, handler) {
+             if (window.addEventListener) {
+                 //false表示在冒泡阶段调用事件处理程序
+                 elem.addEventListener(type, handler, false);
+             } else if (window.attachEvent) {
+                 // IE浏览器
+                 elem.attachEvent("on" + type, handler);
+             }
+         }
+
+         function removeHandler(elem, type, handler) {
+             // 标准浏览器
+             if (window.removeEventListener) {
+                 elem.removeEventListener(type, handler, false);
+             } else if (window.detachEvent) {
+                 // IE浏览器
+                 elem.detachEvent("on" + type, handler);
+             }
+         }
+
+     })(bar, target, inWindow, BG, callback);
+  };
+
+  // 背景图
+  var BG = document.getElementById('bg-img');
+
+  // 头像与文字框
+  var aBox = document.getElementById("avater_text");
+  var aBar = document.getElementById("avater_text-cont");
+  var avater_position = startDrag(aBar, aBox, true, BG, function(left, top){
+        $("input[name='data[av_left]']").val(left);
+        $("input[name='data[av_top]']").val(top);
+  });
+
+  // 二维码框
+  var qBox = document.getElementById("qr_code");
+  var qBar = document.getElementById("qr_code-cont");
+  var qr_position = startDrag(qBar, qBox, true, BG, function(left, top){
+        $("input[name='data[qr_left]']").val(left);
+        $("input[name='data[qr_top]']").val(top);
+  });
+</script>
+
+<script type="text/javascript">
+// 操作提示
+$("#explanationZoom").on("click",function(){
+    var explanation = $(this).parents(".explanation");
+    var width = $(".content_tips").width();
+    if($(this).hasClass("shopUp")){
+        $(this).removeClass("shopUp");
+        $(this).attr("title","收起提示");
+        explanation.find(".ex_tit").css("margin-bottom",10);
+        explanation.animate({
+            width:width-20
+        },300,function(){
+            $(".explanation").find("ul").show();
+        });
+    }else{
+        $(this).addClass("shopUp");
+        $(this).attr("title","提示相关设置操作时应注意的要点");
+        explanation.find(".ex_tit").css("margin-bottom",0);
+        explanation.animate({
+            width:"118"
+        },300);
+        explanation.find("ul").hide();
+    }
+});
+</script>
+{include file="admin/footer"}

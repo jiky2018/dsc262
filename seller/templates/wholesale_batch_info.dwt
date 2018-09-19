@@ -1,0 +1,208 @@
+<!DOCTYPE html PUBLIC "-
+<html xmlns="http:
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="ecsc-form-goods">
+                    <form method="post" action="wholesale.php" name="theForm" enctype="multipart/form-data" onSubmit="return validate()">
+                        <div class="step_content">
+                            <div id="user_name_bonus">
+                                <div class="goods_search_div">
+                                    <div class="search_select">
+                                        <div class="categorySelect">
+                                            <div class="selection">
+                                                <input type="text" name="category_name" id="category_name" class="text w250 valid" value="请选择分类" autocomplete="off" readonly data-filter="cat_name" />
+                                                <input type="hidden" name="category_id" id="category_id" value="0" data-filter="cat_id" />
+                                            </div>
+                                            <div class="select-container" style="display:none;">
+                                                {include file="library/filter_category.lbi"}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="search_select">
+                                        <div class="brandSelect">
+                                            <div class="selection">
+                                                <input type="text" name="brand_name" id="brand_name" class="text w120 valid" value="请选择品牌" autocomplete="off" readonly data-filter="brand_name" />
+                                                <input type="hidden" name="brand_id" id="brand_id" value="0" data-filter="brand_id" />
+                                            </div>
+                                            <div class="brand-select-container" style="display:none;">
+                                                {include file="library/filter_brand.lbi"}
+                                            </div>
+                                        </div>                            
+                                    </div>
+                                    <input type="hidden" id="ru_id" name="ru_id" value="{$ru_id}" />
+                                    <input type="text" name="keyword" id="keyword" class="text text_2 mr10" placeholder="请输入关键字" autocomplete="off" data-filter="keyword" autocomplete="off" />
+                                    <a href="javascript:void(0);" class="sc-btn sc-blueBg-btn" onclick="searchGoods()">搜索</a>
+                                </div>
+                                <div class="clear"></div>
+                                <div class="move_div mt0">
+                                    <div class="move_left">
+                                        <h4>&nbsp;</h4>
+                                        <div class="move_info">
+                                            <div class="move_list" id="source_select">
+                                                <ul>
+                                                </ul>	
+                                            </div>
+                                        </div>
+                                        <div class="move_handle">
+                                            <a href="javascript:void(0);" class="sc-btn btn25 moveAll" ectype="moveAll">全选</a>
+                                            <a href="javascript:void(0);" onclick="addGoods()" class="sc-btn btn25 sc-blueBg-btn">确定</a>
+                                        </div>
+                                    </div>
+                                    <div class="move_middle" onclick="addGoods()">
+                                        <div class="move_point"></div>
+                                    </div>
+                                    <div class="move_right">
+                                        <h4>&nbsp;</h4>
+                                        <div class="move_info">
+                                            <div class="move_list" id="target_select" >
+                                                <ul>
+                                                </ul>											
+                                            </div>
+                                        </div>
+                                        <div class="move_handle">
+                                            <a href="javascript:void(0);" class="sc-btn btn25 moveAll" ectype="moveAll">全选</a>
+                                            <a href="javascript:void(0);" onclick="delGoods()" class="sc-btn btn25 sc-blueBg-btn">移除</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="fl bf100 mt20">
+                                <div class="checkbox_items">
+                                    <div class="checkbox_items lh">
+                                    <span class="fl lh w100 tr">{$lang.require_field}&nbsp;{$lang.label_rank_name}</span>
+                                    {foreach from=$user_rank_list item=rank} 
+                                    <div class="checkbox_item"> 
+                                        <input name="rank_id[]" type="checkbox" class="ui-checkbox" id="rank_id_{$rank.rank_id}" value="{$rank.rank_id}" {if $rank.checked}checked="checked"{/if} />
+                                        <label for="rank_id_{$rank.rank_id}" class="ui-label">{$rank.rank_name}</label>
+                                    </div>
+                                    {/foreach}
+                                    </div>
+                                </div>
+                                <div class="clear"></div>
+                                <div class="checkbox_items lh">
+                                    <span class="fl lh w100 tr">{$lang.label_enabled}</span>
+                                    <div class="checkbox_item"> 
+                                        <input name="enabled" type="radio" class="ui-radio" value="0" id="enabled_0"{if $wholesale.enabled eq 0||$snatch.is_hot eq ''}checked="checked"{/if} />
+                                        <label for="enabled_0" class="ui-radio-label">否</label>
+                                    </div>
+                                    <div class="checkbox_item"> 
+                                        <input name="enabled" type="radio" class="ui-radio" value="1" id="enabled_1" {if $wholesale.enabled}checked="checked"{/if} />
+                                        <label for="enabled_1" class="ui-radio-label">是</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clear"></div>
+                            <div class="button-bottom">
+                                <div class="button_info">
+                                    <input type="submit" class="sc-btn sc-blueBg-btn btn35" value="{$lang.button_submit}" />
+                                    <input type="reset" class="sc-btn btn35 sc-blue-btn" value="{$lang.button_reset}" />
+                                    <input type="hidden" name="act" value="{$form_action}" />
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script>
+
+	$(".move_list").perfectScrollbar();
+	$(".brand-list").perfectScrollbar();
+
+function validate()
+{ 
+    var i = 0;
+    var k = 0;
+    $("#target_select").find("li").each(function(){
+        var goods = $(this).find("input[name='goods_ids[]']").val();
+        if(goods > 0){
+            i++;
+        }
+    });
+    if(i == 0){
+        alert("请先搜索商品");
+        return false;
+    }
+    $("input[name='rank_id[]']").each(function(){
+        if($(this).is(":checked")){
+            k++;
+        }
+    })
+    if(k == 0){
+        alert("请选择适用会员等级");
+        return false;
+    }
+  
+  return true;
+}
+
+function copy_search_result()
+{
+    
+}
+
+function searchGoods(){
+	
+	var filters   = new Object;
+	filters.cat_id = $("#category_id").val();
+	filters.brand_id = $("#brand_id").val();
+	filters.keyword = $("#keyword").val();
+	filters.ru_id = $("#ru_id").val();
+	
+	$("#source_select").find("ul").html("<i class='icon-spinner icon-spin'></i>");
+	
+	setTimeout(function(){Ajax.call('wholesale.php?is_ajax=1&act=search_goods', filters, searchGoodsResponse, 'GET', 'JSON');},300)
+
+}
+function searchGoodsResponse(result){
+
+$("#source_select").find("li,i").remove();
+
+var goods = result.content;
+	if (goods)
+	{
+	  for (i = 0; i < goods.length; i++)
+	  {
+		$("#source_select").children("ul").append("<li><i class='sc_icon sc_icon_ok'></i><a href='javascript:;' data-value='"+goods[i].goods_id+"' class='ftx-01'>"+goods[i].goods_name+"</a><input type='hidden' name='user_search[]' value='"+goods[i].goods_id+"'></li>")
+	  }
+	}		
+}
+
+function addGoods()
+{
+$("#source_select").find("li").each(function(){
+		var value = $(this).find("a").data("value");
+		var length = $("#target_select").find("li a[data-value="+value+"]").length;
+		if($(this).attr("class") == 'current' && length == 0){
+		  var user = $(this).text();
+		  var user_id = $(this).find("input").val();
+		  $("#target_select").children("ul").append("<li><i class='sc_icon sc_icon_no'></i><a href='javascript:void(0);' data-value='"+user_id+"'>"+user+"</a><input type='hidden' name='goods_ids[]' value='"+user_id+"'></li>")		  
+	  }
+  })	
+}
+
+function delGoods()
+{
+  $("#target_select").find("li").each(function(){
+	  if($(this).attr("class") == 'current'){
+		  $(this).remove();
+		}
+	})
+}
+
+{/literal}
+</script>
+</body>
+</html>

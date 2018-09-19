@@ -1,0 +1,95 @@
+{if $attribute_list.attr}
+<div class="step_item_row step_item_attr_row">
+    <div class="step_item_left">
+        <h5>商品属性：</h5>
+    </div>
+    <div class="step_item_right">
+        {foreach from=$attribute_list.attr item=val key=key}
+        <div class="item_right_li goods_attr_type">
+            <div class="label" title="{$val.attr_name}">{$val.attr_name}：</div>
+            <div class="value">
+                {if $val.attr_input_type eq 1}
+                    <div class="imitate_select select_w140" id="blur_attr_list">
+                      <div class="cite">{if $val.this_value}{$val.this_value}{else}{$lang.select_please}{/if}</div>
+                      <ul>
+                         <li><a href="javascript:;" data-value="" class="ftx-01">{$lang.select_please}</a></li>
+                         {foreach from=$val.attr_values  item=attr_values}
+                         <li><a href="javascript:;" data-value="{$attr_values}" class="ftx-01">{$attr_values}</a></li>
+                         {/foreach}
+                      </ul>
+                      <input name="attr_value_list[]" type="hidden" value="{$val.this_value}" id="blur_attr_list_val">
+                    </div>
+                {else}
+                    <input type="text" name="attr_value_list[]" class="text" value="{$val.this_value}" autocomplete="off" onblur="insert_attr_input_val(this)"/>
+                {/if}
+                <input type="hidden" name="attr_price_list[]" value="{$val.attr_price}">
+                <input type="hidden" name="attr_id_list[]" value="{$val.attr_id}">
+                <input type="hidden" name="goods_attr_id_list[]" value="{$val.goods_attr_id}">
+            </div>
+        </div>
+        {/foreach}
+    </div>
+</div>
+{/if}
+
+{if $attribute_list.spec}
+<div class="step_item_row step_item_spec_row">
+    <div class="step_item_left">
+        <h5>商品规格：</h5>
+    </div>
+    <div class="step_item_right">
+        {foreach from=$attribute_list.spec item=val key=key}
+        <div class="item_right_li">
+            <div class="label">{$val.attr_name}：</div>
+            <div class="value">
+                <div class="checkbox_items attr_input_type_{$val.attr_id}">
+                    {foreach from=$val.attr_values_arr item=v key=k}
+                    <div class="checkbox_item">
+                        <input type="checkbox" data-type="attr_id" name="attr_id_list1[]" class="ui-checkbox" {if $v.is_selected}checked{/if} value="{$val.attr_id}">
+                        {if $v.goods_attr_id}
+                        <input type="checkbox" data-type="attr_value" name="attr_value_list1[]" class="ui-checkbox" {if $v.is_selected}checked{/if} value="{$v.attr_value}" id="goods_attr_checkbox{$v.goods_attr_id}"/>
+                        <label for="goods_attr_checkbox{$v.goods_attr_id}" class="ui-label">{$v.attr_value}</label>
+                        {else}
+                        <input type="checkbox" data-type="attr_value" name="attr_value_list1[]" class="ui-checkbox" {if $v.is_selected}checked{/if} value="{$v.attr_value}" id="goods_attr_checkbox{$key}{$k}"/>
+                        <label for="goods_attr_checkbox{$key}{$k}" class="ui-label">{$v.attr_value}</label>
+                        {/if}
+						{if $cloud_count eq 0}
+                        <i class="iconfont icon-cha" data-goodsid="{$goods_id|default:0}" data-attrid="{$val.attr_id}" data-goodsattrid="{$v.goods_attr_id|default:0}" data-attrvalue="{$v.attr_value}" ectype="attrClose"></i>
+						{/if}
+					</div>
+                    {/foreach}
+                    {if $val.attr_input_type eq 0}
+                    <div class="checkbox_item">
+                    <a href="javascript:void(0);" class="btn btn25 blue_btn" data-attrid="{$val.attr_id}" ectype="attr_input">自定义</a>
+                    </div>
+                    {/if}
+                </div>
+            </div>
+        </div>
+        {/foreach}
+    </div>
+</div>
+
+<div class="common-head">
+	<div class="search" ectype="attr_search_main">
+    	{foreach from=$attribute_list.spec item=val key=key}
+        {if $val.attr_type eq 1}
+        <div class="select">
+        	<div class="fl">{$val.attr_name}：</div>
+            <div class="imitate_select select_w145">
+                <div class="cite">{$lang.please_select}</div>
+                <ul>
+                    <li><a href="javascript:;" data-value="0" data-level='{if $cat_tree1.arr}3{else}2{/if}' class="ftx-01">{$lang.please_select}</a></li>
+                   {foreach from=$val.attr_values_arr item=v key=k}
+                    <li><a href="javascript:;" data-value="{$v.attr_value}" class="ftx-01">{$v.attr_value}</a></li>
+                    {/foreach}
+                </ul>
+                <input type="hidden" value=""  name="">
+            </div>
+        </div>
+        {/if}
+        {/foreach}
+        <a href="javascript:void(0);" class="btn btn30 blue_btn" ectype="search_attr">{$lang.search_word}</a>
+    </div>
+</div>
+{/if}

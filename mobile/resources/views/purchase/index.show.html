@@ -1,0 +1,101 @@
+{include file="page_header"}
+
+<body>
+<!--<div id="loading"><img src="__PUBLIC__/assets/purchase/img/loading.gif" /></div>-->
+<div class="con mb-7">
+    <div class="goods-info user-order of-hidden ect-tab j-ect-tab ts-3" style="padding-top:4.2rem">
+        <nav class="  tab-title b-color-f of-hidden" style="position: fixed;">
+            <ul class="dis-box">
+                <li class="box-flex {if $is_finished == -1}active{/if}"><a href="{url('show')}">全部求购</a></li>
+                <li class="box-flex {if $is_finished == 0}active{/if}"><a href="{url('show', array('is_finished' => 0))}">进行中求购</a></li>
+                <li class="box-flex {if $is_finished == 1}active{/if}"><a href="{url('show', array('is_finished' => 1))}">已截止求购</a></li>
+            </ul>
+        </nav>
+        <div id="j-tab-con" class="tab-con">
+            <div class="swiper-wrapper">
+                <section class="swiper-slide">
+                    <section class="product-list j-product-list product-list-small wholesale_buy-box">
+                        <ul class="purchase-info">
+                            <script id="j-product" type="text/html">
+                            <%if totalPage > 0%>
+                            <%each list as key %>
+                            <li>
+                                <div class="product-div">
+                                    <a class="product-div-link" href="<%key.url%>"></a>
+                                    <img class="product-list-img" src="<%key.img%>">
+                                    <div class="product-text wholesale-list-cont">
+                                        <h4><%key.subject%></h4>
+                                        <p class="dis-box f-03 col-7">采购数量：<em class="color-red"><%key.goods_number%>件</em></p>
+                                        <p class="dis-box f-03 col-7">发布时间：<%key.add_time%></p>
+                                        <p class="dis-box f-03 col-7">剩余时间：<%if key.left_day > 1%><%key.left_day%>天<%/if%>
+                                        <%if key.left_day < 1 %>
+                                            <%if key.left_day < 1 && key.left_day > 0 %>小于1天<%else%>已结束<%/if%>
+                                        <%/if%></p>
+                                    </div>
+                                </div>
+                                <div class="wholesale_buy-store   b-color-f">
+                                    <ul class="dis-box">
+                                        <div class="box-flex">
+                                            <h5 class="f-05 col-3"><%key.shop_name%></h5>
+                                            <p class="f-02 col-7"><%key.area_info%></p>
+                                        </div>
+                                        <div>
+                                            <a href="<%key.url%>" class="btn">立即联系</a>
+                                        </div>
+                                    </ul>
+                                </div>
+                            </li>
+                            <%/each%>
+                            <%else%>
+                            <div class="no-div-message">
+                                <i class="iconfont icon-biaoqingleiben"></i>
+                                <p>亲，此处没有东西～！</p>
+                            </div>
+                            <%/if%>
+                            </script>
+                        </ul>
+                    </section>
+                </section>
+
+            </div>
+        </div>
+    </div>
+</div>
+{include file="purchase_menu"}
+<!--快捷导航-->
+{include file="no_search_nav"}
+    <li>
+        <a href="{url('purchase/index/index')}">
+            <i class="iconfont icon-btn_pljj"></i>
+            <p>批发首页</p>
+        </a>
+    </li>
+{include file="float_nav_footer"}
+<script>
+
+    //加载列表
+    var infinite = $('.purchase-info').infinite({url: "{url('purchase/index/show')}",params: 'is_finished={$is_finished}', template: 'j-product'});
+
+    /*切换*/
+    var tabsSwiper = new Swiper('#j-tab-con', {
+        speed: 100,
+        noSwiping: true,
+        autoHeight: true,
+        onSlideChangeStart: function() {
+            $(".j-tab-title .active").removeClass('active')
+            $(".j-tab-title li").eq(tabsSwiper.activeIndex).addClass('active')
+        }
+    })
+    $(".j-tab-title li").on('touchstart mousedown', function(e) {
+        e.preventDefault()
+        $(".j-tab-title .active").removeClass('active')
+        $(this).addClass('active')
+        tabsSwiper.slideTo($(this).index())
+    })
+    $(".j-tab-title li").click(function(e) {
+        e.preventDefault()
+    })
+</script>
+</body>
+
+</html>

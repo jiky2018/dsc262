@@ -1,0 +1,336 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>手机-{$ur_here}</div>
+            <div class="content">
+            <div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.info.0}</li>
+                    <li>{$lang.operation_prompt_content_common}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="mian-info">
+                    <form action="touch_ads.php" method="post" name="theForm" enctype="multipart/form-data" id="agency_form">
+                        <div class="switch_info">
+                             <div class="item" style="display:{if $ads.ad_type eq 5}none{else}{/if}">
+                                <div class="label">{$lang.ad_type}：</div>
+                                <div class="label_value">
+                                    <div class="checkbox_items">
+                                        <div class="checkbox_item">
+                                            <input type="radio" class="ui-radio" name="ad_type" id="sex1" value="0" {if $ads.ad_type eq 0}checked="checked"{/if} onclick="get_ad_type(this.value);" />
+                                            <label for="sex1" class="ui-radio-label" >{$lang.ad_type1}</label>
+                                        </div>
+                                        <div class="checkbox_item">
+                                            <input type="radio" class="ui-radio" name="ad_type" id="sex2" value="1"  {if $ads.ad_type eq 1}checked="checked"{/if} onclick="get_ad_type(this.value);"  />
+                                            <label for="sex2" class="ui-radio-label">{$lang.ad_type2}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.require_field}{$lang.ad_name}：</div>
+                                <div class="label_value">
+                                    <input type="text" name="ad_name" class="text"  value="{$ads.ad_name}" autocomplete="off" />
+                                    <div class="notic m20">{$lang.ad_name_notic}</div>
+                                    <div class="form_prompt"></div>
+                                </div>
+                            </div>
+                            <div class="item" id="ad_type_2" style="display:{if $ads.ad_type eq 0 || $ads.ad_type eq 5}none{else}{/if}">
+                                <div class="label">{$lang.goods_name}：</div>
+                                <div class="label_value">
+                                    <input type="text" name="goods_name" class="text"  value="{$ads.goods_name}" autocomplete="off" />
+                                    <div class="notic m20">{$lang.ad_name_notic2}</div>
+                                </div>
+                            </div>
+                            {if $action eq "add"}
+                            <div class="item" style="display:{if $ads.ad_type eq 5}none{else}{/if}">
+                                <div class="label">{$lang.media_type}：</div>
+                                <div class="label_value">
+                                    <div class="date-item year">
+                                        <div id="media_type_sel" class="imitate_select select_w320">
+                                          <div class="cite">{$lang.ad_img}</div>
+                                          <ul>
+                                             <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.ad_img}</a></li>
+                                            <li><a href="javascript:;" data-value="1" class="ftx-01">{$lang.ad_flash}</a></li>
+                                            <li><a href="javascript:;" data-value="2" class="ftx-01">{$lang.ad_html}</a></li>
+                                            <li><a href="javascript:;" data-value="3" class="ftx-01">{$lang.ad_text}</a></li>
+                                          </ul>
+                                          <input name="media_type" type="hidden" value="0" id="media_type_val">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                          {else}
+                                  <input type="hidden" name="media_type" value="{$ads.media_type}" />
+                          {/if}
+                          <div class="item">
+                                <div class="label">{$lang.position_id}：</div>
+                                <div class="label_value">
+                                    <div class="date-item year">
+                                        <div id="user_year" class="imitate_select select_w320">
+                                          <div class="cite">{$lang.outside_posit}</div>
+                                          <ul>
+                                            <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.outside_posit}</a></li>
+                                             {foreach from=$position_list item=list key=k}
+                                            <li><a href="javascript:;" data-value="{$k}" class="ftx-01">{$list}</a></li>
+                                            {/foreach}
+                                          </ul>
+                                          <input name="position_id" type="hidden" value="{$ads.position_id}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.start_end_date}：</div>
+                                <div class="label_value">
+                                    <div class="text_time" id="text_time_start">
+                                            <input type="text" name="start_time" value="{$ads.start_time}" id="start_time_id" class="text" autocomplete="off" readonly />
+                                    </div>
+                                    <span class="bolang">&nbsp;&nbsp;~&nbsp;&nbsp;</span>
+                                    <div class="text_time" id="text_time_end">
+                                            <input type="text" name="end_time" value="{$ads.end_time}" id="end_time_id" class="text" autocomplete="off" readonly />
+                                    </div>
+                                </div>                               
+                            </div>
+                            {if $ads.media_type eq 0 OR $action eq "add"}
+                                <div id="0">
+                                    <div class="item">
+                                        <div class="label">{$lang.ad_link}：</div>
+                                        <div class="label_value">
+                                            <input type="text" name="ad_link" class="text" value="{$ads.ad_link}" autocomplete="off" />
+                                            <div class="notic m20"  style="display:{if $ad_type eq 5}block{else}none{/if}" >小程序链接商品../goods/index?objectId=加商品id,分类链接../category/product_list?id=加分类id，小程序砍价商品../bargain/goods?objectId=加商品id</div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.upfile_img}：</div>
+                                        <div class="label_value">
+                                        	<div class="type-file-box">
+                                                <input type="button" name="button" id="button" class="type-file-button" value="" />
+                                                <input type="file" class="type-file-file" id="ad_img" name="ad_img" data-state="imgfile" size="30" hidefocus="true" value="" />
+                                                {if $ads.ad_code}
+                                                <span class="show">
+                                                    <a href="{$ads.ad_code}" target="_blank" class="nyroModal"><i class="icon icon-picture" data-tooltipimg="../data/afficheimg/{$ads.ad_code}" ectype="tooltip" title="tooltip"></i></a>
+                                                </span>
+                                                {/if}
+                                                <input type="text" name="textfile" class="type-file-text" id="textfield" autocomplete="off" readonly />
+                                            </div>
+                                            <div class="notic m20" id="AdCodeImg">{$lang.ad_name_notic2}</div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.img_url}：</div>
+                                        <div class="label_value">
+                                            <input type='text' name='img_url'  value="{$url_src}" class="text" autocomplete="off" />
+                                        </div>
+                                    </div>
+                                </div>
+                                {/if}
+                                 {if $ads.media_type eq 1 OR $action eq "add"}
+                                <div id="1" style="{if $ads.media_type neq 1 OR $action eq 'add'}display:none{/if}">
+                                    <div class="item">
+                                        <div class="label">{$lang.upfile_flash}：</div>
+                                        <div class="label_value">
+                                        	<div class="type-file-box">
+                                                <input type="button" name="button" id="button" class="type-file-button" value="" />
+                                                <input type="file" class="type-file-file" id="upfile_flash" name="upfile_flash" data-state="imgfile" size="30" hidefocus="true" value="" />
+                                                {if $ads.ad_code}
+                                                <span class="show">
+                                                    <a href="../data/afficheimg/{$ads.ad_code}" target="_blank" class="nyroModal"><i class="icon icon-picture" data-tooltipimg="../data/afficheimg/{$ads.ad_code}" ectype="tooltip" title="tooltip"></i></a>
+                                                </span>
+                                                {/if}
+                                                <input type="text" name="textfile" class="type-file-text" id="textfield" autocomplete="off" readonly />
+                                            </div>
+                                            <div class="notic m20" id="AdCodeFlash">{$lang.ad_code_flash}</div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.flash_url}：</div>
+                                        <div class="label_value">
+                                            <input type="text" name="flash_url" class="text" value="{$flash_url}" autocomplete="off" />
+                                        </div>
+                                    </div>
+                                </div>
+                                {/if}
+                                {if $ads.media_type eq 2 OR $action eq "add"}
+                                <div id="2" style="{if $ads.media_type neq 2 OR $action eq 'add'}display:none{/if}">
+                                    <div class="item">
+                                        <div class="label">{$lang.enter_code}：</div>
+                                        <div class="label_value">
+                                            <textarea name="ad_code" cols="60" rows="4" class="textarea">{$ads.ad_code}</textarea>
+                                            <div class="form_prompt"></div>
+                                        </div>
+                                    </div>
+                                </div>    
+                                {/if}
+                                {if $ads.media_type eq 3 OR $action eq "add"}
+                                <div id="3" style="{if $ads.media_type neq 3 OR $action eq 'add'}display:none{/if}">
+                                    <div class="item">
+                                        <div class="label">{$lang.ad_link}：</div>
+                                        <div class="label_value">
+                                            <input type="text" name="ad_link2" class="text" value="{$ads.ad_link}" autocomplete="off" />
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.ad_code}：</div>
+                                        <div class="label_value">
+                                            <textarea name="ad_text" cols="60" rows="4" class="textarea">{$ads.ad_code}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                 {/if}
+                                 
+                                 <div class="item" style="display:{if $ads.ad_type eq 5}none{else}{/if}">
+                                    <div class="label">{$lang.background_color}：</div>
+                                    <div class="label_value">
+                                        <input type="text" name="link_color" class="text" value="{$ads.link_color}" autocomplete="off" />
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.enabled}：</div>
+                                    <div class="label_value">
+                                        <div class="checkbox_items">
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="enabled" id="sex_0" value="1" {if $ads.enabled eq 1} checked="true" {/if}  />
+                                                <label for="sex_0" class="ui-radio-label">{$lang.is_enabled}</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="enabled" id="sex_1" value="0" {if $ads.enabled eq 0} checked="true" {/if}  />
+                                                <label for="sex_1" class="ui-radio-label">{$lang.no_enabled}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                 <div class="item" style="display:none">
+                                    <div class="label">{$lang.home_rec_mer_pro}</div>
+                                    <div class="label_value">
+                                        <div class="checkbox_items">
+                                            <label>
+                                                <input name="is_new" type="checkbox" class="checkbox" value="1" {if $ads.is_new eq 1} checked="true" {/if}/>
+                                                <span>{$lang.new_adv}</span>
+                                            </label>
+                                            <label>
+                                                <input name="is_hot" type="checkbox" class="checkbox" value="1" {if $ads.is_hot eq 1} checked="true" {/if}/>
+                                                <span>{$lang.hot_adv}</span>
+                                            </label>
+                                            <label>
+                                                <input name="is_best" type="checkbox" class="checkbox" value="1" {if $ads.is_best eq 1} checked="true" {/if}/>
+                                                <span>{$lang.best_adv}</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                 <div class="item">
+                                    <div class="label">{$lang.link_man}：</div>
+                                    <div class="label_value">
+                                        <input type="text" name="link_man" class="text" value="{$ads.link_man}" autocomplete="off" />
+                                    </div>
+                                </div>
+                                 <div class="item">
+                                    <div class="label">{$lang.link_email}：</div>
+                                    <div class="label_value">
+                                        <input type="text" name="link_email" class="text" value="{$ads.link_email}" autocomplete="off" />
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.link_phone}：</div>
+                                    <div class="label_value">
+                                        <input type="text" name="link_phone" class="text" value="{$ads.link_phone}" autocomplete="off" />
+                                    </div>
+                                </div>
+                            <div class="item">
+                                <div class="label">&nbsp;</div>
+                                <div class="label_value info_btn mt0">
+                                    <a href="javascript:;" class="button" name="Submit" id="submitBtn">{$lang.button_submit}</a>
+                                    <input type="hidden" name="act" value="{$form_act}" />
+                                    <input type="hidden" name="id" value="{$ads.ad_id}" />
+                                    <input type="hidden" name="ad_type" value="{$ad_type}" />
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+ {include file ='library/pagefooter.lbi'}
+    
+    <script type="text/javascript">
+        
+        $.divselect("#media_type_sel","#media_type_val",function(obj){
+            var val = obj.attr("data-value");
+            showMedia(val);
+        });
+       
+        var MediaList = new Array('0', '1', '2', '3');
+        function showMedia(AdMediaType)
+        {
+                for (I = 0; I < MediaList.length; I ++)
+                {
+                  if (MediaList[I] == AdMediaType){
+                        $("#"+AdMediaType).css("display","block");
+                        }else{
+                        $("#"+MediaList[I]).css("display","none")
+                        }
+                }
+        }
+//时间选择
+    var opts1 = {
+            'targetId':'start_time_id',//时间写入对象的id
+            'triggerId':['start_time_id'],//触发事件的对象id
+            'alignId':'text_time_start',//日历对齐对象
+            'format':'-',//时间格式 默认'YYYY-MM-DD HH:MM:SS'
+            'min':'{$snatch.start_time}' //最小时间
+    },opts2 = {
+            'targetId':'end_time_id',
+            'triggerId':['end_time_id'],
+            'alignId':'text_time_end',
+            'format':'-',
+            'min':'{$snatch.start_time}'
+    }
+    xvDate(opts1);
+    xvDate(opts2);
+		//表单验证
+		$(function(){
+			$("#submitBtn").click(function(){
+				if($("#agency_form").valid()){
+					$("#agency_form").submit();
+				}
+			});
+		
+			$('#agency_form').validate({
+				errorPlacement:function(error, element){
+					var error_div = element.parents('div.label_value').find('div.form_prompt');
+					element.parents('div.label_value').find(".notic").hide();
+					error_div.append(error);
+				},
+				rules:{
+					ad_name :{
+						required:true
+					}
+				},
+				messages:{
+					ad_name :{
+						required:'<i class="icon icon-exclamation-sign"></i>'+ad_name_empty
+					}
+				}
+			});
+		});
+                
+    function get_ad_type(val){
+	  var ad_type_2 =$('#ad_type_2');
+	  	  
+	  if(val == 1){
+                ad_type_2.css('display','');
+	  }else{
+              ad_type_2.css('display','none');
+	  }
+    }
+
+    </script>
+</body>
+</html>

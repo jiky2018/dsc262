@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<!-- #BeginLibraryItem "/library/js_languages_new.lbi" --><!-- #EndLibraryItem -->
+</head>
+
+<body>
+	<!-- #BeginLibraryItem "/library/page_header_common.lbi" --><!-- #EndLibraryItem -->
+    <div class="content">
+        <div class="w w1200">
+            <div class="crumbs-nav">
+                <div class="crumbs-nav-main clearfix">
+                    <div class="crumbs-nav-item">
+                        <!-- #BeginLibraryItem "/library/ur_here.lbi" --><!-- #EndLibraryItem -->
+                    </div>
+                </div>
+            </div>
+            <div class="catalog-main clearfix">
+                <div class="catalog-side">
+                    <div class="catalog-menu">
+                        <ul class="menu-list">
+                            <!--{foreach from=$categories_pro item=categories name=nocat}-->
+                            <li {if $smarty.foreach.nocat.first}class="current"{/if}><a href="javascript:void(0);">{if $smarty.foreach.nocat.iteration lt 10}0{/if}{$smarty.foreach.nocat.iteration} {$categories.nolinkname}</a></li>
+                            <!--{/foreach}-->
+                        </ul>
+                        <div class="back-top-wp">
+                            <a href="javascript:;" class="back-top" ectype="returnTop">返回顶部</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="catalog-detail">
+                    <!--{foreach from=$categories_list item=categories name=nocat}-->
+                    <div class="catalog-item">
+                        <h2><a href="{$categories.url}" target="_blank">{if $smarty.foreach.nocat.iteration lt 10}0{/if}{$smarty.foreach.nocat.iteration} {$categories.name}</a></h2>
+                        <!--{foreach from=$categories.child_tree item=child name=nochild}-->
+                        <h3><a href="{$child.url}" target="_blank">{$child.cat_name}</a></h3>
+                        <ul class="h4 clearfix">
+                            <!--{foreach from=$child.child_tree item=cat name=nocatid}-->
+                            <li><a href="{$cat.url}" target="_blank">{$cat.name}</a></li>
+                            <!--{/foreach}-->
+                        </ul>
+                        <!--{/foreach}-->
+                        <div class="catalog-item-ad clearfix">
+                            {* DSC 提醒您：动态载入category_all_right.lbi，显示首页分类小广告 *}{insert name='get_adv_child' ad_arr=$category_all_right id=$categories.id ru_id=$ru_id}
+                        </div>
+                    </div>
+                    <!--{/foreach}-->
+                </div>
+            </div>
+        </div>
+    </div>
+    {* DSC 提醒您：动态载入user_menu_position.lbi，显示首页分类小广告 *}{insert name='user_menu_position'}
+    <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/dsc-common.js"></script>
+    {insert_scripts files='cart_common.js,parabola.js,cart_quick_links.js'}
+	<script type="text/javascript">
+        $(function(){
+            var items = $(".catalog-menu");
+            var top = parseInt(items.offset().top);
+            var allFloor = $(".catalog-detail");
+            var floors = allFloor.find(".catalog-item");
+            var height = parseInt(items.height());
+            var IE6 = navigator.userAgent.indexOf("MSIE 6.0")>0;
+            var IE7 = navigator.userAgent.indexOf("MSIE 7.0")>0;
+            
+            $(window).on('scroll',function(){
+                var scrollTop = $(window).scrollTop();
+                if(scrollTop>top){
+                    items.css({'position':'fixed','top':0});
+                }else{
+                    items.removeAttr("style");
+                }
+                
+                for(var i=0;i<floors.length;i++){
+                    var floorsTop = floors.eq(i).position().top;
+                    if(IE6||IE7){
+                        floorsTop = floorsTop.toString();
+                        floorsTop = floorsTop.substring(0,floorsTop.length-2);
+                    }
+                    if(scrollTop>floorsTop){
+                        items.find("li").eq(i).addClass("current").siblings().removeClass("current");
+                        floors.eq(i).addClass("curr").siblings().removeClass("curr");
+                    }
+                }
+            });
+            
+            $(".catalog-menu .menu-list li").on('click',function(){
+                var index = $(this).index();
+                var top = floors.eq(index).offset().top;
+                $("body,html").stop().animate({scrollTop:top});
+            });
+        })
+    </script>
+</body>
+</html>

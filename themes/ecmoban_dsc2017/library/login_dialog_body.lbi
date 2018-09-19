@@ -1,0 +1,147 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<div class="login-wrap">
+    
+    <div class="login-form">
+    	{if $website_list}
+    	<div class="coagent">
+            <div class="tit"><h3>{$lang.Third_party_Lgion}</h3><span></span></div>
+            <div class="coagent-warp">
+            	{foreach from=$website_list item=website}
+                {if $website.web_type eq 'weixin'}
+                	<a href="wechat_oauth.php?act=login{if $website.back_act neq ''}&user_callblock={$website.back_act}{/if}" class="{$website.web_type}"><b class="third-party-icon {$website.web_type}-icon"></b></a>
+                {else}
+                    <a href="user.php?act=oath&type={$website.web_type}{if $website.back_act neq ''}&user_callblock={$website.back_act}{/if}" class="{$website.web_type}"><b class="third-party-icon {$website.web_type}-icon"></b></a>
+                {/if}
+                {/foreach}
+            </div>
+        </div>
+        {/if}
+        <div class="login-box">
+            <div class="tit"><h3>账号登录</h3><span></span></div>
+            <div class="msg-wrap"></div>
+            <div class="form">
+            	<form name="formLogin" action="{$site_domain}user.php" method="post" onSubmit="userLogin();return false;">
+                	<div class="item">
+                        <div class="item-info">
+                            <i class="iconfont icon-name"></i>
+                            <input type="text" id="loginname" name="username" class="text" value="" placeholder="{$lang.label_username}" />
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item-info">
+                            <i class="iconfont icon-password"></i>
+                            <input type="password"   style="display:none"/>
+                            <input type="password" id="nloginpwd" name="password" value="" class="text" placeholder="{$lang.label_password}" />
+                        </div>
+                    </div>
+                    <!-- 判断是否启用验证码{if $enabled_captcha} -->
+                    <div class="item">
+                        <div class="item-info">
+                            <i class="iconfont icon-security"></i>
+                            <input type="text" id="captcha" name="captcha" value="" class="text text-2 fl" placeholder="{$lang.comment_captcha}" />
+                            <img src="captcha_verify.php?captcha=is_login&{$rand}" alt="captcha" class="captcha_img fl" onClick="this.src='captcha_verify.php?captcha=is_login&'+Math.random()" />
+                        </div>
+                    </div>
+                    <!--{/if}-->
+                    <div class="item">
+                        <input id="remember" name="remember" type="checkbox" class="ui-checkbox">
+                        <label for="remember" class="ui-label">{$user_lang.remember}</label>
+                    </div>
+                    <div class="item item-button">
+                    	<input type="hidden" name="dsc_token" value="{$dsc_token|default:0}" />
+                        <input type="hidden" name="act" value="act_login" />
+                        <input type="hidden" name="back_act" value="{$back_act}" />
+                        <input type="submit" name="submit" value="{$lang.signin_now}" class="btn sc-redBg-btn" />
+                    </div>
+                    <div class="lie">
+                    	<a href="user.php?act=get_password" class="notpwd gary fl" target="_blank">{$lang.passportforgot_password}</a>
+                    	{if $shop_reg_closed neq 1}<a href="user.php?act=register" class="notpwd red fr" target="_blank">{$lang.Free_registration}</a>{/if}
+                    </div>
+                </form>
+            </div>
+    	</div>        
+    </div>
+    <script type="text/javascript">
+	{foreach from=$user_lang.passport_js item=lang key=k}
+	var {$k}="{$lang}";
+    {/foreach}
+		/* *
+		 * 会员登录
+		*/ 
+		function userLogin()
+		{
+			var frm = $("form[name='formLogin']");
+			var username = frm.find("input[name='username']");
+			var password = frm.find("input[name='password']");
+			var captcha = frm.find("input[name='captcha']");
+			var dsc_token = frm.find("input[name='dsc_token']");
+			var error = frm.find(".msg-error");
+			var msg = '';
+			
+			if(username.val()==""){
+				error.show();
+				username.parents(".item").addClass("item-error");
+				msg += username_empty;
+				showMesInfo(msg);
+				return false;
+			}
+			
+			if(password.val()==""){
+				error.show();
+				password.parents(".item").addClass("item-error");
+				msg += password_empty;
+				showMesInfo(msg);
+				return false;
+			}
+			
+			if(captcha.val()==""){
+				error.show();
+				captcha.parents(".item").addClass("item-error");
+				msg += captcha_empty;
+				showMesInfo(msg);
+				return false;
+			}
+			var back_act=frm.find("input[name='back_act']").val();
+			
+			{if $is_jsonp && $site_domain}
+				
+				var post_url = "act=act_login&is_jsonp=" + {$is_jsonp} + '&username=' + username.val()+'&password='+password.val()+'&dsc_token='+dsc_token.val()+'&captcha='+captcha.val()+'&back_act='+back_act;
+
+				$.ajax({
+				   type: "POST",
+				   /*jquery Ajax跨域*/
+				   url: "{$site_domain}user.php",
+				   data: post_url,
+				   dataType:'jsonp',
+				   jsonp:"jsoncallback",
+				   success: function(data){
+					   return_login(data)
+				   }
+				});
+			{else}
+				Ajax.call( 'user.php?act=act_login', 'username=' + username.val()+'&password='+password.val()+'&dsc_token='+dsc_token.val()+'&captcha='+captcha.val()+'&back_act='+back_act, return_login , 'POST', 'JSON');
+			{/if}
+		}
+		
+		function return_login(result)
+		{
+			if(result.error>0)
+			{
+				showMesInfo(result.message);	
+			}
+			else
+			{
+				if(result.ucdata){
+					$("body").append(result.ucdata)
+				}
+				location.href=result.url;
+			}
+		}
+		
+		function showMesInfo(msg) {
+			$('.login-wrap .msg-wrap').empty();
+			var info = '<div class="msg-error"><b></b>' + msg + '</div>';
+			$('.login-wrap .msg-wrap').append(info);
+		}
+	</script>
+</div>

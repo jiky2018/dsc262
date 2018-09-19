@@ -1,0 +1,225 @@
+{include file="seller_pageheader"}
+
+{include file="seller_nave_header"}
+
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file="seller_menu_left"}
+
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+            {include file="seller_nave_header_title"}
+                <div class="wrapper-right of" >
+                    <div class="tabmenu">
+                        <ul class="tab">
+                            <li><a href="{url('reply_subscribe')}">关注自动回复</a></li>
+                            <li><a href="{url('reply_msg')}">消息自动回复</a></li>
+                            <li class="active"><a href="{url('reply_keywords')}">关键词自动回复</a></li>
+                        </ul>
+                    </div>
+                    <div class="explanation" id="explanation">
+                        <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4></div>
+                        <ul>
+                            <li>自动回复的类型 共分三种：关注自动回复、消息自动回复、关键词自动回复。回复内容可以设置为文字，图片，语音，视频。文本消息回复内容可以直接填写，长度限制1024字节（大约200字，含标点以及其他特殊字符），其他素材需要先在素材管理中添加。</li>
+                            <li>三、关键词自动回复：即可以自己添加规则自动回复内容。</li><li>★ 字数限制：微信公众平台认证与非认证用户的关键字自动回复设置规则上限为200条规则（每条规则名，最多可设置60个汉字），每条规则内最多设置10条关键字（每条关键字，最多可设置30个汉字）</li>
+                            <li>★ 规则设置： 您可设置多个关键字，如果用户发送的信息中含有您设置的其中一个关键字，则系统会自己回复。如关键词：help,帮助。采取中英文结合的方式最佳。</li>
+                            <li>★ 注意事项：关键词 不能设置系统已经存在的关键词，如功能扩展当中的hot、best、news等。</li>
+                        </ul>
+                    </div>
+                    <div class="tab-content">
+                        <div class="tab-pane active">
+                            <div class="wrapper-list mt20" >
+                                <!-- 添加规则 -->
+                                <div class="bottom of"><a href="javascript:;" class="sc-btn sc-blue-btn add-gui "><i class="fa fa-plus"></i>添加规则</a></div>
+                                <div class="account-setting" style="display:none" >
+                                    <div class="ecsc-form-goods ">
+                                        <form action="{url('rule_edit')}" method="post" class="form-horizontal" role="form">
+                                        <dl>
+                                            <dt>规则名称：</dt>
+                                            <dd>
+                                                <input type="text" name="rule_name" value="" class="text input-sm">
+                                                <div class="form_prompt"></div>
+                                                <div class="notic">* 规则名最多60个字</div>
+                                            </dd>
+                                        </dl>
+                                        <dl>
+                                            <dt>关键字：</dt>
+                                            <dd>
+                                                <input type="text" name="rule_keywords" value="" class="text input-sm">
+                                                <div class="form_prompt"></div>
+                                                <div class="notic">* 添加多个关键字，用","隔开</div>
+                                            </dd>
+                                        </dl>
+                                        <dl>
+                                            <dt>回复：</dt>
+                                            <dd>
+                                                <div class="pull-left">
+                                                    <div class="account-setting">
+                                                        <div class="panel panel-default" >
+                                                            <div class="panel-heading">
+                                                                <ul class="nav nav-pills" role="tablist">
+                                                                    <li role="presentation" class="guize"><a href="javascript:;" title="文字" class="f-14"><i class="fa fa-pencil"></i><span>文字</span></a></li>
+                                                                    <li role="presentation"  class="guize"><a href="{url('auto_reply', array('type'=>'image'))}" class="fancybox fancybox.iframe f-14" title="图片"><i class="fa fa-file-image-o"></i><span>图片</span></a></li>
+                                                                    <li role="presentation" class="guize"><a href="{url('auto_reply', array('type'=>'voice'))}" class="fancybox fancybox.iframe f-14" title="语音"><i class="fa fa-volume-up"></i><span>语音</span></a></li>
+                                                                    <li role="presentation"  class="guize"><a href="{url('auto_reply', array('type'=>'video'))}" class="f-14 fancybox fancybox.iframe" title="视频"><i class="fa fa-film"></i><span>视频</span></a></li>
+                                                                    <li role="presentation"  class="guize"><a href="{url('auto_reply', array('type'=>'news'))}" class="f-14 fancybox fancybox.iframe" title="图文消" type="news"><i class="glyphicon glyphicon-list-alt"></i><span>图文</span></a></li>
+                                                                </ul>
+                                                            </div>
+                                                            <div class="panel-body" >
+                                                                <div class="wechat_text"><textarea name="content" class="form-control" placeholder="文本内容" rows="6"></textarea></div>
+                                                                <div class="content_0 change_content thumbnail borderno hidden picture-list"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </dd>
+                                        </dl>
+                                        <dl>
+                                            <dt>&nbsp;</dt>
+                                            <dd class="button_info">
+                                                <input type="hidden" name="content_type" value="text" id="content_type_0" >
+                                                <input type="submit" value="{$lang['button_submit']}" class="sc-btn sc-blueBg-btn btn35" />
+                                                <input type="reset" value="{$lang['button_reset']}" class="sc-btn sc-blue-btn btn35" />
+                                            </dd>
+                                        </dl>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 规则列表 -->
+                            <div class="wrapper-list border1 mt20">
+                                {foreach $list as $val}
+                                <div class="account-setting mb10">
+                                    <div class="ecsc-form-goods ">
+                                        <div class="item">
+                                            <span class="label-t " style="margin: 5px 0px 0px 20px;">规则名称：{$val['rule_name']}</span>
+                                        </div>
+                                        <div class="panel-footer info_btn of">
+                                            <a href="javascript:;" class="sc-btn sc-blueBg-btn btn35 edit">编辑</a>
+                                            <a href="javascript:if(confirm('确定删除吗？')){window.location.href='{url('reply_del', array('id'=>$val['id']))}'};" class="sc-btn btn35 ">删除</a>
+                                        </div>
+                                        <form action="{url('rule_edit')}" method="post" class="form-horizontal hidden" role="form">
+                                        <dl>
+                                            <dt>规则名称：</dt>
+                                            <dd>
+                                                <input type="text" name='rule_name' value="{$val['rule_name']}" class="text input-sm">
+                                                <div class="form_prompt"></div>
+                                                <div class="notic">* 规则名最多60个字</div>
+                                            </dd>
+                                        </dl>
+                                        <dl>
+                                            <dt>关键字：</dt>
+                                            <dd>
+                                                <input type="text" name='rule_keywords' value="{$val['rule_keywords_string']}" class="text input-sm">
+                                                <div class="form_prompt"></div>
+                                                <div class="notic">* 添加多个关键字，用","隔开</div>
+                                            </dd>
+                                        </dl>
+                                        <dl>
+                                            <dt>回复：</dt>
+                                            <dd>
+                                                <div class="pull-left">
+                                                    <div class="account-setting">
+                                                        <div class="panel panel-default">
+                                                            <div class="panel-heading">
+                                                                <ul class="nav nav-pills" role="tablist">
+                                                                    <li role="presentation" class="guize"><a href="javascript:;" title="文字" class="f-14"><i class="fa fa-pencil"></i><span>文字</span></a></li>
+                                                                    <li role="presentation"  class="guize"><a href="{url('auto_reply', array('type'=>'image', 'reply_id' => $val['id']))}" class="fancybox fancybox.iframe f-14" title="图片"><i class="fa fa-file-image-o"></i><span>图片</span></a></li>
+                                                                    <li role="presentation" class="guize"><a href="{url('auto_reply', array('type'=>'voice', 'reply_id' => $val['id']))}" class="fancybox fancybox.iframe f-14" title="语音"><i class="fa fa-volume-up"></i><span>语音</span></a></li>
+                                                                    <li role="presentation"  class="guize"><a href="{url('auto_reply', array('type'=>'video', 'reply_id' => $val['id']))}" class="f-14 fancybox fancybox.iframe" title="视频"><i class="fa fa-film"></i><span>视频</span></a></li>
+                                                                    <li role="presentation"  class="guize"><a href="{url('auto_reply', array('type'=>'news', 'reply_id' => $val['id']))}" class="f-14 fancybox fancybox.iframe" title="图文"><i class="glyphicon glyphicon-list-alt"></i><span>图文</span></a></li>
+                                                                </ul>
+                                                            </div>
+                                                            <div class="panel-body">
+                                                              <div class="{if $val['medias'] || $val['media']} hidden{/if} wechat_text"><textarea name="content" class="form-control" placeholder="文本内容" rows="6">{$val['content']}</textarea></div>
+                                                                <div class="content_{$val[id]}  change_content  thumbnail borderno picture-list {if empty($val['medias']) && empty($val['media'])}hidden{/if}" style="padding:0;margin:0px;">
+                                                                    <input type="hidden" name="media_id" value="{$val['media_id']}" />
+                                                                    {if $val['medias']}<!-- 多图文 -->
+                                                                    {foreach $val['medias'] as $k=>$v}
+                                                                            {if $k == 0}
+                                                                            <div class="article">
+                                                                                <p></p>
+                                                                                <div class="cover"><img src="{$v['file']}" /><span>{$v['title']}</span></div>
+                                                                            </div>
+                                                                                {else}
+                                                                            <div class="article_list">
+                                                                                <span>{$v['title']}</span>
+                                                                                <img src="{$v['file']}" width="78" height="78" class="pull-right" />
+                                                                            </div>
+                                                                            {/if}
+                                                                    {/foreach}
+                                                                    {elseif $val['media']}<!-- 单图文，图片，语音，视频 -->
+                                                                        {if $val['media']['type'] == 'news' && $val['reply_type'] == 'news'}
+                                                                            <div class="article">
+                                                                                <h4>{$val['media']['title']}</h4>
+                                                                                <p>{date('Y年m月d日', $val['media']['add_time'])}</p>
+                                                                                <div class="cover"><img src="{$val['media']['file']}" /></div>
+                                                                                <p>{$val['media']['content']}</p>
+                                                                            </div>
+                                                                        {elseif $val['media']['type'] == 'voice'}
+                                                                            <img src="{elixir('img/voice.png')}" /><span>{$val['media']['file_name']}</span>
+                                                                        {elseif $val['media']['type'] == 'video'}
+                                                                            <img src="{elixir('img/video.png')}" /><span>{$val['media']['file_name']}</span>
+                                                                        {else}
+                                                                            <img src="{$val['media']['file']}" style="max-width:300px;" />
+                                                                        {/if}
+                                                                    {/if}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </dd>
+                                        </dl>
+                                        <dl>
+                                            <dt>&nbsp;</dt>
+                                            <dd class="button_info">
+                                                <input type="hidden" name="content_type" value="{$val['reply_type']}" id="content_type_{$val['id']}" />
+                                                <input type="hidden" name="id" value="{$val['id']}" />
+                                                <input type="submit" value="{$lang['button_submit']}" class="sc-btn sc-blueBg-btn btn35" />
+                                                <input type="reset" value="{$lang['button_reset']}" class="sc-btn sc-blue-btn btn35" />
+                                            </dd>
+                                        </dl>
+
+                                        </form>
+                                    </div>
+                                </div>
+                                {/foreach}
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript">
+$(function(){
+    //添加规则显示隐藏
+    $(".add-gui").click(function(){
+        $(this).parent().next().toggle();
+    });
+    //修改规则显示
+    $(".edit").click(function(){
+        $(this).parent().next().toggleClass("hidden");
+    });
+
+    //选择内容显示以及类型更改
+    $(".nav-pills li").click(function(){
+        var type = $(this).find("a").attr("type");
+        var tab = $(this).parent().parent(".panel-heading").siblings(".panel-body");
+        if(type == "text"){
+    	    tab.find(".change_content").addClass("hidden");
+            tab.find(".wechat_text").removeClass("hidden");
+            $("input[name=content_type]").val(type);
+        }
+    });
+
+});
+</script>
+
+{include file="seller_pagefooter"}
+</body>
+</html>

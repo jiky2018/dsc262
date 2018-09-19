@@ -1,0 +1,112 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+{foreach from=$title.cententFields item=fields}
+<div class="item">
+    <div class="label">
+        <em>{if $fields.will_choose eq 1 && $choose_process eq 1}*{/if}</em>
+        <span>{$fields.fieldsFormName}：</span>
+    </div>
+    <div class="value">
+        {if $fields.chooseForm eq 'input'}
+            <input class="text{if $fields.will_choose eq 1 && $choose_process eq 1} required{if $fields.textFields eq 'contactEmail'} email{/if}{if $fields.textFields eq 'contactPhone'} isMobile{/if}{/if}" type="text" value="{$fields.titles_centents}" size="{$fields.inputForm}" name="{$fields.textFields}" id="{$fields.textFields}">
+        {elseif $fields.chooseForm eq 'other'}
+            {if $fields.otherForm eq 'textArea'}
+                <select name="{$fields.textFields}[]" class="catselectB" id="selCountries_{$fields.textFields}_{$sn}" onchange="region.changed(this, 1, 'selProvinces_{$fields.textFields}_{$sn}')" {if $fields.will_choose eq 1 && $choose_process eq 1}required{/if}>
+                  <option value="">{$lang.please_select}{$lang.country}</option>
+                  <!-- {foreach from=$country_list item=country} -->
+                  <option value="{$country.region_id}" {if $fields.textAreaForm.country eq $country.region_id}selected{/if}>{$country.region_name}</option>
+                  <!-- {/foreach} -->
+                </select>
+                <select name="{$fields.textFields}[]" class="catselectB" id="selProvinces_{$fields.textFields}_{$sn}" onchange="region.changed(this, 2, 'selCities_{$fields.textFields}_{$sn}')" {if $fields.will_choose eq 1 && $choose_process eq 1}required{/if}>
+                  <option value="">{$lang.please_select}{$lang.province}</option>
+                  {if $fields.province_list}
+                  <!-- {foreach from=$fields.province_list item=province} -->
+                  <option value="{$province.region_id}" {if $fields.textAreaForm.province eq $province.region_id}selected{/if}>{$province.region_name}</option>
+                  <!-- {/foreach} -->
+                  {else}
+                  <!-- {foreach from=$province_list item=province} -->
+                  <option value="{$province.region_id}">{$province.region_name}</option>
+                  <!-- {/foreach} -->
+                  {/if}
+                </select>
+                <select name="{$fields.textFields}[]" class="catselectB" id="selCities_{$fields.textFields}_{$sn}" onchange="region.changed(this, 3, 'selDistricts_{$fields.textFields}_{$sn}')" {if $fields.will_choose eq 1 && $choose_process eq 1}required{/if}>
+                  <option value="">{$lang.please_select}{$lang.city}</option>
+                  {if $fields.city_list}
+                  <!-- {foreach from=$fields.city_list item=city} -->
+                  <option value="{$city.region_id}" {if $fields.textAreaForm.city eq $city.region_id}selected{/if}>{$city.region_name}</option>
+                  <!-- {/foreach} -->
+                  {else}
+                  <!-- {foreach from=$city_list item=city} -->
+                  <option value="{$city.region_id}">{$city.region_name}</option>
+                  <!-- {/foreach} -->
+                  {/if}
+                </select>
+                <select name="{$fields.textFields}[]" class="catselectB" id="selDistricts_{$fields.textFields}_{$sn}" {if $fields.textAreaForm.district eq 0}style="display:none"{/if}>
+                  <option value="">{$lang.please_select}{$lang.area}</option>
+                  {if $fields.district_list}
+                  <!-- {foreach from=$fields.district_list item=district} -->
+                  <option value="{$district.region_id}" {if $fields.textAreaForm.district eq $district.region_id}selected{/if}>{$district.region_name}</option>
+                  <!-- {/foreach} -->
+                  {else}
+                  <!-- {foreach from=$district_list item=district} -->
+                  <option value="{$district.region_id}">{$district.region_name}</option>
+                  <!-- {/foreach} -->
+                  {/if}
+                </select>
+            {elseif $fields.otherForm eq 'dateFile'}
+                <div class="type-file-box">
+                    <input type="button" name="button" class="type-file-button" id="button" value="" />
+                    <input type="file" name="{$fields.textFields}" class="type-file-file" value="{$fields.titles_centents}" {if $fields.will_choose eq 1 && $choose_process eq 1 && $fields.titles_centents eq ''}required{/if} data-state="" hidefocus="true" />
+                    {if $fields.titles_centents neq ''}<a href="{$fields.titles_centents}" class="chakan" target="_blank">{$lang.view}</a>{/if}
+                    <input type="text" name="textfile" class="type-file-text" value="{$fields.titles_centents}" readonly />
+                    <input type="hidden" name="text_{$fields.textFields}" value="{$fields.titles_centents}" />
+                </div>
+                
+                <!--<input name="{$fields.textFields}" type="file" {if $fields.will_choose eq 1 && $choose_process eq 1}required{/if} />
+                <input name="text_{$fields.textFields}" type="hidden" value="{$fields.titles_centents}" />
+                {if $fields.titles_centents neq ''}<a href="{$fields.titles_centents}" class="chakan" target="_blank">{$lang.view}</a>{/if}
+                <label class="error" id="{$fields.textFields}"></label>-->
+            {elseif $fields.otherForm eq 'dateTime'} 
+                {foreach from=$fields.dateTimeForm item=date key=dk}
+                    {if $dk eq 0}  
+                    <input id="{$fields.textFields}_{$dk}" class="text text-2 jdate narrow" type="text" size="{$date.dateSize}" readonly value="{$date.dateCentent}" name="{$fields.textFields}[]"> 
+                    {else}
+                    <span>—</span>
+                    <input id="{$fields.textFields}_{$dk}" class="text text-2 jdate narrow" type="text" size="{$date.dateSize}" readonly value="{$date.dateCentent}" name="{$fields.textFields}[]"> 
+                    <div class="cart-checkbox fr">
+                        <input type="checkbox" class="ui-checkbox CheckBoxShop" onclick="get_shopTime_term(this)" name="shopTime_term" value="1" id="shopTime_term" {if $fields.shopTime_term eq 1}checked{/if}>
+                        <label for="shopTime_term">{$lang.permanent}</label>
+                    </div>
+                    {/if}
+                {/foreach}
+            {/if}
+        {elseif $fields.chooseForm eq 'textarea'}
+            <textarea name="{$fields.textFields}" cols="{$fields.cols}" rows="{$fields.rows}" {if $fields.will_choose eq 1 && $choose_process eq 1}required{/if}>{$fields.titles_centents}</textarea>  
+        {elseif $fields.chooseForm eq 'select'}  
+            <select name="{$fields.textFields}" {if $fields.will_choose eq 1 && $choose_process eq 1}required{/if}>
+                <option value="0" selected="selected">{$lang.please_select}</option>
+            {foreach from=$fields.selectList item=selectList}
+                <option value="{$selectList}" {if $fields.titles_centents eq $selectList}selected="selected"{/if}>{$selectList}</option>
+            {/foreach}
+            </select>    
+        {elseif $fields.chooseForm eq 'radio'}
+            <div class="value-checkbox">   
+            {foreach from=$fields.radioCheckboxForm item=radio key=rc_k name=sex}
+                <div class="value-item {if $fields.titles_centents}{if $fields.titles_centents eq $radio.radioCheckbox}selected{else}{if $rc_k eq 0}checked{/if}{/if}{else}{if $smarty.foreach.sex.iteration<2}selected{/if}{/if}"><input name="{$fields.textFields}" class="ui-radio" id="{$fields.textFields}-{$smarty.foreach.sex.index}" type="radio" value="{$radio.radioCheckbox}" {if $fields.titles_centents eq $radio.radioCheckbox}checked="checked"{else}{if $rc_k eq 0}checked="checked"{/if}{/if} /><label for="{$fields.textFields}-{$smarty.foreach.sex.index}" class="ui-radio-label">{$radio.radioCheckbox}</label></div>
+            {/foreach}
+            </div>
+        {elseif $fields.chooseForm eq 'checkbox'} 
+            <div class="chekbox-items">  
+            {foreach from=$fields.radioCheckboxForm item=checkbox key=rc_k}
+            <div class="chekbox-item fl mr20">
+                <input name="{$fields.textFields}[]" type="checkbox" value="{$checkbox.radioCheckbox}" class="ui-checkbox" id="{$fields.textFields}_{$checkbox.radioCheckbox}" {if $fields.titles_centents eq $checkbox.radioCheckbox}checked="checked"{else}{if $rc_k eq 0}checked="checked"{/if}{/if} {if $fields.will_choose eq 1 && $choose_process eq 1}required{/if} />
+                <label class="ui-label" for="{$fields.textFields}_{$checkbox.radioCheckbox}">{$checkbox.radioCheckbox}</label>
+            </div>
+            {/foreach}
+            </div>
+        {/if}
+        <div class="org">{$fields.formSpecial}</div>
+        <div class="verify" id="error_{$fields.textFields}"></div>
+    </div>
+</div>
+{/foreach}

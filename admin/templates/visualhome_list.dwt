@@ -1,0 +1,275 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+    <div class="warpper">
+        <div class="title">{if $template_type eq 'seller'}店铺 - {$ur_here}{else}模板 - 首页可视化管理{/if}</div>
+        <div class="content">
+            {if $template_type eq 'seller'}
+                {include file ='library/seller_step_tab.lbi'}
+            {/if}
+            <div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    {if $template_type eq 'seller'}
+                    <li>展示所有店铺模板，包括付费模板</li>
+                    <li>可进行模板信息，内容等编辑</li>
+                    {else}
+                    <li>展示所有首页模板。</li>
+                    <li>可进行首页模板信息，内容等编辑</li>
+                    <li>每套模板有对应的首页模板</li>
+                    <li>该功能暂时只支持ecmoban_dsc2017，ecmoban_dsc后期开发中，敬请期待</li>
+                    {/if}
+                    <li>导出时需选中对应的选中按钮</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-head">
+                    <div class="fl">
+                        <a href="javascript:void(0);" ectype='information' data-code=""><div class="fbutton"><div class="add" title="添加新模板"><span><i class="icon icon-plus"></i>添加新模板</span></div></div></a>
+                        <a href="javascript:void(0);" ectype="export"><div class="fbutton"><div class="add" title="导出"><span><i class="icon icon-download-alt"></i>导出</span></div></div></a>
+                    </div>
+                </div>
+                <div class="common-content">
+                    <div class="common-content">
+                        <div class="mian-info">
+                            <form method="post" action="visualhome.php?act=export_tem" name="listForm" id="exportForm">
+                                <div class="list-div" id="listDiv">
+                            	{/if}
+                                <div class="template-list template-ksh-list mt10" ectype='templateList'>
+                                    <ul>
+                                        {foreach from=$available_templates item=template name=template}
+                                        <li {if $default_tem eq $template.code}class="curr"{/if}>
+                                            <div class="checkbox_item">
+                                                <input type="checkbox" name="checkboxes[]" value="{$template.code}" class="ui-checkbox" id="checkbox_{$template.code}" />
+                                                <label for="checkbox_{$template.code}" class="ui-label"></label>
+                                            </div>
+                                            <div class="tit" title="{$template.name}">{if $template.name}{$template.name}{else}&nbsp;{/if}{if $template.rs_name} - {$template.rs_name}{/if}</div>
+                                            <div class="span">{$template.desc}</div>
+                                            <div class="img"{if $template_type neq 'seller'} ectype="setupTemplate"{/if} data-code="{$template.code}" data-id="{$template.temp_id}">
+                                                {if $template.screenshot}<img width="263" height="338" src="{$template.screenshot}" data-src-wide="{$template.template}" border="0" id="{$template.code}" ectype="pic" class="pic"/>{/if}
+                                                {if $template_type neq 'seller'}<div class="bg"></div>{/if}
+                                            </div>
+                                            {if $template_type neq 'seller'}
+                                            <div class="box" ectype="setupTemplate" data-code="{$template.code}" data-id="{$template.temp_id}">
+                                                <i class="icon icon-gou"></i>
+                                                <span>使用该模版</span>
+                                            </div>
+                                            {/if}
+                                            <div class="info">
+                                                <div class="row">
+                                                	<a href="{$template.template}" target="_blank" ectype="see" class="mr10">查看大图</a>
+                                                	<a href="{if $template_type}topic.php?act=visual&code={$template.code}&temp_type=seller{else}visualhome.php?act=visual&code={$template.code}{/if}" target="_blank">装修</a>
+                                                </div>
+                                                {if $template_type eq 'seller'}
+                                                <div class="row">    
+                                                	<div class="price">价格：<em class="org">{if $template.temp_mode eq 0}免费{else}{$template.temp_cost}{/if}</em></div>
+                                                    <div class="sales_volume">销量：{$template.sales_volume}</div>
+                                                </div>
+                                                {/if}
+                                                <div class="row">
+                                                    <a href="{if $template_type eq 'seller'}../merchants_store.php?preview=1&temp_code={$template.code}{else}../index.php?suffix={$template.code}{/if}" class="mr10" target="_blank" >预览模板</a>
+                                                    <a href="javascript:void(0);" ectype='information' data-code="{$template.code}" data-id="{$template.temp_id}" class="mr10">编辑模板信息</a>
+                                                    <a href="javascript:removeTemplate('{$template.code}','{$template.temp_id}')">删除模板</a>
+                                                </div>
+                                            </div>
+                                            <i{if $default_tem eq $template.code} class="ing"{/if} ectype="default"></i>
+                                        </li>	
+                                        {foreachelse}
+                                        <li class="notic">暂无模板</li>
+                                        {/foreach}
+                                    </ul>
+                                	<input type='hidden' name='template_type' value="{$template_type}">
+                                </div>
+                                {if $page_count gt 1}
+                                <div class="template-page">
+                                    <div class="list-page">
+                                        {include file="library/page.lbi"}
+                                    </div>
+                                </div>
+                                {/if}
+                                {if $full_page}
+                        		</div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+ 	{include file ='library/pagefooter.lbi'}
+    {insert_scripts files="jquery.purebox.js"}
+    
+    <script type="text/javascript">
+        listTable.recordCount = {$record_count|default:0};
+        listTable.pageCount = {$page_count|default:1};
+
+        {foreach from=$filter item=item key=key}
+        listTable.filter.{$key} = '{$item}';
+        {/foreach}
+    // 点击查看图片
+    $(function(){
+        $('.nyroModal').nyroModal();
+        resetHref();
+        var update_home_temp = "{$update_home_temp}";
+        if(update_home_temp == 1){
+             Ajax.call('visualhome.php', "act=update_home_temp", function(data){
+                 location.reload();
+            }, 'POST', 'JSON');
+        }
+    });
+
+	function resetHref(){
+		$("*[ectype='see']").each(function(){
+			var href = $(this).attr("href");
+			$(this).attr("href",href + "?&" + +Math.random());
+		});
+		$("*[ectype='pic']").each(function(){
+			var src = $(this).attr("src");
+			$(this).attr("src",src + "?&" + +Math.random());
+		});
+	}
+    function removeTemplate(code,temp_id){
+            var template_type = "{$template_type}";
+		if(code){
+			if(confirm("确定删除该模板吗？删除后将无法找回！！请谨慎操作！！")){
+				Ajax.call('visualhome.php', "act=removeTemplate&code=" + code + "&template_type=" + template_type + "&temp_id=" + temp_id, function(data){
+                                    if(data.error == 0){
+                                            location.reload();
+                                       
+                                    }else{
+                                        alert(data.content);
+                                    }
+                                }, 'POST', 'JSON');
+			}
+		}else{
+			alert('请选择删除的模板');
+		}
+    }
+    
+	//使用模板
+	$(document).on("click","*[ectype='setupTemplate']",function(){
+		var code = $(this).data('code');
+                var temp_id = $(this).data('id');
+		var t = $(this);
+		if(confirm("启用新的样式将覆盖原来的样式。您确定要启用选定的样式吗？")){
+			Ajax.call('visualhome.php', 'act=setupTemplate' + '&code=' + code + "&temp_id=" + temp_id, function(result){
+				if(result.error == 1){
+					alert(result.message);
+				}else{
+					t.parents("[ectype='templateList']").find('[ectype="default"]').removeClass("ing");
+					t.parents("li").find('[ectype="default"]').addClass("ing");
+					t.parents("li").addClass("curr").siblings().removeClass("curr");
+				}
+			}, 'POST', 'JSON');
+		}
+	});
+	
+	//信息编辑
+	$(document).on("click","*[ectype='information']",function(){
+		var code = $(this).data('code');
+		var template_type = "{$template_type}";
+		var temp_id = $(this).data('id');
+		Ajax.call('dialog.php', 'act=template_information' + '&check=1&action=add&code=' + code + "&template_type=" + template_type + "&temp_id=" + temp_id, informationResponse, 'POST', 'JSON');
+	});
+	
+	function informationResponse(result){
+		var content = result.content;
+		pb({
+			id: "template_information",
+			title: "模板信息",
+			width: 945,
+			content: content,
+			ok_title: "确定",
+			drag: true,
+			foot: true,
+			cl_cBtn: false,
+			onOk: function(){
+                var template_type = "{$template_type}";
+				var fald = true;
+				var name = $("#information").find("input[name='name']");
+				var ten_file = $("#information").find("input[name='ten_file_textfile']");
+				var big_file = $("#information").find("input[name='big_file_textfile']");
+				var seller_fald = true;
+				var seller_masg = '';
+				if(template_type == 'seller'){
+					var temp_mode = $("#information").find("input[name='temp_mode']:checked").val();
+					var temp_cost = $("#information").find("input[name='temp_cost']").val();
+					if(temp_mode == 1 && temp_cost == ''){
+						seller_masg = "模板金额不能为空";
+						seller_fald = false;
+					}else if(temp_mode == 1 && isNaN(temp_cost)){
+						seller_masg = "模板金额必须是数字";
+						seller_fald = false;
+					}
+				}
+				if(name.val() == ""){
+					error_div("#information input[name='name']","模板名称不能为空");
+					fald = false;
+				}else if(ten_file.val() == ""){
+					error_div("#information input[name='ten_file']","请上传模板封面");
+					fald = false;
+				}else if(big_file.val() == ""){
+					error_div("#information input[name='big_file']","请上传模板大图");
+					fald = false;
+				}else if(seller_fald === false){
+					alert(seller_masg);
+					error_div("#information input[name='temp_cost']",seller_masg);
+					fald = false;
+				}else{
+					var actionUrl = "visualhome.php?act=edit_information";  
+					$("#information").ajaxSubmit({
+						type: "POST",
+						dataType: "JSON",
+						url: actionUrl,
+						data: { "action": "TemporaryImage" },
+						success: function (data) {
+							if(data.error == 1){
+								alert(data.massege);
+							}else{
+									location.reload();
+								
+							}
+                            resetHref();
+						},
+						async: true  
+					});
+					
+					fald = true;
+				}
+				return fald;
+			}
+		});
+	}
+	
+	error_div = function(obj,error, is_error){
+		var error_div = $(obj).parents('div.value').find('div.form_prompt');
+		$(obj).parents('div.value').find(".notic").hide();
+		
+		if(is_error != 1){
+			$(obj).addClass("error");
+		}
+		
+		$(obj).focus();
+		error_div.find("label").remove();
+		error_div.append("<label class='error'><i class='icon icon-exclamation-sign'></i>"+error+"</label>");
+	}
+	
+	$(document).on("click","*[ectype='export']",function(){
+		var checkboxes = '';
+		var i = 0;
+		$("[ectype='templateList']").find("input[name='checkboxes[]']:checked").each(function(){
+			i++;
+		})
+		if(i > 0){
+			$("#exportForm").submit();
+		}else{
+			alert("请选择导出对象！");
+		}
+	});
+	</script>
+</body>
+</html>
+{/if}

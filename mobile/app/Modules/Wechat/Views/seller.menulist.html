@@ -1,0 +1,105 @@
+{include file="seller_pageheader"}
+
+{include file="seller_nave_header"}
+
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file="seller_menu_left"}
+
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+            {include file="seller_nave_header_title"}
+                <div class="wrapper-right of" >
+                    <div class="tabmenu">
+                        <ul class="tab">
+                            <li role="presentation" class="active"><a href="#home" role="tab" data-toggle="tab"> {$lang['menu']}</a></li>
+                        </ul>
+                    </div>
+                    <div class="explanation" id="explanation">
+                        <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4></div>
+                        <ul>
+                            <li>微信自定义菜单最多可添加3个一级菜单、5个二级菜单。</li>
+                            <li>微信自定义菜单分为关键词click，网址view两种类型。click是响应关键词指令，view则是直接跳转URL地址（填写绝对路径）。</li>
+                            <li>每次修改自定义菜单后，由于微信客户端缓存，需要24小时左右微信客户端才会显示生效。测试时可以尝试重新关注微信公众号，或者清除微信缓存。</li>
+                        </ul>
+                    </div>
+
+                    <div class="wrapper-list mt20" >
+                        <div class="common-head">
+                            <div class="fl mb20">
+                                <a href="{url('menu_edit')}" class="sc-btn sc-blue-btn fancybox "><i class="fa fa-plus"></i>{$lang['menu_add']}</a>
+                            </div>
+                        </div>
+
+                        <form action="{url('menu')}" method="post" class="form-horizontal" role="form" onsubmit="return false;">
+                        <div class="list-div" id="listDiv">
+                            <table id="list-table" class="ecsc-default-table" style="">
+                                <thead>
+                                    <tr>
+                                        <th width="20%">{$lang['menu_name']}</th>
+                                        <th width="10%">{$lang['menu_keyword']}</th>
+                                        <th>{$lang['menu_url']}</th>
+                                        <th width="5%">{$lang['sort_order']}</th>
+                                        <th width="20%">{$lang['handler']}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {foreach $list as $key=>$val}
+                                    <tr>
+                                        <td class="tl">{$val['name']}</td>
+                                        <td>{$val['key']}</td>
+                                        <td class="p0">{$val['url']}</td>
+                                        <td>{$val['sort']}</td>
+                                        <td align="center" class="handle">
+                                            <div class="tDiv">
+                                                <a href="{url('menu_edit', array('id'=>$val['id']))}" class="btn_edit "><i class="fa fa-edit"></i>{$lang['wechat_editor']}</a>
+                                                <a href="javascript:;" data-href="{url('menu_del', array('id'=>$val['id']))}'}" class="btn_trash delete_confirm"><i class="fa fa-trash-o"></i>{$lang['drop']}</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {foreach $val['sub_button'] as $k=>$v}
+                                    <tr>
+                                        <td class="tl">&nbsp;|---- &nbsp;&nbsp;{$v['name']}</td>
+                                        <td>{$v['key']}</td>
+                                        <td class="p0">{$v['url']}</td>
+                                        <td>{$v['sort']}</td>
+                                        <td align="center" class="handle">
+                                            <div class="tDiv">
+                                                <a href="{url('menu_edit', array('id'=>$v['id']))}" class="btn_edit "><i class="fa fa-edit"></i>{$lang['wechat_editor']}</a>
+                                                <a href="javascript:;" data-href="{url('menu_del', array('id'=>$v['id']))}'}" class="btn_trash delete_confirm"><i class="fa fa-trash-o"></i>{$lang['drop']}</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {/foreach}
+                                    {/foreach}
+
+                                    <tr>
+                                        <td colspan="5">
+                                            <div class="btn text-center"><a href="{url('sys_menu')}" class="sc-btn sc-blue-btn creat-menu" >{$lang['menu_create']}</a></div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).on("mouseenter",".list-div tbody td",function(){
+        $(this).parents("tr").addClass("tr_bg_blue");
+    });
+
+    $(document).on("mouseleave",".list-div tbody td",function(){
+        $(this).parents("tr").removeClass("tr_bg_blue");
+    });
+</script>
+
+{include file="seller_pagefooter"}
+</body>
+</html>

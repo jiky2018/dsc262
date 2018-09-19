@@ -1,0 +1,75 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<div class="preview">
+    <div class="gallery_wrap">
+        <a href="{if $pictures.0.img_url}{$pictures.0.img_url}{else}{$goods.goods_img}{/if}" class="MagicZoomPlus" id="Zoomer" rel="hint-text: ; selectors-effect: false; selectors-class: img-hover; zoom-distance: 10;zoom-width: 400; zoom-height: 474;"><img src="{if $pictures.0.img_url}{$pictures.0.img_url}{else}{$goods.goods_img}{/if}" id="J_prodImg" alt="{$goods.goods_name|escape:html}" width="405" height="405" /></a>
+    </div>
+    <div class="spec-list">
+        <a href="javascript:void(0);" class="spec-prev"></a>
+        <a href="javascript:void(0);" class="spec-next"></a>
+        <div class="spec-items">
+            <ul>
+            	{if !$pictures.0.img_url && $goods.goods_img}
+                <li><a href="{$goods.goods_img}" rel="zoom-id: Zoomer" rev="{$goods.goods_img}"><img src="{$goods.goods_img}" alt="{$goods.goods_name}" width="60" height="60"/></a></li>
+                {/if}
+            	<!-- {if $pictures}--> 
+                <!-- {foreach from=$pictures item=picture name=foo}-->
+                <li><a href="{if $picture.img_url}{$picture.img_url}{else}{$picture.thumb_url}{/if}" rel="zoom-id: Zoomer" rev="{if $picture.img_url}{$picture.img_url}{else}{$picture.thumb_url}{/if}"><img src="{if $picture.thumb_url}{$picture.thumb_url}{else}{$picture.img_url}{/if}" alt="{$goods.goods_name}" width="60" height="60" /></a></li>
+                <!--{/foreach}--> 
+              	<!-- {/if}-->
+            </ul>
+        </div>
+    </div>
+    <div class="short-share">
+        <div class="short-share-r bar_code hide"><!-- {if $cfg.show_goodssn} 显示商品货号-->{$lang.bar_code}<em id="bar_code"></em><!-- {/if} --></div>
+    	<div id="compare">
+          <a href="javascript:;" class="btn-compare" id="compareLink" style=" margin-left:10px;">
+       	  	<input id="{$goods.goods_id}" type="checkbox" onClick="Compare.add(this, {$goods.goods_id},'{$goods.goods_name|escape:html}','{$goods.goods_type}', '{$goods.goods_thumb}', '{$goods.shop_price}', '{$goods.market_price}')" style=" vertical-align:middle; margin-left:8px;"/>&nbsp;&nbsp;<label for="{$goods.goods_id}" style=" line-height:25px; height:25px;">对比</label>
+          </a>
+        </div>
+        <div class="collecting"><a href="javascript:void(0);" class="collection choose-btn-coll"  data-dialog="goods_collect_dialog" data-divid="goods_collect" data-url="user.php?act=collect" data-goodsid="{$goods.goods_id}" data-width="455" data-height="58" data-title="提示"><b></b><em>收藏 (<i id="collect_count"></i>)</em></a></div>
+        {if $is_http eq 2}
+        <div class="bdsharebuttonbox">
+        	<a href="#" class="bds_more" data-cmd="more" style="background:url(themes/ecmoban_dsc/images/fx.png) 0px 10px no-repeat !important;color: #666;line-height: 25px;height: 25px;margin: 4px 15px 4px 10px;padding-left: 20px; padding-top:5px;display: block; float:right;">分享</a>
+        </div>
+        {else}
+        	<div id="bdshare" class="bdshare_t bds_tools get-codes-bdshare" style="float:right;"><a class="bds_more" href="#none" style="background:url(../images/fx.png) 0px 10px no-repeat !important;color: #666;line-height: 25px;height: 25px;margin: 4px 15px 4px 10px;padding-left: 20px; padding-top:5px;display: block; float:right;">分享</a></div>
+        {/if}
+    </div>
+</div>
+
+<script type="text/javascript" id="bdshare_js" data="type=tools&amp;uid=692785" ></script>
+<script type="text/javascript" id="bdshell_js"></script>
+{if $is_http eq 2}
+<script type="text/javascript">
+	document.getElementById("bdshell_js").src = "{$url}static/api/js/share.js?v=89860593.js?cdnversion=" + new Date().getHours();
+</script>
+{else}
+<script type="text/javascript">
+	document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + new Date().getHours();
+</script>
+{/if}
+
+<script type="text/javascript">
+$(function(){
+	get_collection();
+});
+
+function get_collection(){
+	Ajax.call('ajax_dialog.php', 'act=goods_collection&goods_id=' + {$goods_id|default:0}, goodsCollectionResponse, 'GET', 'JSON');
+}
+
+function goodsCollectionResponse(res){
+	$("#collect_count").html(res.collect_count);
+	
+	if(res.is_collect > 0){
+		$(".collection").addClass('selected');
+		$("#collection_iconfont").addClass("icon-collection-alt");
+		$("#collection_iconfont").removeClass('icon-collection');
+	}else{
+		$(".collection").removeClass('selected');
+		$("#collection_iconfont").addClass("icon-collection");
+		$("#collection_iconfont").removeClass('icon-collection-alt');
+	}
+}
+</script>

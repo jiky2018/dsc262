@@ -1,0 +1,61 @@
+<div class="step_item_table2" id="step_item_table2">
+    <table class="table_attr" width="100%">
+        <tbody>
+            {foreach from=$attr_group item=group}
+            {if $group.attr_info}
+            <tr>
+                {foreach from=$group.attr_info item=one}
+                <td class="td_bg_blue" width="7%">{$one.attr_value}<input type="hidden" name="attr[{$one.attr_id}][]" value="{$one.attr_value}" /></td>		
+                {/foreach}		
+                <td width="8%"><input type="text" name="product_number[]" onBlur="listTable.editInput(this, 'edit_product_number', {$group.product_id|default:0}, $('#goods_model').val(), 'goods_model');" class="text w60" autocomplete="off" value="{$group.product_number|default:0}" /></td>
+				<!--<td width="8%"><input type="text" name="product_price[]" onBlur="listTable.editInput(this, 'edit_product_price', {$group.product_id|default:0}, $('#goods_model').val(), 'goods_model');" class="text w60" autocomplete="off" value="{$group.product_price|default:0.00}" /></td>-->
+				<td width="8%"><input type="text" name="product_sn[]" onBlur="listTable.editInput(this, 'edit_product_sn', {$group.product_id|default:0}, $('#goods_model').val(), 'goods_model');" class="text w120" autocomplete="off" value="{$group.product_sn}" /></td>				
+                <td class="handle" width="5%">
+                    {if $group.product_id}
+                        <div class="tDiv pl0 a1">
+                        <a href="javascript:void(0);" class="btn_trash" onclick="if (confirm('{$lang.trash_product_confirm}')) dropProduct('{$group.product_id}')"><i class="icon icon-trash"></i>{$lang.drop}</a>
+                        </div>
+                    {else}
+                        {$lang.n_a}
+                    {/if}
+                    <input type="hidden" name="product_id[]" value="{$group.product_id|default:0}" />
+                </td>
+            </tr>
+            {/if}
+            {/foreach}
+        </tbody>
+    </table>
+    <input name="group_attr" type="hidden" value='{$group_attr}'>
+</div>
+
+<!--{if $filter.page_count gt 1}-->
+<div id="turn-page" class="attr-turn-page">
+    <div class="pagination">
+        <ul>
+            <li>{literal}{if $filter.page neq 1}<a href="javascript:listTable.gotoPageFirst()">{/if}{/literal}<span>首页</span>{if $filter.page neq 1}</a>{/if}</li>
+            <li{if $filter.page eq 1} class="curr"{/if}>{literal}{if $filter.page neq 1}<a href="javascript:listTable.gotoPagePrev()">{/if}{/literal}<span class="prev">上一页</span>{if $filter.page neq 1}</a>{/if}</li>
+            {foreach from=$page_count_arr item=page_count name=pageCount}
+            {if $page_count eq $filter.page}
+                <li><span class="currentpage">{$page_count}</span></li>
+            {else}
+                <li><a href="javascript:listTable.gotoPage({$page_count})"><span>{$page_count}</span></a></li>
+            {/if}
+            {/foreach}
+            <li{if $filter.page eq $filter.page_count} class="curr"{/if}>{literal}{if $filter.page neq $filter.page_count}<a href="javascript:listTable.gotoPageNext()">{/if}{/literal}<span class="next">下一页</span>{if $filter.page neq $filter.page_count}</a>{/if}</li>
+            <li>{literal}{if $filter.page neq $filter.page_count}<a href="javascript:listTable.gotoPageLast()" class="last">{/if}{/literal}<span>末页</span>{if $filter.page neq $filter.page_count}</a>{/if}</li>
+        </ul>
+    </div>    
+</div>
+<!--{/if}-->
+<span class="goods_attr_04_explain">（说明：含有两页以上请用批量上传功能）</span>
+<div class="goods_attr_04_batch">
+    {if $goods_model eq 1}
+        <a href="javascript:;" class="btn btn35 red_btn" id="produts_warehouse_batch">CSV批量上传</a>
+    {elseif $goods_model eq 2}
+        <a href="javascript:;" class="btn btn35 red_btn" id="produts_area_batch">CSV批量上传</a>
+    {else}
+        <a href="javascript:;" class="btn btn35 red_btn" id="produts_batch">CSV批量上传</a>
+    {/if}
+    <a href="javascript:;" class="btn btn35 red_btn ml20" id="attr_refresh">刷新</a>
+</div> 
+<input name="arrt_page_count" type="hidden" value='{$filter.page_count}'>

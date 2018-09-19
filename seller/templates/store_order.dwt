@@ -1,0 +1,424 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+				{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="search-info">
+                    <div class="search-form">
+                    <form action="javascript:searchOrder()" name="searchForm">
+                        <div id="status" class="imitate_select select_w145">
+                            <div class="cite">{$lang.select_please}</div>
+                            <ul>
+                                <li><a href="javascript:;" data-value="-1" class="ftx-01">{$lang.select_please}</a></li>
+                                {foreach from=$status_list item=list key=key}
+                                <li><a href="javascript:;" data-value="{$key}" class="ftx-01">{$list}</a></li>
+                                {/foreach}
+                            </ul>
+                            <input name="status" type="hidden" value="-1"/>
+                        </div>
+                        <input type="text" class="text w140 mr10" name="consignee" value="" placeholder="{$lang.consignee}">
+                        <input type="text" class="text w140 mr10" name="order_sn" value="" placeholder="{$lang.order_sn}">
+                        <div class="search-key">
+                        <input type="text" class="text w140" name="keywords" value="" placeholder="商品编号/商品关键字">
+                        <input type="submit" class="submit" value="搜索">
+                        </div>
+                    </form>
+                    </div>
+                </div>
+                <div class="btn-info">
+                	<a href="javascript:void(0);" class="sc-btn sc-blue-btn" ectype="merge_order"><i class="icon icon-copy"></i>合并订单</a>
+                        <a href="javascript:download_orderlist();" class="sc-btn sc-blue-btn"><i class="icon-download-alt"></i>导出订单</a>
+                </div>
+                <div class="clear"></div>
+                <div class="order_state_tab">
+                    <a href="order.php?act=list&serch_type=-1" data-value="-1" {if $serch_type eq -1}class="current"{/if}>全部({$count_arr.-1|default:0})</a>
+                    {foreach from=$status_list item=list key=key}
+                    <a href="order.php?act=list&serch_type={$key}" data-value="{$key}" {if $serch_type eq $key}class="current"{/if}>{$list}({$count_arr.$key|default:0})</a>
+                    {/foreach}
+                </div>
+                {/if}
+                <form method="post" action="order.php?act=operate" name="listForm" onsubmit="return check()">
+                <div class="table_list" id="listDiv">
+                    <table class="ecsc-default-table order">
+                        <thead>
+                            <tr>
+                            	<th class="w50 frist">{$lang.record_id}</th>
+                                <th class="w500 tl">商品信息</th>
+                                <th class="w100"><a href="javascript:listTable.sort('consignee', 'DESC'); ">{$lang.consignee}</a>{$sort_consignee}</th>
+                                <th class="w100"><a href="javascript:listTable.sort('total_fee', 'DESC'); ">{$lang.total_fee}</a>{$sort_total_fee}</th>
+                                <th class="w100">{$lang.formated_order_amount}</th>
+                                <th class="w100">{$lang.all_status}</th>
+                                <th class="w150">{$lang.handler}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        	{foreach from=$order_list item=order key=okey}
+                        	<tr class="cut"><td colspan="8" class="sep-row">&nbsp;</td></tr>
+                            <tr>
+                                <th colspan="8">
+                                	<div class="order-sku">
+                                        <div class="item"><span>{$lang.order_sn}：</span><a href="order.php?act=info&order_id={$order.order_id}" id="order_{$okey}">{$order.order_sn}</a></div>
+                                        <div class="item"><span>{$lang.order_time}：</span><span>{$order.short_order_time}</span></div>
+                                        <div class="item"><a href="javascript:void();" onclick="window.open('tp_api.php?act=order_print&order_id={$order.order_id}')" class="sc-btn sc-org-btn" title="打印发货单"><i class="icon-print"></i>打印发货单</a></div>
+                                    </div>
+                                </th>
+                            </tr>
+                            <tr>
+                            	<td class="bdl frist trigger">
+                                    <div class="checkbox-info">
+                                        <input type="checkbox" class="ui-checkbox" value="{$order.order_sn}" id="checkbox_{$order.order_sn}" name="checkboxes[]"><label for="checkbox_{$order.order_sn}" class="ui-label"></label>
+                                    </div>
+                                    <div class="number">{$order.order_id}</div>
+                                </td>
+                                <td class="bdl order-goods-list">
+                                    {foreach from=$order.goods_list item=goods name=goodsList}
+                                        <div class="product_info {if $smarty.foreach.goodsList.last}last{/if}">
+											{if $goods.oi_extension_code eq "group_buy"}
+											<div class="ecsc-goods-thumb" ><a href="../group_buy.php?act=view&id={$goods.extension_id}" target="_blank"><img src="{$goods.goods_thumb}" onmouseover="toolTip('<img src={$goods.goods_thumb}>')" onmouseout="toolTip()"></a></div>
+											{elseif $goods.oi_extension_code eq "exchange_goods"}
+											<div class="ecsc-goods-thumb" ><a href="../exchange.php?id={$goods.extension_id}&act=view" target="_blank"><img src="{$goods.goods_thumb}" onmouseover="toolTip('<img src={$goods.goods_thumb}>')" onmouseout="toolTip()"></a></div>
+											{elseif $goods.oi_extension_code eq "snatch"}
+											<div class="ecsc-goods-thumb" ><a href="../snatch.php?id={$goods.extension_id}" target="_blank"><img src="{$goods.goods_thumb}" onmouseover="toolTip('<img src={$goods.goods_thumb}>')" onmouseout="toolTip()"></a></div>
+											{elseif $goods.oi_extension_code eq "seckill"}
+											<div class="ecsc-goods-thumb" ><a href="../seckill.php?id={$goods.extension_id}&act=view" target="_blank"><img src="{$goods.goods_thumb}" onmouseover="toolTip('<img src={$goods.goods_thumb}>')" onmouseout="toolTip()"></a></div>
+											{elseif $goods.oi_extension_code eq "auction"}
+											<div class="ecsc-goods-thumb" ><a href="../auction.php?id={$goods.extension_id}&act=view" target="_blank"><img src="{$goods.goods_thumb}" onmouseover="toolTip('<img src={$goods.goods_thumb}>')" onmouseout="toolTip()"></a></div>
+											{elseif $goods.oi_extension_code eq "presale"}
+											<div class="ecsc-goods-thumb" ><a href="../presale.php?id={$goods.extension_id}&act=view" target="_blank"><img src="{$goods.goods_thumb}" onmouseover="toolTip('<img src={$goods.goods_thumb}>')" onmouseout="toolTip()"></a></div>
+											{elseif $goods.extension_code eq "package_buy"}
+											<div class="ecsc-goods-thumb" ><a href="../package.php" target="_blank"><img src="../data/gallery_album/package_goods_default.jpg" onmouseover="toolTip('<img src={$goods.goods_thumb}>')" onmouseout="toolTip()"></a></div>
+											{else}
+                                            <div class="ecsc-goods-thumb" ><a href="../goods.php?id={$goods.goods_id}" target="_blank"><img src="{$goods.goods_thumb}" onmouseover="toolTip('<img src={$goods.goods_thumb}>')" onmouseout="toolTip()"></a></div>
+											{/if}
+                                            <div class="goods-info">
+												{if $goods.oi_extension_code eq "group_buy"}
+												<div class="goods-name"><a target="_blank" href="../group_buy.php?act=view&id={$order.extension_id}">{$goods.goods_name}{if $goods.trade_url}<a href="{$goods.trade_url}" target="_blank"><span class="org">[{$lang.trade_snapshot}]</span></a>{/if}</a></div>
+												{elseif $goods.oi_extension_code eq "exchange_goods"}
+												<div class="goods-name"><a target="_blank" href="../exchange_goods.php?act=view&id={$order.extension_id}">{$goods.goods_name}{if $goods.trade_url}<a href="{$goods.trade_url}" target="_blank"><span class="org">[{$lang.trade_snapshot}]</span></a>{/if}</a></div>
+												{elseif $goods.oi_extension_code eq "snatch"}
+												<div class="goods-name"><a target="_blank" href="../snatch.php?act=view&id={$order.extension_id}">{$goods.goods_name}{if $goods.trade_url}<a href="{$goods.trade_url}" target="_blank"><span class="org">[{$lang.trade_snapshot}]</span></a>{/if}</a></div>
+												{elseif $goods.oi_extension_code eq "seckill"}
+												<div class="goods-name"><a target="_blank" href="../seckill.php?act=view&id={$order.extension_id}">{$goods.goods_name}{if $goods.trade_url}<a href="{$goods.trade_url}" target="_blank"><span class="org">[{$lang.trade_snapshot}]</span></a>{/if}</a></div>
+												{elseif $goods.oi_extension_code eq "auction"}
+												<div class="goods-name"><a target="_blank" href="../auction.php?act=view&id={$order.extension_id}">{$goods.goods_name}{if $goods.trade_url}<a href="{$goods.trade_url}" target="_blank"><span class="org">[{$lang.trade_snapshot}]</span></a>{/if}</a></div>
+												{elseif $goods.oi_extension_code eq "presale"}
+												<div class="goods-name"><a target="_blank" href="../presale.php?act=view&id={$order.extension_id}">{$goods.goods_name}{if $goods.trade_url}<a href="{$goods.trade_url}" target="_blank"><span class="org">[{$lang.trade_snapshot}]</span></a>{/if}</a></div>
+												{elseif $goods.extension_code eq "package_buy"}
+												<div class="goods-name"><a target="_blank" href="../package_buy.php">{$goods.goods_name}{if $goods.trade_url}<a href="{$goods.trade_url}" target="_blank"><span class="org">[{$lang.trade_snapshot}]</span></a>{/if}</a></div>
+												{else}
+												<div class="goods-name"><a target="_blank" href="../goods.php?id={$goods.goods_id}">{$goods.goods_name}{if $goods.trade_url}<a href="{$goods.trade_url}" target="_blank"><span class="org">[{$lang.trade_snapshot}]</span></a>{/if}</a></div>
+												{/if}
+                                                
+                                                <div class="price">￥{$goods.goods_price}</div>
+                                                <div class="num">* {$goods.goods_number}</div>
+                                                {if $goods.goods_attr}<div class="price">【{$goods.goods_attr}】</div>{/if}
+                                                {if $goods.ret_id}
+                                                <a href="order.php?act=return_info&ret_id={$goods.ret_id}&rec_id={$goods.rec_id}" class="sc-btn sc-blueBg-btn btn25">{$goods.back_order.return_status}</a>
+                                                {/if}
+                                                <div class="clear"></div>
+                                                <div class="goods-icons">
+                                                    {if $order.is_stages eq 1}<div class="order_icon order_icon_bt" title="白条分期">白条分期</div>{/if}
+                                                    {if $order.is_zc_order eq 1}<div class="order_icon order_icon_zc" title="众筹订单">众筹订单</div>{/if}
+                                                    {if $order.is_store_order eq 1}<div class="order_icon order_icon_so" title="门店订单">门店订单</div>{/if}
+                                                    {if $order.is_drp_order eq 1}<div class="order_icon order_icon_fx" title="分销订单">分销订单</div>{/if}
+                                                    {if $order.o_extension_code eq "group_buy"}
+                                                        <div class="order_icon order_icon_tg" title="{$lang.group_buy}">{$lang.group_buy}</div>
+                                                        <span class="red">{$order.cur_status}</span>
+                                                    {elseif $order.o_extension_code eq "exchange_goods"}
+                                                        <div class="order_icon order_icon_jf" title="{$lang.exchange_goods}">{$lang.exchange_goods}</div>
+                                                    {elseif $order.o_extension_code eq "auction"}
+                                                        <div class="order_icon order_icon_pm" title="{$lang.auction}">{$lang.auction}</div>
+                                                    {elseif $order.o_extension_code eq "snatch"}
+                                                        <div class="order_icon order_icon_db" title="{$lang.snatch}">{$lang.snatch}</div>
+                                                    {elseif $order.o_extension_code eq "presale"}
+                                                        <div class="order_icon order_icon_ys" title="{$lang.presale}">{$lang.presale}</div>  
+                                                    {elseif $order.o_extension_code eq "seckill"}
+                                                        <div class="order_icon order_icon_ms" title="{$lang.seckill}">{$lang.seckill}</div>  
+                                                    {elseif $order.o_extension_code eq "team_buy"}
+                                                        <div class="order_icon order_icon_team" title="拼团">拼团</div>
+                                                    {elseif $order.o_extension_code eq "bargain_buy"}
+                                                        <div class="order_icon order_icon_bargain" title="砍价">砍价</div>    
+                                                    {elseif $order.o_extension_code eq "wholesale"}    
+                                                        <div class="order_icon order_icon_wholesale" title="批发">批发</div>    
+                                                    {/if}
+                                                    {if $order.iog_extension_code eq "package_buy"}
+                                                        <div class="order_icon order_icon_package" title="超值礼包">超值礼包</div>
+                                                    {elseif $order.iog_extension_code eq 'virtual_card'}
+                                                        <div class="order_icon order_icon_xn" title="虚拟商品订单">虚拟商品订单</div>
+                                                    {/if}
+                                                    {if $order.is_stages eq 0 && $order.is_zc_order eq 0 && $order.is_store_order eq 0 && $order.o_extension_code eq '' && $order.iog_extension_code eq ''}
+                                                        {if $order.iog_extension_codes}
+                                                        {foreach from=$order.iog_extension_codes item=extension_code}
+                                                            {if $extension_code eq ''}
+                                                            <div class="order_icon order_icon_pt" title="普通订单">普通订单</div>
+                                                            {elseif $extension_code eq 'virtual_card'}
+                                                            <div class="order_icon order_icon_xn" title="虚拟商品订单">虚拟商品订单</div>
+                                                            {/if}
+                                                        {/foreach}
+                                                        {else}
+                                                        <div class="order_icon order_icon_pt" title="普通订单">普通订单</div>
+                                                        {/if}
+                                                    {/if}
+                                                    {if $order.order_child neq 0}
+                                                        <div class="order_icon" title="主订单">主订单</div>
+                                                    {/if}
+                                                    {if !$order.order_child > 0}                                            
+                                                        {if $order.main_order_id > 0}
+                                                        <div class="order_icon order_icon_zdd">{$lang.sub_order_sn2}</div>
+                                                        {/if}
+                                                    {/if}
+                                                    
+                                                    
+                                                    {if $goods.ret_id}
+                                                        <div class="order_icon order_icon_return" title="退换货订单">退换货订单</div>
+                                                    {/if}
+                                                    {if $order.store_order_id}
+                                                    <div class="order_icon order_icon_dian" title="店">店</div>
+                                                    {/if}   
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {/foreach}
+                                </td>
+                                <td class="bdl" rowspan="1">
+                                    <div class="buyer">
+                                        {$order.consignee}<p member_id="1"></p>
+                                        <div class="buyer-info"><em></em>
+                                            <div class="con">
+                                                <h3><i></i><span>联系信息</span></h3>
+                                                <dl>
+                                                    <dt>姓名：</dt>
+                                                    <dd>{$order.consignee}</dd>
+                                                </dl>
+                                                <dl>
+                                                    <dt>电话：</dt>
+                                                    <dd>{$order.mobile}</dd>
+                                                </dl>
+                                                <dl>
+                                                    <dt>地址：</dt>
+                                                    <dd>[{$order.region}]{$order.address}</dd>
+                                                </dl>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="bdl" rowspan="1">
+                                    <p class="ecsc-order-amount">{$order.formated_total_fee}</p>
+                                    <p class="goods-pay">{$order.pay_name}</p>
+                                    <div class="price-tag">
+                                        <span>{if $order.referer eq 'mobile'}APP{elseif $order.referer eq 'touch'}WAP{elseif $order.referer eq 'ecjia-cashdesk'}收银台{else}PC{/if}订单</span>
+                                    </div>
+                                </td>
+                                <td class="bdl" rowspan="1">
+                                    <p class="ecsc-order-amount">{$order.formated_total_fee_order}</p>
+                                </td>
+                                <td class="bdl bdr" rowspan="1">
+                                    <p><span>{$lang.os[$order.order_status]}<br>{$lang.ps[$order.pay_status]}<br>{$lang.ss[$order.shipping_status]}</span></p>
+                                    <!-- 订单查看 -->
+                                    <p></p>
+                                    <!-- 物流跟踪 -->
+                                    <p></p>
+                                </td>
+                                <!-- 取消订单 -->
+                                <td class="bdl bdr" rowspan="1"><a href="order.php?act=info&order_id={$order.order_id}">订单详情</a>
+                                    {if $order.can_remove && $order_os_remove}
+                                    <p><a href="javascript:;" onclick="listTable.remove({$order.order_id}, remove_confirm, 'remove_order')" class="red">{$lang.remove}</a></p>
+                                    {/if}
+                                    {if $order.is_delete eq 1}
+                                    <p><font class="red" title="{$lang.notice_trash_order}">{$lang.order_not_operable}</font></p>
+                                    {/if}
+                               </td>
+                            </tr>
+                            <tr>
+                                <th colspan="8">
+                                	<div class="order-sku">
+                                        <div class="item"><span>{$lang.pay_name}：</span><span class="ecsc-order-amount">{$order.pay_name}</span></div>
+                                        <div class="item fl"><span>{$lang.shipping_name}：</span><span class="ecsc-order-amount">{$order.shipping_name}</span></div>
+                                    	{if $order.chargeoff_status eq 1 || $order.chargeoff_status eq 2}
+                                        <div class="item fr">
+                                            {if $order.chargeoff_status eq 1}
+                                            <em class="red">【已出佣金账单：{$order.bill_sn}】</em>
+                                            {else}
+                                            <em class="red">【已结佣金账单：{$order.bill_sn}】</em>
+                                            {/if}
+                                            <a href="merchants_commission.php?act=bill_detail&bill_id={$order.bill_id}&seller_id={$order.seller_id}&proportion={$order.proportion}&commission_model={$order.commission_model}" target="_blank">【查看账单】</a>
+                                        </div>
+                                        {/if}
+                                    </div>
+                                </th>
+                            </tr>
+							{foreachelse}
+							<tr><td class="no-records" colspan="11">{$lang.no_records}</td></tr>
+                        	{/foreach}
+                        </tbody>
+                        <tfoot>
+                        	<tr><td colspan="8"></td></tr>
+                            <tr class="head">
+                                <td class="frist tc"><input type="checkbox" id="all" class="ui-checkbox" name="checkboxes[]" value='' onclick='listTable.selectAll(this, "checkboxes")'><label for="all" class="ui-label"></label></td>
+                                <td class="batch-operation" colspan="20">
+                                    <input name="confirm" type="submit" id="btnSubmit" value="{$lang.op_confirm}" class="sc-btn btn_disabled" disabled="true" onclick="this.form.target = '_self'" />
+                                    <input name="invalid" type="submit" id="btnSubmit1" value="{$lang.op_invalid}" class="sc-btn btn_disabled" disabled="true" onclick="this.form.target = '_self'" />
+                                    <input name="cancel" type="submit" id="btnSubmit2" value="{$lang.op_cancel}" class="sc-btn btn_disabled" disabled="true" onclick="this.form.target = '_self'" />
+                                    {if $order_os_remove}
+                                    <input name="remove" type="submit" id="btnSubmit3" value="{$lang.remove}" class="sc-btn btn_disabled" disabled="true" onclick="this.form.target = '_self'" />
+                                    {/if}
+                                    <input name="print" type="submit" id="btnSubmit4" value="{$lang.print_order}" class="sc-btn btn_disabled" disabled="true" onclick="this.form.target = '_blank'" />
+                                    <input type="button" id="btnSubmit5" value="{$lang.print_shipping}" class="sc-btn btn_disabled" disabled="true" print-data="print_shipping" />
+                                    <input name="batch" type="hidden" value="1" />
+                                    <input name="order_id" type="hidden" value="" />
+                                    <span>{if $record_count}共{$record_count}条记录{/if}</span> 
+                                    <span class="page page_3">
+                                    	<i>每页</i> <input type='text' size='3' id='pageSize' style=" border:1px solid #e5e5e5; background:#FFF; text-align:center; padding:3px; border-radius:4px;" value="{$filter.page_size}" onkeypress="return listTable.changePageSize(event)" />
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                            	<td colspan="8">{include file="page.dwt"}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                </form>
+                {if $full_page}
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+{insert_scripts files="../js/jquery.picTip.js,jquery.purebox.js"}
+{insert_scripts files="../js/utils.js"}
+<script type="text/javascript">
+	listTable.recordCount = {$record_count};
+	listTable.pageCount = {$page_count};
+	
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+
+	{literal}
+    /**
+     * 搜索订单
+     */
+    function searchOrder()
+    {
+		listTable.filter['keywords'] = Utils.trim(document.forms['searchForm'].elements['keywords'].value);
+        listTable.filter['order_sn'] = Utils.trim(document.forms['searchForm'].elements['order_sn'].value);
+        listTable.filter['consignee'] = Utils.trim(document.forms['searchForm'].elements['consignee'].value);
+        listTable.filter['composite_status'] = document.forms['searchForm'].elements['status'].value;
+        listTable.filter['page'] = 1;
+        listTable.loadList();
+    }
+
+    function check()
+    {
+      var snArray = new Array();
+      var eles = document.forms['listForm'].elements;
+      for (var i=0; i<eles.length; i++)
+      {
+        if (eles[i].tagName == 'INPUT' && eles[i].type == 'checkbox' && eles[i].checked && eles[i].value != 'on')
+        {
+          snArray.push(eles[i].value);
+        }
+      }
+	  
+      if (snArray.length == 0)
+      {
+        return false;
+      }
+      else
+      {
+        //eles['order_id'].value = snArray.toString();
+		$("input[name='order_id']").val(snArray.toString());
+        return true;
+      }
+    }
+
+	//导出订单列表
+	function download_orderlist()
+	{
+        page_downloadList("{$page_count}",'order','ajax_download','order','order_download','订单导出弹窗');
+	}
+	
+	//列表批量处理
+	/*$(document).on("click",".batch-operation a.sc-btn",function(){
+		var _this = $(this),
+			table = _this.parents(".ecsc-default-table"),
+			checked = table.find("input[name='checkboxes[]']").is(":checked"),
+			type = _this.data("type");
+		if(checked){
+			$("form[name='listForm']").submit();
+		}else{
+			alert("请勾选商品");
+		}
+	});*/
+	
+	$(document).on("click", "a[ectype='merge_order']", function () {
+		Ajax.call('order.php', 'act=merge', function(data){
+			var content = data.content;
+			pb({
+				id:"merge_order",
+				title:"合并订单",
+				width:680,
+				content:content,
+				ok_title:"合并",
+				cl_title:"取消",
+				drag:false,
+				foot:true,
+				cl_cBtn:true,
+				onOk:function(){
+					if (confirm('您确定合并这两个订单么？ ')) {
+						var fromOrderSn = document.getElementById('from_order_sn').value;
+						var toOrderSn = document.getElementById('to_order_sn').value;
+						Ajax.call('order.php?is_ajax=1&act=ajax_merge_order','from_order_sn=o' + fromOrderSn + '&to_order_sn=o' + toOrderSn, merge_orderResponse, 'POST', 'JSON');
+					}
+				}
+			});
+		}, 'POST', 'JSON');
+	})
+	function merge_orderResponse(result)
+	{
+		if (result.message.length > 0)
+		{
+			alert(result.message);
+		}
+	}
+	$(document).on('click',"*[print-data='print_shipping']",function(){
+		var frm = $("form[name='listForm']");
+		var checkboxes = [];
+		frm.find("input[name='checkboxes[]']:checkbox:checked").each(function(){
+			var val = $(this).val();
+			if(val){
+				checkboxes.push(val);
+			}
+		});
+		if(checkboxes){
+			window.open("print_batch.php?act=print_batch&checkboxes="+checkboxes);
+		}
+	});
+	
+	$(document).on('click',"*[id='all']",function(){
+		var frm = $("form[name='listForm']");
+		var checkboxes = [];
+		frm.find("input[name='checkboxes[]']").each(function(){
+			var val = $(this).val();
+			if(val){
+				checkboxes.push(val);
+			}
+		});
+		if(checkboxes){
+			$(":input[name='order_id']").val(checkboxes);
+		}
+	});
+</script>
+</body>
+</html>
+{/if}

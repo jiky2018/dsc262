@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="clear"></div>
+                <div class="act-div">
+                    <div class="indBlock">
+                        <i class="sc_icon sc_icon_lt"></i>
+                        <i class="sc_icon sc_icon_rb"></i>
+                        <div class="item">
+                            <div class="label">活动名称：</div>
+                            <div class="value"><h4>{$info.snatch_name}</h4></div>
+                        </div>
+                        <div class="item">
+                            <div class="label">活动起止时间：</div>
+                            <div class="value">{$info.start_time}&nbsp;~&nbsp;{$info.end_time}</div>
+                        </div>
+                        {if $result}
+                        <div class="item">
+                            <div class="label">{$lang.bid_user}：</div>
+                            <div class="value">{$result.email}</div>
+                        </div>
+                        <div class="item">
+                            <div class="label">{$lang.email}：</div>
+                            <div class="value">{$result.bid_time}</div>
+                        </div>
+                        <div class="item">
+                            <div class="label">{$lang.bid_time}：</div>
+                            <div class="value">{$result.user_name}</div>
+                        </div>
+                        <div class="item">
+                            <div class="label">{$lang.min_union_price}：</div>
+                            <div class="value">{$result.bid_price}</div>
+                        </div>
+                        {/if}
+                    </div>
+                </div>
+                <table class="ecsc-default-table mt20">
+                	<thead>
+                    <tr>
+                        <th width="25%">编号</th>
+                        <th width="25%">出价用户</th>
+                        <th width="25%">出价时间</th>
+                        <th width="25%">所出价格</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {foreach from=$bid_list item=bid}
+                    <tr>
+                      <td align="center">{$bid.log_id}</td>
+                      <td align="center">{$bid.user_name}</td>
+                      <td align="center">{$bid.bid_time}</td>
+                      <td align="center">{$bid.bid_price}</td>
+                    </tr>
+                    {foreachelse}
+                    <tr><td class="no-records" colspan="4">{$lang.no_records}</td></tr>
+                    {/foreach}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="4">{include file="page.dwt"}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript" language="JavaScript">
+<!--
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+
+  {literal}
+  onload = function()
+  {
+    startCheckOrder();
+  }
+  
+  {if $priv_ru eq 1}
+    function get_store_search(val){
+        if(val == 1){
+            document.forms['searchForm'].elements['merchant_id'].style.display = '';
+            document.forms['searchForm'].elements['store_keyword'].style.display = 'none';
+            document.forms['searchForm'].elements['store_type'].style.display = 'none';
+        }else if(val == 2){
+            document.forms['searchForm'].elements['merchant_id'].style.display = 'none';
+            document.forms['searchForm'].elements['store_keyword'].style.display = '';
+            document.forms['searchForm'].elements['store_type'].style.display = 'none';
+        }else if(val == 3){
+            document.forms['searchForm'].elements['merchant_id'].style.display = 'none';
+            document.forms['searchForm'].elements['store_keyword'].style.display = '';
+            document.forms['searchForm'].elements['store_type'].style.display = '';
+        }else{
+            document.forms['searchForm'].elements['merchant_id'].style.display = 'none';
+            document.forms['searchForm'].elements['store_keyword'].style.display = 'none';
+            document.forms['searchForm'].elements['store_type'].style.display = 'none';
+        }
+    }
+    {/if}
+
+  /**
+   * 搜索团购活动
+   */
+  function searchGroupBuy()
+  {
+	{if $priv_ru eq 1}
+        listTable.filter['store_search'] = Utils.trim(document.forms['searchForm'].elements['store_search'].value);
+        listTable.filter['merchant_id'] = Utils.trim(document.forms['searchForm'].elements['merchant_id'].value);
+        listTable.filter['store_keyword'] = Utils.trim(document.forms['searchForm'].elements['store_keyword'].value);
+        listTable.filter['store_type'] = Utils.trim(document.forms['searchForm'].elements['store_type'].value);
+	{/if}
+
+    var keyword = Utils.trim(document.forms['searchForm'].elements['keyword'].value);
+    listTable.filter['keyword'] = keyword;
+    listTable.filter['page'] = 1;
+    listTable.loadList("group_buy_list");
+  }
+  {/literal}
+//-->
+</script>
+</body>
+</html>

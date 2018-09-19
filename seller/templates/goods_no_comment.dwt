@@ -1,0 +1,117 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}					
+                <!--<div class="search-info">
+                    <div class="search-form">
+                        <form action="javascript:searchComment()" name="searchForm">
+							<div class="search-key">
+                                <input type="text" name="keyword" class="text text_2" placeholder="{$lang.search_comment}" />
+                                <input type="submit" class="submit" value="{$lang.button_search}" />
+                            </div>
+                        </form>
+                    </div>
+                </div>	-->				
+                <form method="POST" action="comment_manage.php?act=batch_drop" name="listForm" onsubmit="return confirm_bath()">
+                <!-- start comment list -->
+                <div class="list-div" id="listDiv">
+                {/if}
+                <table class="ecsc-default-table">
+                    <thead>
+                        <tr>
+                        	<th width="10%"><a href="javascript:;">编号</a><div class="img">{$sort_add_time}</div></th>
+                            <th width="30%"><a href="javascript:;">商品名</a><div class="img">{$sort_user_name}</div></th>                           
+                            <th width="10%"><a href="javascript:;">商品图片</a><div class="img">{$sort_id_value}</div></th>
+                            <th width="10%"><a href="javascript:;">购买者</a><div class="img">{$sort_id_value}</div></th>
+                            <th width="10%"><a href="javascript:;">订单号</a><div class="img">{$sort_comment_type}</div></th>
+                            <th width="10%"><a href="javascript:;">商品价格</a><div class="img">{$sort_ip_address}</div></th>
+                            <th width="10%"><a href="javascript:;">购买数量</a><div class="img">{$sort_add_time}</div></th>
+                        </tr>
+                  </thead>
+                  <tbody>
+                  {foreach from=$no_com_goods item=no_com}
+                  <tr class="bd-line">
+                  	<td align="center">{$no_com.order_id}</td>
+                    <td align="center"><a href="../goods.php?id={$no_com.goods_id}" target="_blank">{$no_com.goods_name}</a></td>
+                    <td align="center"><a href="../goods.php?id={$no_com.goods_id}" target="_blank"><img src="../{$no_com.goods_thumb}" onmouseover="toolTip('<img src=../{$no_com.goods_thumb}>')" onmouseout="toolTip()" width="100"  /></a></td>
+                    <td align="center">{$no_com.user_name}</td>
+                    <td align="center">{$no_com.order_sn}</td>
+                    <td align="center">¥{$no_com.goods_price}</td>
+                    <td align="center">{$no_com.goods_number}</td>
+                  </tr>
+                  {foreachelse}
+                  <tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+                  {/foreach}
+                  </tbody>
+                </table>
+
+                {if $full_page}
+                </div>
+                <!-- end comment list -->
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+{insert_scripts files="../js/jquery.picTip.js"}
+<script type="text/javascript" language="JavaScript">
+<!--
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+  cfm = new Object();
+  cfm['allow'] = '{$lang.cfm_allow}';
+  cfm['remove'] = '{$lang.cfm_remove}';
+  cfm['deny'] = '{$lang.cfm_deny}';
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+
+  {literal}
+  onload = function()
+  {
+      // 开始检查订单
+      startCheckOrder();
+  }
+  /**
+   * 搜索评论
+   */
+  function searchComment()
+  {
+      var keyword = Utils.trim(document.forms['searchForm'].elements['keyword'].value);
+	
+      if (keyword.length > 0)
+      {
+        listTable.filter['keywords'] = keyword;
+        listTable.filter.page = 1;
+        listTable.loadList();
+      }
+      else
+      {
+          document.forms['searchForm'].elements['keyword'].focus();
+      }
+  }
+  {/literal}
+
+  function confirm_bath()
+  {
+    var action = document.forms['listForm'].elements['sel_action'].value;
+
+    return confirm(cfm[action]);
+  }
+//-->
+</script>
+</body>
+</html>
+{/if}

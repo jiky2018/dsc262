@@ -1,0 +1,1676 @@
+{if $print_specification eq 'A4纸张'}
+<div class="print-panel mb0" style="padding:5mm 5mm 3mm 5mm; width:{$print_spec_info.width|default:$print_size_info.width}mm;">
+	<div class="top">
+		<div class="logo"><img src="{$order_print_logo}"></div>
+		<div class="title"><h3>{if $order_type eq 'order'}商品购物清单{else}批发购物清单{/if}</h3></div>
+		<img src="{$web_url}images/print/seal-state-express.png" class="seal" style="width:120px; height:120px; right:30px; top:12px;">
+	</div>
+	<div class="buyer-info">
+		<div class="row">
+			<div class="lie w300">订单编号：{$order_info.order_sn}</div>
+			<div class="lie w300">订购时间：{$order_info.formated_add_time}</div>
+		</div>
+		<div class="row">
+			<div class="lie w300">收货人：{$order_info.consignee}</div>
+			<div class="lie w300">电话：{$order_info.mobile}</div>
+		</div>
+		<div class="row">
+			<div class="lie w300">送货时间：{$order_info.best_time}</div>
+			<div class="lie w300">支付方式：{$order_info.pay_name}</div>
+		</div>
+		<div class="row">
+			<div class="lie_colspan">收货地址：{$order_info.complete_address}</div>
+		</div>
+	</div>
+	<div class="buyer-goods-info">
+		<table class="table">
+			<thead>
+				<tr>
+					<th width="10%">商品编号</th>
+					<th width="30%">商品名称</th>
+					<th width="20%">商品规格</th>
+					<th width="10%">数量</th>
+					<th width="10%">单价</th>
+					<th width="10%">小计</th>
+				</tr>
+			</thead>
+			<tbody>
+				{foreach from=$order_info.goods_list item=goods}
+				<tr>
+					<td>{$goods.goods_id}</td>
+					<td class="p-name">{$goods.goods_name}{if $goods.bar_code}<div class="blue">商品条形码：{$goods.bar_code}</div>{/if}</td>
+					<td>{$goods.goods_attr}</td>
+					<td>{$goods.goods_number}</td>
+					<td>{$goods.format_goods_price}</td>
+					<td>{$goods.format_goods_amount}</td>
+				</tr>
+				{/foreach}
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="7" class="tr">总数量：{$order_info.number_amount}件&nbsp;&nbsp;&nbsp;商品总金额：{$order_info.formated_goods_amount}</td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+	<div class="address-info">
+		<p>
+			<span>商品总金额：{$order_info.formated_goods_amount}</span>
+			{if $order_info.shipping_fee > 0}
+			<em>+</em>
+			<span>运费：{$order_info.formated_shipping_fee}</span>	
+			{/if}
+			{if $order_info.insure_fee > 0}
+			<em>+</em>
+			<span>保价费用：{$order_info.formated_insure_fee}</span>
+			{/if}
+			{if $order_info.tax > 0}
+			<em>+</em>
+			<span>发票税额：{$order_info.formated_tax}</span>
+			{/if}
+			{if $order_info.pay_fee > 0}
+			<em>+</em>
+			<span>支付手续费：{$order_info.formated_pay_fee}</span>
+			{/if}
+			{if $order_info.discount > 0}
+			<em>-</em>
+			<span>优惠：{$order_info.formated_discount}</span>
+			{/if}			
+			<em>=</em>
+			<span>订单总金额：{$order_info.formated_total_fee}</span>
+		</p>
+		<p>
+			<span>订单总金额：{$order_info.formated_total_fee}</span>
+			{if $order_info.surplus > 0}
+			<em>-</em>
+			<span>余额：{$order_info.formated_surplus}</span>
+			{/if}
+			{if $order_info.money_paid > 0}
+			<em>-</em>
+			<span>已付款金额：{$order_info.formated_money_paid}</span>
+			{/if}
+			{if $order_info.value_card > 0}
+			<em>-</em>
+			<span>储值卡：{$order_info.formated_value_card}</span>
+			{/if}
+			{if $order_info.integral_money > 0}
+			<em>-</em>
+			<span>积分：{$order_info.formated_integral_money}</span>
+			{/if}
+			{if $order_info.bonus > 0}					
+			<em>-</em>
+			<span>店铺红包：{$order_info.formated_bonus}</span>
+			{/if}
+			{if $order_info.coupons > 0}
+			<em>-</em>
+			<span>优惠券：{$order_info.formated_coupons}</span>
+			{/if}
+			<em>=</em>
+			<span class="red">待付款金额：{$order_info.formated_order_amount}</span>
+		</p>
+        <div class="image tr mt10"><img src="{$shop_url}plugins/barcodegen/html/image.php?filetype=PNG&dpi=72&scale=1&rotation=0&font_family=Arial.ttf&font_size=14&text={$order_sn}&thickness=40&checksum=&code=BCGcode39" /></div>
+		<textarea class="print_textarea mt20" placeholder="请输入备注信息" rows="3"></textarea>
+		<p class="print-remark" title="点击重新编辑"></p>
+	</div>
+</div>
+{elseif $print_specification eq '100MM'}
+<div class="print-panel mb30" style="width:{$print_spec_info.width|default:$print_size_info.width}mm; padding:1mm;">
+	<div class="top">
+		<div class="logo"><img src="{$order_print_logo}"></div>
+		<div class="title" style="width:auto; text-align:right; position: relative; z-index:99;"><h3>{if $order_type eq 'order'}商品购物清单{else}批发购物清单{/if}</h3></div>
+		<img src="{$web_url}images/print/seal-state-express.png" class="seal">
+	</div>
+	<div class="buyer-info">
+		<div class="row">
+			<div class="lie w180">NO.{$order_info.order_sn}</div>
+			<div class="lie w180">订购时间：{$order_info.formated_add_time}</div>
+		</div>
+		<div class="row">
+			<div class="lie w180">收货人：{$order_info.consignee}</div>
+			<div class="lie w180">电话：{$order_info.mobile}</div>
+		</div>
+		<div class="row">
+			<div class="lie w180">送货时间：{$order_info.best_time}</div>
+			<div class="lie w180">支付方式：{$order_info.pay_name}</div>
+		</div>
+		<div class="row">
+			<div class="lie_colspan">收货地址：{$order_info.complete_address}</div>
+		</div>
+	</div>
+	<div class="buyer-goods-info">
+		<table class="table">
+			<thead>
+				<tr>
+					<th width="30%">商品名称</th>
+					<th width="10%">数量</th>
+					<th width="10%">单价</th>
+					<th width="10%">小计</th>
+				</tr>
+			</thead>
+			<tbody>
+				{foreach from=$order_info.goods_list item=goods}
+				<tr>
+					<td class="p-name">{$goods.goods_name}{if $goods.bar_code}<div class="blue">商品条形码：{$goods.bar_code}</div>{/if}</td>
+					<td>{$goods.goods_number}</td>
+					<td>{$goods.format_goods_price}</td>
+					<td>{$goods.format_goods_amount}</td>
+				</tr>
+				{/foreach}
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="7" class="tr"><div class="fr">总数量：{$order_info.number_amount}件&nbsp;&nbsp;&nbsp;商品总金额：{$order_info.formated_goods_amount}</div></td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+	<div class="address-info">
+		{if $order_info.shipping_fee > 0}
+		<p class="tl">运费：{$order_info.formated_shipping_fee}</p>
+		{/if}
+		{if $order_info.insure_fee > 0}
+		<p class="tl">保价费用：{$order_info.formated_insure_fee}</p>
+		{/if}
+		{if $order_info.tax > 0}
+		<p class="tl">发票税额：{$order_info.formated_tax}</p>
+		{/if}
+		{if $order_info.pay_fee > 0}
+		<p class="tl">支付手续费：{$order_info.formated_pay_fee}</p>
+		{/if}
+		{if $order_info.discount > 0}
+		<p class="tl">优惠：{$order_info.formated_discount}</p>
+		{/if}
+		{if $order_info.integral_money > 0}
+		<p class="tl">积分：{$order_info.formated_integral_money}</p>
+		{/if}
+		{if $order_info.bonus > 0}
+		<p class="tl">店铺红包：{$order_info.formated_bonus}</p>
+		{/if}
+		{if $order_info.coupons > 0}
+		<p class="tl">优惠券：{$order_info.formated_coupons}</p>
+		{/if}
+		<p class="tl">订单总金额：{$order_info.formated_total_fee}</p>
+		<p class="tl">订单总金额：{$order_info.formated_total_fee}{if $order_info.surplus > 0}&nbsp;&nbsp;余额：{$order_info.formated_surplus}{/if}{if $order_info.money_paid > 0}&nbsp;&nbsp;已付款金额：{$order_info.formated_money_paid}{/if}{if $order_info.value_card > 0}&nbsp;&nbsp;储值卡：{$order_info.formated_value_card}{/if}&nbsp;&nbsp;待付款金额：{$order_info.formated_order_amount}</p>
+		<div class="image tl mt10"><img src="{$shop_url}plugins/barcodegen/html/image.php?filetype=PNG&dpi=72&scale=1&rotation=0&font_family=Arial.ttf&font_size=14&text={$order_sn}&thickness=40&checksum=&code=BCGcode39" /></div>
+        <textarea class="print_textarea mb10" placeholder="请输入备注信息" rows="3"></textarea>
+		<p class="print-remark" title="点击重新编辑"></p>
+	</div>
+</div>
+{elseif $print_specification eq '80MM'}
+<div class="print-panel mb30" style="width:{$print_spec_info.width|default:$print_size_info.width}mm; padding:1mm;">
+	<div class="top">
+		<div class="logo" style="margin:0 auto; float:none;"><img src="{$order_print_logo}"></div>
+		<div class="title"><h3>{if $order_type eq 'order'}商品购物清单{else}批发购物清单{/if}</h3></div>
+		<img src="{$web_url}images/print/seal-state-express.png" class="seal">
+	</div>
+	<div class="buyer-info">
+		<div class="row">
+			<div class="lie">订单编号：{$order_info.order_sn}</div>
+			<div class="lie">订购时间：{$order_info.formated_add_time}</div>
+		</div>
+		<div class="row">
+			<div class="lie">收货人：{$order_info.consignee}</div>
+			<div class="lie">电话：{$order_info.mobile}</div>
+		</div>
+		<div class="row">
+			<div class="lie">送货时间：{$order_info.best_time}</div>
+			<div class="lie">支付方式：{$order_info.pay_name}</div>
+		</div>
+		<div class="row">
+			<div class="lie_colspan">收货地址：{$order_info.complete_address}</div>
+		</div>
+	</div>
+	<div class="buyer-goods-info">
+		<table class="table">
+			<thead>
+				<tr>
+					<th width="30%">商品名称</th>
+					<th width="10%">数量</th>
+					<th width="10%">单价</th>
+					<th width="10%">小计</th>
+				</tr>
+			</thead>
+			<tbody>
+				{foreach from=$order_info.goods_list item=goods}
+				<tr>
+					<td class="p-name">{$goods.goods_name}{if $goods.bar_code}<div class="blue">商品条形码：{$goods.bar_code}</div>{/if}</td>
+					<td>{$goods.goods_number}</td>
+					<td>{$goods.format_goods_price}</td>
+					<td>{$goods.format_goods_amount}</td>
+				</tr>
+				{/foreach}
+			</tbody>
+		</table>
+	</div>
+	<div class="address-info">
+		<p class="tl">
+			<em class="fl">商品总金额：{$order_info.formated_goods_amount}</em>
+			<em class="fr">总数量：{$order_info.number_amount}件</em>
+		</p>
+		{if $order_info.shipping_fee > 0}
+		<p class="tl">运费：{$order_info.formated_shipping_fee}</p>
+		{/if}
+		{if $order_info.insure_fee > 0}
+		<p class="tl">保价费用：{$order_info.formated_insure_fee}</p>
+		{/if}
+		{if $order_info.tax > 0}
+		<p class="tl">发票税额：{$order_info.formated_tax}</p>
+		{/if}
+		{if $order_info.pay_fee > 0}
+		<p class="tl">支付手续费：{$order_info.formated_pay_fee}</p>
+		{/if}
+		{if $order_info.discount > 0}
+		<p class="tl">优惠：{$order_info.formated_discount}</p>
+		{/if}
+		{if $order_info.integral_money > 0}
+		<p class="tl">积分：{$order_info.formated_integral_money}</p>
+		{/if}
+		{if $order_info.bonus > 0}
+		<p class="tl">店铺红包：{$order_info.formated_bonus}</p>
+		{/if}
+		{if $order_info.coupons > 0}
+		<p class="tl">优惠券：{$order_info.formated_coupons}</p>
+		{/if}
+		<p class="tl">订单总金额：{$order_info.formated_total_fee}</p>
+		<p class="tl">订单总金额：{$order_info.formated_total_fee}{if $order_info.surplus > 0}  余额：{$order_info.formated_surplus}{/if}{if $order_info.money_paid > 0}  已付款金额：{$order_info.formated_money_paid}{/if}{if $order_info.value_card > 0}  储值卡：{$order_info.formated_value_card}{/if}  待付款金额：{$order_info.formated_order_amount}</p>
+		<div class="image tl mt10"><img src="{$shop_url}plugins/barcodegen/html/image.php?filetype=PNG&dpi=72&scale=1&rotation=0&font_family=Arial.ttf&font_size=14&text={$order_sn}&thickness=40&checksum=&code=BCGcode39" /></div>
+        <textarea class="print_textarea mb10" placeholder="请输入备注信息" rows="3"></textarea>
+		<p class="print-remark" title="点击重新编辑"></p>
+	</div>
+</div>
+{elseif $print_specification eq '70MM'}
+<div class="print-panel mb30" style="width:{$print_spec_info.width|default:$print_size_info.width}mm; padding:1mm;">
+	<div class="top">
+		<div class="logo" style="margin:0 auto; float:none;"><img src="{$order_print_logo}"></div>
+		<div class="title"><h3>{if $order_type eq 'order'}商品购物清单{else}批发购物清单{/if}</h3></div>
+		<img src="{$web_url}images/print/seal-state-express.png" class="seal" style="top:50px;">
+	</div>
+	<div class="buyer-info">
+		<div class="row">
+			<div class="lie">订单编号：{$order_info.order_sn}</div>
+			<div class="lie">订购时间：{$order_info.formated_add_time}</div>
+		</div>
+		<div class="row">
+			<div class="lie">收货人：{$order_info.consignee}</div>
+			<div class="lie">电话：{$order_info.mobile}</div>
+		</div>
+		<div class="row">
+			<div class="lie">送货时间：{$order_info.best_time}</div>
+			<div class="lie">支付方式：{$order_info.pay_name}</div>
+		</div>
+		<div class="row">
+			<div class="lie_colspan">收货地址：{$order_info.complete_address}</div>
+		</div>
+	</div>
+	<div class="buyer-goods-info">
+		<table class="table">
+			<thead>
+				<tr>
+					<th width="30%">商品名称</th>
+					<th width="10%">数量</th>
+					<th width="10%">单价</th>
+					<th width="10%">小计</th>
+				</tr>
+			</thead>
+			<tbody>
+				{foreach from=$order_info.goods_list item=goods}
+				<tr>
+					<td class="p-name">{$goods.goods_name}{if $goods.bar_code}<div class="blue">商品条形码：{$goods.bar_code}</div>{/if}</td>
+					<td>{$goods.goods_number}</td>
+					<td>{$goods.format_goods_price}</td>
+					<td>{$goods.format_goods_amount}</td>
+				</tr>
+				{/foreach}
+			</tbody>
+		</table>
+	</div>
+	<div class="address-info">
+		<p class="tl">
+			<em class="fl">商品总金额：{$order_info.formated_goods_amount}</em>
+			<em class="fr">总数量：{$order_info.number_amount}件</em>
+		</p>
+		{if $order_info.shipping_fee > 0}
+		<p class="tl">运费：{$order_info.formated_shipping_fee}</p>
+		{/if}
+		{if $order_info.insure_fee > 0}
+		<p class="tl">保价费用：{$order_info.formated_insure_fee}</p>
+		{/if}
+		{if $order_info.tax > 0}
+		<p class="tl">发票税额：{$order_info.formated_tax}</p>
+		{/if}
+		{if $order_info.pay_fee > 0}
+		<p class="tl">支付手续费：{$order_info.formated_pay_fee}</p>
+		{/if}
+		{if $order_info.discount > 0}
+		<p class="tl">优惠：{$order_info.formated_discount}</p>
+		{/if}
+		{if $order_info.integral_money > 0}
+		<p class="tl">积分：{$order_info.formated_integral_money}</p>
+		{/if}
+		{if $order_info.bonus > 0}
+		<p class="tl">店铺红包：{$order_info.formated_bonus}</p>
+		{/if}
+		{if $order_info.coupons > 0}
+		<p class="tl">优惠券：{$order_info.formated_coupons}</p>
+		{/if}
+		<p class="tl">订单总金额：{$order_info.formated_total_fee}</p>
+		<p class="tl">订单总金额：{$order_info.formated_total_fee}{if $order_info.surplus > 0}  余额：{$order_info.formated_surplus}{/if}{if $order_info.money_paid > 0}  已付款金额：{$order_info.formated_money_paid}{/if}{if $order_info.value_card > 0}  储值卡：{$order_info.formated_value_card}{/if}  待付款金额：{$order_info.formated_order_amount}</p>
+		<div class="image tl mt10"><img src="{$shop_url}plugins/barcodegen/html/image.php?filetype=PNG&dpi=72&scale=1&rotation=0&font_family=Arial.ttf&font_size=14&text={$order_sn}&thickness=40&checksum=&code=BCGcode39" /></div>
+        <textarea class="print_textarea mb10" placeholder="请输入备注信息" rows="3"></textarea>
+		<p class="print-remark" title="点击重新编辑"></p>
+	</div>
+</div>
+{elseif $print_specification eq '60MM'}
+<div class="print-panel mb30" style="width:{$print_spec_info.width|default:$print_size_info.width}mm; padding:1mm;">
+	<div class="top">
+		<div class="logo" style="margin:0 auto; float:none;"><img src="{$order_print_logo}"></div>
+		<div class="title"><h3>{if $order_type eq 'order'}商品购物清单{else}批发购物清单{/if}</h3></div>
+		<img src="{$web_url}images/print/seal-state-express.png" class="seal" style="top:50px;">
+	</div>
+	<div class="buyer-info">
+		<div class="row">
+			<div class="lie">订单编号：{$order_info.order_sn}</div>
+			<div class="lie">订购时间：{$order_info.formated_add_time}</div>
+		</div>
+		<div class="row">
+			<div class="lie">收货人：{$order_info.consignee}</div>
+			<div class="lie">电话：{$order_info.mobile}</div>
+		</div>
+		<div class="row">
+			<div class="lie">送货时间：{$order_info.best_time}</div>
+			<div class="lie">支付方式：{$order_info.pay_name}</div>
+		</div>
+		<div class="row">
+			<div class="lie_colspan">收货地址：{$order_info.complete_address}</div>
+		</div>
+	</div>
+	<div class="buyer-goods-info">
+		<table class="table">
+			<thead>
+				<tr>
+					<th width="30%">商品名称</th>
+					<th width="10%">数量</th>
+					<th width="10%">小计</th>
+				</tr>
+			</thead>
+			<tbody>
+				{foreach from=$order_info.goods_list item=goods}
+				<tr>
+					<td class="p-name">{$goods.goods_name}{if $goods.bar_code}<div class="blue">商品条形码：{$goods.bar_code}</div>{/if}</td>
+					<td>{$goods.goods_number}</td>
+					<td>{$goods.format_goods_amount}</td>
+				</tr>
+				{/foreach}
+			</tbody>
+		</table>
+	</div>
+	<div class="address-info">
+		<p class="tl">
+			<em class="fl">商品总金额：{$order_info.formated_goods_amount}</em>
+			<em class="fr">总数量：{$order_info.number_amount}件</em>
+		</p>
+        
+		{if $order_info.shipping_fee > 0}
+		<p class="tl">运费：{$order_info.formated_shipping_fee}</p>
+		{/if}
+		{if $order_info.insure_fee > 0}
+		<p class="tl">保价费用：{$order_info.formated_insure_fee}</p>
+		{/if}
+		{if $order_info.tax > 0}
+		<p class="tl">发票税额：{$order_info.formated_tax}</p>
+		{/if}
+		{if $order_info.pay_fee > 0}
+		<p class="tl">支付手续费：{$order_info.formated_pay_fee}</p>
+		{/if}
+		{if $order_info.surplus > 0}
+		<p class="tl">余额：{$order_info.formated_surplus}</p>
+		{/if}
+		{if $order_info.money_paid > 0}
+		<p class="tl">已付款金额：{$order_info.formated_money_paid}</p>
+		{/if}
+		{if $order_info.value_card > 0}
+		<p class="tl">储值卡：{$order_info.formated_value_card}</p>
+		{/if}
+		{if $order_info.discount > 0}
+		<p class="tl">优惠：{$order_info.formated_discount}</p>
+		{/if}
+		{if $order_info.integral_money > 0}
+		<p class="tl">积分：{$order_info.formated_integral_money}</p>
+		{/if}
+		{if $order_info.bonus > 0}
+		<p class="tl">店铺红包：{$order_info.formated_bonus}</p>
+		{/if}
+		{if $order_info.coupons > 0}
+		<p class="tl">优惠券：{$order_info.formated_coupons}</p>
+		{/if}
+		<p class="tl">订单总金额：{$order_info.formated_total_fee}</p>
+		<div class="image tl mt10"><img src="{$shop_url}plugins/barcodegen/html/image.php?filetype=PNG&dpi=72&scale=1&rotation=0&font_family=Arial.ttf&font_size=14&text={$order_sn}&thickness=40&checksum=&code=BCGcode39" /></div>
+        <textarea class="print_textarea mb10" placeholder="请输入备注信息" rows="3"></textarea>
+		<p class="print-remark" title="点击重新编辑"></p>
+	</div>
+</div>
+{elseif $print_specification eq '50MM'}
+<div class="print-panel mb30" style="width:{$print_spec_info.width|default:$print_size_info.width}mm; padding:1mm;">
+	<div class="top">
+		<div class="logo"><img src="{$order_print_logo}"></div>
+		<div class="title" style="text-align:left;"><h3>{if $order_type eq 'order'}商品购物清单{else}批发购物清单{/if}</h3></div>
+		<img src="{$web_url}images/print/seal-state-express.png" class="seal" style="top:50px;">
+	</div>
+	<div class="buyer-info">
+		<div class="row">
+			<div class="lie">订单编号：{$order_info.order_sn}</div>
+			<div class="lie">订购时间：{$order_info.formated_add_time}</div>
+		</div>
+		<div class="row">
+			<div class="lie">收货人：{$order_info.consignee}</div>
+			<div class="lie">电话：{$order_info.mobile}</div>
+		</div>
+		<div class="row">
+			<div class="lie">送货时间：{$order_info.best_time}</div>
+			<div class="lie">支付方式：{$order_info.pay_name}</div>
+		</div>
+		<div class="row">
+			<div class="lie_colspan">收货地址：{$order_info.complete_address}</div>
+		</div>
+	</div>
+	<div class="buyer-goods-info">
+		<table class="table">
+			<thead>
+				<tr>
+					<th width="30%">商品名称</th>
+					<th width="10%">数量</th>
+					<th width="10%">小计</th>
+				</tr>
+			</thead>
+			<tbody>
+				{foreach from=$order_info.goods_list item=goods}
+				<tr>
+					<td class="p-name">{$goods.goods_name}{if $goods.bar_code}<div class="blue">商品条形码：{$goods.bar_code}</div>{/if}</td>
+					<td>{$goods.goods_number}</td>
+					<td>{$goods.format_goods_amount}</td>
+				</tr>
+				{/foreach}
+			</tbody>
+		</table>
+	</div>
+	<div class="address-info">
+		<p class="tl">商品总金额：{$order_info.formated_goods_amount}</p>
+        <p class="tl">总数量：{$order_info.number_amount}件</p>
+        
+		{if $order_info.shipping_fee > 0}
+		<p class="tl">运费：{$order_info.formated_shipping_fee}</p>
+		{/if}
+		{if $order_info.insure_fee > 0}
+		<p class="tl">保价费用：{$order_info.formated_insure_fee}</p>
+		{/if}
+		{if $order_info.tax > 0}
+		<p class="tl">发票税额：{$order_info.formated_tax}</p>
+		{/if}
+		{if $order_info.pay_fee > 0}
+		<p class="tl">支付手续费：{$order_info.formated_pay_fee}</p>
+		{/if}
+		{if $order_info.surplus > 0}
+		<p class="tl">余额：{$order_info.formated_surplus}</p>
+		{/if}
+		{if $order_info.money_paid > 0}
+		<p class="tl">已付款金额：{$order_info.formated_money_paid}</p>
+		{/if}
+		{if $order_info.value_card > 0}
+		<p class="tl">储值卡：{$order_info.formated_value_card}</p>
+		{/if}
+		{if $order_info.discount > 0}
+		<p class="tl">优惠：{$order_info.formated_discount}</p>
+		{/if}
+		{if $order_info.integral_money > 0}
+		<p class="tl">积分：{$order_info.formated_integral_money}</p>
+		{/if}
+		{if $order_info.bonus > 0}
+		<p class="tl">店铺红包：{$order_info.formated_bonus}</p>
+		{/if}
+		{if $order_info.coupons > 0}
+		<p class="tl">优惠券：{$order_info.formated_coupons}</p>
+		{/if}
+		<p class="tl">订单总金额：{$order_info.formated_total_fee}</p>
+		<div class="image tl mt10"><img src="{$shop_url}plugins/barcodegen/html/image.php?filetype=PNG&dpi=72&scale=1&rotation=0&font_family=Arial.ttf&font_size=14&text={$order_sn}&thickness=40&checksum=&code=BCGcode39" /></div>
+        <textarea class="print_textarea mb10" placeholder="请输入备注信息" rows="3"></textarea>
+		<p class="print-remark" title="点击重新编辑"></p>
+	</div>
+</div>
+{elseif $print_specification eq '120MM*93MM'}
+<div class="print-panel mb0" style="width:{$print_spec_info.width|default:$print_size_info.width}mm; padding:1mm;">
+	<div class="top">
+		<div class="logo"><img src="{$order_print_logo}"></div>
+		<div class="title" style="width:auto; text-align:right; position: relative; z-index:99;"><h3>{if $order_type eq 'order'}商品购物清单{else}批发购物清单{/if}</h3></div>
+		<img src="{$web_url}images/print/seal-state-express.png" class="seal">
+	</div>
+	<div class="buyer-info">
+		<div class="row">
+			<div class="lie w200">NO.{$order_info.order_sn}</div>
+			<div class="lie w200">订购时间：{$order_info.formated_add_time}</div>
+		</div>
+		<div class="row">
+			<div class="lie w200">收货人：{$order_info.consignee}</div>
+			<div class="lie w200">电话：{$order_info.mobile}</div>
+		</div>
+		<div class="row">
+			<div class="lie w200">送货时间：{$order_info.best_time}</div>
+			<div class="lie w200">支付方式：{$order_info.pay_name}</div>
+		</div>
+		<div class="row">
+			<div class="lie_colspan">收货地址：{$order_info.complete_address}</div>
+		</div>
+	</div>
+	<div class="buyer-goods-info">
+		<table class="table">
+			<thead>
+				<tr>
+					<th width="30%">商品名称</th>
+					<th width="10%">数量</th>
+					<th width="10%">单价</th>
+					<th width="10%">小计</th>
+				</tr>
+			</thead>
+			<tbody>
+				{foreach from=$order_info.goods_list item=goods}
+				<tr>
+					<td class="p-name">{$goods.goods_name}{if $goods.bar_code}<div class="blue">商品条形码：{$goods.bar_code}</div>{/if}</td>
+					<td>{$goods.goods_number}</td>
+					<td>{$goods.format_goods_price}</td>
+					<td>{$goods.format_goods_amount}</td>
+				</tr>
+				{/foreach}
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="7" class="tr">总数量：{$order_info.number_amount}件&nbsp;&nbsp;&nbsp;商品总金额：{$order_info.formated_goods_amount}</td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+	<div class="address-info">
+		<p>
+			<span>商品总金额：{$order_info.formated_goods_amount}</span>
+			{if $order_info.shipping_fee > 0}
+			<em>+</em>
+			<span>运费：{$order_info.formated_shipping_fee}</span>	
+			{/if}
+			{if $order_info.insure_fee > 0}
+			<em>+</em>
+			<span>保价费用：{$order_info.formated_insure_fee}</span>
+			{/if}
+			{if $order_info.tax > 0}
+			<em>+</em>
+			<span>发票税额：{$order_info.formated_tax}</span>
+			{/if}
+			{if $order_info.pay_fee > 0}
+			<em>+</em>
+			<span>支付手续费：{$order_info.formated_pay_fee}</span>
+			{/if}
+			{if $order_info.discount > 0}
+			<em>-</em>
+			<span>优惠：{$order_info.formated_discount}</span>
+			{/if}			
+			<em>=</em>
+			<span>订单总金额：{$order_info.formated_total_fee}</span>
+		</p>
+		<p>
+			<span>订单总金额：{$order_info.formated_total_fee}</span>
+			{if $order_info.surplus > 0}
+			<em>-</em>
+			<span>余额：{$order_info.formated_surplus}</span>
+			{/if}
+			{if $order_info.money_paid > 0}
+			<em>-</em>
+			<span>已付款金额：{$order_info.formated_money_paid}</span>
+			{/if}
+			{if $order_info.value_card > 0}
+			<em>-</em>
+			<span>储值卡：{$order_info.formated_value_card}</span>
+			{/if}
+			{if $order_info.integral_money > 0}
+			<em>-</em>
+			<span>积分：{$order_info.formated_integral_money}</span>
+			{/if}
+			{if $order_info.bonus > 0}					
+			<em>-</em>
+			<span>店铺红包：{$order_info.formated_bonus}</span>
+			{/if}
+			{if $order_info.coupons > 0}
+			<em>-</em>
+			<span>优惠券：{$order_info.formated_coupons}</span>
+			{/if}
+			<em>=</em>
+			<span class="red">待付款金额：{$order_info.formated_order_amount}</span>
+		</p>
+        <div class="image tr mt10"><img src="{$shop_url}plugins/barcodegen/html/image.php?filetype=PNG&dpi=72&scale=1&rotation=0&font_family=Arial.ttf&font_size=14&text={$order_sn}&thickness=40&checksum=&code=BCGcode39" /></div>
+		<textarea class="print_textarea mb10" placeholder="请输入备注信息" rows="3"></textarea>
+		<p class="print-remark" title="点击重新编辑"></p>
+	</div>
+</div>
+{elseif $print_specification eq '120MM*140MM'}
+<div class="print-panel mb0" style="width:{$print_spec_info.width|default:$print_size_info.width}mm; padding:1mm;">
+	<div class="top">
+		<div class="logo"><img src="{$order_print_logo}"></div>
+		<div class="title" style="width:auto; text-align:right; position: relative; z-index:99;"><h3>{if $order_type eq 'order'}商品购物清单{else}批发购物清单{/if}</h3></div>
+		<img src="{$web_url}images/print/seal-state-express.png" class="seal">
+	</div>
+	<div class="buyer-info">
+		<div class="row">
+			<div class="lie w200">NO.{$order_info.order_sn}</div>
+			<div class="lie w200">订购时间：{$order_info.formated_add_time}</div>
+		</div>
+		<div class="row">
+			<div class="lie w200">收货人：{$order_info.consignee}</div>
+			<div class="lie w200">电话：{$order_info.mobile}</div>
+		</div>
+		<div class="row">
+			<div class="lie w200">送货时间：{$order_info.best_time}</div>
+			<div class="lie w200">支付方式：{$order_info.pay_name}</div>
+		</div>
+		<div class="row">
+			<div class="lie_colspan">收货地址：{$order_info.complete_address}</div>
+		</div>
+	</div>
+	<div class="buyer-goods-info">
+		<table class="table">
+			<thead>
+				<tr>
+					<th width="30%">商品名称</th>
+					<th width="10%">数量</th>
+					<th width="10%">单价</th>
+					<th width="10%">小计</th>
+				</tr>
+			</thead>
+			<tbody>
+				{foreach from=$order_info.goods_list item=goods}
+				<tr>
+					<td class="p-name">{$goods.goods_name}{if $goods.bar_code}<div class="blue">商品条形码：{$goods.bar_code}</div>{/if}</td>
+					<td>{$goods.goods_number}</td>
+					<td>{$goods.format_goods_price}</td>
+					<td>{$goods.format_goods_amount}</td>
+				</tr>
+				{/foreach}
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="7" class="tr">总数量：{$order_info.number_amount}件&nbsp;&nbsp;&nbsp;商品总金额：{$order_info.formated_goods_amount}</td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+	<div class="address-info">
+		<p>
+			<span>商品总金额：{$order_info.formated_goods_amount}</span>
+			{if $order_info.shipping_fee > 0}
+			<em>+</em>
+			<span>运费：{$order_info.formated_shipping_fee}</span>	
+			{/if}
+			{if $order_info.insure_fee > 0}
+			<em>+</em>
+			<span>保价费用：{$order_info.formated_insure_fee}</span>
+			{/if}
+			{if $order_info.tax > 0}
+			<em>+</em>
+			<span>发票税额：{$order_info.formated_tax}</span>
+			{/if}
+			{if $order_info.pay_fee > 0}
+			<em>+</em>
+			<span>支付手续费：{$order_info.formated_pay_fee}</span>
+			{/if}
+			{if $order_info.discount > 0}
+			<em>-</em>
+			<span>优惠：{$order_info.formated_discount}</span>
+			{/if}			
+			<em>=</em>
+			<span>订单总金额：{$order_info.formated_total_fee}</span>
+		</p>
+		<p>
+			<span>订单总金额：{$order_info.formated_total_fee}</span>
+			{if $order_info.surplus > 0}
+			<em>-</em>
+			<span>余额：{$order_info.formated_surplus}</span>
+			{/if}
+			{if $order_info.money_paid > 0}
+			<em>-</em>
+			<span>已付款金额：{$order_info.formated_money_paid}</span>
+			{/if}
+			{if $order_info.value_card > 0}
+			<em>-</em>
+			<span>储值卡：{$order_info.formated_value_card}</span>
+			{/if}
+			{if $order_info.integral_money > 0}
+			<em>-</em>
+			<span>积分：{$order_info.formated_integral_money}</span>
+			{/if}
+			{if $order_info.bonus > 0}					
+			<em>-</em>
+			<span>店铺红包：{$order_info.formated_bonus}</span>
+			{/if}
+			{if $order_info.coupons > 0}
+			<em>-</em>
+			<span>优惠券：{$order_info.formated_coupons}</span>
+			{/if}
+			<em>=</em>
+			<span class="red">待付款金额：{$order_info.formated_order_amount}</span>
+		</p>
+		<textarea class="print_textarea mb10" placeholder="请输入备注信息" rows="3"></textarea>
+		<p class="print-remark" title="点击重新编辑"></p>
+	</div>
+</div>
+{elseif $print_specification eq '120MM*280MM'}
+<div class="print-panel mb0" style="width:{$print_spec_info.width|default:$print_size_info.width}mm; padding:1mm;">
+	<div class="top">
+		<div class="logo"><img src="{$order_print_logo}"></div>
+		<div class="title" style="width:auto; text-align:right; position: relative; z-index:99;"><h3>{if $order_type eq 'order'}商品购物清单{else}批发购物清单{/if}</h3></div>
+		<img src="{$web_url}images/print/seal-state-express.png" class="seal">
+	</div>
+	<div class="buyer-info">
+		<div class="row">
+			<div class="lie w200">NO.{$order_info.order_sn}</div>
+			<div class="lie w200">订购时间：{$order_info.formated_add_time}</div>
+		</div>
+		<div class="row">
+			<div class="lie w200">收货人：{$order_info.consignee}</div>
+			<div class="lie w200">电话：{$order_info.mobile}</div>
+		</div>
+		<div class="row">
+			<div class="lie w200">送货时间：{$order_info.best_time}</div>
+			<div class="lie w200">支付方式：{$order_info.pay_name}</div>
+		</div>
+		<div class="row">
+			<div class="lie_colspan">收货地址：{$order_info.complete_address}</div>
+		</div>
+	</div>
+	<div class="buyer-goods-info">
+		<table class="table">
+			<thead>
+				<tr>
+					<th width="30%">商品名称</th>
+					<th width="10%">数量</th>
+					<th width="10%">单价</th>
+					<th width="10%">小计</th>
+				</tr>
+			</thead>
+			<tbody>
+				{foreach from=$order_info.goods_list item=goods}
+				<tr>
+					<td class="p-name">{$goods.goods_name}{if $goods.bar_code}<div class="blue">商品条形码：{$goods.bar_code}</div>{/if}</td>
+					<td>{$goods.goods_number}</td>
+					<td>{$goods.format_goods_price}</td>
+					<td>{$goods.format_goods_amount}</td>
+				</tr>
+				{/foreach}
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="7" class="tr">总数量：{$order_info.number_amount}件&nbsp;&nbsp;&nbsp;商品总金额：{$order_info.formated_goods_amount}</td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+	<div class="address-info">
+		<p>
+			<span>商品总金额：{$order_info.formated_goods_amount}</span>
+			{if $order_info.shipping_fee > 0}
+			<em>+</em>
+			<span>运费：{$order_info.formated_shipping_fee}</span>	
+			{/if}
+			{if $order_info.insure_fee > 0}
+			<em>+</em>
+			<span>保价费用：{$order_info.formated_insure_fee}</span>
+			{/if}
+			{if $order_info.tax > 0}
+			<em>+</em>
+			<span>发票税额：{$order_info.formated_tax}</span>
+			{/if}
+			{if $order_info.pay_fee > 0}
+			<em>+</em>
+			<span>支付手续费：{$order_info.formated_pay_fee}</span>
+			{/if}
+			{if $order_info.discount > 0}
+			<em>-</em>
+			<span>优惠：{$order_info.formated_discount}</span>
+			{/if}			
+			<em>=</em>
+			<span>订单总金额：{$order_info.formated_total_fee}</span>
+		</p>
+		<p>
+			<span>订单总金额：{$order_info.formated_total_fee}</span>
+			{if $order_info.surplus > 0}
+			<em>-</em>
+			<span>余额：{$order_info.formated_surplus}</span>
+			{/if}
+			{if $order_info.money_paid > 0}
+			<em>-</em>
+			<span>已付款金额：{$order_info.formated_money_paid}</span>
+			{/if}
+			{if $order_info.value_card > 0}
+			<em>-</em>
+			<span>储值卡：{$order_info.formated_value_card}</span>
+			{/if}
+			{if $order_info.integral_money > 0}
+			<em>-</em>
+			<span>积分：{$order_info.formated_integral_money}</span>
+			{/if}
+			{if $order_info.bonus > 0}					
+			<em>-</em>
+			<span>店铺红包：{$order_info.formated_bonus}</span>
+			{/if}
+			{if $order_info.coupons > 0}
+			<em>-</em>
+			<span>优惠券：{$order_info.formated_coupons}</span>
+			{/if}
+			<em>=</em>
+			<span class="red">待付款金额：{$order_info.formated_order_amount}</span>
+		</p>
+        <div class="image tr mt10"><img src="{$shop_url}plugins/barcodegen/html/image.php?filetype=PNG&dpi=72&scale=1&rotation=0&font_family=Arial.ttf&font_size=14&text={$order_sn}&thickness=40&checksum=&code=BCGcode39" /></div>
+		<textarea class="print_textarea mb10" placeholder="请输入备注信息" rows="3"></textarea>
+		<p class="print-remark" title="点击重新编辑"></p>
+	</div>
+</div>
+{elseif $print_specification eq '190MM*93MM'}
+<div class="print-panel mb0" style="width:{$print_spec_info.width|default:$print_size_info.width}mm; padding:1mm;">
+	<div class="top">
+		<div class="logo"><img src="{$order_print_logo}"></div>
+		<div class="title"><h3>{if $order_type eq 'order'}商品购物清单{else}批发购物清单{/if}</h3></div>
+		<img src="{$web_url}images/print/seal-state-express.png" class="seal" style="width:120px; height:120px; right:30px; top:12px;">
+	</div>
+	<div class="buyer-info">
+		<div class="row">
+			<div class="lie w300">订单编号：{$order_info.order_sn}</div>
+			<div class="lie w300">订购时间：{$order_info.formated_add_time}</div>
+		</div>
+		<div class="row">
+			<div class="lie w300">收货人：{$order_info.consignee}</div>
+			<div class="lie w300">电话：{$order_info.mobile}</div>
+		</div>
+		<div class="row">
+			<div class="lie w300">送货时间：{$order_info.best_time}</div>
+			<div class="lie w300">支付方式：{$order_info.pay_name}</div>
+		</div>
+		<div class="row">
+			<div class="lie_colspan">收货地址：{$order_info.complete_address}</div>
+		</div>
+	</div>
+	<div class="buyer-goods-info">
+		<table class="table">
+			<thead>
+				<tr>
+					<th width="10%">商品编号</th>
+					<th width="30%">商品名称</th>
+					<th width="20%">商品规格</th>
+					<th width="10%">数量</th>
+					<th width="10%">单价</th>
+					<th width="10%">小计</th>
+				</tr>
+			</thead>
+			<tbody>
+				{foreach from=$order_info.goods_list item=goods}
+				<tr>
+					<td>{$goods.goods_id}</td>
+					<td class="p-name">{$goods.goods_name}{if $goods.bar_code}<div class="blue">商品条形码：{$goods.bar_code}</div>{/if}</td>
+					<td>{$goods.goods_attr}</td>
+					<td>{$goods.goods_number}</td>
+					<td>{$goods.format_goods_price}</td>
+					<td>{$goods.format_goods_amount}</td>
+				</tr>
+				{/foreach}
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="7" class="tr">总数量：{$order_info.number_amount}件&nbsp;&nbsp;&nbsp;商品总金额：{$order_info.formated_goods_amount}</td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+	<div class="address-info">
+		<p>
+			<span>商品总金额：{$order_info.formated_goods_amount}</span>
+			{if $order_info.shipping_fee > 0}
+			<em>+</em>
+			<span>运费：{$order_info.formated_shipping_fee}</span>	
+			{/if}
+			{if $order_info.insure_fee > 0}
+			<em>+</em>
+			<span>保价费用：{$order_info.formated_insure_fee}</span>
+			{/if}
+			{if $order_info.tax > 0}
+			<em>+</em>
+			<span>发票税额：{$order_info.formated_tax}</span>
+			{/if}
+			{if $order_info.pay_fee > 0}
+			<em>+</em>
+			<span>支付手续费：{$order_info.formated_pay_fee}</span>
+			{/if}
+			{if $order_info.discount > 0}
+			<em>-</em>
+			<span>优惠：{$order_info.formated_discount}</span>
+			{/if}			
+			<em>=</em>
+			<span>订单总金额：{$order_info.formated_total_fee}</span>
+		</p>
+		<p>
+			<span>订单总金额：{$order_info.formated_total_fee}</span>
+			{if $order_info.surplus > 0}
+			<em>-</em>
+			<span>余额：{$order_info.formated_surplus}</span>
+			{/if}
+			{if $order_info.money_paid > 0}
+			<em>-</em>
+			<span>已付款金额：{$order_info.formated_money_paid}</span>
+			{/if}
+			{if $order_info.value_card > 0}
+			<em>-</em>
+			<span>储值卡：{$order_info.formated_value_card}</span>
+			{/if}
+			{if $order_info.integral_money > 0}
+			<em>-</em>
+			<span>积分：{$order_info.formated_integral_money}</span>
+			{/if}
+			{if $order_info.bonus > 0}					
+			<em>-</em>
+			<span>店铺红包：{$order_info.formated_bonus}</span>
+			{/if}
+			{if $order_info.coupons > 0}
+			<em>-</em>
+			<span>优惠券：{$order_info.formated_coupons}</span>
+			{/if}
+			<em>=</em>
+			<span class="red">待付款金额：{$order_info.formated_order_amount}</span>
+		</p>
+        <div class="image tr mt10" style="position:absolute; left:6px; bottom:25px;"><img src="{$shop_url}plugins/barcodegen/html/image.php?filetype=PNG&dpi=72&scale=1&rotation=0&font_family=Arial.ttf&font_size=14&text={$order_sn}&thickness=40&checksum=&code=BCGcode39" /></div>
+		<textarea class="print_textarea mt20" placeholder="请输入备注信息" rows="3"></textarea>
+		<p class="print-remark" title="点击重新编辑"></p>
+	</div>
+</div>
+{elseif $print_specification eq '190MM*140MM'}
+<div class="print-panel mb0" style="width:{$print_spec_info.width|default:$print_size_info.width}mm; padding:2mm;">
+	<div class="top">
+		<div class="logo"><img src="{$order_print_logo}"></div>
+		<div class="title"><h3>{if $order_type eq 'order'}商品购物清单{else}批发购物清单{/if}</h3></div>
+		<img src="{$web_url}images/print/seal-state-express.png" class="seal" style="width:120px; height:120px; right:30px; top:12px;">
+	</div>
+	<div class="buyer-info">
+		<div class="row">
+			<div class="lie w300">订单编号：{$order_info.order_sn}</div>
+			<div class="lie w300">订购时间：{$order_info.formated_add_time}</div>
+		</div>
+		<div class="row">
+			<div class="lie w300">收货人：{$order_info.consignee}</div>
+			<div class="lie w300">电话：{$order_info.mobile}</div>
+		</div>
+		<div class="row">
+			<div class="lie w300">送货时间：{$order_info.best_time}</div>
+			<div class="lie w300">支付方式：{$order_info.pay_name}</div>
+		</div>
+		<div class="row">
+			<div class="lie_colspan">收货地址：{$order_info.complete_address}</div>
+		</div>
+	</div>
+	<div class="buyer-goods-info">
+		<table class="table">
+			<thead>
+				<tr>
+					<th width="10%">商品编号</th>
+					<th width="30%">商品名称</th>
+					<th width="20%">商品规格</th>
+					<th width="10%">数量</th>
+					<th width="10%">单价</th>
+					<th width="10%">小计</th>
+				</tr>
+			</thead>
+			<tbody>
+				{foreach from=$order_info.goods_list item=goods}
+				<tr>
+					<td>{$goods.goods_id}</td>
+					<td class="p-name">{$goods.goods_name}{if $goods.bar_code}<div class="blue">商品条形码：{$goods.bar_code}</div>{/if}</td>
+					<td>{$goods.goods_attr}</td>
+					<td>{$goods.goods_number}</td>
+					<td>{$goods.format_goods_price}</td>
+					<td>{$goods.format_goods_amount}</td>
+				</tr>
+				{/foreach}
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="7" class="tr">总数量：{$order_info.number_amount}件&nbsp;&nbsp;&nbsp;商品总金额：{$order_info.formated_goods_amount}</td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+	<div class="address-info">
+		<p>
+			<span>商品总金额：{$order_info.formated_goods_amount}</span>
+			{if $order_info.shipping_fee > 0}
+			<em>+</em>
+			<span>运费：{$order_info.formated_shipping_fee}</span>	
+			{/if}
+			{if $order_info.insure_fee > 0}
+			<em>+</em>
+			<span>保价费用：{$order_info.formated_insure_fee}</span>
+			{/if}
+			{if $order_info.tax > 0}
+			<em>+</em>
+			<span>发票税额：{$order_info.formated_tax}</span>
+			{/if}
+			{if $order_info.pay_fee > 0}
+			<em>+</em>
+			<span>支付手续费：{$order_info.formated_pay_fee}</span>
+			{/if}
+			{if $order_info.discount > 0}
+			<em>-</em>
+			<span>优惠：{$order_info.formated_discount}</span>
+			{/if}			
+			<em>=</em>
+			<span>订单总金额：{$order_info.formated_total_fee}</span>
+		</p>
+		<p>
+			<span>订单总金额：{$order_info.formated_total_fee}</span>
+			{if $order_info.surplus > 0}
+			<em>-</em>
+			<span>余额：{$order_info.formated_surplus}</span>
+			{/if}
+			{if $order_info.money_paid > 0}
+			<em>-</em>
+			<span>已付款金额：{$order_info.formated_money_paid}</span>
+			{/if}
+			{if $order_info.value_card > 0}
+			<em>-</em>
+			<span>储值卡：{$order_info.formated_value_card}</span>
+			{/if}
+			{if $order_info.integral_money > 0}
+			<em>-</em>
+			<span>积分：{$order_info.formated_integral_money}</span>
+			{/if}
+			{if $order_info.bonus > 0}					
+			<em>-</em>
+			<span>店铺红包：{$order_info.formated_bonus}</span>
+			{/if}
+			{if $order_info.coupons > 0}
+			<em>-</em>
+			<span>优惠券：{$order_info.formated_coupons}</span>
+			{/if}
+			<em>=</em>
+			<span class="red">待付款金额：{$order_info.formated_order_amount}</span>
+		</p>
+        <div class="image tr mt10"><img src="{$shop_url}plugins/barcodegen/html/image.php?filetype=PNG&dpi=72&scale=1&rotation=0&font_family=Arial.ttf&font_size=14&text={$order_sn}&thickness=40&checksum=&code=BCGcode39" /></div>
+		<textarea class="print_textarea mt20" placeholder="请输入备注信息" rows="3"></textarea>
+		<p class="print-remark" title="点击重新编辑"></p>
+	</div>
+</div>
+{elseif $print_specification eq '190MM*280MM'}
+<div class="print-panel" style="width:{$print_spec_info.width|default:$print_size_info.width}mm; padding:2mm;">
+	<div class="top">
+		<div class="logo"><img src="{$order_print_logo}"></div>
+		<div class="title"><h3>{if $order_type eq 'order'}商品购物清单{else}批发购物清单{/if}</h3></div>
+		<img src="{$web_url}images/print/seal-state-express.png" class="seal">
+	</div>
+	<div class="buyer-info">
+		<div class="row">
+			<div class="lie w300">订单编号：{$order_info.order_sn}</div>
+			<div class="lie w300">订购时间：{$order_info.formated_add_time}</div>
+		</div>
+		<div class="row">
+			<div class="lie w300">收货人：{$order_info.consignee}</div>
+			<div class="lie w300">电话：{$order_info.mobile}</div>
+		</div>
+		<div class="row">
+			<div class="lie w300">送货时间：{$order_info.best_time}</div>
+			<div class="lie w300">支付方式：{$order_info.pay_name}</div>
+		</div>
+		<div class="row">
+			<div class="lie_colspan">收货地址：{$order_info.complete_address}</div>
+		</div>
+	</div>
+	<div class="buyer-goods-info">
+		<table class="table">
+			<thead>
+				<tr>
+					<th width="10%">商品编号</th>
+					<th width="30%">商品名称</th>
+					<th width="20%">商品规格</th>
+					<th width="10%">数量</th>
+					<th width="10%">单价</th>
+					<th width="10%">小计</th>
+				</tr>
+			</thead>
+			<tbody>
+				{foreach from=$order_info.goods_list item=goods}
+				<tr>
+					<td>{$goods.goods_id}</td>
+					<td class="p-name">{$goods.goods_name}{if $goods.bar_code}<div class="blue">商品条形码：{$goods.bar_code}</div>{/if}</td>
+					<td>{$goods.goods_attr}</td>
+					<td>{$goods.goods_number}</td>
+					<td>{$goods.format_goods_price}</td>
+					<td>{$goods.format_goods_amount}</td>
+				</tr>
+				{/foreach}
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="7" class="tr">总数量：{$order_info.number_amount}件&nbsp;&nbsp;&nbsp;商品总金额：{$order_info.formated_goods_amount}</td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+	<div class="address-info">
+		<p>
+			<span>商品总金额：{$order_info.formated_goods_amount}</span>
+			{if $order_info.shipping_fee > 0}
+			<em>+</em>
+			<span>运费：{$order_info.formated_shipping_fee}</span>	
+			{/if}
+			{if $order_info.insure_fee > 0}
+			<em>+</em>
+			<span>保价费用：{$order_info.formated_insure_fee}</span>
+			{/if}
+			{if $order_info.tax > 0}
+			<em>+</em>
+			<span>发票税额：{$order_info.formated_tax}</span>
+			{/if}
+			{if $order_info.pay_fee > 0}
+			<em>+</em>
+			<span>支付手续费：{$order_info.formated_pay_fee}</span>
+			{/if}
+			{if $order_info.discount > 0}
+			<em>-</em>
+			<span>优惠：{$order_info.formated_discount}</span>
+			{/if}			
+			<em>=</em>
+			<span>订单总金额：{$order_info.formated_total_fee}</span>
+		</p>
+		<p>
+			<span>订单总金额：{$order_info.formated_total_fee}</span>
+			{if $order_info.surplus > 0}
+			<em>-</em>
+			<span>余额：{$order_info.formated_surplus}</span>
+			{/if}
+			{if $order_info.money_paid > 0}
+			<em>-</em>
+			<span>已付款金额：{$order_info.formated_money_paid}</span>
+			{/if}
+			{if $order_info.value_card > 0}
+			<em>-</em>
+			<span>储值卡：{$order_info.formated_value_card}</span>
+			{/if}
+			{if $order_info.integral_money > 0}
+			<em>-</em>
+			<span>积分：{$order_info.formated_integral_money}</span>
+			{/if}
+			{if $order_info.bonus > 0}					
+			<em>-</em>
+			<span>店铺红包：{$order_info.formated_bonus}</span>
+			{/if}
+			{if $order_info.coupons > 0}
+			<em>-</em>
+			<span>优惠券：{$order_info.formated_coupons}</span>
+			{/if}
+			<em>=</em>
+			<span class="red">待付款金额：{$order_info.formated_order_amount}</span>
+		</p>
+        <div class="image tr mt10"><img src="{$shop_url}plugins/barcodegen/html/image.php?filetype=PNG&dpi=72&scale=1&rotation=0&font_family=Arial.ttf&font_size=14&text={$order_sn}&thickness=40&checksum=&code=BCGcode39" /></div>
+		<textarea class="print_textarea mt20" placeholder="请输入备注信息" rows="3"></textarea>
+		<p class="print-remark" title="点击重新编辑"></p>
+	</div>
+</div>
+{elseif $print_specification eq '241MM*93MM'}
+<div class="print-panel mb0" style="padding:5mm 5mm 3mm 5mm; width:{$print_spec_info.width|default:$print_size_info.width}mm;">
+	<div class="top">
+		<div class="logo"><img src="{$order_print_logo}"></div>
+		<div class="title"><h3>{if $order_type eq 'order'}商品购物清单{else}批发购物清单{/if}</h3></div>
+		<img src="{$web_url}images/print/seal-state-express.png" class="seal" style="width:120px; height:120px; right:30px; top:12px;">
+	</div>
+	<div class="buyer-info">
+		<div class="row">
+			<div class="lie w400">订单编号：{$order_info.order_sn}</div>
+			<div class="lie w300">订购时间：{$order_info.formated_add_time}</div>
+		</div>
+		<div class="row">
+			<div class="lie w400">收货人：{$order_info.consignee}</div>
+			<div class="lie w300">电话：{$order_info.mobile}</div>
+		</div>
+		<div class="row">
+			<div class="lie w400">送货时间：{$order_info.best_time}</div>
+			<div class="lie w300">支付方式：{$order_info.pay_name}</div>
+		</div>
+		<div class="row">
+			<div class="lie_colspan">收货地址：{$order_info.complete_address}</div>
+		</div>
+	</div>
+	<div class="buyer-goods-info">
+		<table class="table">
+			<thead>
+				<tr>
+					<th width="10%">商品编号</th>
+					<th width="30%">商品名称</th>
+					<th width="20%">商品规格</th>
+					<th width="10%">数量</th>
+					<th width="10%">单价</th>
+					<th width="10%">小计</th>
+				</tr>
+			</thead>
+			<tbody>
+				{foreach from=$order_info.goods_list item=goods}
+				<tr>
+					<td>{$goods.goods_id}</td>
+					<td class="p-name">{$goods.goods_name}{if $goods.bar_code}<div class="blue">商品条形码：{$goods.bar_code}</div>{/if}</td>
+					<td>{$goods.goods_attr}</td>
+					<td>{$goods.goods_number}</td>
+					<td>{$goods.format_goods_price}</td>
+					<td>{$goods.format_goods_amount}</td>
+				</tr>
+				{/foreach}
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="7" class="tr">总数量：{$order_info.number_amount}件&nbsp;&nbsp;&nbsp;商品总金额：{$order_info.formated_goods_amount}</td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+	<div class="address-info">
+		<p>
+			<span>商品总金额：{$order_info.formated_goods_amount}</span>
+			{if $order_info.shipping_fee > 0}
+			<em>+</em>
+			<span>运费：{$order_info.formated_shipping_fee}</span>	
+			{/if}
+			{if $order_info.insure_fee > 0}
+			<em>+</em>
+			<span>保价费用：{$order_info.formated_insure_fee}</span>
+			{/if}
+			{if $order_info.tax > 0}
+			<em>+</em>
+			<span>发票税额：{$order_info.formated_tax}</span>
+			{/if}
+			{if $order_info.pay_fee > 0}
+			<em>+</em>
+			<span>支付手续费：{$order_info.formated_pay_fee}</span>
+			{/if}
+			{if $order_info.discount > 0}
+			<em>-</em>
+			<span>优惠：{$order_info.formated_discount}</span>
+			{/if}			
+			<em>=</em>
+			<span>订单总金额：{$order_info.formated_total_fee}</span>
+		</p>
+		<p>
+			<span>订单总金额：{$order_info.formated_total_fee}</span>
+			{if $order_info.surplus > 0}
+			<em>-</em>
+			<span>余额：{$order_info.formated_surplus}</span>
+			{/if}
+			{if $order_info.money_paid > 0}
+			<em>-</em>
+			<span>已付款金额：{$order_info.formated_money_paid}</span>
+			{/if}
+			{if $order_info.value_card > 0}
+			<em>-</em>
+			<span>储值卡：{$order_info.formated_value_card}</span>
+			{/if}
+			{if $order_info.integral_money > 0}
+			<em>-</em>
+			<span>积分：{$order_info.formated_integral_money}</span>
+			{/if}
+			{if $order_info.bonus > 0}					
+			<em>-</em>
+			<span>店铺红包：{$order_info.formated_bonus}</span>
+			{/if}
+			{if $order_info.coupons > 0}
+			<em>-</em>
+			<span>优惠券：{$order_info.formated_coupons}</span>
+			{/if}
+			<em>=</em>
+			<span class="red">待付款金额：{$order_info.formated_order_amount}</span>
+		</p>
+        <div class="image tr mt10" style="position:absolute; left:20px; bottom:10px;"><img src="{$shop_url}plugins/barcodegen/html/image.php?filetype=PNG&dpi=72&scale=1&rotation=0&font_family=Arial.ttf&font_size=14&text={$order_sn}&thickness=40&checksum=&code=BCGcode39" /></div>
+		<textarea class="print_textarea mt20" placeholder="请输入备注信息" rows="3"></textarea>
+		<p class="print-remark" title="点击重新编辑"></p>
+	</div>
+</div>
+{elseif $print_specification eq '241MM*140MM'}
+<div class="print-panel mb0" style="padding:5mm 5mm 3mm 5mm; width:{$print_spec_info.width|default:$print_size_info.width}mm;">
+	<div class="top">
+		<div class="logo"><img src="{$order_print_logo}"></div>
+		<div class="title"><h3>{if $order_type eq 'order'}商品购物清单{else}批发购物清单{/if}</h3></div>
+		<img src="{$web_url}images/print/seal-state-express.png" class="seal">
+	</div>
+	<div class="buyer-info">
+		<div class="row">
+			<div class="lie w400">订单编号：{$order_info.order_sn}</div>
+			<div class="lie w300">订购时间：{$order_info.formated_add_time}</div>
+		</div>
+		<div class="row">
+			<div class="lie w400">收货人：{$order_info.consignee}</div>
+			<div class="lie w300">电话：{$order_info.mobile}</div>
+		</div>
+		<div class="row">
+			<div class="lie w400">送货时间：{$order_info.best_time}</div>
+			<div class="lie w300">支付方式：{$order_info.pay_name}</div>
+		</div>
+		<div class="row">
+			<div class="lie_colspan">收货地址：{$order_info.complete_address}</div>
+		</div>
+	</div>
+	<div class="buyer-goods-info">
+		<table class="table">
+			<thead>
+				<tr>
+					<th width="10%">商品编号</th>
+					<th width="30%">商品名称</th>
+					<th width="20%">商品规格</th>
+					<th width="10%">数量</th>
+					<th width="10%">单价</th>
+					<th width="10%">小计</th>
+				</tr>
+			</thead>
+			<tbody>
+				{foreach from=$order_info.goods_list item=goods}
+				<tr>
+					<td>{$goods.goods_id}</td>
+					<td class="p-name">{$goods.goods_name}{if $goods.bar_code}<div class="blue">商品条形码：{$goods.bar_code}</div>{/if}</td>
+					<td>{$goods.goods_attr}</td>
+					<td>{$goods.goods_number}</td>
+					<td>{$goods.format_goods_price}</td>
+					<td>{$goods.format_goods_amount}</td>
+				</tr>
+				{/foreach}
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="7" class="tr">总数量：{$order_info.number_amount}件&nbsp;&nbsp;&nbsp;商品总金额：{$order_info.formated_goods_amount}</td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+	<div class="address-info">
+		<p>
+			<span>商品总金额：{$order_info.formated_goods_amount}</span>
+			{if $order_info.shipping_fee > 0}
+			<em>+</em>
+			<span>运费：{$order_info.formated_shipping_fee}</span>	
+			{/if}
+			{if $order_info.insure_fee > 0}
+			<em>+</em>
+			<span>保价费用：{$order_info.formated_insure_fee}</span>
+			{/if}
+			{if $order_info.tax > 0}
+			<em>+</em>
+			<span>发票税额：{$order_info.formated_tax}</span>
+			{/if}
+			{if $order_info.pay_fee > 0}
+			<em>+</em>
+			<span>支付手续费：{$order_info.formated_pay_fee}</span>
+			{/if}
+			{if $order_info.discount > 0}
+			<em>-</em>
+			<span>优惠：{$order_info.formated_discount}</span>
+			{/if}			
+			<em>=</em>
+			<span>订单总金额：{$order_info.formated_total_fee}</span>
+		</p>
+		<p>
+			<span>订单总金额：{$order_info.formated_total_fee}</span>
+			{if $order_info.surplus > 0}
+			<em>-</em>
+			<span>余额：{$order_info.formated_surplus}</span>
+			{/if}
+			{if $order_info.money_paid > 0}
+			<em>-</em>
+			<span>已付款金额：{$order_info.formated_money_paid}</span>
+			{/if}
+			{if $order_info.value_card > 0}
+			<em>-</em>
+			<span>储值卡：{$order_info.formated_value_card}</span>
+			{/if}
+			{if $order_info.integral_money > 0}
+			<em>-</em>
+			<span>积分：{$order_info.formated_integral_money}</span>
+			{/if}
+			{if $order_info.bonus > 0}					
+			<em>-</em>
+			<span>店铺红包：{$order_info.formated_bonus}</span>
+			{/if}
+			{if $order_info.coupons > 0}
+			<em>-</em>
+			<span>优惠券：{$order_info.formated_coupons}</span>
+			{/if}
+			<em>=</em>
+			<span class="red">待付款金额：{$order_info.formated_order_amount}</span>
+		</p>
+        <div class="image tr mt10"><img src="{$shop_url}plugins/barcodegen/html/image.php?filetype=PNG&dpi=72&scale=1&rotation=0&font_family=Arial.ttf&font_size=14&text={$order_sn}&thickness=40&checksum=&code=BCGcode39" /></div>
+		<textarea class="print_textarea mt20" placeholder="请输入备注信息" rows="3"></textarea>
+		<p class="print-remark" title="点击重新编辑"></p>
+	</div>
+</div>
+{elseif $print_specification eq '241MM*280MM'}
+<div class="print-panel mb0" style="padding:5mm 5mm 3mm 5mm; width:{$print_spec_info.width|default:$print_size_info.width}mm;">
+	<div class="top">
+		<div class="logo"><img src="{$order_print_logo}"></div>
+		<div class="title"><h3>{if $order_type eq 'order'}商品购物清单{else}批发购物清单{/if}</h3></div>
+		<img src="{$web_url}images/print/seal-state-express.png" class="seal">
+	</div>
+	<div class="buyer-info">
+		<div class="row">
+			<div class="lie w400">订单编号：{$order_info.order_sn}</div>
+			<div class="lie w300">订购时间：{$order_info.formated_add_time}</div>
+		</div>
+		<div class="row">
+			<div class="lie w400">收货人：{$order_info.consignee}</div>
+			<div class="lie w300">电话：{$order_info.mobile}</div>
+		</div>
+		<div class="row">
+			<div class="lie w400">送货时间：{$order_info.best_time}</div>
+			<div class="lie w300">支付方式：{$order_info.pay_name}</div>
+		</div>
+		<div class="row">
+			<div class="lie_colspan">收货地址：{$order_info.complete_address}</div>
+		</div>
+	</div>
+	<div class="buyer-goods-info">
+		<table class="table">
+			<thead>
+				<tr>
+					<th width="10%">商品编号</th>
+					<th width="30%">商品名称</th>
+					<th width="20%">商品规格</th>
+					<th width="10%">数量</th>
+					<th width="10%">单价</th>
+					<th width="10%">小计</th>
+				</tr>
+			</thead>
+			<tbody>
+				{foreach from=$order_info.goods_list item=goods}
+				<tr>
+					<td>{$goods.goods_id}</td>
+					<td class="p-name">{$goods.goods_name}{if $goods.bar_code}<div class="blue">商品条形码：{$goods.bar_code}</div>{/if}</td>
+					<td>{$goods.goods_attr}</td>
+					<td>{$goods.goods_number}</td>
+					<td>{$goods.format_goods_price}</td>
+					<td>{$goods.format_goods_amount}</td>
+				</tr>
+				{/foreach}
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="7" class="tr">总数量：{$order_info.number_amount}件&nbsp;&nbsp;&nbsp;商品总金额：{$order_info.formated_goods_amount}</td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+	<div class="address-info">
+		<p>
+			<span>商品总金额：{$order_info.formated_goods_amount}</span>
+			{if $order_info.shipping_fee > 0}
+			<em>+</em>
+			<span>运费：{$order_info.formated_shipping_fee}</span>	
+			{/if}
+			{if $order_info.insure_fee > 0}
+			<em>+</em>
+			<span>保价费用：{$order_info.formated_insure_fee}</span>
+			{/if}
+			{if $order_info.tax > 0}
+			<em>+</em>
+			<span>发票税额：{$order_info.formated_tax}</span>
+			{/if}
+			{if $order_info.pay_fee > 0}
+			<em>+</em>
+			<span>支付手续费：{$order_info.formated_pay_fee}</span>
+			{/if}
+			{if $order_info.discount > 0}
+			<em>-</em>
+			<span>优惠：{$order_info.formated_discount}</span>
+			{/if}			
+			<em>=</em>
+			<span>订单总金额：{$order_info.formated_total_fee}</span>
+		</p>
+		<p>
+			<span>订单总金额：{$order_info.formated_total_fee}</span>
+			{if $order_info.surplus > 0}
+			<em>-</em>
+			<span>余额：{$order_info.formated_surplus}</span>
+			{/if}
+			{if $order_info.money_paid > 0}
+			<em>-</em>
+			<span>已付款金额：{$order_info.formated_money_paid}</span>
+			{/if}
+			{if $order_info.value_card > 0}
+			<em>-</em>
+			<span>储值卡：{$order_info.formated_value_card}</span>
+			{/if}
+			{if $order_info.integral_money > 0}
+			<em>-</em>
+			<span>积分：{$order_info.formated_integral_money}</span>
+			{/if}
+			{if $order_info.bonus > 0}					
+			<em>-</em>
+			<span>店铺红包：{$order_info.formated_bonus}</span>
+			{/if}
+			{if $order_info.coupons > 0}
+			<em>-</em>
+			<span>优惠券：{$order_info.formated_coupons}</span>
+			{/if}
+			<em>=</em>
+			<span class="red">待付款金额：{$order_info.formated_order_amount}</span>
+		</p>
+        <div class="image tr mt10"><img src="{$shop_url}plugins/barcodegen/html/image.php?filetype=PNG&dpi=72&scale=1&rotation=0&font_family=Arial.ttf&font_size=14&text={$order_sn}&thickness=40&checksum=&code=BCGcode39" /></div>
+		<textarea class="print_textarea mt20" placeholder="请输入备注信息" rows="3"></textarea>
+		<p class="print-remark" title="点击重新编辑"></p>
+	</div>
+</div>
+{elseif $print_specification eq '210MM*145MM'}
+<div class="print-panel mb0" style="padding:5mm 5mm 3mm 5mm; width:{$print_spec_info.width|default:$print_size_info.width}mm;">
+	<div class="top">
+		<div class="logo"><img src="{$order_print_logo}"></div>
+		<div class="title"><h3>{if $order_type eq 'order'}商品购物清单{else}批发购物清单{/if}</h3></div>
+		<img src="{$web_url}images/print/seal-state-express.png" class="seal">
+	</div>
+	<div class="buyer-info">
+		<div class="row">
+			<div class="lie w400">订单编号：{$order_info.order_sn}</div>
+			<div class="lie w300">订购时间：{$order_info.formated_add_time}</div>
+		</div>
+		<div class="row">
+			<div class="lie w400">收货人：{$order_info.consignee}</div>
+			<div class="lie w300">电话：{$order_info.mobile}</div>
+		</div>
+		<div class="row">
+			<div class="lie w400">送货时间：{$order_info.best_time}</div>
+			<div class="lie w300">支付方式：{$order_info.pay_name}</div>
+		</div>
+		<div class="row">
+			<div class="lie_colspan">收货地址：{$order_info.complete_address}</div>
+		</div>
+	</div>
+	<div class="buyer-goods-info">
+		<table class="table">
+			<thead>
+				<tr>
+					<th width="10%">商品编号</th>
+					<th width="30%">商品名称</th>
+					<th width="20%">商品规格</th>
+					<th width="10%">数量</th>
+					<th width="10%">单价</th>
+					<th width="10%">小计</th>
+				</tr>
+			</thead>
+			<tbody>
+				{foreach from=$order_info.goods_list item=goods}
+				<tr>
+					<td>{$goods.goods_id}</td>
+					<td class="p-name">{$goods.goods_name}{if $goods.bar_code}<div class="blue">商品条形码：{$goods.bar_code}</div>{/if}</td>
+					<td>{$goods.goods_attr}</td>
+					<td>{$goods.goods_number}</td>
+					<td>{$goods.format_goods_price}</td>
+					<td>{$goods.format_goods_amount}</td>
+				</tr>
+				{/foreach}
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="7" class="tr">总数量：{$order_info.number_amount}件&nbsp;&nbsp;&nbsp;商品总金额：{$order_info.formated_goods_amount}</td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+	<div class="address-info">
+		<p>
+			<span>商品总金额：{$order_info.formated_goods_amount}</span>
+			{if $order_info.shipping_fee > 0}
+			<em>+</em>
+			<span>运费：{$order_info.formated_shipping_fee}</span>	
+			{/if}
+			{if $order_info.insure_fee > 0}
+			<em>+</em>
+			<span>保价费用：{$order_info.formated_insure_fee}</span>
+			{/if}
+			{if $order_info.tax > 0}
+			<em>+</em>
+			<span>发票税额：{$order_info.formated_tax}</span>
+			{/if}
+			{if $order_info.pay_fee > 0}
+			<em>+</em>
+			<span>支付手续费：{$order_info.formated_pay_fee}</span>
+			{/if}
+			{if $order_info.discount > 0}
+			<em>-</em>
+			<span>优惠：{$order_info.formated_discount}</span>
+			{/if}			
+			<em>=</em>
+			<span>订单总金额：{$order_info.formated_total_fee}</span>
+		</p>
+		<p>
+			<span>订单总金额：{$order_info.formated_total_fee}</span>
+			{if $order_info.surplus > 0}
+			<em>-</em>
+			<span>余额：{$order_info.formated_surplus}</span>
+			{/if}
+			{if $order_info.money_paid > 0}
+			<em>-</em>
+			<span>已付款金额：{$order_info.formated_money_paid}</span>
+			{/if}
+			{if $order_info.value_card > 0}
+			<em>-</em>
+			<span>储值卡：{$order_info.formated_value_card}</span>
+			{/if}
+			{if $order_info.integral_money > 0}
+			<em>-</em>
+			<span>积分：{$order_info.formated_integral_money}</span>
+			{/if}
+			{if $order_info.bonus > 0}					
+			<em>-</em>
+			<span>店铺红包：{$order_info.formated_bonus}</span>
+			{/if}
+			{if $order_info.coupons > 0}
+			<em>-</em>
+			<span>优惠券：{$order_info.formated_coupons}</span>
+			{/if}
+			<em>=</em>
+			<span class="red">待付款金额：{$order_info.formated_order_amount}</span>
+		</p>
+        <div class="image tr mt10"><img src="{$shop_url}plugins/barcodegen/html/image.php?filetype=PNG&dpi=72&scale=1&rotation=0&font_family=Arial.ttf&font_size=14&text={$order_sn}&thickness=40&checksum=&code=BCGcode39" /></div>
+		<textarea class="print_textarea mt20" placeholder="请输入备注信息" rows="3"></textarea>
+		<p class="print-remark" title="点击重新编辑"></p>
+	</div>
+</div>
+{/if}

@@ -1,0 +1,124 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+{include file ='library/seller_html_head.lbi'}
+</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+				{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="search-info">
+                    <div class="search-form">
+                        <form action="javascript:searchUser()" name="searchForm">
+                            <div class="imitate_select select_w145">
+                                <div class="cite">{$lang.handler}</div>
+                                <ul>
+                                    <li><a href="javascript:;" data-value="0" class="ftx-01">请选择</a></li>
+                                    <li><a href="javascript:;" data-value="1" class="ftx-01">{$lang.off_stocks}</a></li>
+                                    <li><a href="javascript:;" data-value="2" class="ftx-01">{$lang.stay_dispose}</a></li>
+                                </ul>
+                                <input name="handler" type="hidden" />
+                            </div>
+                            <input type="submit" class="sc-btn sc-blueBg-btn btn30" value="搜索">
+                        </form>
+                    </div>
+                </div>
+                {/if}
+                <div class="list-div mt10" id="listDiv">
+                  <table class="ecsc-default-table">
+                  	<thead>
+                    <tr>
+                      <th width="10%">{$lang.record_id}</th>
+                      <th width="15%">{$lang.label_total_fee}</th>
+                      <th width="15%">冻结资金</th>
+                      <th width="15%">{$lang.label_log_type}</th>
+                      <th width="15%">{$lang.label_add_time}</th>
+                      <th width="15%">商家回复</th>
+                      <th width="15%">{$lang.handler}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {foreach from=$log_list item=log name=nolog}
+                    <tr>
+                      <td class="left">{$log.log_id}</td>
+                      <td align="center">{$log.amount}</td>
+                      <td align="center">{$log.frozen_money}</td>
+                      <td align="center">
+                          {if $log.log_type neq 5}
+                        {$lang.label_deposit}
+                        <br/>
+                        <em style="color:#e23435">(
+                        {if $log.deposit_mode}
+                        	{$lang.label_user_balance}
+                        {else}
+                        	{$lang.label_offline_money}
+                        {/if}
+                        )</em>
+                        {else}
+                        解冻冻结资金
+                        {/if}
+                      </td>  
+                      <td align="center">{$log.add_time}</td>  
+                      <td align="center">{$log.admin_note}</td>  
+                      <td align="center">
+                          {if $log.log_type eq 1 && $log.is_paid eq 1 || $log.log_type eq 4 && $log.is_paid eq 1 || $log.log_type eq 5 && $log.is_paid eq 1}
+                            {$lang.off_stocks}
+                          {elseif $log.log_type eq 5 && $log.is_paid eq 2}
+                            {$lang.refuse_apply_for}
+                          {else}
+                            {$lang.stay_dispose}
+                          {/if}
+                          {if $log.certificate_img}
+                          <a href="../{$log.certificate_img}" class="nyroModalWzs ml5" target="_blank">{$lang.transfer_certificate}</a>
+                          {/if}
+                      </td>  
+                    </tr>
+                    {foreachelse}
+                    <tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+                    {/foreach}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="10">{include file="page.dwt"}</td>
+                        </tr>
+                    </tfoot>
+                  </table>
+                </div>
+                {if $full_page}
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript">
+listTable.recordCount = {$record_count};
+listTable.pageCount = {$page_count};
+
+{foreach from=$filter item=item key=key}
+listTable.filter.{$key} = '{$item}';
+{/foreach}
+
+/**
+ * 搜索用户
+ */
+function searchUser()
+{
+	listTable.filter['handler'] = Utils.trim(document.forms['searchForm'].elements['handler'].value);
+	
+    listTable.filter['page'] = 1;
+    listTable.loadList();
+}
+$(function(){
+	$('.nyroModalWzs').nyroModal();
+});
+</script>
+</body>
+</html>
+{/if}

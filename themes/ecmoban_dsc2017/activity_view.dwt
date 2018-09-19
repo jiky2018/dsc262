@@ -1,0 +1,100 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<!-- #BeginLibraryItem "/library/js_languages_new.lbi" --><!-- #EndLibraryItem -->
+</head>
+
+<body>
+    <!-- #BeginLibraryItem "/library/page_header_common.lbi" --><!-- #EndLibraryItem -->
+    <div class="content">
+        {* DSC 提醒您：动态载入activity_top_ad.lbi，显示首页分类小广告 *}{insert name='get_adv_child' ad_arr=$activity_top_banner}
+        <div class="activity-main">
+            <div class="w w1200">
+                <div class="activity-main-title">
+                    <h2>{$activity.act_name}</h2>
+                    <p>消费满{$activity.min_amount}{$activity.act_type}{if $activity.actType neq 0}{$activity.act_type_ext}{/if}</p>
+                </div>
+                <ul class="activity-list clearfix">
+                    <li class="mod-shadow-card li-col2">
+                        <div class="shop-info">
+                            <div class="shop-name">
+                                <a href="" class="s-name">{$activity.shop_name}</a>
+                                <a href="" class="kefu"><i class="icon i-kefu"></i></a>
+                            </div>
+                            <dl>
+                                <dt>活动时间：</dt>
+                                <dd>{$activity.start_time} ~ {$activity.end_time}</dd>
+                            </dl>
+                            <dl>
+                                <dt>优惠方式：</dt>
+                                <dd>{$activity.act_type}{if $activity.actType neq 0}&nbsp;{$activity.act_type_ext}{/if}</dd>
+                            </dl>
+                            <dl>
+                                <dt>金额限制：</dt>
+                                <dd>{$activity.min_amount}元{if $activity.max_amount gt 0} ~ {$activity.max_amount}{/if}</dd>
+                            </dl>
+                            <dl>
+                                <dt>会员等级：</dt>
+                                <dd>{foreach from=$activity.user_rank item=rank}{$rank}&nbsp;{/foreach}</dd>
+                            </dl>
+                            <dl>
+                                <dt>优惠范围：</dt>
+                                <dd>{$activity.act_range}
+									{if $activity.act_range_ext && $activity.act_range_type neq 3} 								
+									<div class="shop-brand">
+										{foreach from=$activity.act_range_ext item=range_ext}
+										{if $activity.act_range_type eq 1}
+										<a href="category.php?id={$range_ext.id}" target="_blank">{$range_ext.name}</a>
+										{elseif $activity.act_range_type eq 2}
+										<a href="brand.php?id={$range_ext.id}" target="_blank">{$range_ext.name}</a>
+										{/if}
+										{/foreach}
+									</div>
+									{/if}
+									{if $activity.actType eq 0}
+									<!--<div>
+										<em class="open" id="open_gift_{$activity.act_id}" onclick="get_open({$activity.act_id}, 1, 'gift')">{$lang.open}</em>
+									</div>-->
+									{/if}									
+								</dd>
+                            </dl>
+                        </div>
+                    </li>
+					{include file="/library/activity_goods_list.lbi"}
+                </ul>
+				<!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+                <div id="flyItem" class="fly_item"><img src="" width="40" height="40"></div>
+				{if $activity.gift}
+                <div class="activity-main-title">
+                    <h2>享受赠品</h2>
+                </div>				
+				<ul class="activity-list clearfix">
+					{foreach from=$activity.gift item=goods name=goods}
+                    <li class="mod-shadow-card">
+                        <a href="goods.php?id={$goods.id}" target="_blank" class="img"><img src="{$goods.thumb}" alt="{$goods.name}"></a>
+                        <a href="goods.php?id={$goods.id}" target="_blank" class="name">{$goods.name}</a>
+                        <div class="price">￥{$goods.price}</div>
+                    </li>
+					{/foreach}
+				</ul>
+				{/if}
+            </div>
+        </div>
+    </div>
+    {* DSC 提醒您：动态载入user_menu_position.lbi，显示首页分类小广告 *}{insert name='user_menu_position'}
+    <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+    
+    {insert_scripts files='common.js,cart_common.js,parabola.js,cart_quick_links.js'}
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/dsc-common.js"></script>
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.purebox.js"></script>
+</body>
+</html>

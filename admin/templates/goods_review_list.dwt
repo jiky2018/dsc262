@@ -1,0 +1,637 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.goods_alt} - {$ur_here}</div>
+        <div class="content">
+            {include file="library/common_tabs_info.lbi"}
+        	<div class="explanation mb10" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.review.0}</li>
+                    <li>{$lang.operation_prompt_content.review.1}</li>
+                </ul>
+            </div>            
+        	<div class="tabs_info">
+            	<ul>
+                    <li {if $menu_select.current eq '01_goods_list'}class="curr"{/if}>
+                    	<a href="goods.php?act=list{$seller_list}">{$lang.ordinary_goods} {if $menu_select.current neq '01_goods_list'}{if $goods_list_type}<em class="li_color">({$goods_list_type.ordinary|default:0})</em>{/if}{/if}</a>
+                    </li>
+                    <li {if $menu_select.current eq '50_virtual_card_list'}class="curr"{/if}>
+                    	<a href="goods.php?act=list&extension_code=virtual_card{$seller_list}">{$lang.virtual_goods} {if $menu_select.current neq '50_virtual_card_list'}{if $goods_list_type}<em class="li_color">({$goods_list_type.virtual_card|default:0})</em>{/if}{/if}</a>
+                    </li>
+                    {if $cfg.review_goods}
+                	<li {if $menu_select.current eq '01_review_status'}class="curr"{/if}>
+                    	<a href="goods.php?act=review_status{$seller_list}">{$lang.01_review_status} {if $menu_select.current neq '01_review_status'}{if $goods_list_type}<em class="li_color">({$goods_list_type.review_status|default:0})</em>{/if}{/if}</a>
+                    </li>
+                    {/if}
+					<li {if $menu_select.current eq '11_goods_trash'}class="curr"{/if}>
+                    	<a href="goods.php?act=trash{$seller_list}">{$lang.11_goods_trash} {if $menu_select.current neq '11_goods_trash'}{if $goods_list_type}<em class="li_color">({$goods_list_type.delete|default:0})</em>{/if}{/if}</a>
+                    </li>
+                    <li {if $menu_select.current eq '19_is_sale'}class="curr"{/if}>
+                    	<a href="goods.php?act=is_sale{$seller_list}">{$lang.shelves_goods} {if $menu_select.current neq '19_is_sale'}{if $goods_list_type}<em class="li_color">({$goods_list_type.is_sale|default:0})</em>{/if}{/if}</a>
+                    </li>
+                    
+                    <li {if $menu_select.current eq '20_is_sale'}class="curr"{/if}>
+                    	<a href="goods.php?act=on_sale{$seller_list}">{$lang.off_the_shelf_goods} {if $menu_select.current neq '20_is_sale'}{if $goods_list_type}<em class="li_color">({$goods_list_type.on_sale|default:0})</em>{/if}{/if}</a>
+                    </li>
+                </ul>
+            </div>			
+            <div class="flexilist">
+            	<!--商品列表-->
+                <div class="common-head">
+                    <div class="fl">
+                        <a href="goods.php?act=review_status&type=not_audit{$seller_list}"><div class="fbutton"><div class="edit" title="{$lang.lab_review_not_audit}"><span><i class="icon icon-edit"></i>{$lang.lab_review_not_audit} ({$goods_list_type.not_status|default:0})</span></div></div></a>
+                    	<a href="goods.php?act=review_status&type=not_pass{$seller_list}"><div class="fbutton"><div class="add" title="{$lang.audited_not_adopt}"><span><i class="icon icon-edit"></i>{$lang.audited_not_adopt} ({$goods_list_type.not_pass|default:0})</span></div></div></a>
+                    </div>
+                    <div class="refresh">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+					<div class="search">
+                    	<form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+                    	<div class="input">
+                        	<input type="text" name="keyword" class="text nofocus w140" placeholder="{$lang.search_keyword_placeholder}" autocomplete="off">
+							<input type="submit" class="btn" name="secrch_btn" ectype="secrch_btn" value="" />
+                        </div>
+                        </form>
+                    </div>					
+                </div>
+                <div class="common-content">
+					<form method="post" action="" name="listForm" onsubmit="return confirmSubmit(this)">
+                    <div class="list-div" id="listDiv">
+                    	<div class="flexigrid ht_goods_list{if $add_handler} xn_goods_list{/if}">
+						{/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                	<th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars"></label></div></th>
+                                	<th width="5%" class="sky_id"><div class="tDiv"><a href="javascript:listTable.sort('goods_id');">{$lang.record_id}</a>{$sort_goods_id}</div></th>
+                                    <th width="20%"><div class="tDiv"><a href="javascript:listTable.sort('goods_name');">{$lang.goods_name}</a>{$sort_goods_name}</div></th>
+                                    <th width="12%"><div class="tDiv">{$lang.goods_steps_name}</div></th>
+                                    <th width="12%"><div class="tDiv">{$lang.shop_price}/{$lang.goods_sn}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.goods_label}</div></th>
+                                    <th width="6%"><div class="tDiv"><a href="javascript:listTable.sort('sort_order');">{$lang.sort_order}</a>{$sort_sort_order}</div></th>
+                                    <th width="7%"><div class="tDiv">{$lang.audit_status}</div></th>
+                                    <th width="10%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+								{foreach from=$goods_list item=goods}
+                            	<tr>
+                                    <td class="sign">
+                                    <div class="tDiv">
+										<input type="checkbox" name="checkboxes[]" value="{$goods.goods_id}" class="checkbox" id="checkbox_{$goods.goods_id}" />
+										<label for="checkbox_{$goods.goods_id}" class="checkbox_stars"></label>
+									</div>
+                                    </td>
+                                    <td class="sky_id"><div class="tDiv">{$goods.goods_id}</div></td>
+                                    <td>
+                                    	<div class="tDiv goods_list_info">
+											<div class="img"><a href="../goods.php?id={$goods.goods_id}" target="_blank" title="{$goods.goods_name|escape:html}"><img src="{$goods.goods_thumb}" width="68" height="68" /></a></div>
+                                            <div class="desc">
+                                        	<div class="name">
+                                                	<span onclick="listTable.edit(this, 'edit_goods_name', {$goods.goods_id})" title="{$goods.goods_name|escape:html}" data-toggle="tooltip" class="span">{$goods.goods_name|escape:html}</span>
+                                                </div>
+                                            	{if $goods.brand_name}<p class="brand">{$lang.brand}：<em>{$goods.brand_name}</em></p>{/if}
+                                                <p class="activity"> 
+                                                    {if $goods.is_shipping}
+                                                    <em class="free">{$alng.free_shipping_alt}</em>
+                                                    {/if}
+    
+                                                    {if $goods.stages}
+                                                    <em class="byStage">{$lang.by_stages}</em>
+                                                    {/if}
+                                                    {if !$goods.is_alone_sale}
+                                                    <em class="parts">{$lang.tab_groupgoods}</em>
+                                                    {/if}
+                                                    
+                                                    {if $goods.is_promote}
+                                                        {if $nowTime gte $goods.promote_end_date}
+                                                    <em class="saleEnd">{$lang.promote_end_date}</em>
+                                                        {else}
+                                                    <em class="sale">{$lang.promote_date}</em>    
+                                                        {/if}
+                                                    {/if}
+                                                    
+                                                    {if $goods.is_xiangou}
+                                                        {if $nowTime gte $goods.xiangou_end_date}
+                                                    <em class="purchaseEnd">{$lang.xiangou_end}</em>
+                                                        {else}
+                                                    <em class="purchase">{$lang.xiangou}</em>    
+                                                        {/if}
+                                                    {/if}
+													
+                                                    {if $goods.is_distribution}
+                                                    <em class="distribution">{$lang.distribution}</em>
+                                                    {/if}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="tDiv">
+                                            <div class="goods_list_seller" title="{$goods.user_name}" data-toggle="tooltip">{if $goods.user_name}<font class="red">{$goods.user_name}</font>{else}<font class="blue3">{$lang.self}</font>{/if}</div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                    	<div class="tDiv">
+                                            <div class="tDiv_item">
+                                            	<span class="label">{$lang.goods_sn}：</span>
+                                                <div class="value">
+                                                    <span>{$goods.goods_sn}</span>
+                                                </div>
+                                            </div>
+                                    	</div>
+                                    </td>
+                                    <td>
+                                    	<div class="tDiv">
+                                            <div class="tlist">
+                                            	<span>{$lang.is_best}：</span>
+                                            	{if $goods.is_best}{$lang.yes}{else}{$lang.no}{/if}
+                                            </div>
+                                            <div class="tlist">
+                                            	<span>{$lang.is_new}：</span>
+                                                {if $goods.is_new}{$lang.yes}{else}{$lang.no}{/if}
+                                            </div>
+                                            <div class="tlist">
+                                            	<span>{$lang.is_hot}：</span>
+                                            	{if $goods.is_hot}{$lang.yes}{else}{$lang.no}{/if}
+                                            </div>
+                                            <div class="tlist tlist-last">
+                                            	<span>{$lang.on_sale}：</span>
+                                            	{if $goods.is_on_sale}{$lang.yes}{else}{$lang.no}{/if}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><div class="tDiv"><span onclick="listTable.edit(this, 'edit_sort_order', {$goods.goods_id})">{$goods.sort_order}</span></div></td>
+                                    <td>
+                                    	<div class="tDiv">
+                                            {if $goods.review_status eq 1}
+                                            <font class="org2">{$lang.not_audited}</font>
+                                            {elseif $goods.review_status eq 2}
+                                            <font class="red">{$lang.audited_not_adopt}</font><br/>
+                                            <i class="tip yellow" title="{$goods.review_content}"  data-toggle="tooltip">{$lang.prompt}</i>
+                                            {elseif $goods.review_status eq 3 || $goods.review_status eq 4}
+                                            <font class="blue">{$lang.audited_yes_adopt}</font>
+                                            {elseif $goods.review_status eq 5}
+                                            <font class="navy2">{$lang.wuxu_adopt}</font>
+                                            {/if}									
+                                        </div>
+                                    </td>
+                                    <td class="handle">
+                                    	<div class="tDiv ht_tdiv">
+                                        	<a href="../goods.php?id={$goods.goods_id}" target="_blank" class="btn_see"><i class="sc_icon sc_icon_see"></i>{$lang.view}</a>
+                                            <a href="javascript:;" ectype="review_status" class="btn_see" data-type="{$type}" data-goodsid="{$goods.goods_id|default:0}" data-goodsname="{$goods.goods_name|escape:html}"><i class="icon icon-edit"></i>{$lang.check}</a>
+                                        </div>
+                                    </td>
+                                </tr>
+								{foreachelse}
+								<tr><td class="no-records"  colspan="20">{$lang.no_records}</td></tr>								
+								{/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                	<td colspan="12">
+                                    	<div class="tDiv">
+                                            <div class="tfoot_btninfo">
+                                                <div class="checkbox_item fl font12 mt5 mr5">
+                                                	<input type="checkbox" name="all_list" class="ui-checkbox" id="all_list"><label for="all_list" class="ui-label">{$lang.check_all}</label>
+                                                </div>
+                                                <input type="hidden" name="act" value="batch" />
+                                                <!-- 操作类型 start -->
+                                                <div class="imitate_select select_w120">
+                                                    <div class="cite">{$lang.please_select}</div>
+                                                    <ul>
+                                                        <li><a href="javascript:changeAction();" data-value="" class="ftx-01">{$lang.select_please}</a></li>
+                                                        <li><a href="javascript:changeAction();" data-value="trash" class="ftx-01">{$lang.trash}</a></li>
+                                                        <li><a href="javascript:changeAction();" data-value="on_sale" class="ftx-01">{$lang.on_sale}</a></li>
+                                                        <li><a href="javascript:changeAction();" data-value="not_on_sale" class="ftx-01">{$lang.not_on_sale}</a></li>
+                                                        {if $priv_ru eq 1}
+                                                        <li><a href="javascript:changeAction();" data-value="best" class="ftx-01">{$lang.best}</a></li>
+                                                        <li><a href="javascript:changeAction();" data-value="not_best" class="ftx-01">{$lang.not_best}</a></li>
+                                                        <li><a href="javascript:changeAction();" data-value="new" class="ftx-01">{$lang.new}</a></li>
+                                                        <li><a href="javascript:changeAction();" data-value="not_new" class="ftx-01">{$lang.not_new}</a></li>
+                                                        <li><a href="javascript:changeAction();" data-value="hot" class="ftx-01">{$lang.hot}</a></li>
+                                                        <li><a href="javascript:changeAction();" data-value="not_hot" class="ftx-01">{$lang.not_hot}</a></li>
+                                                        <li><a href="javascript:changeAction();" data-value="move_to" class="ftx-01">{$lang.move_to}</a></li>
+                                                        <li><a href="javascript:changeAction();" data-value="review_to" class="ftx-01">{$lang.adopt_goods}</a></li>
+                                                        {if $suppliers_list > 0}
+                                                        <li><a href="javascript:changeAction();" data-value="suppliers_move_to" class="ftx-01">{$lang.suppliers_move_to}</a></li>
+                                                        {/if}
+                                                        {/if}
+                                                    </ul>
+                                                    <input name="type" type="hidden" value="" id="">
+                                                </div>
+                                                <!-- 操作类型 end -->
+                                                
+                                                <!-- 转移到分类 start -->
+                                                <div class="search_select fl" id="move_cat_list" style="display: none;">
+                                                    <div class="categorySelect">
+                                                        <div class="selection">
+                                                            <input type="text" name="category_name" id="category_name" class="text w250 valid" value="{$lang.select_cat}" autocomplete="off" readonly data-filter="cat_name" />
+                                                            <input type="hidden" name="target_cat" id="category_id" value="0" data-filter="cat_id" />
+                                                        </div>
+                                                        <div class="select-container" style="display:none;">
+                                                            {include file="library/filter_category.lbi"}
+                                                        </div>
+                                                        <div class="clear"></div>
+                                                    </div>
+                                                </div>
+                                                <!-- 转移到分类 end -->
+                                              
+                                                <!-- 审核商品 start -->
+                                                <div id="review_status" class="imitate_select select_w120" style="display:none">
+                                                    <div class="cite">{$lang.please_select}</div>
+                                                    <ul>
+                                                        <li><a href="javascript:get_review_status(2);" data-value="2" class="ftx-01">{$lang.audited_not_adopt}</a></li>
+                                                        <li><a href="javascript:get_review_status(3);" data-value="3" class="ftx-01">{$lang.audited_yes_adopt}</a></li>
+                                                    </ul>
+                                                    <input name="review_status" type="hidden" value="3">
+                                                </div>
+                                                <input name="review_content" type="text" value="" class="text text_2 mr10 lh26" style="display:none" />
+                                                <!-- 审核商品 end -->
+                                              
+                                                <!-- 转移供货商 start -->
+                                                {if $suppliers_list > 0}
+                                                <div id="suppliers_id" class="imitate_select select_w120" style="display:none;">
+                                                    <div class="cite">{$lang.please_select}</div>
+                                                    <ul>
+                                                        <li><a href="javascript:;" data-value="-1" class="ftx-01">{$lang.select_please}</a></li>
+                                                        <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.lab_to_shopex}</a></li>
+                                                        {foreach name=sln from=$suppliers_list item=sl}
+                                                        <li><a href="javascript:;" data-value="{$sl.suppliers_id}" class="ftx-01">{$sl.suppliers_name}</a></li>
+                                                        {/foreach}
+                                                    </ul>
+                                                    <input name="suppliers_id" type="hidden" value="-1" id="">
+                                                </div>
+                                                {/if}
+                                                <!-- 转移供货商 end -->
+                
+                                                {if $code neq 'real_goods'}
+                                                <input type="hidden" name="extension_code" value="{$code}" />
+                                                {/if}
+                                                <input type="submit" value="{$lang.button_submit}" id="btnSubmit" name="btnSubmit" class="btn btn_disabled" disabled="true" ectype="btnSubmit" />				
+                                            </div>
+                                            <div class="list-page">
+                                               {include file="library/page.lbi"}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        {if $full_page}
+                        </div>
+                    </div>
+					</form>
+                </div>
+                <!--商品列表end-->
+            </div>
+		</div>
+	</div>
+
+	<!--高级搜索 start-->
+	{include file="library/goods_review_search.lbi"}
+	<!--高级搜索 end-->
+	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+	listTable.query = 'review_query';
+	
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+	/* 起始页通过商品一览点击进入自营/商家商品判断条件 */
+	listTable.filter.self = '{$self}';
+	listTable.filter.merchants = '{$merchants}';
+	
+	function movecatList(val, level)
+	{
+		var cat_id = val;
+		document.getElementById('target_cat').value = cat_id;
+		Ajax.call('goods.php?is_ajax=1&act=sel_cat_goodslist', 'cat_id='+cat_id+'&cat_level='+level, movecatListResponse, 'GET', 'JSON');
+	}
+
+	function movecatListResponse(result)
+	{
+		if (result.error == '1' && result.message != '')
+		{
+			alert(result.message);
+			return;
+		}
+		
+		var response = result.content;
+		var cat_level = result.cat_level;
+		
+		for(var i=cat_level;i<10;i++)
+		{
+			$("#move_cat_list"+Number(i+1)).remove();
+		}
+		
+		if(response)
+		{
+			$("#move_cat_list"+cat_level).after(response);
+		}
+		
+		return;
+	}
+
+	onload = function()
+	{
+		document.forms['listForm'].reset();
+	}
+
+	/**
+	* @param: bool ext 其他条件：用于转移分类
+	*/
+	function confirmSubmit(frm, ext)
+	{
+		if (frm.elements['type'].value == 'trash')
+		{
+			return confirm(batch_trash_confirm);
+		}
+		else if (frm.elements['type'].value == 'not_on_sale')
+		{
+			return confirm(batch_no_on_sale);
+		}
+		else if (frm.elements['type'].value == 'move_to')
+		{
+			ext = (ext == undefined) ? true : ext;
+			return ext && document.getElementById('target_cat').value != 0;
+		}
+		else if (frm.elements['type'].value == '')
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+
+	function changeAction()
+	{
+		var frm = document.forms['listForm'];
+	
+		// 切换分类列表的显示
+		$("#move_cat_list").css({'display':frm.elements['type'].value == 'move_to' ? '' : 'none'});
+	
+		// 切换商品审核列表的显示
+		$("#review_status").css({'display':frm.elements['type'].value == 'review_to' ? '' : 'none'});
+	
+		if(frm.elements['type'].value != 'review_to'){
+			frm.elements['review_content'].style.display = 'none';
+		}
+	
+		// 供应商列表的显示
+		{if $suppliers_list > 0}
+			$("#suppliers_id").css({'display':frm.elements['type'].value == 'suppliers_move_to' ? '' : 'none'});
+		{/if}
+	}
+	  
+	//ecmoban模板堂 --zhuo  start
+	function get_review_status(){
+		var frm = document.forms['listForm'];
+		
+		if(frm.elements['type'].value == 'review_to'){
+			if(frm.elements['review_status'].value == 2){
+				frm.elements['review_content'].style.display = '';
+			}else{
+				frm.elements['review_content'].style.display = 'none';
+			}
+		}else{
+			frm.elements['review_content'].style.display = 'none';
+		}
+	}
+	//ecmoban模板堂 --zhuo  end
+	
+	//展开其他属性
+	function trigger(obj){
+		var _this = $(obj);
+		var parenttr = _this.parents('tr');
+		var tip = parenttr.siblings().find('.tip');
+		if(_this.hasClass('icon-down')){
+			_this.removeClass('icon-down');
+			parenttr.next().hide();
+		}else{
+			_this.addClass('icon-down');
+			parenttr.next().show();
+			tip.removeClass('icon-down');
+			tip.parents('tr').next().hide();
+		}
+	}
+	  
+	//仓库库存修改弹出框
+	$(document).on('click',"*[ectype='dialog']",function(){
+		var url =$(this).data('url');
+		var title = $(this).attr('title');
+		Ajax.call(url,'',dsc_warehouse, 'POST', 'JSON');
+		function dsc_warehouse(result){
+			pb({
+				id:"tipDialog",
+				title:title,
+				content:result.content,
+				drag:false,
+				ok_title:"{$lang.button_submit_alt}",
+				cl_title:"{$lang.cancel}"
+			});
+		}
+	});
+	
+	//单选勾选
+	function get_ajax_act(t, goods_id, act, FileName){
+		
+		if(t.checked == false){
+			t.value = 0;
+		}
+		
+		Ajax.call(FileName + '.php?act=' + act, 'id=' + goods_id + '&val=' + t.value, act_response, 'POST', 'JSON');
+	}
+	
+	function act_response(result){}
+	
+	function dropWarehouse(w_id)
+	{
+		Ajax.call('goods.php?is_ajax=1&act=drop_warehouse', "w_id="+w_id, dropWarehouseResponse, "GET", "JSON");
+	}
+	
+	function dropWarehouseResponse(result)
+	{
+		if (result.error == 0)
+		{
+		  document.getElementById('warehouse_' + result.content).style.display = 'none';
+		}
+	}
+	
+	function dropWarehouseArea(a_id)
+	{
+		Ajax.call('goods.php?is_ajax=1&act=drop_warehouse_area', "a_id="+a_id, dropWarehouseAreaResponse, "GET", "JSON");
+	}
+	
+	function dropWarehouseAreaResponse(result)
+	{
+		if (result.error == 0)
+		{
+		  document.getElementById('warehouse_area_' + result.content).style.display = 'none';
+		}
+	}
+	
+	//仓库/地区价格 start
+	$(document).on("click","input[name='goods_model_price']",function(){
+		
+		var goods_id = $(this).data("goodsid");
+		
+		$.jqueryAjax('dialog.php', 'act=add_goods_model_price' + '&goods_id=' + goods_id, function(data){
+			var content = data.content;
+			pb({
+				id:"categroy_dialog",
+				title:"{$lang.warehouse_region_price}",
+				width:864,
+				content:content,
+				ok_title:"{$lang.button_submit_alt}",
+				cl_title:"{$lang.cancel}",
+				drag:true,
+				foot:false
+			});
+		});
+	});
+	
+	//仓库/地区价格 end
+	
+	//SKU/库存 start
+	$(document).on("click","a[ectype='add_sku']",function(){
+		
+		var goods_id = $(this).data('goodsid');
+		var user_id = $(this).data('userid');
+		
+		$.jqueryAjax('dialog.php', 'act=add_sku' + '&goods_id=' + goods_id + '&user_id=' + user_id, function(data){
+			var content = data.content;
+			pb({
+				id:"categroy_dialog",
+				title:"{$lang.edit_goods_sku}",
+				width:863,
+				content:content,
+				ok_title:"{$lang.button_submit_alt}",
+				cl_title:"{$lang.cancel}",
+				drag:true,
+				foot:false
+			});
+		});
+	});
+	
+	//SKU/库存 start
+	$(document).on("click","a[ectype='add_attr_sku']",function(){
+		
+		var goods_id = $(this).data('goodsid');
+		var product_id = $(this).data('product');
+		
+		$.jqueryAjax('dialog.php', 'act=add_attr_sku' + '&goods_id=' + goods_id + '&product_id=' + product_id, function(data){
+			var content = data.content;
+			pb({
+				id:"attr_sku_dialog",
+				title:"{$lang.edit_goods_sku_price}",
+				width:563,
+				content:content,
+				ok_title:"{$lang.button_submit_alt}",
+				cl_title:"{$lang.cancel}",
+				drag:true,
+				foot:true,
+				onOk:function(){
+					if(data.method){
+						insert_attr_warehouse_area_price(data.method);
+					}
+				}
+			});
+		});
+	});
+	
+	function insert_attr_warehouse_area_price(method){
+		var actionUrl = "dialog.php?act=" + method;  
+		$("#warehouseForm").ajaxSubmit({
+				type: "POST",
+				dataType: "JSON",
+				url: actionUrl,
+				data: { "action": "TemporaryImage" },
+				success: function (data) {
+				},
+				async: true  
+		 });
+	}
+	
+	//商品审核 start
+	$(document).on("click","a[ectype='review_status']",function(){
+		
+		var goods_name = $(this).data('goodsname');
+		var goods_id = $(this).data('goodsid');
+		var type = $(this).data('type');
+		
+		var content  = 	'<form id="reviewForm" enctype="multipart/form-data" method="post" action="dialog.php?act=update_review_status">' +
+						'<div class="item fl" style="padding:20px 0px 10px; width:333px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">' +
+							'{$lang.goods_name}：<em title="' + goods_name + '">' + goods_name + '</em>' +
+						'</div>' +
+						'<div class="item fl" style="width:333px">' +
+							'<div class="fl" style="padding-top:9px">{$lang.01_review_status}：</div>' +
+							'<div class="checkbox_items" style="padding-top:10px; width:80%">' +
+								'<div class="checkbox_item">' + 
+									'<input name="review_status" class="ui-radio review_status" id="pro_no" value="3" checked="checked" type="radio" onclick="handleReviewStatus(this);">' +
+									'<label for="pro_no" class="ui-radio-label">{$lang.audited_adopt}</label>' +
+								'</div>' +
+								'<div class="checkbox_item mr15">' +
+									'<input name="review_status" class="ui-radio review_status" id="pro_yes" value="2" type="radio" onclick="handleReviewStatus(this);">' + 
+									'<label for="pro_yes" class="ui-radio-label">{$lang.audited_not_adopt}</label> ' +
+								'</div>' +
+							'</div>' +
+						'</div>' +
+						'<div class="item fl hide" id="review_content" style="padding:20px 0px; width:333px">' +
+							'<textarea name="review_content" value="" cols="60" rows="4" class="textarea"></textarea>' +
+						'</div>' +
+						'<input name="goods_id" type="hidden" value="' + goods_id + '">' + 
+						'<input name="type" type="hidden" value="' + type + '">' + 
+						'</form>';
+		pb({
+			id:"review_status_dialog",
+			title:"{$lang.01_review_status}",
+			width:403,
+			content:content,
+			ok_title:"{$lang.button_submit_alt}",
+			cl_title:"{$lang.cancel}",
+			drag:true,
+			foot:true,
+			onOk:function(){
+				insert_review_status();
+			}
+		});
+	});
+	
+	function insert_review_status(){
+		var actionUrl = "dialog.php?act=update_review_status";  
+		$("#reviewForm").ajaxSubmit({
+				type: "POST",
+				dataType: "JSON",
+				url: actionUrl,
+				data: { "action": "TemporaryImage" },
+				success: function (data) {
+					location.href = "goods.php?act=review_status&type=" + data.type;
+				},
+				async: true  
+		 });
+	}
+	
+	function handleReviewStatus(t){
+		if(t.value == 2){
+			$("#review_content").show();
+		}else{
+			$("#review_content").hide();
+			$(":input[name='review_content']").val('');
+		}
+	}
+	//商品审核 end
+	</script>
+    {/literal}
+</body>
+</html>
+{/if}

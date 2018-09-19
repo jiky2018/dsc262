@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+				{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="table_list" id="listDiv">
+
+                    <table border="0" cellpadding='1' cellspacing='1'  class="ecsc-default-table order">
+                        <tr>
+                            <td>订单号：{$order.order_sn}</td>
+                            <td>
+                                您选定的支付方式为: <strong>{$payment.pay_name}{if $pay_fee > 0}，手续费为：{$pay_fee}{/if}</strong>，您的应付款金额为:<strong>{$amount}</strong>
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td align="center" colspan="3" bgcolor="#FFFFFF">{$payment.pay_button}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript" src="js/jquery.purebox.js"></script>
+<script type="text/javascript" language="JavaScript">
+    onload = function()
+    {
+    // 开始检查订单
+    startCheckOrder();
+    }
+    //微信扫码
+		$("[data-type='wxpay']").on("click",function(){
+			var content = $("#wxpay_dialog").html();
+			pb({
+				id: "scanCode",
+				title: "",
+				width: 784,
+				content: content,
+				drag: true,
+				foot: false,
+				cl_cBtn: false,
+				cBtn: false
+			});
+		});
+                //检查谈话
+        function startCheckStalk()
+        {
+          window.setInterval("checkOrder()", 3000);
+        }
+                startCheckStalk();
+		function checkOrder(){
+                    var url = "visual_editing";
+                    var grade_type  = "{$grade_type}";
+                    if(grade_type == 1){
+                        url = "merchants_upgrade";
+                    }else if (grade_type == 2){
+                        url = "merchants_account";
+                    }
+                    
+			var url = url +".php?act=checkorder&apply_id={$apply_id}";
+                        $.get(url, {}, function(data){
+                                //已付款
+                                if(data.code > 0){
+                                        alert('支付成功');
+                                        if(grade_type == 1){
+                                            location.href = "seller_apply.php?act=list";
+                                        }else if(grade_type == 2){
+                                            location.href = "merchants_account.php?act=account_manage&act_type=detail";
+                                        }else{
+                                            location.href = "visual_editing.php?act=template_apply_list";
+                                        }
+                                        
+                                }
+                        },'json');
+		}
+</script>
+</body>
+</html>

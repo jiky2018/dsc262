@@ -1,0 +1,156 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.seller} - {$ur_here}</div>
+        <div class="content">
+        	<div class="tabs_info">
+            	<ul>
+                    <li {if $menu_select.current eq '03_merchants_shop_top'}class="curr"{/if}><a href="index.php?act=shop_top">店铺头部装修</a></li>
+                    <li {if $menu_select.current eq '05_merchants_shop_bg'}class="curr"{/if}><a href="seller_shop_bg.php?act=first">店铺背景设置</a></li>
+                </ul>
+            </div>			
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>请上传合适的头部图片。</li>
+                    <li>头部内容尽量简短，但要能吸睛，引导消费者进入店铺。</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info mian-info-temp">
+                        <form action="sale_notice.php?act=action" method="post" name="theForm" enctype="multipart/form-data" onsubmit="return validate()">
+                            <div class="switch_info">
+                                <div class="item">
+                                    <div class="label">{$lang.top_color}：</div>
+                                    <div class="label_value">
+                                        <div class="checkbox_items">
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="headtype" id="headtype_0" value="0" {if $shopheader_info.headtype eq 0} checked="true" {/if} onchange="get_headtype(this.value)" />
+                                                <label for="headtype_0" class="ui-radio-label">{$lang.imgage}</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="headtype" id="headtype_1" value="1" {if $shopheader_info.headtype eq 1} checked="true" {/if} onchange="get_headtype(this.value)" />
+                                                <label for="headtype_1" class="ui-radio-label">{$lang.color}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item" style="display:{if $shopheader_info.headtype eq 1}none{/if}" id="headbgImg">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="label_value">
+                                    	<div class="type-file-box">
+                                            <input type="button" name="button" id="button" class="type-file-button" value="" />
+                                            <input type="file" class="type-file-file" id="img_url" name="img_url" data-state="imgfile" size="30" hidefocus="true" value="" />
+                                            {if $shopheader_info.headbg_img}
+                                            <span class="show">
+                                                <a href="{$shopheader_info.headbg_img}" target="_blank" class="nyroModal"><i class="icon icon-picture" data-tooltipimg="{$shopheader_info.headbg_img}" ectype="tooltip" title="tooltip"></i></a>
+                                            </span>
+                                            {/if}
+                                            <input type="text" name="textfile" class="type-file-text" id="textfield" {if $shopheader_info.headbg_img}value="{$shopheader_info.headbg_img}"{/if} autocomplete="off" readonly />
+                                        </div>
+                                    </div>
+                                </div>								
+                                <div class="item" style="display:{if $shopheader_info.headtype eq 0}none{/if}" id="shopColor">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="label_value relative">
+										<input type="text" name="shop_color" maxlength="40" size="15" value="{$shopheader_info.shop_color}" autocomplete="off" id="wincolor" class="text text_2 mr10" />
+										<input type="button" value="{$lang.select_color}" class="go_color btn btn30 red_btn" />
+										<input type='text' id="full" style="display:none"/>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.top_content}：</div>
+                                    <div class="label_value">
+										{$FCKeditor}
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="label_value info_btn">
+										<input type="submit" class="button" value="{$lang.button_submit}" />
+										<input type="hidden" name="act" value="{$form_action}" />
+										<input type="hidden" name="id" value="{$shop_info.id}" />
+										<input type="hidden" name="seller_theme" value="{$shop_info.seller_theme}" />
+                                    </div>
+                                </div>								
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+    </div>
+ 	{include file ='library/pagefooter.lbi'}
+    {insert_scripts files="../js/spectrum-master/spectrum.js"}
+	<script type="text/javascript">
+	//选色 start
+	$(function(){
+		$('.sp-palette-buttons-disabled').hide();
+		
+		$('.go_color').click(function(){
+			$('.sp-palette-buttons-disabled').show();
+		});
+		
+		$('.sp-choose').click(function(){
+			$('.sp-palette-buttons-disabled').hide();
+			var sp_color = $('.sp-input').val();
+			$('#wincolor').val(sp_color);
+		});
+	})
+
+	$("#update").click (function() {
+		console.log($("#full").spectrum("option", "palette"));
+		$("#full").spectrum("option", "palette", [
+			["red", "green", "blue"]    
+		]);
+	});
+
+	$("#full").spectrum({
+		color: "#FFF",
+		flat: true,
+		showInput: true,
+		className: "full-spectrum",
+		showInitial: true,
+		showPalette: true,
+		showSelectionPalette: true,
+		maxPaletteSize: 10,
+		preferredFormat: "hex",
+		localStorageKey: "spectrum.demo",
+		move: function (color) {
+			
+		},
+		palette: [
+			["rgb(0, 0, 0)", "rgb(67, 67, 67)", "rgb(102, 102, 102)",
+			"rgb(204, 204, 204)", "rgb(217, 217, 217)","rgb(255, 255, 255)"],
+			["rgb(152, 0, 0)", "rgb(255, 0, 0)", "rgb(255, 153, 0)", "rgb(255, 255, 0)", "rgb(0, 255, 0)",
+			"rgb(0, 255, 255)", "rgb(74, 134, 232)", "rgb(0, 0, 255)", "rgb(153, 0, 255)", "rgb(255, 0, 255)"], 
+			["rgb(230, 184, 175)", "rgb(244, 204, 204)", "rgb(252, 229, 205)", "rgb(255, 242, 204)", "rgb(217, 234, 211)", 
+			"rgb(208, 224, 227)", "rgb(201, 218, 248)", "rgb(207, 226, 243)", "rgb(217, 210, 233)", "rgb(234, 209, 220)", 
+			"rgb(221, 126, 107)", "rgb(234, 153, 153)", "rgb(249, 203, 156)", "rgb(255, 229, 153)", "rgb(182, 215, 168)", 
+			"rgb(162, 196, 201)", "rgb(164, 194, 244)", "rgb(159, 197, 232)", "rgb(180, 167, 214)", "rgb(213, 166, 189)", 
+			"rgb(204, 65, 37)", "rgb(224, 102, 102)", "rgb(246, 178, 107)", "rgb(255, 217, 102)", "rgb(147, 196, 125)", 
+			"rgb(118, 165, 175)", "rgb(109, 158, 235)", "rgb(111, 168, 220)", "rgb(142, 124, 195)", "rgb(194, 123, 160)",
+			"rgb(166, 28, 0)", "rgb(204, 0, 0)", "rgb(230, 145, 56)", "rgb(241, 194, 50)", "rgb(106, 168, 79)",
+			"rgb(69, 129, 142)", "rgb(60, 120, 216)", "rgb(61, 133, 198)", "rgb(103, 78, 167)", "rgb(166, 77, 121)",
+			"rgb(91, 15, 0)", "rgb(102, 0, 0)", "rgb(120, 63, 4)", "rgb(127, 96, 0)", "rgb(39, 78, 19)", 
+			"rgb(12, 52, 61)", "rgb(28, 69, 135)", "rgb(7, 55, 99)", "rgb(32, 18, 77)", "rgb(76, 17, 48)"]
+		]
+	});
+	//选色 end
+
+	function get_headtype(val){
+		if(val == 1){
+			$('#headbgImg').hide();
+			$('#shopColor').show();
+		}else{
+			$('#headbgImg').show();
+			$('#shopColor').hide();
+		}
+	}
+	</script>
+</body>
+</html>

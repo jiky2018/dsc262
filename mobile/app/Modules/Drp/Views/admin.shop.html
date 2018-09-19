@@ -1,0 +1,174 @@
+{include file="admin_pageheader"}
+
+<!--同步pc时间插件修改-->
+<link href="../js/calendar/calendar.min.css" rel="stylesheet" type="text/css" />
+<script src="../js/calendar/calendar.min.js"></script><!--时间插件js-->
+<style>
+ul, li {overflow: hidden;}
+.dates_box_top {height: 32px;}
+.dates_bottom {height: auto;}
+.dates_hms {width: auto;}
+.dates_btn {width: auto;}
+.dates_mm_list span {width: auto;}
+
+</style>
+<div class="wrapper">
+    <div class="title">分销商管理 {if $shop_name} - {$shop_name}的下级分销商{/if}</div>
+        <div class="content_tips">
+            <div class="tabs_info">
+                <ul>
+                  <li class="curr"><a href="{url('shop')}">分销商列表</a></li>
+                  <li><a href="{url('drp_user_credit')}">分销商等级</a></li>
+                </ul>
+            </div>
+            <div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4><span id="explanationZoom" title="收起提示"></span></div>
+                <ul>
+                    <li>一、未审核分销商可操作开启审核（审核后不可撤销），如果需要临时关闭分销店铺，可以点击关闭，需要开启时再开启。 </li>
+                    <li>二、导出功能：可以根据开店时间条件进行导出，也可以导出当前分销商的下级分销商。</li>
+                    <li>三、搜索功能：可以根据店铺名/姓名/手机号进行查询。</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-head">
+                    <div class="fl">
+                        <form action="{url('export_shop')}" method="post">
+                        <div class="label_value">
+                            <div class="text_time" id="text_time1" style="float:left;">
+                                <input type="text" name="starttime"  class="text" value="{date('Y-m-d H:i', mktime(0,0,0,date('m'), date('d')-7, date('Y')))}" id="promote_start_date" class="text mr0" readonly>
+                            </div>
+
+                            <div class="text_time" id="text_time2"  style="float:left;">
+                                <input type="text" name="endtime"  class="text" value="{date('Y-m-d H:i')}" id="promote_end_date" class="text" readonly >
+                            </div>
+                            <input type="hidden" name="user_id" value="{$user_id}">
+                            <input type="submit" name="export" value="导出" class="button bg-green" />
+                        </div>
+                        </form>
+                    </div>
+                    <div class="search">
+                        <form action="{url('shop')}" method="post">
+                             <div class="input">
+                                 <input type="text" placeholder="店铺名/姓名/手机号" name="keyword"  class="text nofocus" autocomplete="off">
+                                 <input type="hidden" name="user_id" value="{$user_id}">
+                                 <input type="submit" name="export" value="" class="btn"  style="font-style:normal">
+                             </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="common-content">
+                    <div class="list-div" id="listDiv">
+                        <table cellpadding="0" cellspacing="0" border="0">
+                            <thead>
+                                <tr>
+                                  <th><div class="tDiv">编号</div></th>
+                                  <th><div class="tDiv">店铺名</div></th>
+                                  <th><div class="tDiv">用户名</div></th>
+                                  <th><div class="tDiv">推荐人</div></th>
+                                  <th><div class="tDiv">分销商等级</div></th>
+                                  <th><div class="tDiv">真实姓名</div></th>
+                                  <th><div class="tDiv">手机号</div></th>
+                                  <th><div class="tDiv">开店时间</div></th>
+                                  <th><div class="tDiv">审核状态</div></th>
+                                  <th><div class="tDiv">店铺状态</div></th>
+                                  <th><div class="tDiv text-center">查看</div></th>
+                                  <th><div class="tDiv text-center">操作</div></th>
+                                </tr>
+                            </thead>
+                            {if $list}
+                            {foreach $list as $key=>$val}
+                            <tr>
+                                <td><div class="tDiv">{$val.id}</div></td>
+                                <td><div class="tDiv">{$val.shop_name}</div></td>
+                                <td><div class="tDiv">{$val.user_name}</div></td>
+                                <td><div class="tDiv">{$val.parent_name}</div></td>
+                                <td><div class="tDiv">{$val.credit_name}</div></td>
+                                <td><div class="tDiv">{$val.real_name}</div></td>
+                                <td><div class="tDiv">{$val.mobile}</div></td>
+                                <td><div class="tDiv">{$val.create_time}</div></td>
+                                <td><div class="tDiv">{if $val.audit == 1}已审核{else}未审核{/if}</div></td>
+                                <td><div class="tDiv">{if $val.status == 1}已开启{else}<font class="li_color">已关闭</font>{/if}</div></td>
+                                <td class="handle text-center" >
+                                    <div class="tDiv a3">
+                                    <a href="{url('shop', array('user_id' => $val['user_id']))}" class="btn_see"><i class="sc_icon sc_icon_see"></i>下级分销商</a>
+
+                                    <a href="{url('drp_aff_list', array('auid' => $val['user_id']))}" class="btn_see"><i class="sc_icon sc_icon_see"></i>下线会员</a>
+                                    </div>
+                                </td>
+                                <td class="handle text-center">
+                                    <div class="tDiv a3">
+                                        {if empty($val.audit)}
+                                        <a href="{url('set_shop', array('id'=>$val['id'], 'audit'=>1))}" class="btn_edit"><i class="fa fa-edit"></i>审核</a>
+                                        {/if}
+                                        {if $val.status}
+                                        <a href="{url('set_shop', array('id'=>$val['id'],'status'=>0))}" class="btn_trash"><i class="fa fa-toggle-off"></i>关闭</a>
+                                        {else}
+                                        <a href="{url('set_shop', array('id'=>$val['id'],'status'=>1))}" class="btn_trash"><i class="fa fa-toggle-on"></i>开启</a>
+                                        {/if}
+                                    </div>
+                                </td>
+                            </tr>
+                            {/foreach}
+                            {else}
+                            <tbody>
+                            <tr><td class="no-records" colspan="12">没有找到任何记录</td></tr>
+                            </tbody>
+                            {/if}
+                             <tfoot>
+                                <tr>
+                                    <td colspan="12">
+                                        <div class="list-page">
+                                            {include file="admin_pageview"}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $("#explanationZoom").on("click",function(){
+        var explanation = $(this).parents(".explanation");
+        var width = $(".content_tips").width();
+        if($(this).hasClass("shopUp")){
+            $(this).removeClass("shopUp");
+            $(this).attr("title","收起提示");
+            explanation.find(".ex_tit").css("margin-bottom",10);
+            explanation.animate({
+                width:width
+            },300,function(){
+                $(".explanation").find("ul").show();
+            });
+        }else{
+            $(this).addClass("shopUp");
+            $(this).attr("title","提示相关设置操作时应注意的要点");
+            explanation.find(".ex_tit").css("margin-bottom",0);
+            explanation.animate({
+                width:"118"
+            },300);
+            explanation.find("ul").hide();
+        }
+    });
+
+    var opts1 = {
+            'targetId':'promote_start_date',
+            'triggerId':['promote_start_date'],
+            'alignId':'text_time1',
+            'format':'-',
+            'hms':'off'
+        },opts2 = {
+            'targetId':'promote_end_date',
+            'triggerId':['promote_end_date'],
+            'alignId':'text_time2',
+            'format':'-',
+            'hms':'off'
+        }
+
+        xvDate(opts1);
+        xvDate(opts2);
+</script>
+{include file="admin/footer"}

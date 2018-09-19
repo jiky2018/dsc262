@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+				{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="info_warp">
+                <div class="mt20">
+                {foreach from=$msg_list item=msg}
+                <div style="margin-bottom:10px;border:1px solid #ccc;background:white; padding:10px;">
+                <div style="border-bottom: 1px solid #eee;position:relative; padding-bottom:5px;"><strong>{$msg.msg_title|escape:"html"}</strong><a href="user_msg.php?act=remove_msg&order_id={$order_id}&user_id={$user_id}&msg_id={$msg.msg_id}" style="position:absolute ;right:5px" onclick="if (!confirm('{$lang.confirm_delete}')) return false;"><i class="icon icon-trash" style="font-size:16px; color:#49879f;"></i></a></div>
+                <div class="mt5">{$msg.msg_content|escape:"html"|nl2br}</div>
+                {if $msg.message_img}
+                <div align="right">
+                  <a href="../data/feedbackimg/{$msg.message_img}" target="_bank" width="300" height="400">{$lang.view_upload_file}</a>
+                  <a href="user_msg.php?act=drop_file&id={$msg.msg_id}&file={$msg.message_img}">{$lang.drop}</a>
+                </div>
+                {/if}
+                <div align="right"  nowrap="nowrap"><a href="mailto:{$msg.user_email}">{$msg.user_name}</a> @ {$msg.msg_time}</div>
+                </div>
+                {/foreach}
+                </div>
+                <form method="post" action="user_msg.php?act=insert" name="theForm"  onsubmit="return validate()">
+                  <table border="0" width="90%" class="table_item">
+                    <tr>
+                      <td class="label">{$lang.msg_title}：</td>
+                      <td><input name="msg_title" id="msg_title" type="text" value="{$msg.reply_email}" class="text" /></td>
+                    </tr>
+                    <tr>
+                      <td class="label">{$lang.msg_content}：</td>
+                      <td><textarea name="msg_content" cols="50" rows="4" wrap="VIRTUAL" id="msg_content" class="textarea">{$msg.reply_content}</textarea></td>
+                    </tr>
+                    <tr class="no-line">
+                    	<td></td>
+                        <td class="pt20">
+                        	<input type="hidden" name="order_id" value="{$order_id}" />
+                            <input type="hidden" name="user_id" value="{$user_id}" />
+                            <input name="Submit" value="{$lang.button_submit}" type="submit" class="button" />
+                        </td>
+                    </tr>
+                  </table>
+                </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript">
+<!--
+{literal}
+
+/**
+ * 检查表单输入的数据
+ */
+function validate()
+{
+  var validator = new Validator("theForm");
+  validator.required("msg_title",  no_title);
+  validator.required("msg_content",  no_content);
+  return validator.passed();
+}
+
+onload = function()
+{
+  // 开始检查订单
+  startCheckOrder();
+}
+//-->
+{/literal}
+</script>
+</body>
+</html>

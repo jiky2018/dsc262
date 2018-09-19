@@ -1,0 +1,110 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+<div class="warpper">
+	<div class="title">{$lang.12_template} - {$lang.edit_languages}</div>
+    <div class="content">
+    	<div class="explanation" id="explanation">
+            <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+            <ul>
+                <li>{$lang.operation_prompt_content.list.0}</li>
+                <li>{$lang.operation_prompt_content.list.1}</li>
+                <li>{$lang.operation_prompt_content.list.2}</li>
+            </ul>
+        </div>
+    	<div class="flexilist">
+        	<div class="common-content">
+            <div class="form-div">
+                <form name="searchForm" action="edit_languages.php" method="post" onSubmit="return validate();">
+                    <div class="imitate_select select_w320" rank="1">
+                        <div class="cite">{$lang.select_cat}</div>
+                        <ul>
+                            {foreach from=$lang_arr item=vo key=key}
+                            <li><a href="javascript:;" data-value="{$key}" class="ftx-01">{$vo}</a></li>
+                            {/foreach}
+                        </ul>
+                        <input name="lang_file" type="hidden" value="0">
+                    </div>        
+                    <label class="fl lh30">{$lang.enter_keywords}：</label>
+                    <input type="text" name="keyword" size="30" class="text" />
+                    <input type="submit" value="{$lang.button_search}" class="btn btn30 red_btn" />
+                    <input type="hidden" name="act" value="list" />
+                </form>
+            </div>
+            <ul style="padding:0; margin: 0; list-style-type:none; color: #CC0000;">
+              {if $file_attr}
+              <li style="border: 1px solid #CC0000; background: #FFFFCC; padding: 10px; margin-bottom: 5px;" >{$file_attr}</li>
+              {/if}
+            </ul>
+            <form method="post" action="edit_languages.php">
+                <div class="list-div mt20" id="listDiv">
+                    <table width="100%" cellspacing="0" cellpadding="0" id="list-table">
+                    <tr>
+                        <th width="30%"><div class="tDiv">{$lang.item_name}</div></th>
+                        <th width="70%"><div class="tDiv">{$lang.item_value}</div></th>
+                    </tr>
+                    {if $language_arr}
+                        {foreach from=$language_arr item=list}
+                        <tr>
+                            <td>
+                            	<div class="tDiv">
+                                {$list.item_id}<input type="hidden" name="item_id[]" value="{$list.item_id}" />
+                                </div>
+                            </td>
+                            <td>
+                            	<div class="tDiv">
+                                	<input type="text" name="item_content[]" class="text" value="{$list.item_content|escape:html}" size="60" />
+                                </div>
+                            </td>
+                        </tr>
+                        <tr style="display:none">
+                            <td>&nbsp;</td>
+                            <td>
+                                <input type="hidden" name="item[]" value="{$list.item|escape:html}" size="60"/>
+                            </td>
+                        </tr>
+                        {foreachelse}
+                        <tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+                        {/foreach}
+                        <tr>
+                            <td colspan="2">
+                                <div class="info_btn tc pt20 pb20">
+                                    <input type="hidden" name="act" value="edit" />
+                                    <input type="hidden" name="file_path" value="{$file_path}" />
+                                    <input type="hidden" name="keyword" value="{$keyword}" />
+                                    <input type="submit" value="{$lang.edit_button}" class="button fn" />
+                                    <input type="reset" value="{$lang.reset_button}" class="button reset_button fn" />
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><div class="tDiv"><strong>{$lang.notice_edit}</strong></div></td>
+                        </tr>
+                    {else}
+                         <tr><td class="no-records" colspan="10">{$lang.search_languages}</td></tr>  
+                    {/if}
+                    </table>
+                </div>
+            </form>
+            </div>
+    	</div>        
+	</div>
+</div>
+{include file ='library/pagefooter.lbi'}
+<script type="text/javascript">
+function validate()
+{
+    var frm     = document.forms['searchForm'];
+    var keyword = frm.elements['keyword'].value;
+    if (keyword.length == 0)
+    {
+        alert(keyword_empty_error);
+        return false;
+    }
+    return true;
+}
+</script>
+</body>
+</html>

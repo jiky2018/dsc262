@@ -1,0 +1,66 @@
+<div class="step_item_table2" id="step_item_table2">
+    <table class="table_attr" width="100%">
+        <tbody>
+            {foreach from=$attr_group item=group}
+            <tr data-changelog="{$group.changelog}">
+                <td class="td_bg_blue" style="padding:0px 5px;" {if $add_shop_price eq 1}width="20%"{/if}>
+                    {foreach from=$group.attr_info item=one name=one}{$one.attr_value}
+                    <input type="hidden" name="attr[{$one.attr_id}][]" value="{$one.attr_value}" />
+                    <input type="hidden" name="goods_attr_id[{$one.goods_attr_id}][]" value="{$one.goods_attr_id}" />
+                    {if !$smarty.foreach.one.last}，{/if}{/foreach}
+                </td>		
+                <td width="5%" {if $region_name eq ''}class="hide"{/if}>{$region_name}</td>
+                <td width="10%" {if $goods_attr_price eq 0 || $add_shop_price eq 1}class="hide"{/if}><input type="text" name="product_market_price[]" onBlur="listTable.editInput(this, 'edit_product_market_price', {$group.product_id|default:0}, $('#goods_model').val(), 'goods_model');" class="text w60" autocomplete="off" value="{$group.product_market_price|default:0.00}" /></td>
+                <td width="10%" {if $goods_attr_price eq 0}class="hide"{/if}><input type="text" name="product_price[]" onBlur="listTable.editInput(this, 'edit_product_price', {$group.product_id|default:0}, $('#goods_model').val(), 'goods_model');" class="text w60" autocomplete="off" value="{$group.product_price|default:0.00}" /></td>
+                <td width="10%" {if $goods_attr_price eq 0 || $add_shop_price eq 1}class="hide"{/if}><input type="text" name="product_promote_price[]" onBlur="listTable.editInput(this, 'edit_product_promote_price', {$group.product_id|default:0}, $('#goods_model').val(), 'goods_model');" class="text w60" autocomplete="off" value="{$group.product_promote_price|default:0.00}" /></td>
+                <td width="10%"><input type="text" name="product_number[]" onBlur="listTable.editInput(this, 'edit_product_number', {$group.product_id|default:0}, $('#goods_model').val(), 'goods_model');" class="text w50 tc" autocomplete="off" value="{$group.product_number|default:0}" /></td>
+                <td width="10%"><input type="text" name="product_warn_number[]" onBlur="listTable.editInput(this, 'edit_product_warn_number', {$group.product_id|default:0}, $('#goods_model').val(), 'goods_model');" class="text w50 tc" autocomplete="off" value="{$group.product_warn_number|default:1}" /></td>
+                <td width="12%"><input type="text" name="product_sn[]" onBlur="listTable.editInput(this, 'edit_product_sn', {$group.product_id|default:0}, $('#goods_model').val(), 'goods_model');" class="text w90" autocomplete="off" value="{$group.product_sn}" /></td>
+                <td width="12%"><input type="text" name="product_bar_code[]" onBlur="listTable.editInput(this, 'edit_product_bar_code', {$group.product_id|default:0}, $('#goods_model').val(), 'goods_model');" class="text w90" autocomplete="off" value="{$group.bar_code}" /></td>
+                <td width="5%">
+                    {if $group.product_id && $group.changelog eq 0}
+                        <a href="javascript:void(0);" class="blue" onclick="if (confirm('{$lang.trash_product_confirm}')) dropProduct('{$group.product_id}')">{$lang.drop}</a>
+                    {else}
+                        {$lang.n_a}
+                    {/if}
+                    <input type="hidden" name="product_id[]" value="{if $group.changelog eq 1}0{else}{$group.product_id|default:0}{/if}" />
+                    <input type="hidden" name="changelog_product_id[]" value="{if $group.changelog eq 1}{$group.product_id|default:0}{else}0{/if}" />
+                </td>
+            </tr>
+            {/foreach}
+        </tbody>
+    </table>
+    <input name="group_attr" type="hidden" value='{$group_attr}'>
+</div>
+
+<!--{if $filter.page_count gt 1}-->
+<div id="turn-page" class="attr-turn-page">
+    <div class="pagination">
+        <ul>
+            <li style=" padding:0px 3px;">{literal}{if $filter.page neq 1}<a href="javascript:listTable.gotoPageFirst()">{/if}{/literal}<span>首页</span>{if $filter.page neq 1}</a>{/if}</li>
+            <li{if $filter.page eq 1} class="curr"{/if}>{literal}{if $filter.page neq 1}<a href="javascript:listTable.gotoPagePrev()">{/if}{/literal}<span class="prev">1</span>{if $filter.page neq 1}</a>{/if}</li>
+            {foreach from=$page_count_arr item=page_count name=pageCount}
+            {if $page_count eq $filter.page}
+                <li><span class="currentpage">{$page_count}</span></li>
+            {else}
+                <li><a href="javascript:listTable.gotoPage({$page_count})"><span>{$page_count}</span></a></li>
+            {/if}
+            {/foreach}
+            <li{if $filter.page eq $filter.page_count} class="curr"{/if}>{literal}{if $filter.page neq $filter.page_count}<a href="javascript:listTable.gotoPageNext()">{/if}{/literal}<span class="next">1</span>{if $filter.page neq $filter.page_count}</a>{/if}</li>
+            <li>{literal}{if $filter.page neq $filter.page_count}<a href="javascript:listTable.gotoPageLast()" class="last">{/if}{/literal}<span>末页</span>{if $filter.page neq $filter.page_count}</a>{/if}</li>
+        </ul>
+    </div>    
+</div>
+<!--{/if}-->
+<span class="goods_attr_04_explain">（说明：含有两页以上请用批量上传功能）</span>
+<div class="goods_attr_04_batch" style="padding:0px;">
+    {if $goods_model eq 1}
+        <a href="javascript:;" class="sc-btn btn35 sc-redBg-btn" id="produts_warehouse_batch">CSV批量上传</a>
+    {elseif $goods_model eq 2}
+        <a href="javascript:;" class="sc-btn btn35 sc-redBg-btn" id="produts_area_batch">CSV批量上传</a>
+    {else}
+        <a href="javascript:;" class="sc-btn btn35 sc-redBg-btn" id="produts_batch">CSV批量上传</a>
+    {/if}
+    <a href="javascript:;" class="sc-btn btn35 sc-redBg-btn" id="attr_refresh">刷新</a>
+</div>    
+<input name="arrt_page_count" type="hidden" value='{$filter.page_count}'>

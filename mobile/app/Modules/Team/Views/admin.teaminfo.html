@@ -1,0 +1,163 @@
+{include file="admin_pageheader"}
+
+<div class="wrapper">
+  <div class="title">拼团 - 团队列表</div>
+  <div class="content_tips">
+    <div class="tabs_info">
+      <ul>
+          <li class="{if $status =='1' }curr{/if}"><a href="{url('teaminfo')}">全部团</a></li>
+          <li class="{if $status == '2'}curr{/if}"><a href="{url('teaminfo',array('status'=>2,))}">正在拼团</a></li>
+          <li class="{if $status == '3'}curr{/if}"><a href="{url('teaminfo',array('status'=>3))}">成功团</a></li>
+          <li class="{if $status == '4'}curr{/if}"><a href="{url('teaminfo',array('status'=>4))}">失败团</a></li>
+      </ul>
+    </div>
+    <div class="explanation" id="explanation">
+        <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4><span id="explanationZoom" title="收起提示"></span></div>
+        <ul>
+            <li>显示平台内所有参与拼团的信息，管理员可以看到由拼团产生的所有订单，并对订单进行处理操作。</li>
+
+        </ul>
+    </div>
+    <div class="flexilist">
+        <div class="common-head">
+            <form action="{url('team/admin/teaminfo')}" method="post">
+              <div class="search">
+                <div class="input">
+                    <input type="text" name="keyword" class="text nofocus" placeholder="关键词" autocomplete="off">
+                    <input type="submit" value="" class="btn" name="export">
+                </div>
+              </div>
+            </form>
+        </div>
+        <div class="common-content">
+          <div class="list-div"  id="listDiv">
+             <table cellspacing="0" cellpadding="0" border="0">
+                <tr class="active">
+                  <th></th>
+                  <th><div class="tDiv">团号</div></th>
+                  <th width="30%"><div class="tDiv">商品名称</div></th>
+                  <th><div class="tDiv">商家名称</div></th>
+                  <th><div class="tDiv">开团时间</div></th>
+                  <th><div class="tDiv">剩余时间</div></th>
+                  <th><div class="tDiv">差几人成团</div></th>
+                  <th><div class="tDiv">团状态</div></th>
+                  <th><div class="tDiv">操作</div></th>
+                </tr>
+                {if $list}
+                {foreach $list as $list}
+                <tr>
+                    <td>
+                        <div class="tDiv">
+                          <div class="checkbox">
+                              <label>
+                                  <input type="checkbox"  value="{$list.team_id}" name="checkboxes[]">
+                              </label>
+                          </div>
+                        </div>
+                    </td>
+                    <td><div class="tDiv">{$list.team_id}</div></td>
+                    <td><div class="tDiv clamp2">{$list.goods_name}</div></td>
+                    <td><div class="tDiv">{$list.user_name} </div></td>
+                    <td><div class="tDiv">{$list.start_time}</div></td>
+                    <td>
+                        <div class="tDiv">
+                            {if $list.cle < 0}
+                                已结束
+                            {else}
+                            {$list.time}
+                            {/if}
+                        </div>
+                    </td>
+                    <td>
+                        <div class="tDiv">
+                        {if $list.surplus <= 0}
+                        已成团
+                        {else}
+                        {$list.surplus}
+                        {/if}
+                        </div>
+                    </td>
+                    <td><div class="tDiv">{$list.status}</div></td>
+                    <td><div class="tDiv">
+                        <a href="{url('team/admin/teamorder', array('team_id'=>$list['team_id']))}">查看</a> &nbsp;|
+                        <a href='javascript:void(0);' onclick="if(confirm('您确定要删除该拼团商品吗？')){window.location.href='{url('team/admin/removeteam', array('team_id'=>$list['team_id']))}'}" class="btn_trash"><i class="icon icon-trash"></i>删除</a>
+                        </div>
+                    </td>
+                </tr>
+                {/foreach}
+                {else}
+                <tbody>
+                <tr><td class="no-records" colspan="9">没有找到任何记录</td></tr>
+                </tbody>
+                {/if}
+                <tfoot>
+                    <tr>
+                        <td colspan="3">
+                            <div class="tDiv of">
+                              <div class="tfoot_btninfo">
+                                    <input type="submit" onclick="confirm_bath()"  id="btnSubmit" value="批量删除" class="button">
+                                </div>
+                            </div>
+                        </td>
+                        <td colspan="6">
+                            <div class="list-page">
+                                {include file="admin_pageview"}
+                            </div>
+                        </td>
+                    </tr>
+                </tfoot>
+             </table>
+          </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    function confirm_bath()
+    {
+        Items = document.getElementsByName('checkboxes[]');
+        var arr = new Array();
+        for (i=0; Items[i]; i++){
+            if (Items[i].checked){
+                var selected = 1;
+                  arr.push(Items[i].value);
+            }
+        }
+        if(selected != 1){
+            return false;
+        }else{
+            $.post("{url('team/admin/removeteam')}", {team_id:arr}, function(data){
+                if(data.url){
+                    window.location.href = data.url;
+                }
+            }, 'json');
+        }
+
+    }
+</script>
+<script>
+    $("#explanationZoom").on("click",function(){
+        var explanation = $(this).parents(".explanation");
+        var width = $(".content_tips").width();
+        if($(this).hasClass("shopUp")){
+            $(this).removeClass("shopUp");
+            $(this).attr("title","收起提示");
+            explanation.find(".ex_tit").css("margin-bottom",10);
+            explanation.animate({
+                width:width
+            },300,function(){
+                $(".explanation").find("ul").show();
+            });
+        }else{
+            $(this).addClass("shopUp");
+            $(this).attr("title","提示相关设置操作时应注意的要点");
+            explanation.find(".ex_tit").css("margin-bottom",0);
+            explanation.animate({
+                width:"118"
+            },300);
+            explanation.find("ul").hide();
+        }
+    });
+</script>
+{include file="admin/footer"}

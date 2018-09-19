@@ -1,0 +1,88 @@
+{include file="seller_pageheader"}
+
+{include file="seller_nave_header"}
+
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file="seller_menu_left"}
+
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+            {include file="seller_nave_header_title"}
+                <div class="wrapper-right of">
+                    <div class="tabmenu">
+                        <ul class="tab">
+                            <li><a href="{url('mass_message')}">群发消息</a></li>
+                            <li class="active"><a href="{url('mass_list')}">发送记录</a></li>
+                        </ul>
+                    </div>
+                    <div class="explanation" id="explanation">
+                    <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4></div>
+                        <ul>
+                            <li>1、只有已经发送成功的消息才能删除</li>
+                            <li>2、删除消息是将消息的图文详情页失效，已经收到的用户，还是能在其本地看到消息卡片。</li>
+                            <li>3、如果多次群发发送的是一个图文消息，那么删除其中一次群发，就会删除掉这个图文消息也，导致所有群发都失效</li>
+                            <li>★ 发送人数，即排除发送时过滤、用户拒收、接收已达到4条的用户数</li>
+                        </ul>
+                    </div>
+
+                    <div class="wrapper-list mt20" >
+                        <div class="list-div">
+                          <table class="ecsc-default-table goods-default-table">
+                                <thead>
+                                <tr ectype="table_header">
+                                    <th width="5%">编号</th>
+                                    <th width="35%" class="tl">标题</th>
+                                    <th width="30%">发送状态</th>
+                                    <th width="10%">发送时间</th>
+                                    <th >{$lang['handler']}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {if $list}
+                                {foreach $list as $val}
+                                <tr>
+                                    <td><span>{$val['id']}</span></td>
+                                    <td class="tl">
+                                        <div class="goods-info">
+                                            <div class="goods-img"><img src="{$val['artinfo']['file']}"  ></div>
+                                            <div class="goods-desc">
+                                                <div class="name"><font class="fl blue mr5">[ {$val['artinfo']['type']} ]</font> {$val['artinfo']['title']}</div>
+                                                <div class="goods-tag">
+                                                    {sub_str($val['artinfo']['content'], 60)}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <p>{$val['status']}</p>
+                                        <p>发送人数：{$val['totalcount']}人</p>
+                                        <p>成功人数：{$val['sentcount']}人</p>
+                                        <p>过滤人数：{$val['filtercount']}人</p>
+                                        <p>失败人数：{$val['errorcount']}人</p>
+                                    </td>
+                                    <td class="audit_status"><font class="green">{date('Y年m月d日', $val['send_time'])}</font></td>
+                                    <td class="ecsc-table-handle">
+                                        <span><a href="javascript:;" class="btn-red  delete_confirm" data-href="{url('mass_del', array('id'=>$val['id']))}'}"><i class="icon-trash"></i><p>删除</p></a></span>
+                                    </td>
+                                </tr>
+                                {/foreach}
+                                {else}
+                                <tr><td class="no-records" colspan="5">没有找到任何记录</td></tr>
+                                {/if}
+                                </tbody>
+                          </table>
+                        </div>
+                        {include file="seller_pageview"}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{include file="seller_pagefooter"}
+</body>
+</html>

@@ -1,0 +1,301 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link2.href}" class="s-back">{$lang.back}</a>{$lang.11_system} - {$ur_here}</div>
+            <div class="content">
+            <div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>当目的地不选择地区添加地区时会添加“<em>全国</em>”</li>
+                    <li>{$lang.operation_prompt_content_common}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="mian-info">
+                    <form method="post" action="warehouse.php" name="theForm" enctype="multipart/form-data"  id="warehouse_form">
+                        <div class="switch_info user_basic" style="display:block;">
+                            <div class="item">
+                                <div class="label">{$lang.require_field}模板名称：</div>
+                                <div class="label_value">
+                                    <input type="text" name='tpl_name' value='{if $shipping_area.tpl_name}{$shipping_area.tpl_name}{/if}' class="text" autocomplete="off"/>
+                                    <div class="form_prompt"></div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.require_field}始发地：</div>
+                                <div class="label_value">
+                                    <div class="checkbox_items">
+                                        {foreach from=$warehouse_list item=warehouse}
+                                        <div class="checkbox_item">
+                                            <input type="checkbox" value="{$warehouse.region_id}"name="warehouse_id[{$warehouse.region_id}]" id="sex_address{$warehouse.region_id}" {if $warehouse.check_status eq 1}checked="checked"{/if} class="ui-checkbox" />
+                                            <label for="sex_address{$warehouse.region_id}" class="ui-label">{$warehouse.region_name}</label>
+                                        </div>
+                                        {/foreach}
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">物流配送：</div>
+                                <div class="label_value">
+                                    <div id="shipping_id" class="imitate_select select_w320">
+                                      <div class="cite">{$lang.select_please}</div>
+                                      <ul>
+                                         {foreach from=$shipping_list item=shipping}
+                                         {if $shipping.shipping_id==$shipping_id}
+                                         <li><a href="javascript:;" data-value="{$shipping.shipping_id}" class="ftx-01">{$shipping.shipping_name}</a></li>
+                                         {/if}
+                                         {/foreach}
+                                      </ul>
+                                      <input name="shipping_id" type="hidden" value="{$shipping_id}" id="shipping_id_val">
+                                    </div>
+                                    <div class="form_prompt"></div>
+                                </div>
+                            </div>
+                            {if $shipping_area.shipping_code =='ems' || $shipping_area.shipping_code =='yto' || $shipping_area.shipping_code =='zto' || $shipping_area.shipping_code =='sto_express' || $shipping_area.shipping_code =='post_mail' || $shipping_area.shipping_code =='sf_express' || $shipping_area.shipping_code =='post_express' }
+                            <div class="item">
+                                <div class="label">{$lang.fee_compute_mode}：</div>
+                                <div class="label_value">
+                                    <div class="checkbox_items">
+                                        <div class="checkbox_item">
+                                            <input type="radio" class="ui-radio" id="fee_compute_mode_1" {if $fee_compute_mode != 'by_number' }checked="true"{/if} onclick="compute_mode('{$shipping_area.shipping_code}','weight')" name="fee_compute_mode" value="by_weight"/>
+                                            <label for="fee_compute_mode_1" class="ui-radio-label">{$lang.fee_by_weight}</label>
+                                        </div>
+                                         <div class="checkbox_item">
+                                            <input type="radio" class="ui-radio" id="fee_compute_mode_0" {if $fee_compute_mode == 'by_number'}checked="true"{/if}  onclick="compute_mode('{$shipping_area.shipping_code}','number')" name="fee_compute_mode" value="by_number"/>
+                                            <label for="fee_compute_mode_0" class="ui-radio-label">{$lang.fee_by_number}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {/if}
+                            <!--{if $shipping_area.shipping_code != 'cac'}-->
+                                {foreach from=$fields item=field}
+                                <!--{if $fee_compute_mode == 'by_number'}-->
+                                   <!--{if $field.name == 'item_fee' || $field.name == 'free_money' || $field.name == 'pay_fee'}-->
+                                                <div class="item" id="{$field.name}">
+                                                    <div class="label">{$lang.require_field}&nbsp;{$field.label}：</div>
+                                                    <div class="label_value">
+                                                        <input type="text" name="{$field.name}" value="{$field.value}" class="text" autocomplete="off"/>
+                                                        <div class="form_prompt"></div>
+                                                    </div>
+                                                </div>
+                                                <!--{else}-->
+                                                <div class="item" id="{$field.name}" style="display:none">
+                                                    <div class="label">{$lang.require_field}&nbsp;{$field.label}：</div>
+                                                    <div class="label_value">
+                                                        <input type="text" name="{$field.name}" value="{$field.value}" class="text" autocomplete="off"/>
+                                                        <div class="form_prompt"></div>
+                                                    </div>
+                                                </div>
+                                        <!--{/if}-->
+                                <!--{else}-->
+                                        <!--{if $field.name != 'item_fee'}-->
+                                                <div class="item" id="{$field.name}">
+                                                    <div class="label">{$lang.require_field}&nbsp;{$field.label}：</div>
+                                                    <div class="label_value">
+                                                        <input type="text" name="{$field.name}" value="{$field.value}" class="text" autocomplete="off"/>
+                                                        <div class="form_prompt"></div>
+                                                    </div>
+                                                </div>
+                                        <!--{else}-->
+                                                <div class="item" id="{$field.name}" style="display:none">
+                                                    <div class="label">{$lang.require_field}&nbsp;{$field.label}：</div>
+                                                    <div class="label_value">
+                                                        <input type="text" name="{$field.name}" value="{$field.value}" class="text" autocomplete="off"/>
+                                                        <div class="form_prompt"></div>
+                                                    </div>
+                                                </div>
+                                        <!--{/if}-->
+                                 <!--{/if}-->
+                                {/foreach}
+                            <!--{/if}-->
+                            <div class="item mb0">
+                                <div class="label">{$lang.require_field}到达目的地：</div>
+                                <div class="label_value">
+                                	<div class="level_linkage">
+                                        <div class="fl">
+                                            <div class="ui-dropdown smartdropdown alien">
+                                                <input type="hidden" value="0" name="province" id="selProvinces">
+                                                <div class="txt">省/直辖市</div>
+                                                <i class="down u-dropdown-icon"></i>
+                                                <div class="options clearfix" style="max-height:300px;">
+                                                    {foreach from=$Province_list item=list}
+                                                    <span class="liv" data-text="{$list.region_name}" data-type="2"  data-value="{$list.region_id}">{$list.region_name}</span>
+                                                    {/foreach}
+                                                </div>
+                                            </div>
+                                            <div id="dlCity" class="ui-dropdown smartdropdown alien">
+                                                <input type="hidden" value="0" name="city" id="selCities">
+                                                <div class="txt">市</div>
+                                                <i class="down u-dropdown-icon"></i>
+                                                <div class="options clearfix" style="max-height:300px;">
+                                                    <span class="liv hide" data-text="市" data-value="0">市</span>
+                                                </div>
+                                            </div>
+                                            <div id="dlRegion" class="ui-dropdown smartdropdown alien">
+                                                <input type="hidden" value="0" name="district" id="selDistricts">
+                                                <div class="txt">区/县</div>
+                                                <i class="down u-dropdown-icon"></i>
+                                                <div class="options clearfix" style="max-height:300px;">
+                                                    <span class="liv hide" data-text="区/县" data-value="0">区/县</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {if $shipping_area.shipping_code != 'cac'}<a href="javascript:void(0);" class="btn red_btn btn30 fl" ectype="addPrivilege"><i class="sc_icon sc_icon_warehouse"></i>添加地区</a><!--{/if}-->
+                                    	<div class="notic bf100 mt5">不选择地区添加地区时会添加“全国”</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">&nbsp;</div>
+                                <div class="label_value">
+                                     <!--{if $shipping_area.shipping_code != 'cac'}-->
+                                    <div class="checkbox_items" id="regionCell">
+                                        {foreach from=$regions item=region key=id}
+                                        <div class="checkbox_item">
+                                            <input type="checkbox" value="{$id}" name="regions[]" class="ui-checkbox" id="region_{$id}" checked="true"/>
+                                            <label for="region_{$id}" class="ui-label">{$region}</label>
+                                        </div>
+                                        {/foreach}
+                                    </div>
+                                     <!--{/if}-->
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">&nbsp;</div>
+                                <div class="label_value info_btn mt0">
+                                    <input type="submit" value="{$lang.button_submit}" class="button" id="submitBtn"/>
+                                    <input type="hidden" name="act" value="{$form_action}" />
+                                    <input name="id" value="{$shipping_area.id}" type="hidden"  id="region_id"/>
+                                    <input name="rId" value="{$regionId}" type="hidden"  id="regionId"/>    </td>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+ 	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript" src="js/region.js"></script>
+    <script type="text/javascript">
+        $.levelLink();//地区三级联动
+        /*添加管辖地区*/
+		$("a[ectype='addPrivilege']").on("click",function(){
+			var selProvince = $('#selProvinces');
+			var selCity     = $('#selCities');
+			var selDistrict = $('#selDistricts');
+			var regionCell  = $('#regionCell');
+			
+			var regionId = 0;
+			var regionName = '';
+			if (selDistrict.val() > 0)
+			{
+				regionId = selDistrict.val();
+				regionName = selDistrict.next(".txt").text();
+			}else{
+				if(selCity.val() > 0){
+					regionId = selCity.val();
+					regionName = selCity.next(".txt").text();
+				}else{
+					if(selProvince.val() > 0){
+						regionId = selProvince.val();
+						regionName = selProvince.next(".txt").text();
+					}else{
+						regionId = 1;
+						regionName = "全国";
+					}
+				}
+			}
+			//检查该地区是否已经存在
+			exists = false;
+			$('input:checkbox[type="checkbox"]').each(function()
+			{
+				if($(this).attr("name") == 'regions[]'){
+					if($(this).val()  == regionId){
+						exists = true;
+						return false;
+					}
+				}
+			});
+			//创建checkbox
+			if (exists == false)
+			{
+			  regionCell.append('<div class="checkbox_item"><input type="checkbox" value="'+regionId+'" name="regions[]" class="ui-checkbox" id="region_'+regionId+'" checked="true" /><label for="region_'+regionId+'" class="ui-label">'+regionName+'</label></div>');
+			}else{
+				alert("该地区已存在");
+			}
+		});    
+                
+		//配送费用计算方式
+		function compute_mode(shipping_code,mode)
+		{
+			var base_fee  = $("#base_fee");
+			var step_fee  = $("#step_fee");
+			var item_fee  = $("#item_fee");
+			if(shipping_code == 'post_mail' || shipping_code == 'post_express')
+			{
+			 var step_fee1  = $("#step_fee1");
+			}
+		
+			if(mode == 'number')
+			{
+			  item_fee.css('display','');
+			  base_fee.css('display','none');
+			  step_fee.css('display','none');
+			  if(shipping_code == 'post_mail' || shipping_code == 'post_express')
+			  {
+				  step_fee1.css('display','none');
+			  }
+			}
+			else
+			{
+				item_fee.css('display','none');
+				base_fee.css('display','');
+				step_fee.css('display','');
+			  if(shipping_code == 'post_mail' || shipping_code == 'post_express')
+			  {
+				  step_fee1.css('display','');
+			  }
+			}
+		}
+		
+		$(function(){
+			//表单验证
+			$("#submitBtn").click(function(){
+				if($("#warehouse_form").valid()){
+					$("#warehouse_form").submit();
+				}
+			});
+		
+			$('#warehouse_form').validate({
+				errorPlacement:function(error, element){
+					var error_div = element.parents('div.label_value').find('div.form_prompt');
+					element.parents('div.label_value').find(".notic").hide();
+					error_div.append(error);
+				},
+				rules:{
+					tpl_name :{
+						required : true
+					},
+                                        shipping_id :{
+						required : true
+					}
+				},
+				messages:{
+					tpl_name:{
+						 required : '<i class="icon icon-exclamation-sign"></i>请输入仓库模板名称'
+					},
+                                        shipping_id :{
+						required : '<i class="icon icon-exclamation-sign"></i>请选择物流配送'
+					}
+				}			
+			});
+		});
+    </script>
+</body>
+</html>

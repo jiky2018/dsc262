@@ -1,0 +1,128 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+{include file ='library/seller_html_head.lbi'}
+</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+				{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                {/if}
+                <div class="ecsc-form-goods">
+                <form method="post" action="merchants_account.php" name="listForm" id="submitForm">
+                <div class="wrapper-list">
+                	<dl>
+                    	<dt>{$lang.label_deposit_balance}：</dt>
+                        <dd id="seller_money" class="txtline red">{$seller_shopinfo.seller_money}</dd>
+                    </dl>
+                    <dl>
+                    	<dt>{$lang.label_real_name}：</dt>
+                        <dd class="txtline">{$real.real_name}</dd>
+                    </dl>
+                    <dl>
+                    	<dt>{$lang.label_self_num}：</dt>
+                        <dd class="txtline">{$real.self_num}</dd>
+                    </dl>
+                    <dl>
+                    	<dt>{$lang.label_bank_name}：</dt>
+                        <dd class="txtline">{$real.bank_name}</dd>
+                    </dl>
+                    <dl>
+                    	<dt>{$lang.label_bank_card}：</dt>
+                        <dd class="txtline">{$real.bank_card}</dd>
+                    </dl>
+                    <dl>
+                    	<dt>{$lang.label_bank_mobile}：</dt>
+                        <dd class="txtline">{$real.bank_mobile}</dd>
+                    </dl>
+                    <dl>
+                    	<dt>{$lang.require_field}&nbsp;{$lang.label_deposit_account}：</dt>
+                        <dd><input name="deposit" type="text" id="deposit" class="text"><div class="form_prompt"></div></dd>
+                    </dl>
+                    <dl>
+                    	<dt>{$lang.label_deposit_mode}：</dt>
+                        <dd>
+                            <div  class="imitate_select select_w145">
+                                <div class="cite">{$lang.label_offline_money}</div>
+                                <ul>
+                                    <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.label_offline_money}</a></li>
+                                    <li><a href="javascript:;" data-value="1" class="ftx-01">{$lang.label_user_balance}</a></li>
+                                </ul>
+                                <input name="deposit_mode" value="0" type="hidden" />
+                            </div>
+                        </dd>
+                    </dl>
+                    <dl>
+                    	<dt>{$lang.label_deposit_desc}：</dt>
+                        <dd>
+                        	<textarea name="deposit_note" cols="50" rows="10" class="textarea"></textarea>
+                            <div class="notic">{$lang.label_deposit_instructions}</div>
+                        </dd>
+                    </dl>
+                    <dl class="button_info">
+                    	<dt>&nbsp;</dt>
+                        <dd>
+                        	<input name="query" type="submit" class="sc-btn sc-blueBg-btn btn35" id="query" value="{$lang.button_submit}" />
+                            <input name="reset" type="reset" class="sc-btn btn35 sc-blue-btn" value="{$lang.button_reset}" />
+                            <input type="hidden" name="real_id" value="{$real.real_id}"/>
+                            <input type="hidden" name="act" value="{$form_act}"/>
+                            <input type="hidden" name="submit_act" value="1"/>
+                            <input type="hidden" name="click_count" value="0"/>
+                        </dd>
+                    </dl>
+                </div>
+                </form>
+                </div>
+                {if $full_page}
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+$(function(){
+	//表单验证
+	$("#query").click(function(){
+		if($("#submitForm").valid()){
+			//防止表单重复提交
+			if(checkSubmit() == true){
+				$(this).parents("form").submit();
+			}else{
+				return false;
+			}
+        }
+    });
+	
+	$('#submitForm').validate({
+        errorPlacement:function(error, element){
+            var error_div = element.parents('dl').find('div.form_prompt');
+            element.parents('dd').find(".notic").hide();
+            error_div.append(error);
+        },
+        rules : {
+            deposit : {
+                required : true,
+				max : {$seller_shopinfo.seller_money},
+				min : 1
+            }
+        },
+        messages : {
+            deposit : {
+                required : '<i class="icon icon-exclamation-sign"></i>'+deposit_not_null,
+				max : '<i class="icon icon-exclamation-sign"></i>'+deposit_is_seller_money,
+				min : '<i class="icon icon-exclamation-sign"></i>'+number_is_0,
+            }
+        }
+    });
+});
+</script>
+{include file ='library/seller_footer.lbi'}
+</body>
+</html>
+{/if}

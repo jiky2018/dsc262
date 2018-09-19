@@ -1,0 +1,194 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$lang.10_priv_admin} - {$ur_here}</div>
+            <div class="content">
+            <div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>办事处隶属于管理员下级的角色，请注意勾选管理员。</li>
+                    <li>{$lang.operation_prompt_content_common}</li>
+                    <li>请注意添加办事处地区。</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="mian-info">
+                    <form method="post" action="agency.php" name="theForm" enctype="multipart/form-data"  id="agency_form">
+                        <div class="switch_info user_basic" style="display:block;">
+                            <div class="item">
+                                <div class="label">{$lang.require_field}&nbsp;{$lang.label_agency_desc}</div>
+                                <div class="label_value">
+                                    <input type="text" name='agency_name' value='{$agency.agency_name}' class="text" autocomplete="off" id="vote_name"/>
+                                    <div class="form_prompt"></div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.role_describe}：</div>
+                                <div class="label_value">
+                                    <textarea class="textarea" name="agency_desc" id="role_describe">{$agency.agency_desc}</textarea>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.label_admins}</div>
+                                <div class="label_value">
+                                    <div class="checkbox_items">
+                                        {foreach from=$agency.admin_list item=admin}
+                                        <div class="checkbox_item">
+                                            {if $admin.type eq "other"}<span class="red">*</span>{/if}
+                                            <input type="checkbox" value="{$admin.user_id}" name="admins[]" class="ui-checkbox" id="checked_{$admin.user_id}" {if $admin.type eq "this"}checked="checked"{/if} />
+                                            <label for="checked_{$admin.user_id}" class="ui-label">{$admin.user_name}</label>
+                                        </div>
+                                        {/foreach}
+                                        <div class="notic m20">{$lang.notice_admins}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.label_regions}</div>
+                                <div class="label_value">
+                                	<div class="level_linkage">
+                                    	<div class="fl">
+                                            <div class="ui-dropdown smartdropdown alien">
+                                                <input type="hidden" value="0" name="province" id="selProvinces">
+                                                <div class="txt">省/直辖市</div>
+                                                <i class="down u-dropdown-icon"></i>
+                                                <div class="options clearfix" style="max-height:300px;">
+                                                    {foreach from=$Province_list item=list}
+                                                    <span class="liv" data-text="{$list.region_name}" data-type="2"  data-value="{$list.region_id}">{$list.region_name}</span>
+                                                    {/foreach}
+                                                </div>
+                                            </div>
+                                            <div id="dlCity" class="ui-dropdown smartdropdown alien">
+                                                <input type="hidden" value="0" name="city" id="selCities">
+                                                <div class="txt">市</div>
+                                                <i class="down u-dropdown-icon"></i>
+                                                <div class="options clearfix" style="max-height:300px;">
+                                                    <span class="liv hide" data-text="市" data-value="0">市</span>
+                                                </div>
+                                            </div>
+                                            <div id="dlRegion" class="ui-dropdown smartdropdown alien">
+                                                <input type="hidden" value="0" name="district" id="selDistricts">
+                                                <div class="txt">区/县</div>
+                                                <i class="down u-dropdown-icon"></i>
+                                                <div class="options clearfix" style="max-height:300px;">
+                                                    <span class="liv hide" data-text="区/县" data-value="0">区/县</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <a href="javascript:void(0);" class="btn red_btn btn30 fl" ectype="addPrivilege"><i class="sc_icon sc_icon_warehouse"></i>添加地区</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">&nbsp;</div>
+                                <div class="label_value">
+                                    <div class="checkbox_items" id="regionCell">
+                                        {foreach from=$agency.region_list item=region}
+                                        <div class="checkbox_item">
+                                            {if $admin.type eq "other"}{$lang.require_field}&nbsp;{/if}
+                                            <input type="checkbox" value="{$region.region_id}" name="regions[]" class="ui-checkbox" id="region_{$region.region_id}" checked="true"/>
+                                            <label for="region_{$region.region_id}" class="ui-label">{$region.region_name}</label>
+                                        </div>
+                                        {/foreach}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">&nbsp;</div>
+                                <div class="label_value info_btn mt0">
+                                    <a href="javascript:;" class="button" id="submitBtn">{$lang.button_submit}</a>
+                                    <input type="hidden" name="act" value="{$form_action}" />
+                                    <input type="hidden" name="id" value="{$agency.agency_id}" />
+                                    <input type="hidden" name="qqq" id="qqq" value="" />
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+ {include file ='library/pagefooter.lbi'}
+    <script type="text/javascript" src="js/region.js"></script>
+    <script type="text/javascript">
+		//表单验证
+		$(function(){
+			$("#submitBtn").click(function(){
+				if($("#agency_form").valid()){
+					$("#agency_form").submit();
+				}
+			});
+		
+			$('#agency_form').validate({
+				errorPlacement:function(error, element){
+					var error_div = element.parents('div.label_value').find('div.form_prompt');
+					element.parents('div.label_value').find(".notic").hide();
+					error_div.append(error);
+				},
+				rules:{
+					agency_name:{
+						required:true
+					}
+				},
+				messages:{
+					agency_name:{
+						required:'<i class="icon icon-exclamation-sign"></i>'+no_agencyname
+					}
+				}
+			});
+		});
+		
+		$.levelLink();//地区三级联动
+
+		/*添加管辖地区*/
+		$("a[ectype='addPrivilege']").on("click",function(){
+			var selProvince = $('#selProvinces');
+			var selCity     = $('#selCities');
+			var selDistrict = $('#selDistricts');
+			var regionCell  = $('#regionCell');
+			
+			var regionId = 0;
+			var regionName = '';
+			if (selDistrict.val() > 0)
+			{
+				regionId = selDistrict.val();
+				regionName = selDistrict.next(".txt").text();
+			}else{
+				if(selCity.val() > 0){
+					regionId = selCity.val();
+					regionName = selCity.next(".txt").text();
+				}else{
+					if(selProvince.val() > 0){
+						regionId = selProvince.val();
+						regionName = selProvince.next(".txt").text();
+					}else{
+						regionId = 1;
+						regionName = "全国";
+					}
+				}
+			}
+			// 检查该地区是否已经存在
+			exists = false;
+			$('input:checkbox[type="checkbox"]').each(function()
+			{
+				if($(this).attr("name") == 'regions[]'){
+					if($(this).val()  == regionId){
+						exists = true;
+						return false;
+					}
+				}
+			});
+			// 创建checkbox
+			if (exists == false)
+			{
+			  regionCell.append('<div class="checkbox_item"><input type="checkbox" value="'+regionId+'" name="regions[]" class="ui-checkbox" id="region_'+regionId+'" checked="true" /><label for="region_'+regionId+'" class="ui-label">'+regionName+'</label></div>');
+			}else{
+				alert(region_exists);
+			}
+		});
+    </script>
+</body>
+</html>

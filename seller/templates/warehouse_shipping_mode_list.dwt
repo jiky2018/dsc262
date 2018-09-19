@@ -1,0 +1,108 @@
+{if full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+		{include file ='library/seller_menu_left.lbi'}
+		<div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+				{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <form method="POST" action="" name="listForm" onsubmit="return confirm_bath()">
+                <!-- start users list -->
+                <div class="list-div" id="listDiv">
+                {/if}
+                <!--用户列表部分-->
+                <table class="ecsc-default-table mt20">
+                  <thead>
+                  <tr>
+                    <th width="10%">
+                        <div class="first_all">
+                            <input onclick='listTable.selectAll(this, "checkboxes")' type="checkbox" id="all" class="ui-checkbox"><label class="ui-label" for="all">{$lang.record_id}</label>
+                        </div>
+                    </th>
+                    <th width="39%">{$lang.originating_place}</th>
+                    <th width="39%">{$lang.reach_the_destination}</th>
+                    <th width="12%">{$lang.handler}</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {foreach from=$shipping_list item=shipping}
+                  <tr>
+                    <td class="first_td_checkbox"><div class="first_all"><input type="checkbox" name="checkboxes[]" value="{$shipping.id}" id="checkbox_{$shipping.id}" class="ui-checkbox" /><label class="ui-label" for="checkbox_{$shipping.id}">{$shipping.id}</label></div></td>
+                    <td align="center">{$shipping.region_name1}</td>
+                    <td align="center">{$shipping.region_name2}</td>
+                    <td class="ecsc-table-handle tr">
+                      <span><a href="warehouse_shipping_mode.php?act=freight&id={$shipping.id}" title="{$lang.edit}" class="btn-green"><i class="icon icon-edit"></i><p>{$lang.edit}</p></a></span>
+                      <span><a href="javascript:confirm_redirect('{$lang.remove_confirm}', 'warehouse_shipping_mode.php?act=remove&id={$shipping.id}')" title="{$lang.drop}" class="btn-red"><i class="icon icon-trash"></i><p>{$lang.drop}</p></a></span>
+                    </td>
+                  </tr>
+                  {foreachelse}
+                  <tr><td class="no-records" colspan="5">{$lang.no_records}</td></tr>
+                  {/foreach}
+                  </tbody>
+                  <tfoot>
+                  	<tr>
+                    	<td colspan="5" class="td_border">
+                            <div class="shenhe">
+                                <input type="hidden" name="act" value="batch_remove" />
+                                <input type="submit" id="btnSubmit" value="{$lang.batch_delete}" disabled="true" class="sc-btn btn_disabled" />
+                            </div>
+                        </td>
+                    </tr>
+                    <tr><td colspan="5" class="tc">{include file="page.dwt"}</td></tr>
+                  </tfoot>
+                </table>
+                {if $full_page}
+                </div>
+                <!-- end users list -->
+                </form>
+        	</div>
+    	</div>
+	</div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript">
+<!--
+listTable.recordCount = {$record_count};
+listTable.pageCount = {$page_count};
+
+{foreach from=$filter item=item key=key}
+listTable.filter.{$key} = '{$item}';
+{/foreach}
+
+{literal}
+onload = function()
+{
+    // 开始检查订单
+    startCheckOrder();
+}
+
+
+function confirm_bath()
+{
+  userItems = document.getElementsByName('checkboxes[]');
+
+  cfm = '{$lang.list_remove_confirm}';
+
+  for (i=0; userItems[i]; i++)
+  {
+    if (userItems[i].checked && userItems[i].notice == 1)
+    {
+      cfm = '{$lang.list_still_accounts}' + '{$lang.list_remove_confirm}';
+      break;
+    }
+  }
+
+  return confirm(cfm);
+}
+//-->
+</script>
+{/literal}
+</body>
+</html>
+{/if}

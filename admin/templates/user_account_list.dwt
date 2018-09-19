@@ -1,0 +1,349 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.08_members} - {$ur_here}</div>
+        <div class="content">
+            <div class="tabs_info">
+            	<ul>
+                    <li{if $filter.process_type eq 0} class="curr"{/if}><a href="user_account.php?act=list&process_type=0">{$lang.recharge_apply}</a></li>
+                    <li{if $filter.process_type eq 1} class="curr"{/if}><a href="user_account.php?act=list&process_type=1">{$lang.put_forward_apply}</a></li>
+                </ul>
+            </div>
+        	<div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.list.0}</li>
+                    <li>{$lang.operation_prompt_content.list.1}</li>
+                    <li>{$lang.operation_prompt_content.list.2}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                {if $filter.process_type eq 0}
+                <div class="common-content mb10">
+                    <div class="switch_info">
+                        <div class="stat_order_search stat_order_search2">
+                            <form action="" method="post" id="" name="selectForm">
+                                <div class="search_item">
+                                    <strong class="label_txt">{$lang.keyword}：</strong>
+                                    <input type="text" name="keywords" class="text w250" autocomplete="off" placeholder="{$lang.keywords_notic}">
+                                </div>
+                                <div class="search_item">
+                                    <strong class="label_txt">{$lang.pay_mothed}：</strong>
+                                    <div class="imitate_select select_w145">
+                                        <div class="cite">{$lang.please_select}</div>
+                                        <ul>
+                                           <li><a href="javascript:;" data-value="">{$lang.please_select}</a></li>
+                                           {foreach from=$payment_list item=list key=k}
+                                           <li><a href="javascript:;" data-value="{$k}">{$list}</a></li>
+                                           {/foreach}
+                                        </ul>
+                                        <input name="payment" type="hidden" value="" id="order_referer_val">
+                                    </div>
+                                </div>
+                                <div class="search_item">
+                                    <strong class="label_txt">{$lang.pay_state}：</strong>
+                                    <div class="imitate_select select_w145">
+                                        <div class="cite">{$lang.please_select}</div>
+                                        <ul>
+                                           <li><a href="javascript:;" data-value="-1">{$lang.please_select}</a></li>
+                                           <li><a href="javascript:;" data-value="0">{$lang.unconfirm}</a></li>
+                                           <li><a href="javascript:;" data-value="1">{$lang.confirm}</a></li>
+                                           <li><a href="javascript:;" data-value="2">{$lang.cancel}</a></li>
+                                        </ul>
+                                        <input name="is_paid" type="hidden" value="-1" id="order_referer_val">
+                                    </div>
+                                </div>
+                                <div class="search_item">
+                                    <strong class="label_txt">&nbsp</strong>
+                                    <a href="javascript:void(0);" class="btn btn30 blue_btn ml0" ectype="searchButton"><i class="icon icon-search"></i>{$lang.btn_search}</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {/if}
+                {if $filter.process_type eq 1}
+                <div class="common-content mb10">
+                    <div class="switch_info">
+                        <div class="stat_order_search stat_order_search2">
+                            <form action="" method="post" id="" name="selectForm">
+                                <div class="search_item">
+                                    <strong class="label_txt">{$lang.keyword}：</strong>
+                                    <input type="text" name="keywords" class="text w250" autocomplete="off" placeholder="会员名称/手机号/邮箱">
+                                </div>
+                                <div class="search_item">
+                                    <strong class="label_txt">{$lang.surplus_time}：</strong>
+                                    <div class="text_time" id="text_time_start">
+                                        <input type="text" class="text" name="start_date" value="" id="start_date" value="" autocomplete="off" readonly>
+                                    </div>
+                                    <span class="bolang">&nbsp;&nbsp;~&nbsp;&nbsp;</span>
+                                    <div class="text_time" id="text_time_end">
+                                        <input type="text" class="text" name="end_date" value="" id="end_date" value="" autocomplete="off" readonly>
+                                    </div>
+                                </div>
+                                <div class="search_item">
+                                    <strong class="label_txt">{$lang.status}：</strong>
+                                    <div class="imitate_select select_w145">
+                                        <div class="cite">{$lang.please_select}</div>
+                                        <ul>
+                                           <li><a href="javascript:;" data-value="-1">{$lang.please_select}</a></li>
+                                           <li><a href="javascript:;" data-value="0">{$lang.unconfirm}</a></li>
+                                           <li><a href="javascript:;" data-value="1">{$lang.confirm}</a></li>
+                                           <li><a href="javascript:;" data-value="2">{$lang.cancel}</a></li>
+                                        </ul>
+                                        <input name="is_paid" type="hidden" value="-1" id="order_referer_val">
+                                    </div>
+                                </div>
+                                <div class="search_item">
+                                    <strong class="label_txt">&nbsp</strong>
+                                    <a href="javascript:void(0);" class="btn btn30 blue_btn ml0" ectype="searchButton"><i class="icon icon-search"></i>{$lang.btn_search}</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {/if}
+            	<div class="common-head">
+                    <div class="fl">
+                    	<a href="{$action_link.href}"/><div class="fbutton"><div class="add" title="{$action_link.text}"><span><i class="icon icon-plus"></i>{$action_link.text}</span></div></div></a>
+                    </div>
+                    <div class="refresh">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+                    <div class="search">
+                    	<form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+                        <div class="input">
+                            <input type="text" name="keywords" class="text nofocus" placeholder="{$lang.user_id}" autocomplete="off" />
+							<input type="submit" class="btn" name="secrch_btn" ectype="secrch_btn" value="" />
+                        </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="common-content">
+                    <form method="POST" action="user_account.php" name="listForm" onsubmit="return confirm('{$lang.user_account_confirm}');">
+                        <div class="list-div" id="listDiv">
+                            {/if}
+                            <table cellpadding="0" cellspacing="0" border="0">
+                                <thead>
+                                    <tr>
+                                        <th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars"></label></div></th>
+                                        <th width="5%">{$lang.record_id}</th>
+                                        <th width="14%"><div class="tDiv"><a href="javascript:listTable.sort('user_name', 'DESC'); ">{$lang.user_id}</a>{$sort_user_name}</div></th>
+                                        <th width="13%"><div class="tDiv"><a href="javascript:listTable.sort('add_time', 'DESC'); ">{$lang.add_date}</a>{$sort_add_time}</div></th>
+                                        <th width="9%"><div class="tDiv"><a href="javascript:listTable.sort('process_type', 'DESC'); ">{$lang.process_type}</a>{$sort_process_type}</div></th>
+                                        <th width="9%"><div class="tDiv"><a href="javascript:listTable.sort('amount', 'DESC'); ">{$lang.surplus_amount}</a>{$sort_amount}</div></th>
+                                        <th width="10%"><div class="tDiv"><a href="javascript:listTable.sort('payment', 'DESC'); ">{$lang.pay_mothed}</a>{$sort_payment}</div></th>
+                                        <th width="11%"><div class="tDiv"><a href="javascript:listTable.sort('is_paid', 'DESC'); ">{$lang.status}</a>{$sort_is_paid}</div></th>
+                                        <th width="11%"><div class="tDiv">{$lang.admin_user}</div></th>
+                                        <th width="16%"><div class="tc">{$lang.handler}</div></th>
+                                	</tr>
+                                </thead>
+                                <tbody>
+                                    {foreach from=$list item=item}
+                                    <tr>
+                                        <td class="sign"><div class="tDiv"><input type="checkbox" name="checkboxes[]" value="{$item.id}" class="checkbox" id="checkbox_{$item.id}" /><label for="checkbox_{$item.id}" class="checkbox_stars"></label></div></td>
+                                        <td>{$item.id}</td>
+                                        <td><div class="tDiv">{if $item.user_name}{$item.user_name}{else}{$lang.no_user}{/if}</div></td>
+                                        <td><div class="tDiv">{$item.add_date}</div></td>
+                                        <td><div class="tDiv">{$item.process_type_name}</div></td>
+                                        <td><div class="tDiv">{$item.surplus_amount}{if $item.deposit_fee neq 0}<span class="red">(手续费：{$item.deposit_fee})</span>{/if}</div></td>
+                                        <td ><div class="tDiv">{if $item.payment}{$item.payment}{else}N/A{/if}</div></td>
+                                        <td>
+                                        <div class="tDiv">
+                                        	{if $item.process_type eq 1}
+                                            	{if $item.is_paid eq 1}
+                                                    {$lang.is_confirm}
+                                                {else}
+                                                    {$lang.unconfirm}
+                                                {/if}
+                                            {else}
+                                                {if $item.is_paid eq 1}
+                                                    {$lang.confirm}
+                                                {elseif $item.is_paid eq 2}   
+                                                    {$lang.confirm_nopay}
+                                                {else}
+                                                    {$lang.unconfirm}
+                                                {/if}
+                                            {/if}
+                                        </div>
+                                        </td>
+                                        <td><div class="tDiv">{$item.admin_user}</div></td>
+                                        <td class="handle">
+                                            <div class="tDiv a2">  
+                                                {if $item.is_paid}
+                                                <a href="user_account.php?act=edit&id={$item.id}" title="{$lang.surplus}" class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>
+                                                {else}
+                                                <a href="user_account.php?act=check&id={$item.id}" title="{$lang.check}" class="btn_see"><i class="sc_icon sc_icon_see"></i>{$lang.check}</a>
+                                                <a href="javascript:;" onclick="listTable.remove({$item.id}, '{$lang.drop_confirm}')" title="{$lang.drop}" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>
+                                                {/if}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {foreachelse}
+                                    <tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+                                    {/foreach}
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="12">
+                                            <div class="tDiv">
+                                                <div class="tfoot_btninfo">
+                                                    <input type="hidden" name="act" value="batch" />
+                                                    <input type="submit" value="完成" id="btnSubmit" name="btnSubmit" ectype="btnSubmit" class="btn btn_disabled" disabled="">
+                                                </div>
+                                                <div class="list-page">
+                                                    {include file="library/page.lbi"}
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                            {if $full_page}
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="gj_search">
+                <div class="search-gao-list" id="searchBarOpen">
+                    <i class="icon icon-zoom-in"></i>{$lang.advanced_search}
+                </div>
+                <div class="search-gao-bar">
+                    <div class="handle-btn" id="searchBarClose"><i class="icon icon-zoom-out"></i>{$lang.pack_up}</div>
+                    <div class="title"><h3>{$lang.advanced_search}</h3></div>
+                    <form method="get" name="formSearch_senior" action="javascript:searchUser()">
+                        <div class="searchContent">
+                            <div class="layout-box">
+                                <dl>
+                                    <dt>{$lang.user_id}</dt>
+                                    <dd><input type="text" value="" name="keyword" id="user_name" class="s-input-txt" autocomplete="off" /></dd>
+                                </dl>
+                                <dl>
+                                    <dd>
+                                        <div class="select_w145 imitate_select">
+                                            <div class="cite">{$lang.process_type}</div>
+                                            <ul>
+                                               <li><a href="javascript:;" data-value="-1">{$lang.process_type}</a></li>
+                                               <li><a href="javascript:;" data-value="0">{$lang.surplus_type_0}</a></li>
+                                               <li><a href="javascript:;" data-value="1">{$lang.surplus_type_1}</a></li>
+                                            </ul>
+                                            <input name="process_type" type="hidden" value="-1">
+                                        </div>
+                                    </dd>
+                                </dl>
+                                <dl>
+                                    <dd>
+                                        <div class="select_w145 imitate_select">
+                                            <div class="cite">{$lang.pay_mothed}</div>
+                                            <ul>
+                                               <li><a href="javascript:;" data-value="">{$lang.pay_mothed}</a></li>
+                                               {foreach from=$payment_list item=list key=k}
+                                               <li><a href="javascript:;" data-value="{$k}">{$list}</a></li>
+                                               {/foreach}
+                                            </ul>
+                                            <input name="payment" type="hidden" value="">
+                                        </div>
+                                    </dd>
+                                </dl>
+                                <dl>
+                                    <dd>
+                                        <div class="select_w145 imitate_select">
+                                            <div class="cite">{$lang.status}</div>
+                                            <ul>
+                                               <li><a href="javascript:;" data-value="-1">{$lang.status}</a></li>
+                                               <li><a href="javascript:;" data-value="0">{$lang.unconfirm}</a></li>
+                                               <li><a href="javascript:;" data-value="1">{$lang.confirm}</a></li>
+                                               <li><a href="javascript:;" data-value="2">{$lang.cancel}</a></li>
+                                            </ul>
+                                            <input name="is_paid" type="hidden" value="-1">
+                                        </div>
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+                        <div class="bot_btn">
+                            <input type="submit" class="btn red_btn" name="tj_search" value="{$lang.button_inquire}" /><input type="reset" class="btn btn_reset" name="reset" value="{$lang.button_reset_alt}" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+		//列表导航栏设置下路选项
+	$(".ps-container").perfectScrollbar();
+			
+	//高级搜索
+	$.divselect("#divselect","#quesetion");
+	
+	/**
+	 * 搜索用户
+	 */
+	function searchUser()
+	{
+		var frm = $("form[name='formSearch_senior']");
+		listTable.filter['keywords'] = Utils.trim(frm.find("input[name='keyword']").val());
+		listTable.filter['process_type'] = frm.find("input[name='process_type']").val();
+		listTable.filter['payment'] = Utils.trim(frm.find("input[name='payment']").val());
+		listTable.filter['is_paid'] = frm.find("input[name='is_paid']").val();
+		listTable.filter['page'] = 1;
+		listTable.loadList();
+	}
+	$.gjSearch("-240px");  //高级搜索
+
+    {if $filter.process_type eq 1}
+    //日期选择插件调用start sunle
+    var opts1 = {
+        'targetId':'start_date',//时间写入对象的id
+        'triggerId':['start_date'],//触发事件的对象id
+        'alignId':'start_date',//日历对齐对象
+        'format':'-',//时间格式 默认'YYYY-MM-DD HH:MM:SS'
+        'min':'' //最小时间
+    },opts2 = {
+        'targetId':'end_date',
+        'triggerId':['end_date'],
+        'alignId':'end_date',
+        'format':'-',
+        'min':''
+    }
+    xvDate(opts1);
+    xvDate(opts2);
+    //日期选择插件调用end sunle
+    {/if}
+
+    //统计
+    $(function(){
+        $(document).on('click', "[ectype='searchButton']", function(){
+            searchData();
+        })
+    })
+
+    function searchData()
+    {
+        {if $filter.process_type eq 0}
+        listTable.filter['payment'] = Utils.trim(document.forms['selectForm'].elements['payment'].value);
+        {else}
+        listTable.filter['add_start_date'] = Utils.trim(document.forms['selectForm'].elements['start_date'].value);
+        listTable.filter['add_end_date'] = Utils.trim(document.forms['selectForm'].elements['end_date'].value);
+        {/if}
+        listTable.filter['is_paid'] = Utils.trim(document.forms['selectForm'].elements['is_paid'].value);
+        listTable.filter['keywords'] = Utils.trim(document.forms['selectForm'].elements['keywords'].value);
+
+        listTable.filter['page'] = 1;
+        listTable.loadList();
+    }
+    </script>
+</body>
+</html>
+{/if}

@@ -1,0 +1,317 @@
+{insert_scripts files="dsc_admin2.0.js"}
+<form  action="merchants_user_list.php?act=addImg" id="addBatchImg_from" method="post"  enctype="multipart/form-data"  runat="server" >
+<div class="step" id="brandId_edit">
+    <div class="items">
+    	<div class="item">   
+           	<div class="label">{$lang.require_field}{$lang.brand_name_cn}：</div>
+            <div class="value">
+             	<input type="text" name="ec_brandName" id="ec_brandName" size="20" value="{$title.parentType.brandName}" class="text text_2">
+            </div>
+		</div>
+    	<div class="item">   
+           	<div class="label">{$lang.brand_name_en}：</div>
+            <div class="value">
+             	<input type="text" name="ec_bank_name_letter" id="ec_bank_name_letter" size="20" value="{$title.parentType.bank_name_letter}" class="text text_2">
+            </div>
+		</div>
+    	<div class="item">   
+           	<div class="label">{$lang.require_field}&nbsp;{$lang.brand_name_frist}：</div>
+            <div class="value">
+            	<input type="text" name="ec_brandFirstChar" id="ec_brandFirstChar" size="20" value="{$title.parentType.brandFirstChar}" class="text text_2">
+			</div>
+		</div>
+    	<div class="item">   
+           	<div class="label">{$lang.require_field}&nbsp;{$lang.brand_logo}：</div>
+            <div class="value">
+				<div class="type-file-box">
+					<input type="button" name="button" id="button" class="type-file-button" value="" />
+					<input type="file" class="type-file-file" id="ec_brandLogo" name="ec_brandLogo" size="30" hidefocus="true" value="../{$title.parentType.brandLogo}" />
+					<input type="text" class="type-file-text" name="textfile" value="" id="ec_brandLogo_text">
+                    <span class="show">
+						{if $title.parentType.brandLogo}<a href="../{$title.parentType.brandLogo}" class="nyroModal"><i class="icon icon-picture" data-tooltipimg="../{$title.parentType.brandLogo}" ectype="tooltip" title="tooltip"></i></a>{/if}
+					</span>
+				</div>			
+            </div>
+		</div>
+    	<div class="item">   
+           	<div class="label">{$lang.brand_type}：</div>
+            <div class="value">
+				<div id="ec_brandType" class="imitate_select select_w320">
+					<div class="cite">{$lang.select_please}</div>
+					<ul>
+						<li><a href='javascript:;' data-value='1' class='ftx-01'>{$lang.brand_domestict}</a></li>
+						<li><a href='javascript:;' data-value='2' class='ftx-01'>{$lang.brand_abroad}</a></li>
+					</ul>
+					<input name="ec_brandType" type="hidden" value="{$title.parentType.brandType}" id="ec_brandType_val">
+				</div> 
+			</div>
+		</div>
+    	<div class="item">   
+           	<div class="label">{$lang.management_type}：</div>
+            <div class="value">
+				<div id="ec_brand_operateType" class="imitate_select select_w320">
+					<div class="cite">{$lang.select_please}</div>
+					<ul>
+						<li><a href='javascript:;' data-value='1' class='ftx-01'>{$lang.brand_have}</a></li>
+						<li><a href='javascript:;' data-value='2' class='ftx-01'>{$lang.brand_agent}</a></li>
+					</ul>
+					<input name="ec_brand_operateType" type="hidden" value="{$title.parentType.brand_operateType}" id="ec_brand_operateType_val">
+				</div> 
+			</div>
+		</div>
+    	<div class="item">   
+           	<div class="label">{$lang.require_field}&nbsp;{$lang.brand_lifespan}：</div>
+            <div class="value">
+            	<input type="text" name="ec_brandEndTime" value="{$title.parentType.brandEndTime}" size="20" id="ec_brandEndTime" class="text text_2">
+				<div class="checkbox_item fl mt5">
+                    <input type="checkbox" name="ec_brandEndTime_permanent"  class="ui-checkbox" value="1" id="brandEndTime_permanent" onclick="get_brandEndTime_permanent(this, '{$title.parentType.brandEndTime}')" {if $title.parentType.brandEndTime_permanent}checked{/if}>
+                    <label for="brandEndTime_permanent" class="ui-label">{$lang.permanent}</label>
+                </div>
+                <input name="ec_shop_bid" type="hidden" value="{$ec_shop_bid}">	
+            </div>
+		</div>
+    	<div class="item">   
+           	<div class="label"></div>
+            <div class="value"></div>
+		</div>
+
+		{foreach from=$title.cententFields item=fields}
+		<div class="item">
+			<div class="label">{$fields.fieldsFormName}：</div>
+			<div class="value">
+				{if $fields.chooseForm eq 'input'}
+					<input class="text" type="text" value="{$fields.titles_centents}" size="{$fields.inputForm}" name="{$fields.textFields}">
+				{elseif $fields.chooseForm eq 'other'}
+					{if $fields.otherForm eq 'textArea'}
+					<div class="level_linkage">
+						<div id="dlcountry" class="ui-dropdown smartdropdown alien">
+							<input type="hidden" value="0" name="{$fields.textFields}[]">
+							<div class="txt">{$lang.country}</div>
+							<i class="down u-dropdown-icon"></i>
+							<div class="options clearfix" style="max-height:300px;">
+							<!-- {foreach from=$country_list item=country} -->
+								<span class="liv" data-text="{$country.region_name}" data-value="{$country.region_id}">{$country.region_name}</span>
+							<!-- {/foreach} -->
+							</div>
+						</div>
+						<div id="dlProvince" class="ui-dropdown smartdropdown alien">
+							<input type="hidden" value="0" name="{$fields.textFields}[]">
+							<div class="txt">{$lang.province_alt}</div>
+							<i class="down u-dropdown-icon"></i>
+							<div class="options clearfix" style="max-height:300px;">
+							{if $fields.province_list}
+							<!-- {foreach from=$fields.province_list item=province} -->
+							<span class="liv" data-text="{$province.region_name}" data-value="{$province.region_id}">{$province.region_name}</span>
+							<!-- {/foreach} -->
+							{else}
+							<!-- {foreach from=$province_list item=province} -->
+							<span class="liv" data-text="{$province.region_name}" data-value="{$province.region_id}">{$province.region_name}</span>
+							<!-- {/foreach} -->						
+							{/if}
+							</div>
+						</div>
+						<div id="dlCity" class="ui-dropdown smartdropdown alien">
+							<input type="hidden" value="0" name="{$fields.textFields}[]">
+							<div class="txt">{$lang.city}</div>
+							<i class="down u-dropdown-icon"></i>
+							<div class="options clearfix" style="max-height:300px;">
+								<span class="liv hide" data-text="{$lang.province_alt}" data-value="0">{$lang.province_alt}</span>
+								<span class="liv" data-text="{$lang.beijing_city}" data-value="101101">{$lang.beijing_city}</span>
+							</div>
+						</div>
+						<div id="dlRegion" class="ui-dropdown smartdropdown alien">
+							<input type="hidden" value="0" name="{$fields.textFields}[]">
+							<div class="txt">{$lang.area_alt}</div>
+							<i class="down u-dropdown-icon"></i>
+							<div class="options clearfix" style="max-height:300px;">
+								<span class="liv hide" data-text="{$lang.province_alt}" data-value="0">{$lang.province_alt}</span>
+								<span class="liv" data-text="{$lang.beijing_city}" data-value="101101">{$lang.beijing_city}</span>
+							</div>
+						</div>
+					</div>
+					{elseif $fields.otherForm eq 'dateFile'}
+                    <div class="type-file-box">
+                        <input type="button" name="button" id="button" class="type-file-button" value="" />
+                        <input type="file" class="type-file-file" name="{$fields.textFields}" size="30" hidefocus="true" value="" onchange="document.getElementById('textfield').value=this.value" />
+                        <input name="text_{$fields.textFields}" type="hidden" value="{$fields.titles_centents}" />
+                        <span class="show">
+                            {if $fields.titles_centents neq ''}<a href="../{$fields.titles_centents}" target="_blank" class="nyroModal">{/if}<i class="icon icon-picture" data-tooltipimg="{$fields.titles_centents}" ectype="tooltip" title="tooltip"></i></a>
+                        </span>
+                        <input type="text" name="textfile" class="type-file-text" id="textfield" readonly />
+                    </div>
+					{elseif $fields.otherForm eq 'dateTime'} 
+                    {foreach from=$fields.dateTimeForm item=date key=dk name=date}
+                        {if $dk eq 0}  
+                        <div class="text_time" id="text_time_{$fields.textFields}_{$dk}">
+                        <input name="{$fields.textFields}[]" type="text"  id="{$fields.textFields}_{$dk}" size="{$date.dateSize}" value='{$date.dateCentent}' readonly />
+                        <input name="selbtn_{$fields.textFields}_{$dk}" type="button" id="selbtn_{$fields.textFields}_{$dk}"> 
+                        </div>
+                        {else}
+                        <span class="bolang">&nbsp;&nbsp;~&nbsp;&nbsp;</span>
+                        <div class="text_time" id="text_time_{$fields.textFields}_{$dk}">
+                            <input name="{$fields.textFields}[]" type="text" id="{$fields.textFields}_{$dk}" size="{$date.dateSize}" value='{$date.dateCentent}' readonly />
+                            <input name="selbtn_{$fields.textFields}_{$dk}" type="button" id="selbtn_{$fields.textFields}_{$dk}"> 
+                        </div>
+                        {/if}
+                        <script type="text/javascript">
+                            var opts = {
+                                'targetId':'{$fields.textFields}_{$dk}',
+                                'triggerId':['selbtn_{$fields.textFields}_{$dk}'],
+                                'alignId':'text_time_{$fields.textFields}_{$dk}',
+                                'hms':'off',
+                                'format':'-'
+                            }
+                            xvDate(opts);
+                        </script>
+                    {/foreach}
+					{/if}
+                {elseif $fields.chooseForm eq 'textarea'}
+                    <textarea name="{$fields.textFields}" cols="{$fields.cols}" rows="{$fields.rows}" class="textarea">{$fields.titles_centents}</textarea>  
+                {elseif $fields.chooseForm eq 'select'}
+                    <div id="{$fields.textFields}" class="imitate_select select_w320">
+                        <div class="cite">{$lang.select_please}</div>
+                        <ul>
+                        {foreach from=$fields.selectList item=selectList}
+                            <li><a href='javascript:;' data-value='{$selectList}' class='ftx-01'>{$selectList}</a></li>
+                        {/foreach}
+                        </ul>
+                        <input name="{$fields.textFields}" type="hidden" value="{$fields.titles_centents}" id="{$fields.textFields}_val">
+                    </div>  
+                {elseif $fields.chooseForm eq 'radio'}   
+                    {foreach from=$fields.radioCheckboxForm item=radio key=rc_k}
+                    <label class="mr10"><input name="{$fields.textFields}" type="radio" class="checkbox" value="{$radio.radioCheckbox}" {if $fields.titles_centents eq $radio.radioCheckbox}checked="checked"{else}{if $rc_k eq 0}checked="checked"{/if}{/if} />{$radio.radioCheckbox}</label>
+                    {/foreach}
+                {elseif $fields.chooseForm eq 'checkbox'}   
+                    {foreach from=$fields.radioCheckboxForm item=checkbox key=rc_k}
+                    <label class="mr10"><input name="{$fields.textFields}" type="checkbox" class="checkbox" value="{$radio.radioCheckbox}"  {if $fields.titles_centents eq $checkbox.radioCheckbox}checked="checked"{else}{if $rc_k eq 0}checked="checked"{/if}{/if} />{$checkbox.radioCheckbox}</label>
+                    {/foreach}    
+                {/if}
+                <div class="fl ml10 org">{$fields.formSpecial}</div>
+			</div>
+		</div>
+		{/foreach}
+        
+        <div class="brand_zizhi">
+            <h4 class="title">{$lang.brand_zizhi_wj}</h4>
+            <span class="org">{$lang.brand_zizhi_desc}</span>
+        </div>
+        <div class="zizhi_items" name='brandId[]' id="parentNode_dateTimeDiv">
+        	<div class="zizhi_item">
+            	<a href="javascript:;" onclick="addBrandTable(this)" class="up"></a>
+                <div class="shop_nr_item">
+                    <label class="fl">{$lang.brand_zizhi}：</label>
+                    <input type="text" name="ec_qualificationNameInput[]" size="35" value="" class="text">
+                </div>
+                <div class="shop_nr_item">
+                    <label class="fl">{$lang.brand_zizhi_dzb}：</label>
+                    <div class="type-file-box">
+                        <input type="button" name="button" id="button" class="type-file-button" value="" />
+                        <input type="file" class="type-file-file" id="legal_person_fileImg" name="ec_qualificationImg[]" size="30" hidefocus="true" value="" onchange="document.getElementById('textfield5').value=this.value" />
+                        <span class="hide">
+                            <a href="../{$permanent.permanent_file}" class="nyroModal"><i class="icon icon-picture" data-tooltipimg="../{$permanent.permanent_file}" ectype="tooltip" title="tooltip"></i></a>
+                        </span>
+                        <input type="text" name="textfile" class="type-file-text" id="textfield5" readonly />
+                    </div>
+				</div>
+                <div class="shop_nr_item">
+                    <label class="fl">{$lang.brand_zizhi_end_time}：</label>
+                    <div class="text_time" id="ec_expiredDateInput_item">
+                         <input type="text" name="ec_expiredDateInput[]" value="" size="20" class="text w" id="expiredDateInput" readonly>
+                    </div>
+                    <div class="checkbox_item fl">
+                        <input type="checkbox" name="ec_expiredDate_permanent[]"  class="ui-checkbox" id="expiredDate_permanent" onclick="get_expiredDate_permanent(this, '', 0)">
+                        <label for="expiredDate_permanent" class="ui-label">{$lang.permanent}</label>
+                    </div>
+                    <input name="b_fid[]" type="hidden" value="">
+				</div>    
+            </div>
+			{if $ec_shop_bid > 0}
+			{if $title.brandfile_list}
+			{foreach from=$title.brandfile_list item=brandfile key=key}
+			<div class="zizhi_item">
+				<a href="javascript:;" onclick="removeBrandTable(this,{$brandfile.b_fid})" class="down"></a>
+                <div class="shop_nr_item">
+                    <label class="fl">{$lang.brand_zizhi}：</label>
+                    <input type="text" name="ec_qualificationNameInput[]" size="35" value="{$brandfile.qualificationNameInput}" class="text">
+                </div>
+                <div class="shop_nr_item">
+                    <label class="fl">{$lang.brand_zizhi_dzb}：</label>
+                    <div class="type-file-box">
+                        <input type="button" name="button" id="button" class="type-file-button" value="" />
+                        <input type="file" class="type-file-file" id="legal_person_fileImg" name="ec_qualificationImg[]" size="30" hidefocus="true" value="" onchange="document.getElementById('textfield5').value=this.value" />
+                        {if $brandfile.qualificationImg}
+						<span class="show">
+                            <a href="../{$brandfile.qualificationImg}" class="nyroModal"><i class="icon icon-picture" data-tooltipimg="../{$brandfile.qualificationImg}" ectype="tooltip" title="tooltip"></i></a>
+                        </span>
+						{/if}
+                    </div>
+				</div>
+                <div class="shop_nr_item">
+                    <label class="fl">{$lang.brand_zizhi_end_time}：</label>
+                    <div class="text_time" id="ec_expiredDateInput_item">
+                         <input type="text" name="ec_expiredDateInput[]" value="{$brandfile.expiredDateInput}" size="20" class="text w" id="expiredDateInput_{$brandfile.b_fid}" readonly>
+                    </div>
+                    <div class="checkbox_item fl">
+                        <input type="checkbox" name="ec_expiredDate_permanent[]"  class="ui-checkbox" id="expiredDate_permanent_{$brandfile.b_fid}" onclick="get_expiredDate_permanent(this, '', 0)">
+                        <label for="expiredDate_permanent_{$brandfile.b_fid}" class="ui-label">{$lang.permanent}</label>
+                    </div>
+                    <input name="b_fid[]" type="hidden" value="{$brandfile.b_fid}">
+				</div> 
+                    				
+			</div>
+			{/foreach}
+			{/if}
+			{/if}
+    	</div>
+    </div>
+</div>
+</form>
+<script type="text/javascript">
+	{if $ec_shop_bid > 0}
+	{if $title.brandfile_list}
+        {foreach from=$title.brandfile_list item=brandfile key=key}
+		var opt{$brandfile.b_fid} = {
+			'targetId':'expiredDateInput_{$brandfile.b_fid}',
+			'triggerId':['expiredDateInput_{$brandfile.b_fid}'],
+			'alignId':'expiredDateInput_{$brandfile.b_fid}',
+			'zIndex':999999,
+			'position':'fixed',
+			'format':'-'
+		}
+		
+		xvDate(opt{$brandfile.b_fid});
+		
+		$("#expiredDateInput_{$brandfile.b_fid}").focus(function(){
+			$(".dates_box").css({"position":"fixed"})
+		});
+        {/foreach}
+	{/if}
+	{/if}
+	
+	//日期选择插件调用start sunle
+	var opts1 = {
+		'targetId':'ec_brandEndTime',//时间写入对象的id
+		'triggerId':['ec_brandEndTime'],//触发事件的对象id
+		'alignId':'ec_brandEndTime',//日历对齐对象
+		'zIndex':999999,
+		'position':'fixed',
+		'format':'-'//时间格式 默认'YYYY-MM-DD HH:MM:SS'
+	},opts2 = {
+		'targetId':'expiredDateInput',
+		'triggerId':['expiredDateInput'],
+		'alignId':'expiredDateInput',
+		'zIndex':999999,
+		'position':'fixed',
+		'format':'-'
+	}
+	xvDate(opts1);
+	xvDate(opts2);
+	//日期选择插件调用end sunle
+	
+	$("#ec_brandEndTime,#expiredDateInput").focus(function(){
+		$(".dates_box").css({"position":"fixed"})
+	});
+	$(document).on('click','.dates_box td',function(){
+		$(".dates_box").css({"position":"absolute"})
+	});
+</script>

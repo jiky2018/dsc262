@@ -1,0 +1,564 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="javascript:;" ectype="goback" class="s-back">{$lang.back}</a>{$lang.11_system} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.info.0}</li>
+                	<li>{$lang.operation_prompt_content_common}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                	<div class="mian-info">
+                    	<div class="switch_info">
+                        <form method="post" action="shipping_area.php" name="theForm" enctype="multipart/form-data" class="cost_form">
+                        	<div class="goods_search_div mb0">
+                                <div class="level_linkage value">
+                                    <div id="dlcountry" class="ui-dropdown smartdropdown alien">
+                                        <input type="hidden" value="1" name="country" id="selcountry">
+                                        <div class="txt">{$lang.country}</div>
+                                        <i class="down u-dropdown-icon"></i>
+                                        <div class="options clearfix" style="max-height:300px;">
+                                            
+                                            {foreach from=$countries item=list}
+                                            <span class="liv" data-text="{$list.region_name}" data-type="1"  data-value="{$list.region_id}">{$list.region_name}</span>
+                                            {/foreach}
+                                        </div>
+                                    </div>
+                                    <div id="dlProvinces" class="ui-dropdown smartdropdown alien">
+                                        <input type="hidden" value="{$province.region_id}" name="province" id="selProvinces">
+                                        <div class="txt">{$lang.province_alt}</div>
+                                        <i class="down u-dropdown-icon"></i>
+                                        <div class="options clearfix" style="max-height:300px;">
+                                            {foreach from=$province_all item=list}
+                                            <span class="liv" data-text="{$list.region_name}" data-type="2"  data-value="{$list.region_id}">{$list.region_name}</span>
+                                            {/foreach}
+                                        </div>
+                                    </div>
+                                    <div id="dlCity" class="ui-dropdown smartdropdown alien">
+                                        <input type="hidden" value="{$city.region_id}" name="city" id="selCities">
+                                        <div class="txt">{$lang.city}</div>
+                                        <i class="down u-dropdown-icon"></i>
+                                        <div class="options clearfix" style="max-height:300px;">
+                                            {foreach from=$city_all item=list}
+                                            <span class="liv" data-text="{$list.region_name}" data-type="3"  data-value="{$list.region_id}">{$list.region_name}</span>
+                                             {/foreach}
+                                        </div>
+									</div>
+                                    <div id="dlRegion" class="ui-dropdown smartdropdown alien">
+                                        <input type="hidden" value="{$district.region_id}" name="district" id="selDistricts">
+                                        <div class="txt">{$lang.area_alt}</div>
+                                        <i class="down u-dropdown-icon"></i>
+                                        <div class="options clearfix" style="max-height:300px;">
+                                            {foreach from=$district_all item=list}
+                                            <span class="liv" data-text="{$list.region_name}" data-type="4"  data-value="{$list.region_id}">{$list.region_name}</span>
+                                            {/foreach}
+                                        </div>
+                                    </div>
+                                    <!--{if $shipping_area.shipping_code != 'cac'}--><a href="javascript:void(0);" class="btn btn30" ectype="areaSearch"><i class="icon icon-search"></i>{$lang.search_word}</a><!--{/if}-->
+                                    <div class="form_prompt"></div>
+                                </div>
+                            </div>
+                             <!--{if $shipping_area.shipping_code neq 'cac'}-->
+                            <div class="region_info">
+                            	<div class="region_items" id="regionCell"><span class="ecnotic">{$lang.region_search}</span></div>
+                                <div class="regionAdd">
+                                    <div class="region_all">
+                                    	<input type="checkbox" name="checkboxAll" class="ui-checkbox" id="region_all" />
+                                        <label for="region_all" class="ui-label">{$lang.check_all}</label>
+                                    </div>
+                                    <a href="javascript:void(0);" class="btn btn30 btn_blue" ectype="shiping_add">{$lang.all}</a>
+                                </div>
+                                <div class="regionResult">
+                                    <div class="filter" id="shipping_region">
+                                        {foreach from=$regions item=region key=id}
+                                        <span>{$region}<a href="javascript:void(0);" class="delete" onclick="remove_rigion(this)"></a><input type="hidden" name="regions[]" value="{$id}"/></span>
+                                        {/foreach}
+                                    </div>
+                                </div>
+                            </div>
+                            <!--{/if}-->
+                            <div class="clear"></div>
+                            <div class="costInfo">
+                                <div class="item">
+                                    <div class="label" {if $shipping_area.shipping_code == 'cac'}style="width:15%;"{/if}>{$lang.require_field}&nbsp;{$lang.shipping_area_name}：</div>
+                                    <div class="value">
+                                        <input type="text" name="shipping_area_name" class="text" value="{$shipping_area.shipping_area_name}" id="shipping_area_name" autocomplete="off"/>
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+								{if $form_action eq 'update' && $shipping_area.shipping_code == 'cac'}
+                                <div class="item">
+                                    <div class="label" style="width:15%;">{$lang.shipping_area_addPoint}{$shipping_area.point|@count}：</div>
+                                    <div class="label_value since_table">
+                                        {foreach from=$shipping_area.point item=field}
+                                        <div class="label_list_item">
+                                            <a href="javascript:void(0);" class="since_delete" onclick="remove_point_pro({$field.id}, '{$lang.remove_confirm}', 'remove_point')">{$lang.drop}</a>
+                                            <div class="item_item">
+                                                <div class="label_item">{$lang.require_field}{$lang.since_name}：</div>
+                                                <div class="label_item_value">
+                                                    <input type="text" name="point_name[]" class="text" value="{$field.name}" autocomplete="off" />
+                                                    <div class="form_prompt"></div>
+                                                </div>
+                                            </div>
+                                            <div class="item_item">
+                                                <div class="label_item">{$lang.require_field}{$lang.since_contacts}：</div>
+                                                <div class="label_item_value">
+                                                    <input type="text" name="user_name[]" class="text" value="{$field.user_name}" autocomplete="off" />
+                                                    <div class="form_prompt"></div>
+                                                </div>
+                                            </div>
+                                            <div class="item_item">
+                                                <div class="label_item">{$lang.require_field}{$lang.since_tel}：</div>
+                                                <div class="label_item_value">
+                                                    <input type="text" name="mobile[]" class="text" value="{$field.mobile}" autocomplete="off" />
+                                                    <div class="form_prompt"></div>
+                                                </div>
+                                            </div>
+                                            <div class="item_item">
+                                                <div class="label_item">{$lang.since_map_image}：</div>
+                                                <div class="label_item_value">
+                                                    <div class="type-file-box">
+                                                        <input type="button" name="button" id="button" class="type-file-button" value="" />
+                                                        <input type="file" class="type-file-file" id="legal_person_fileImg" name="img_url[]" size="30" data-state="imgfile" hidefocus="true" value="" onchange="document.getElementById('textfield').value=this.value" />
+                                                        {if $field.img_url}
+                                                        <span class="show mt5 mr5">
+                                                            <a href="../{$field.img_url}" target="_blank" class="nyroModal"><i class="icon icon-picture" data-tooltipimg="../{$field.img_url}" ectype="tooltip" title="tooltip"></i></a>
+                                                        </span>
+                                                        {/if}
+                                                        <input type="text" name="textfile" value="../{$field.img_url}" class="type-file-text" id="textfield" readonly />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="item_item">
+                                                <div class="label_item">{$lang.anchor_keyword}：</div>
+                                                <div class="label_item_value">
+                                                    <input type="text" name="anchor[]" class="text" value="{$field.anchor}" autocomplete="off" />
+                                                </div>
+                                            </div>
+                                            <div class="item_item">
+                                                <div class="label_item">{$lang.require_field}{$lang.since_address}：</div>
+                                                <div class="label_item_value">
+                                                    <input type="text" name="address[]" class="text" value="{$field.address}" autocomplete="off" />
+                                                    <div class="form_prompt"></div>
+                                                </div>
+                                            </div>
+                                            <div class="item_item">
+                                                <div class="label_item">{$lang.require_field}{$lang.arrival_route}：</div>
+                                                <div class="label_item_value">
+                                                    <textarea name="line[]" cols="60" rows="4" class="textarea" >{$field.line}</textarea>
+                                                    <div class="form_prompt"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="since_btn info_btn">
+                                            <input type="hidden" value="{$field.id}" name="point_id[]">
+                                            <input type="hidden" value="{$field.img_url}" name="map_img[]">
+                                            <a href="javascript:void(0);" class="btn btn30 red_btn" onclick="continueAdd(this)">{$lang.shipping_area_addBtn}</a>
+                                        </div>
+                                        {/foreach}
+                                    </div>
+                                </div>
+                                {/if}
+                                {if $form_action neq 'update' && $shipping_area.shipping_code == 'cac'}
+                                <div class="item">
+                                    <div class="label" style="width:15%;">{$lang.shipping_area_addPoint}{$shipping_area.point|@count}：</div>
+                                    <div class="label_value since_table">
+                                    <div class="label_list_item">
+                                            <div class="item_item" >
+                                                <div class="label_item">{$lang.require_field}{$lang.since_name}：</div>
+                                                <div class="label_item_value">
+                                                    <input type="text" name="point_name[]" class="text" value="" autocomplete="off" />
+                                                    <div class="form_prompt"></div>
+                                                </div>
+                                            </div>
+                                            <div class="item_item" >
+                                                <div class="label_item">{$lang.require_field}{$lang.since_contacts}：</div>
+                                                <div class="label_item_value">
+                                                    <input type="text" name="user_name[]" class="text" value="" autocomplete="off" />
+                                                    <div class="form_prompt"></div>
+                                                </div>
+                                            </div>
+                                            <div class="item_item" >
+                                                <div class="label_item">{$lang.require_field}{$lang.since_tel}：</div>
+                                                <div class="label_item_value">
+                                                    <input type="text" name="mobile[]" class="text" value="" autocomplete="off" />
+                                                    <div class="form_prompt"></div>
+                                                </div>
+                                            </div>
+                                            <div class="item_item" >
+                                                <div class="label_item">{$lang.since_map_image}：</div>
+                                                <div class="label_item_value">
+                                                    <div class="type-file-box mr0">
+                                                        <input type="button" name="button" id="button" class="type-file-button" value="" />
+                                                        <input type="file" class="type-file-file" id="legal_person_fileImg" name="img_url[]" size="30" data-state="imgfile" hidefocus="true" value="" onchange="document.getElementById('textfield').value=this.value" />
+                                                        <input type="text" name="textfile" class="type-file-text" id="textfield" readonly />
+                                                    </div>
+                                                    <div class="form_prompt"></div>
+                                                </div>
+                                            </div>
+                                            <div class="item_item" >
+                                                <div class="label_item">{$lang.anchor_keyword}：</div>
+                                                <div class="label_item_value">
+                                                    <input type="text" name="anchor[]" class="text" value="" autocomplete="off" />
+                                                    <div class="form_prompt"></div>
+                                                </div>
+                                            </div>
+                                            <div class="item_item" >
+                                                <div class="label_item">{$lang.require_field}{$lang.since_address}：</div>
+                                                <div class="label_item_value">
+                                                    <input type="text" name="address[]" class="text" value="" placeholder="{$lang.shipping_area_pointAddress}" autocomplete="off" />
+                                                    <div class="form_prompt"></div>
+                                                </div>
+                                            </div>
+                                            <div class="item_item" >
+                                                <div class="label_item">{$lang.require_field}{$lang.arrival_route}：</div>
+                                                <div class="label_item_value">
+                                                    <textarea name="line[]" cols="60" rows="4" class="textarea" >{$field.line}</textarea>
+                                                    <div class="form_prompt"></div>
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
+                                        <div class="since_btn info_btn">
+                                            <input type="hidden" value="{$field.id}" name="point_id[]">
+                                            <input type="hidden" value="{$field.img_url}" name="map_img[]">
+                                            <a href="javascript:void(0);" class="btn btn30 red_btn" onclick="continueAdd(this)">{$lang.shipping_area_addBtn}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                {/if}
+                                {if $shipping_area.shipping_code =='ems' || $shipping_area.shipping_code =='yto' || $shipping_area.shipping_code =='zto' || $shipping_area.shipping_code =='sto_express' || $shipping_area.shipping_code =='post_mail' || $shipping_area.shipping_code =='sf_express' || $shipping_area.shipping_code =='post_express' || $shipping_area.shipping_code =='yunda' || $shipping_area.shipping_code =='tiantian' || $shipping_area.shipping_code =='quanfeng' || $shipping_area.shipping_code =='zjs' || $shipping_area.shipping_code =='huitong' }
+                                <div class="item">
+                                    <div class="label">{$lang.fee_compute_mode}：</div>
+                                    <div class="label_value">
+                                        <div class="checkbox_items">
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio"  {if $fee_compute_mode != 'by_number' }checked="true"{/if} onclick="compute_mode('{$shipping_area.shipping_code}','weight')" name="fee_compute_mode" value="by_weight"  id="sex_1"  />
+                                                <label for="sex_1" class="ui-radio-label">{$lang.fee_by_weight}</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" {if $fee_compute_mode == 'by_number'}checked="true"{/if}  onclick="compute_mode('{$shipping_area.shipping_code}','number')" name="fee_compute_mode" value="by_number" id="sex_2" />
+                                                <label for="sex_2" class="ui-radio-label">{$lang.fee_by_number}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {/if}
+                                <!--{if $shipping_area.shipping_code != 'cac'}-->
+                                    {foreach from=$fields item=field}
+                                    <!--{if $fee_compute_mode == 'by_number'}-->
+                                       <!--{if $field.name == 'item_fee' || $field.name == 'free_money' || $field.name == 'pay_fee'}-->
+                                            <div class="item" id="{$field.name}">
+                                                <div class="label">{$lang.require_field}&nbsp;{$field.label}：</div>
+                                                <div class="label_value">
+                                                    <input type="text" id="{$field.name}" name="{$field.name}" class="text" value="{$field.value}" autocomplete="off" />
+                                                    <div class="form_prompt"></div>
+                                                </div>
+                                            </div>
+                                            <!--{else}-->
+                                            <div class="item" id="{$field.name}" style="display:none">
+                                                <div class="label">{$lang.require_field}&nbsp;{$field.label}：</div>
+                                                <div class="label_value">
+                                                    <input type="text" id="{$field.name}" name="{$field.name}" class="text" value="{$field.value}" autocomplete="off" />
+                                                    <div class="form_prompt"></div>
+                                                </div>
+                                            </div>
+                                        <!--{/if}-->
+                                    <!--{else}-->
+                                        <!--{if $field.name != 'item_fee'}-->
+                                        <div class="item" id="{$field.name}">
+                                            <div class="label">{$lang.require_field}&nbsp;{$field.label}：</div>
+                                            <div class="label_value">
+                                                <input type="text" id="{$field.name}" name="{$field.name}" class="text" value="{$field.value}" autocomplete="off" />
+                                                <div class="form_prompt"></div>
+                                            </div>
+                                        </div>
+                                        <!--{else}-->
+                                        <div class="item" id="{$field.name}"  style="display:none">
+                                            <div class="label">{$lang.require_field}&nbsp;{$field.label}：</div>
+                                            <div class="label_value">
+                                                <input type="text" id="{$field.name}" name="{$field.name}" class="text" value="{$field.value}" autocomplete="off" />
+                                                <div class="form_prompt"></div>
+                                            </div>
+                                        </div>
+                                        <!--{/if}-->
+                                     <!--{/if}-->
+                                    {/foreach}
+                                <!--{/if}-->
+                                <div class="clear"></div>
+                                {if $shipping_area.shipping_code == 'cac'}
+                                <div class="value info_btn tc">
+                                    <input type="submit" value="{$lang.button_submit_alt}" class="button fn mr0" ectype="submitBtn" />
+                                </div>
+                                {else}
+                                <div class="item">
+                                	<div class="label">&nbsp;</div>
+                                    <div class="label_value info_btn">
+                                    	<input type="submit" value="{$lang.button_submit_alt}" class="button fn mr0">
+                                    </div>
+                                </div>
+                                {/if}
+                                <input type="hidden" name="act" value="{$form_action}" />
+                                <input type="hidden" name="id" value="{$shipping_area.shipping_area_id}" />
+                                <input type="hidden" name="shipping" value="{$shipping_area.shipping_id}" />
+                                <input type="hidden" name="shipping_code" value="{$shipping_area.shipping_code}" />
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+ 	{include file ='library/pagefooter.lbi'}
+    
+    <script type="text/javascript" src="js/region.js"></script>
+    <script type="text/javascript">
+	//商品搜索下拉
+    $.divselect("#country_select","#country_select_val");
+    $.divselect("#city_select","#city_select_val");
+    $.divselect("#county_select","#county_select_val");
+
+    $("input[name='checkboxAll']").click(function(){
+		if($(this).is(":checked")){
+			$(".region_items").find("input[name='region_name']").prop("checked",true);
+		}else{
+			$(".region_items").find("input[name='region_name']").prop("checked",false);
+		}
+    });
+                
+	/*地区搜索 实现多选*/             
+	$("a[ectype='areaSearch']").on("click",function(){
+		var selcountry = $('#selcountry');
+		var selProvince = $('#selProvinces');
+		var selCity     = $('#selCities');
+		var selDistrict     = $('#selDistricts');
+		var regionCell  = $('#regionCell');
+		
+		var regionId = 0;
+		var regionType = '';
+		
+		if(selDistrict.val()> 0){
+			regionId = selDistrict.val();
+			regionType = 4;
+		}else{
+			if(selCity.val() > 0){
+				regionId = selCity.val();
+				regionType = 3;
+			}else{
+				if(selProvince.val() > 0){
+					regionId = selProvince.val();
+					regionType = 2;
+				}else{
+					if(selcountry.val() > 0){
+						regionId = selcountry.val();
+						regionType = 1;
+					}else{
+						regionId = 0;
+						regionType = "";
+					}
+				}
+			}
+		}
+		
+		if(regionId == 0){
+			alert("{$lang.select_region}");
+		}else{
+			$.jqueryAjax('region.php', 'type='+regionType+'&parent='+regionId+"&shipping=1", function(data){
+				regionCell.html(data.content);
+			});
+		}
+	});
+ 
+	/*添加配送地址*/
+	$("a[ectype='shiping_add']").on("click",function(){
+		var html = $("#shipping_region");
+		var val = '';
+		
+		$('#regionCell').find("input[name='region_name']:checked").each(function(){
+			var _this = $(this);
+			var exists = false;
+			html.find("input:hidden").each(function(){
+				if($(this).val() == _this.val()){
+					exists = true;
+					return false;
+				}
+			});
+			if(exists == false){
+				html.append('<span>'+_this.attr("data-region")+'<a href="javascript:void(0);" class="delete" onclick="remove_rigion(this)"></a><input type="hidden" name="regions[]" value="'+_this.val()+'"/></span>');
+			}
+		});
+	})
+
+	function remove_rigion(i){
+	  $(i).parents('span').remove();
+	}
+  
+	/**
+	* 配送费用计算方式
+	*/
+	function compute_mode(shipping_code,mode)
+	{
+		var base_fee  = $("#base_fee");
+		var step_fee  = $("#step_fee");
+		var item_fee  = $("#item_fee");
+		if(shipping_code == 'post_mail' || shipping_code == 'post_express')
+		{
+		 var step_fee1  = $("#step_fee1");
+		}
+	
+		if(mode == 'number')
+		{
+		  item_fee.css("display","");
+		  base_fee.css("display","none");
+		  step_fee.css("display","none");
+		  if(shipping_code == 'post_mail' || shipping_code == 'post_express')
+		  {
+		   step_fee1.css("display","none");
+		  }
+		}
+		else
+		{
+		  item_fee.css("display","none");
+		  base_fee.css("display","");
+		  step_fee.css("display","");
+		  if(shipping_code == 'post_mail' || shipping_code == 'post_express')
+		  {
+		   step_fee1.css("display","");
+		  }
+		}
+	}
+	
+	/**
+	*	继续添加
+	*/
+	function continueAdd(obj){
+		//_div.find(".since_delete").remove();
+			var _div= '<div class="label_list_item"><a href="javascript:void(0);" class="since_delete" onclick="removePointer(this)">{$lang.drop}</a><div class="item_item"><div class="label_item"><span class="require-field">*</span>{$lang.since_name}：</div><div class="label_item_value"><input type="text" name="point_name[]" class="text" value="" autocomplete="off"></div></div><div class="item_item"><div class="label_item"><span class="require-field">*</span>{$lang.since_contacts}：</div><div class="label_item_value"><input type="text" name="user_name[]" class="text" value="" autocomplete="off"></div></div><div class="item_item"><div class="label_item"><span class="require-field">*</span>{$lang.since_tel}：</div><div class="label_item_value"><input type="text" name="mobile[]" class="text" value="" autocomplete="off"></div></div><div class="item_item"><div class="label_item">{$lang.since_map_image}：</div><div class="label_item_value"><div class="type-file-box"> <input type="button" name="button" id="button" class="type-file-button" value=""><input type="file" class="type-file-file" id="legal_person_fileImg" name="img_url[]" size="30" data-state="imgfile" hidefocus="true" value="" onchange="textfield_img(this)"><input type="text" name="textfile" class="type-file-text" id="textfield" readonly=""></div></div></div><div class="item_item"><div class="label_item">{$lang.anchor_keyword}：</div><div class="label_item_value"><input type="text" name="anchor[]" class="text" value="" autocomplete="off"></div></div><div class="item_item"><div class="label_item"><span class="require-field">*</span>{$lang.since_address}：</div><div class="label_item_value"><input type="text" name="address[]" class="text" value="" autocomplete="off"></div></div><div class="item_item"><div class="label_item"><span class="require-field">*</span>{$lang.arrival_route}：</div><div class="label_item_value"><textarea name="line[]" cols="60" rows="4" class="textarea"></textarea></div></div></div>';
+		$(obj).parent().before(_div);
+	}
+	
+	/**
+	*	删除新增自提
+	*/
+	function removePointer(obj)
+	{
+	   $(obj).parent().remove();
+	}
+	/**
+	   * 删除以存在的自提点信息
+	   */
+	function remove_point_pro(id,msg,act)
+	{
+		if(confirm(msg)==true)
+		{
+			$.ajax({
+				type:"GET",
+				url:"shipping_area.php",
+				data:"act="+act+"&id="+id,
+				dataType:"json",
+				success:function(data)
+				{
+					if(data['error']==2)
+					{
+						location.reload();
+					}									
+				}
+			});
+		}
+	}
+	
+	function textfield_img(i){
+		document.getElementById('textfield').value=i.value;
+	}
+	
+	/**
+	*	删除新增自提
+	*/
+	function removePointer(obj)
+	{
+	   $(obj).parent().remove();
+	}
+	
+	$.levelLink();//地区三级联动
+	
+	
+	$(function(){
+		$("*[ectype='submitBtn']").click(function(){
+			var district = $("input[name='district']").val();
+			var shipping_area_name = $("input[name='shipping_area_name']").val();
+			
+			if(district == ""){
+				error_div("input[name='district']","{$lang.select_jurisdiction_region}");
+				return false;
+			}else if(shipping_area_name == ""){
+				error_div("input[name='shipping_area_name']","{$lang.continue_name_notic}");
+				return false;
+			}
+			
+			if($("form[name='theForm']").valid()){
+				$("form[name='theForm']").submit();
+			}
+		});
+	
+		$("form[name='theForm']").validate({
+			errorPlacement: function(error, element){
+				var error_div = element.parents('div.label_item_value').find('div.form_prompt');
+				error_div.siblings(".notic").hide();
+				error_div.append(error);
+			},
+			ignore : ".ignore",
+			rules : {
+				'point_name[]' : {
+					required : true
+				},
+				'user_name[]' : {
+					required : true
+				},
+				'mobile[]' : {
+					required : true,
+					isTel:true
+				},
+				'textfile' : {
+					required : true
+				},
+				'address[]' : {
+					required : true
+				},
+				'line[]' : {
+					required : true
+				}
+			},
+			messages : {
+				'point_name[]' : {
+					required : '<i class="icon icon-exclamation-sign"></i>'+no_point_name
+				},
+				'user_name[]' : {
+					required : '<i class="icon icon-exclamation-sign"></i>'+no_point_username
+				},
+				'mobile[]' : {
+					required : '<i class="icon icon-exclamation-sign"></i>'+no_point_mobile,
+					isTel:'<i class="icon icon-exclamation-sign"></i>'+error_point_mobile
+				},
+				'textfile' : {
+					required : '<i class="icon icon-exclamation-sign"></i>'+file_ditu_img
+				},
+				'address[]' : {
+					required : '<i class="icon icon-exclamation-sign"></i>'+no_point_address
+				},
+				'line[]' : {
+					required : '<i class="icon icon-exclamation-sign"></i>'+line_required
+				}
+			}
+		});
+	});
+    </script>
+</body>
+</html>

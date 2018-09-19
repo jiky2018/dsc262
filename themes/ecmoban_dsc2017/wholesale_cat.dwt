@@ -1,0 +1,132 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<!-- #BeginLibraryItem "/library/js_languages_new.lbi" --><!-- #EndLibraryItem -->
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/css/wholesale_new.css" />
+</head>
+
+<body>
+<!-- #BeginLibraryItem "/library/page_header_business.lbi" --><!-- #EndLibraryItem -->
+<div class="content b2b-content">
+    <div class="w w1200">
+        <div class="crumbs-nav">
+            <div class="crumbs-nav-main clearfix">
+                {if $cat_name}
+                 <span><a href="wholesale.php">首页</a></span><span class="arrow">&gt;</span> <span class="finish">{$cat_name}</span>
+                {/if}
+            </div>
+        </div>
+			
+        <div class="selector gb-selector">
+            <div class="s-line">
+                <div class="s-l-wrap">
+                    <div class="s-l-tit"><span>分类：</span></div>
+                    <div class="s-l-value">
+                        <div class="s-l-v-list">
+                            <ul>
+                                <li {if !$cat_name}class="curr"{/if}><a href="wholesale_cat.php">全部分类</a></li>
+                                <!--{foreach from=$wholesale_cat item=cat name=wholesale_cat}-->
+                                <!--{if $smarty.foreach.wholesale_cat.index < 10}-->
+                                <li {if $cat_name eq $cat.name}class="curr"{/if}><a href="{$cat.url}">{$cat.name|escape:html}</a></li>
+                                <!-- {/if} -->
+                                <!--{/foreach}-->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+            
+        <div class="b2b-view">
+            <div class="b2b-goods-list">
+                {if $goods_list}
+                <ul>
+                    <!-- {foreach from=$goods_list item=goods name=cat} -->
+                    <!-- {if $goods.goods_id} -->
+                    <li>
+                        <div class="p-img"><a href="{$goods.goods_url}" target="_blank"><img src="{$goods.goods_thumb}"></a></div>
+                        <div class="p-lie mt15">
+                            {if $goods.price_model eq 0}
+                            <div class="p-price fl">{$goods.goods_price}<span>/件</span></div>
+                            <div class="fr"><span class="label">起批量：</span><em class="org">{$goods.moq}</em></div>
+                            {else}
+                            <div class="p-price fl">{$goods.volume_price}<span>/件</span></div>
+                            <div class="fr"><span class="label">起批量：</span><em class="org">{$goods.volume_number}</em></div>
+                            {/if}
+                        </div>
+                        <div class="p-name"><a href="{$goods.goods_url}" title="{$goods.goods_name|escape:html}" target="_blank">{$goods.goods_name}</a></div>
+                        <div class="p-lie"><span class="label">成交量：</span><em>{$goods.goods_sale|default:0}</em></div>
+                        <div class="p-lie p-store">
+                            <a href="{$goods.store_url}" title="{$goods.rz_shopName}" class="store" target="_blank">{$goods.rz_shopName}</a>
+                            {if $goods.is_IM eq 1 || $goods.is_dsc}
+                            <a href="javascript:;" id="IM" onclick="openWin(this)" goods_id="{$goods.goods_id}" class="p-kefu{if $goods.user_id eq 0} p-c-violet{/if} p-c-org" target="_blank"><i class="iconfont icon-kefu"></i></a>
+                            {else}
+                                {if $goods.kf_type eq 1}
+                                <a href="http://www.taobao.com/webww/ww.php?ver=3&touid={$goods.kf_ww}&siteid=cntaobao&status=1&charset=utf-8" class="p-kefu{if $goods.user_id eq 0} p-c-violet{/if} p-c-org" target="_blank"><i class="iconfont icon-kefu"></i></a>
+                                {else}
+                                <a href="http://wpa.qq.com/msgrd?v=3&uin={$goods.kf_qq}&site=qq&menu=yes" class="p-kefu{if $goods.user_id eq 0} p-c-violet{/if} p-c-org" target="_blank"><i class="iconfont icon-kefu"></i></a>
+                                {/if}
+                            {/if}                                                      
+                        </div>
+                        <div class="p-lie p-tiy">
+                            {if $goods.goods_extend.is_delivery}<a class="goods-icons">48</a>{/if}
+                            {if $goods.goods_extend.is_free}<a class="goods-icons">邮</a>{/if}
+                            {if $goods.goods_extend.is_return}<a class="goods-icons">退</a>{/if}
+                        </div>
+                    </li>
+                    <!-- {/if} -->
+                    <!-- {/foreach} -->
+                </ul>
+                {else}
+                <div class="no_records no_records_1200">
+                    <i class="no_icon_two"></i>
+                    <div class="no_info no_info_line">
+                        <h3>{$lang.information_null}</h3>
+                        <div class="no_btn">
+                            <a href="wholesale.php" class="btn sc-redBg-btn">返回首页</a>
+                        </div>
+                    </div>
+                </div>
+                {/if}
+                <div class="clear"></div>
+                <!-- {if $pager.page_count > 1} -->
+                <div class="tc">
+                    <form name="selectPageForm" action="{$smarty.server.PHP_SELF}" method="get">
+                        <div class="pages" id="pager">
+                            <ul>
+                                <!-- {if $pager.page_first} --><div class="item prev" style="display:none;"><a href="{$pager.page_first}"><span>{$lang.home}</span></a></a></div><!-- {/if} -->
+                                <div class="item prev"><a href="{if $pager.page_prev}{$pager.page_prev}{else}#none{/if}"><i class="iconfont icon-left"></i></a></div>
+                                <!-- {if $pager.page_count neq 1} -->
+                                <!--{foreach from=$pager.page_number key=key item=item}-->
+                                <!-- {if $pager.page eq $key} -->
+                                <div class="item cur"><a href="#none">{$key}</a></div>
+                                <!-- {else} -->
+                                <div class="item"><a href="{$item}">{$key}</a></div>
+                                <!-- {/if} -->
+                                <!--{/foreach}-->
+                                <!-- {/if} -->
+                                <div class="item next"><a href="{if $pager.page_next}{$pager.page_next}{else}#none{/if}"><i class="iconfont icon-right"></i></a></div>
+                                <!-- {if $pager.page_last} --><div class="item next" style="display:none"><a href="{$pager.page_last}"><span>{$lang.page_last_new}</span></a></div><!-- {/if} -->
+                            </ul>
+                        </div>
+                    </form>
+                </div>
+                <!-- {/if} -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/dsc-common.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.purebox.js"></script>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<div id="edit_invoice">
+    <div class="invoice-thickbox">
+        <div class="form">
+            <div class="item">
+                <span class="label">{$lang.invoice_title}：</span>
+                <div class="invoice-list">
+                    <div class="invoice-item selected">
+                    	<span>
+                            <input type="text" value="个人" name="inv_payee" class="inv_payee" readonly>
+                            <input name="invoice_id" type="radio" class="hide" value="0" checked>
+							
+                            <b></b>
+                        </span>
+                    </div>
+                    <!-- {foreach from=$order_invoice item=invoice} -->
+                    <div class='invoice-item'>
+                        <span>
+                            <input type='text' name='inv_payee' class='inv_payee' value='{$invoice.inv_payee|escape:html}' readonly>
+                            <input name='invoice_id' type='radio' class='hide' value='{$invoice.invoice_id}'>
+							<input type='hidden' value="{$invoice.tax_id}" ectype="taxId" />
+                            <b></b>
+                        </span>
+                        <div class='btns'><a href='javascript:void(0);' class='ftx-05 edit-tit'>{$lang.edit}</a><a href='javascript:void(0);' class='ftx-05 update-tit hide'>{$lang.Preservation}</a><a href='javascript:void(0);' class='ftx-05 ml10 del-tit'>{$lang.drop}</a></div>
+                    </div>
+                    <!-- {/foreach} -->
+                </div>
+                <div class="add-invoice"><a href="javascript:void(0);" class="ftx-05 add-invoice-btn">{$lang.add_invoice}</a></div>
+            </div>
+			<div class="item" ectype="tax" style=" display:none;">
+            	<span class="label"><em class="red">*</em>纳税人识别码：</span>
+                <div class="value">
+                	<input type="text" name="tax_id" id="tax_id" class="text" value="">
+                </div>
+            </div>
+            <!-- {if $inv_content_list} -->
+            <div class="item">
+                <span class="label">{$lang.invoice_content}：</span>
+                <div class="radio-list">
+                    <ul>
+                    	<!-- {foreach from=$inv_content_list item=list key=key} -->
+                        <li {if $key eq 0}class="item-selected"{/if}><input type="radio" name="inv_content" value="{$list}" {if $key eq 0}checked{/if}>{$list}<b></b></li>
+                        <!-- {/foreach} -->
+                    </ul>
+                </div>
+            </div>
+            <!-- {/if} -->
+            <div class="item">
+                <div class="reminder">
+                    <span>{$lang.invoice_desc_one}</span>
+                    <a href="article_cat.php?id=19" target="_blank" class="ftx-05">{$lang.invoice_desc_two}>></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $.fn.invoiceList = function(opts){
+            var opt = $.extend({
+               'addBtn':  'add-invoice-btn', 
+               'editBtn' : 'edit-tit',
+               'updateBtn' : 'update-tit',
+               'delBtn' : 'del-tit'
+            }, opts || {});
+			
+			if($(".invoice-item").hasClass("selected")){
+				var tax = $("*[ectype='taxId']").val();
+				$("#tax_id").val(tax);
+			}
+			
+            return this.each(function(){
+                var f_item = 0;
+                var o = $(this);
+                var edit_invoice =$("#edit_invoice");
+				$(document).on('click',"#edit_invoice .invoice-item",function(){
+					$(this).addClass("selected").siblings().removeClass("selected");
+					$(this).find("input[name='invoice_id']").prop("checked", true);
+					
+					tax_id = $(this).find('[ectype=taxId]').val();
+					$("#tax_id").val(tax_id);
+					
+					checked();
+				});
+				
+				function checked(){
+					$(".invoice-item").each(function(){
+						var invoice_id = $(this).find("input[name='invoice_id']");
+						if(invoice_id.prop("checked") == true){
+							if(invoice_id.val() != 0){
+								$("*[ectype='tax']").show();
+							}else{
+								$("*[ectype='tax']").hide();
+							}
+						}
+					})
+				}
+				checked();
+
+                o.find("."+ opt.addBtn).click(function(){
+					var $this = $(this);
+					$this.addClass("hide");
+					$(".invoice-item").removeClass("selected");
+                    var f_item = edit_invoice.find(".invoice-item").length;
+
+					if(f_item<4){
+						var div = "<div class='invoice-item selected'><span><input type='text' name='inv_payee' class='inv_payee'  placeholder='{$lang.add_invoice}' value=''><input name='invoice_id' type='radio' class='hide' value='" +0+ "'><b></b></span><div class='btns'><a href='javascript:void(0);' class='ftx-05 edit-tit hide'>{$lang.edit}</a><a href='javascript:void(0);' class='ftx-05 update-tit'>{$lang.Preservation}</a><a href='javascript:void(0);' class='ftx-05 ml10 del-tit hide'>{$lang.drop}</a></div>";
+						$this.parent().prev().append(div);
+		
+						$(".invoice-item").eq(f_item).find("input.inv_payee").focus();
+					}else{
+						alert(json_languages.invoice_desc_number);
+					}
+				});
+
+                $(document).on('click',"."+ opt.editBtn,function(){
+					$(this).parent().prev().find("input").removeAttr("readonly");
+					$(this).parent().prev().find("input").focus();
+					$(this).addClass("hide").next().removeClass("hide");
+                    var val = $(this).parent().prev().find("input[name='invoice_id']").val();
+				});
+
+				$(document).on('click',"."+ opt.updateBtn,function(){
+					var inv_payee = $(this).parent().prev().find("input[name=inv_payee]").val();
+					
+					var invoice_id = $(this).parent().prev().find("input[name=invoice_id]").val();
+					var $this =$(this);
+					if(inv_payee==""){
+						alert(json_languages.invoice_desc_null);
+						return false;
+					}else{
+						Ajax.call('ajax_dialog.php?act=update_invoicename','inv_payee='+encodeURIComponent(inv_payee)+'&invoice_id='+invoice_id,function(result){
+							$this.parent().prev().find("input[name=invoice_id]").val(result.invoice_id);
+						}, 'POST', 'JSON');
+		
+						$(this).parent().prev().find("input").attr("readonly",true);
+						$(this).addClass("hide").siblings().removeClass("hide");
+						$(".add-invoice").find("a").removeClass("hide");
+					}
+				});
+
+				$(document).on('click',"." + opt.delBtn,function(){
+					var invoice_id = $(this).parent().prev().find("input[name=invoice_id]").val();
+					$this = $(this);
+					if(invoice_id == 0){
+						$(this).parents(".invoice-item").remove();
+						var length = edit_invoice.find(".invoice-item").length;
+						if(length == 1){
+							edit_invoice.find(".invoice-item").addClass("selected");
+						}
+					}else{
+						Ajax.call('ajax_dialog.php?act=del_invoicename','invoice_id='+invoice_id,function(result){
+							if(result.error == 1){
+								alert(result.msg);return false;
+							}else{
+								$this.parents(".invoice-item").remove();
+						   }
+						}, 'POST', 'JSON');
+					}
+				});
+
+                $("#edit_invoice .radio-list").find("li").click(function(){
+					$(this).addClass("item-selected").siblings().removeClass("item-selected");
+					$(this).find('input').prop("checked", true);
+				});
+            });
+        };
+        $("#edit_invoice").invoiceList();
+    </script>
+</div>
+

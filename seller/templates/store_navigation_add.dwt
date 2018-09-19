@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+    	{include file ='library/seller_menu_left.lbi'}
+		<div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+            	{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="ecsc-form-goods">
+                <form action="merchants_navigator.php" method="post" name="form" onSubmit="return checkForm();">
+                <div class="wrapper-list border1">
+                	<dl>
+                    	<dt>{$lang.system_main}：</dt>
+                        <dd>
+                            <div id="menulist" class="imitate_select select_w145">
+                                <div class="cite">-</div>
+                                <ul>
+                                    <li><a href="javascript:;" data-value="-" class="ftx-01">-</a></li>
+                                    {foreach from=$sysmain item=val key=key}
+                                    <li><a href="javascript:;" data-value="{$key}|{$val.cat_id}|{$val.cat_name}|{$val.url}" data-url="{$val.url}" class="ftx-01">{$val.cat_name}</a></li>
+                                    {/foreach}
+                                </ul>
+                                <input name="menulist" type="hidden" value="{$seller_win.win_goods_type}" id="menulist_val" />
+                            </div>
+                        </dd>
+                    </dl>
+                    <dl>
+                    	<dt>{$lang.item_name}：</dt>
+                        <dd><input type="text" name="item_name" value="{$rt.item_name}" id="item_name" class="text" size="40" onKeyPress="javascript:key();" /></dd>
+                    </dl>
+                    <dl>
+                    	<dt>{$lang.item_url}：</dt>
+                        <dd>
+                        	<input type="text" name="item_url" value="{$rt.item_url}" id="item_url" class="text" size="40" onKeyPress="javascript:key();" />
+                            <div class="notic">{$lang.notice_url}</div>
+                        </dd>
+                    </dl>
+                    <dl>
+                    	<dt>{$lang.item_catId}：</dt>
+                        <dd><input type="text" id="item_catId" name="item_catId" value="{$rt.item_catId}" size="40" class="text text_2" /></dd>
+                    </dl>
+                    <dl>
+                    	<dt>{$lang.item_vieworder}：</dt>
+                        <dd><input type="text" name="item_vieworder" value="{$rt.item_vieworder}" size="40" class="text text_2" /></dd>
+                    </dl>
+                    <dl>
+                    	<dt>{$lang.item_ifshow}：</dt>
+                        <dd>
+                        	
+                            <div class="checkbox_items">
+                                <div class="checkbox_item">
+                                        <input type="radio" name="item_ifshow" value="0" id="item_ifshow_0" {$rt.item_ifshow_0} class="ui-radio">
+                                        <label for="item_ifshow_0" class="ui-radio-label">{$lang.no}</label>
+                                </div>
+                                <div class="checkbox_item">
+                                    <input type="radio" name="item_ifshow" value="1" id="item_ifshow_1"  class="ui-radio" {$rt.item_ifshow_1}>
+                                    <label for="item_ifshow_1" class="ui-radio-label">{$lang.yes}</label>
+                                </div>
+                            </div>
+                        </dd>
+                    </dl>
+                    <dl>
+                    	<dt>{$lang.item_opennew}：</dt>
+                        <dd>
+                            <div class="checkbox_items">
+                                <div class="checkbox_item">
+                                        <input type="radio" name="item_opennew" value="0" id="send_type_0" {$rt.item_opennew_0} class="ui-radio">
+                                        <label for="send_type_0" class="ui-radio-label">{$lang.no}</label>
+                                </div>
+                                <div class="checkbox_item">
+                                    <input type="radio" name="item_opennew" value="1" id="send_type_1"  class="ui-radio" {$rt.item_opennew_1}>
+                                    <label for="send_type_1" class="ui-radio-label">{$lang.yes}</label>
+                                </div>
+                            </div>
+                        </dd>
+                    </dl>
+<!--                    <dl>
+                    	<dt>{$lang.item_type}：</dt>
+                        <dd>
+                        	<select name="item_type" class="select">
+                            	<option value='middle' {$rt.item_type_middle}>{$lang.middle}</option>
+                            </select>
+                        </dd>
+                    </dl>-->
+                    <dl class="button_info">
+                    	<dt>&nbsp;</dt>
+                        <dd>
+                            <input type="hidden" name="item_type" value="middle"/>
+                        	<input type="hidden" name="id" value="{$rt.id}"/>
+                            <input type="hidden" name="step" value="2"/>
+                            <input type="hidden" name="act" value="{$rt.act}"/>
+                            <input type="submit" class="sc-btn sc-blueBg-btn btn35" name="submit" value="{$lang.button_submit}"/>
+                        </dd>
+                    </dl>
+                </div>    
+                </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file="library/seller_footer.lbi"}
+<script type="text/javascript">
+    $.divselect("#menulist","#menulist_val",function(obj){
+        var val = obj.attr("data-value");
+        add_main(val);
+    });
+var last;
+function add_main(val)
+{
+	val = val.split("|");
+    
+	$("#item_catId").val(val[1]);
+	$("#item_name").val(val[2]);
+	$("#item_url").val(val[3]);
+}
+function checkForm()
+{
+    if(document.getElementById('item_name').value == '')
+    {
+        alert('{$lang.namecannotnull}');
+        return false;
+    }
+    if(document.getElementById('item_url').value == '')
+    {
+        alert('{$lang.linkcannotnull}');
+        return false;
+    }
+    return true;
+}
+
+function key()
+{
+    last = document.getElementById('menulist').selectedIndex = 0;
+}
+</script>
+</body>

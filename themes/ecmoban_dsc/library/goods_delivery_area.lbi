@@ -1,0 +1,81 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<div class="area_tit">
+    <span>{$province_row.region_name}&nbsp;{$city_row.region_name}&nbsp;{$district_row.region_name}</span><i class="sc-icon-right"></i>
+</div>
+<div class="area_brand"></div>
+<div class="area_list_style" id="area_list">
+	{if $consignee_list}
+	<div class="stock-add-used">
+    	<div class="stock-top">
+            <strong class="fl">{$lang.Common_address}</strong>
+        </div>
+        <div class="stock-con">
+        	<ul class="area-list-used">
+            	{foreach from=$consignee_list item=consignee name=noconsignee}
+            	<li {if $smarty.foreach.noconsignee.last}class="last"{/if}><a href="javascript:;" onClick="get_region_change({$goods_id}, {$consignee.province_id}, {$consignee.city_id}, {$consignee.district_id});" title="{$consignee.address}">{if $consignee.address_id eq $address_id}（{$lang.default}）{/if}{$consignee.consignee}&nbsp;&nbsp;{$consignee.city_name}</a></li>
+                {/foreach}
+            </ul>
+        </div>
+    </div>
+    {/if}
+    <div class="select_area_style" id="select_area">
+        <div class="select_area_box">
+            <div class="select_tab" onclick="region.selectArea(this, 1);" value="{$province_row.region_id}" id="province_li">{$province_row.region_name}<i class="sc-icon-right"></i></div>
+            <div class="select_tab" style="{if $district_row.region_name eq ''}background:#fff;{/if}" onclick="region.selectArea(this, 2);" value="{$city_row.region_id}" id="city_li">{$city_row.region_name}<i class="sc-icon-right"></i></div>
+            <div class="select_tab curr" style="{if $district_row.region_name eq ''}display:none;{/if} {if $district_row.region_name}background:#fff{/if}" onclick="region.selectArea(this, 3);" value="{$city_district.region_id}" id="district_type">{$district_row.region_name}<i class="sc-icon-right"></i></div>
+        </div>
+    </div>
+    <b onclick="region.closeRegion();" title="close" class="close_area_list"></b>
+    <div class="house_list_style" id="house_list" style="display:none;" >
+        <ul id="province_list">
+            <!-- 省、直辖市 start --> 
+            {foreach from=$province_list item=province name=noprovince}
+                <li>
+                    <a v="{$province.region_id}" title="{$province.region_name}" {if $province.choosable}onclick="region.getRegion({$province.region_id}, 2, city_list, this,{$user_id});"{else}class="choosable"{/if} href="javascript:void(0);">{$province.region_name}</a>
+                </li>
+            {/foreach}
+            <!-- 省、直辖市 start -->
+        </ul>   
+    </div>
+    <div style="{if $district_row.region_name eq ''}display: block;{else}display: none;{/if}" class="house_list_style" id="city_list_id">
+        <ul id="city_list">    
+            <!-- 市区 start -->                   	                             
+            {foreach from=$city_list item=city name=nocity}                                     
+                <li>
+                    <a v="{$city.region_id}" title="{$city.region_name}" {if $city.choosable}onclick="region.getRegion({$city.region_id}, 3, district_list, '{$city.region_name}',{$user_id});"{else}class="choosable"{/if} href="javascript:void(0);">{$city.region_name}</a>  
+                </li>
+            {/foreach}   
+            <!-- 市区 end -->                  
+        </ul>
+    </div>
+    <div style="{if $district_row.region_name eq ''}display: none;{else}display: block;{/if}" class="house_list_style" id="district_list_id">
+        <ul id="district_list">              
+            <!-- 县 start -->    
+            {foreach from=$district_list item=district name=nodistrict}
+                <li>                     
+                    <a v="{$county.region_id}" title="{$district.region_name}" {if $district.choosable}onclick="region.changedDis({$district.region_id},{$user_id});"{else}class="choosable"{/if} href="javascript:void(0);" id="district_{$district.region_id}">{$district.region_name}</a>  
+                </li>    
+            {/foreach}     
+            <!-- 县 start -->       
+        </ul>
+    </div>
+    <p class="mod_storage_state">{$lang.Distribution_limit}</p>
+</div>
+ <input type="hidden" value="{$province_row.region_id|default:0}" id="province_id" name="province_region_id">
+ <input type="hidden" value="{$city_row.region_id|default:0}" id="city_id" name="city_region_id">
+ <input type="hidden" value="{$district_row.region_id|default:0}" id="district_id" name="district_region_id">         
+ <input type="hidden" value="{$merchant_id|default:0}" id="merchantId" name="merchantId">
+ <input type="hidden" value="{$user_id|default:0}" id="user_id" name="user_id">
+ <input type="hidden" value="{$goods_id|default:0}" id="good_id" name="good_id">
+ 
+<script type="text/javascript">
+function get_region_change(goods_id, province_id, city_id, district_id){
+	Ajax.call("ajax_dialog.php", 'id=' + goods_id + '&act=in_stock' + '&province=' + province_id + "&city=" + city_id + "&district=" + district_id, ajax_is_inStock, "GET", "JSON");
+}
+function ajax_is_inStock(res){
+	var t = '&t=' + parseInt(Math.random()*1000);
+	var str_new = window.location.href.replace(/\&t\=\d+/g,t);
+	location.href = str_new;
+}
+</script>

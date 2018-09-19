@@ -1,0 +1,390 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.promotion} - {$ur_here}</div>
+        <div class="content">
+            {include file="library/common_tabs_info.lbi"}
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit">
+					<i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span>
+                    {if $open eq 1}
+                    <div class="view-case">
+                    	<div class="view-case-tit"><i></i>{$lang.view_tutorials}</div>
+                        <div class="view-case-info">
+                        	<a href="http://help.ecmoban.com/article-6553.html" target="_blank">{$lang.tutorials_bonus_list_one}</a>
+                        </div>
+                    </div>			
+                    {/if}				
+				</div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.list.0}</li>
+                    <li>{$lang.operation_prompt_content.list.1}</li>
+                    <li>{$lang.operation_prompt_content.list.2}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<div class="common-head">
+                	<div class="fl">
+                        <a href="favourable.php?act=add"><div class="fbutton"><div class="add" title="{$lang.add_favourable}"><span><i class="icon icon-plus"></i>{$lang.add_favourable}</span></div></div></a>
+                    </div>
+                    <div class="refresh">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>					
+                    <div class="search">
+                    	<form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+                        {if $common_tabs.info}
+                        <div class="select m0">
+                            <div class="imitate_select select_w170">
+                                <div class="cite">{$lang.adopt_status}</div>
+                                <ul>
+                                    <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.adopt_status}</a></li>
+                                    <li><a href="javascript:;" data-value="1" class="ftx-01">{$lang.not_audited}</a></li>
+                                    <li><a href="javascript:;" data-value="2" class="ftx-01">{$lang.audited_not_adopt}</a></li>
+                                    <li><a href="javascript:;" data-value="3" class="ftx-01">{$lang.audited_yes_adopt}</a></li>
+                                </ul>
+                                <input name="review_status" type="hidden" value="0" id="">
+                            </div>
+                        </div>
+                        {/if}
+                    	<div class="input">
+                        	<input type="text" name="keyword" class="text nofocus" placeholder="{$lang.act_name}" autocomplete="off" />
+                            <input type="submit" class="btn" name="secrch_btn" ectype="secrch_btn" value="" />
+                        </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="common-content">
+					<form method="post" action="" name="listForm">
+                	<div class="list-div" id="listDiv" >
+					{/if}
+                    	<table cellpadding="1" cellspacing="1" >
+                        	<thead>
+                            	<tr>
+                                	<th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars"></label></div></th>
+                                    <th width="5%"><div class="tDiv">{$lang.record_id}</div></th>
+                                    <th width="20%"><div class="tDiv">{$lang.act_name}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.goods_steps_name}</div></th>
+                                    <th width="12%"><div class="tDiv">{$lang.start_time}</div></th>
+                                    <th width="12%"><div class="tDiv">{$lang.end_time}</div></th>
+                                    <th width="9%"><div class="tDiv">{$lang.min_amount}</div></th>
+                                    <th width="9%"><div class="tDiv">{$lang.max_amount}</div></th>
+                                    <th width="9%"><div class="tDiv">{$lang.sort_order}</div></th>
+                                    <th width="8%"><div class="tDiv">{$lang.adopt_status}</div></th>
+                                    <th width="11%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+							{foreach from=$favourable_list item=favourable}
+                            	<tr>
+                                	<td class="sign">
+                                        <div class="tDiv">
+                                            <input type="checkbox" name="checkboxes[]" value="{$favourable.act_id}" class="checkbox" id="checkbox_{$favourable.act_id}" />
+                                            <label for="checkbox_{$favourable.act_id}" class="checkbox_stars"></label>
+                                        </div>
+                                    </td>
+                                    <td><div class="tDiv">{$favourable.act_id}</div></td>
+								    <td><div class="tDiv overflow_view"><span title="{$favourable.act_name|escape:html}{if $favourable.userFav_type && $priv_ru eq 0}({$lang.general_audience}){/if}" data-toggle="tooltip">{$favourable.act_name|escape:html}{if $favourable.userFav_type && $priv_ru eq 0}({$lang.general_audience}){/if}</span></div></td>
+                                    {if $priv_ru eq 1}
+									{if $favourable.userFav_type}
+										<td><div class="tDiv"><font class="red">{$lang.general_audience}</font></div></td>  
+									{else}
+										<td><div class="tDiv">{if $favourable.user_name}<font class="red">{$favourable.user_name}{if $favourable.rs_name}（{$favourable.rs_name}）{/if}</font>{else}<font class="blue">{$lang.self}{if $favourable.rs_name}（{$favourable.rs_name}）{/if}</font>{/if}</div></td>   
+									{/if}
+								    {/if}
+                                    <td><div class="tDiv">{$favourable.start_time}</div></td>
+                                    <td><div class="tDiv">{$favourable.end_time}</div></td>
+                                    <td><div class="tDiv">{$favourable.min_amount}</div></td>
+                                    <td><div class="tDiv">{$favourable.max_amount}</div></td>
+                                    <td><div class="tDiv"><input name="sort_order" class="text w40" value="{$favourable.sort_order}" onkeyup="listTable.editInput(this, 'edit_sort_order',{$favourable.act_id} )" type="text"></div></td> 
+                                    <td>
+                                    	<div class="tDiv">
+                                            {if $favourable.review_status eq 1}
+                                            <font class="org2">{$lang.not_audited}</font>
+                                            {elseif $favourable.review_status eq 2}
+                                            <font class="red">{$lang.audited_not_adopt}</font><br/>
+                                            <i class="tip yellow" title="{$favourable.review_content}" data-toggle="tooltip">{$lang.prompt}</i>
+                                            {elseif $favourable.review_status eq 3}
+                                            <font class="blue">{$lang.audited_yes_adopt}</font>
+                                            {/if}									
+                                        </div>
+                                    </td> 
+                                    <td class="handle">
+										<div class="tDiv a2">
+											<a href="favourable.php?act=edit&amp;id={$favourable.act_id}&ru_id={$favourable.user_id}" title="{$lang.edit}" class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>
+											{if $favourable.userFav_type eq 0 || $priv_ru}
+											<a href="javascript:;" onclick="listTable.remove({$favourable.act_id},'{$lang.drop_confirm}')" title="{$lang.remove}" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>	
+											{/if} 											
+										</div>
+									</td>
+                                </tr>
+							{foreachelse}
+								<tr><td class="no-records" align="center" colspan="12">{$lang.no_records}</td></tr>
+							{/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+									<td colspan="12">
+                                        <div class="tDiv">
+                                            {if $filter.seller_list eq 1}
+											<div class="tfoot_btninfo">
+												<input type="hidden" value="batch" name="act">
+												<div class="item">
+													<div id="drop_select" class="imitate_select select_w120">
+													  <div class="cite">{$lang.select_please}</div>
+													  <ul>
+														 <li><a href="javascript:;" data-value="" class="ftx-01">{$lang.select_please}</a></li>
+														 <li><a href="javascript:;" data-value="batch_remove" class="ftx-01">{$lang.drop}</a></li>
+														 <li><a href="javascript:;" data-value="review_to" class="ftx-01">审核</a></li>
+													  </ul>
+													  <input name="type" type="hidden" value=""  id="drop_val">
+													</div>
+												</div>
+												<div class="item" style="display: none;" id="review_status">
+													<div id="review_status_select" class="imitate_select select_w120">
+													  <div class="cite">{$lang.select_please}</div>
+													  <ul>
+														 <li><a href="javascript:;" data-value="2" class="ftx-01">审核未通过</a></li>
+														 <li><a href="javascript:;" data-value="3" class="ftx-01">审核通过</a></li>
+													  </ul>
+													  <input name="review_status" type="hidden" value="0" id="review_status_val">
+													</div>
+												</div>
+												<input name="review_content" type="text" value="" class="text text_2 mr10 lh26" style="display:none" />
+												<input type="submit" value="{$lang.button_submit_alt}" name="remove" ectype="btnSubmit" class="btn btn_disabled" disabled="">
+											</div>
+											{else}
+											<div class="tfoot_btninfo">
+												<div class="shenhe">
+													<input type="submit" name="drop" id="btnSubmit" value="{$lang.drop}" class="btn btn_disabled" disabled="true" ectype="btnSubmit" />
+													<input type="hidden" name="act" value="batch" />
+													<input name="type" type="hidden" value="batch_remove"  id="drop_val">
+												</div>										
+											</div>
+											{/if}
+                                            <div class="list-page">
+                                                {include file="library/page.lbi"}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+						{if $full_page}
+                    </div>
+					</form>
+                </div>
+            </div>
+        </div>
+    </div>
+	
+	<!--高级搜索 start-->
+	<div class="gj_search">
+		<div class="search-gao-list" id="searchBarOpen"><i class="icon icon-zoom-in"></i>{$lang.advanced_search}</div>
+		<div class="search-gao-bar">
+			<div class="handle-btn" id="searchBarClose"><i class="icon icon-zoom-out"></i>{$lang.pack_up}</div>
+			<div class="title"><h3>{$lang.advanced_search}</h3></div>
+			<form action="javascript:searchActivity()" name="searchHighForm">
+				<div class="searchContent">
+					<div class="layout-box">
+						<dl>
+							<dd>
+								<div class="checkbox_items">
+									<div class="checkbox_item">
+										<input type="checkbox" class="ui-checkbox" name="is_going" id="is_going_1" value="1" />
+										<label for="is_going_1" class="ui-label">{$lang.act_is_going}</label>
+									</div>
+								</div>							
+							</dd>
+						</dl>
+                        {if !$common_tabs.info}
+						<dl>
+							<dt>{$lang.use_type}：</dt>
+							<dd>
+								<div id="" class="imitate_select select_w145">
+									<div class="cite">{$lang.please_select}</div>
+									<ul>
+										<li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.please_select}</a></li>
+										<li><a href="javascript:;" data-value="4" class="ftx-01">{$lang.self}</a></li>
+										<li><a href="javascript:;" data-value="3" class="ftx-01">{$lang.full_court}</a></li>
+									</ul>
+									<input name="use_type" type="hidden" value="0" id="">
+								</div>
+							</dd>
+						</dl>
+                        {/if}
+                        <!--卖场 start-->
+                        {if $rs_enabled and !$rs_id}
+                        <dl>
+                            <dt>{$lang.rs_name}</dt>
+                            <dd>
+                                <div id="" class="imitate_select select_w145">
+                                    <div class="cite">{$lang.please_select}</div>
+                                    <ul>
+                                        <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.please_select}</a></li>
+                                        {foreach from=$region_store_list item=data key=key}
+                                        <li><a href="javascript:;" data-value="{$data.rs_id}" class="ftx-01">{$data.rs_name}</a></li>
+                                        {/foreach}
+                                    </ul>
+                                    <input name="rs_id" type="hidden" value="{$smarty.get.rs_id|default:0}" autocomplete="off">
+                                </div>
+                            </dd>
+                        </dl>
+                        {/if}
+                        <!--卖场 end-->
+                        {if $common_tabs.info}
+                        <dl>
+                        	<dt>{$lang.steps_shop_name}</dt>
+                            <dd>
+                                <div id="shop_name_select" class="select_w145 imitate_select">
+                                    <div class="cite">{$lang.please_select}</div>
+                                    <ul>
+                                       <li><a href="javascript:;" data-value="0">{$lang.select_please}</a></li>
+                                       <li><a href="javascript:;" data-value="1">{$lang.s_shop_name}</a></li>
+                                       <li><a href="javascript:;" data-value="2">{$lang.s_qw_shop_name}</a></li>
+                                       <li><a href="javascript:;" data-value="3">{$lang.s_brand_type}</a></li>
+                                    </ul>
+                                    <input name="store_search" type="hidden" value="0" id="shop_name_val">
+                                </div>
+                            </dd>
+                        </dl>
+                        {/if}
+                        <dl style="display:none" id="merchant_box">
+                            <dd>
+                                <div class="select_w145 imitate_select">
+                                    <div class="cite">{$lang.please_select}</div>
+                                    <ul>
+                                       <li><a href="javascript:;" data-value="0">{$lang.please_select}</a></li>
+                                       {foreach from=$store_list item=store}
+                                       <li><a href="javascript:;" data-value="{$store.ru_id}">{$store.store_name}</a></li>
+                                       {/foreach}
+                                    </ul>
+                                    <input name="merchant_id" type="hidden" value="0" >
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl id="store_keyword" style="display:none" >
+                            <dd><input type="text" value="" name="store_keyword" class="s-input-txt" autocomplete="off" /></dd>
+                        </dl>
+                        <dl style="display:none" id="store_type">
+                            <dd>
+                                <div class="select_w145 imitate_select">
+                                    <div class="cite">{$lang.please_select}</div>
+                                    <ul>
+                                       <li><a href="javascript:;" data-value="0">{$lang.steps_shop_type}</a></li>
+                                       <li><a href="javascript:;" data-value="{$lang.flagship_store}">{$lang.flagship_store}</a></li>
+                                       <li><a href="javascript:;" data-value="{$lang.exclusive_shop}">{$lang.exclusive_shop}</a></li>
+                                       <li><a href="javascript:;" data-value="{$lang.franchised_store}">{$lang.franchised_store}</a></li>
+                                       <li><a href="javascript:;" data-value="{$lang.shop_store}">{$lang.shop_store}</a></li>
+                                    </ul>
+                                    <input name="store_type" type="hidden" value="0" >
+                                </div>
+                            </dd>
+                        </dl>
+						<dl>
+							<dd>
+								<input type="text" name="keyword" class="text nofocus" placeholder="{$lang.act_name}" autocomplete="off" />
+							</dd>
+						</dl>						
+						<dl class="bot_btn">
+                            <dd>
+							   <input type="submit" class="btn red_btn" name="tj_search" value="{$lang.button_inquire}" /><input type="reset" class="btn btn_reset" name="reset" value="{$lang.button_reset_alt}" />
+							</dd>
+						</dl>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>	
+	{include file ='library/pagefooter.lbi'}
+
+	<script type="text/javascript">
+		//分页传值
+		listTable.recordCount = {$record_count|default:0};
+		listTable.pageCount = {$page_count|default:1};
+
+		{foreach from=$filter item=item key=key}
+		listTable.filter.{$key} = '{$item}';
+		{/foreach}
+		
+		$.gjSearch("-240px");  //高级搜索
+		
+		$.divselect("#shop_name_select","#shop_name_val",function(obj){
+			var val = obj.attr("data-value");
+			get_store_search(val);
+		});
+		
+		function get_store_search(val){
+			if(val == 1){
+				$("#merchant_box").css("display",'');
+				$("#store_keyword").css("display",'none');
+				$("#store_type").css("display",'none')
+			}else if(val == 2){
+				$("#merchant_box").css("display",'none');
+				$("#store_keyword").css("display",'');
+				$("#store_type").css("display",'none')
+			}else if(val == 3){
+				$("#merchant_box").css("display",'none');
+				$("#store_keyword").css("display",'');
+				$("#store_type").css("display",'')
+			}else{
+				$("#merchant_box").css("display",'none');
+				$("#store_keyword").css("display",'none');
+				$("#store_type").css("display",'none')
+			}
+		}
+		
+		/* 搜索活动*/
+		function searchActivity(){
+			{if $priv_ru eq 1}
+			listTable.filter['store_search'] = Utils.trim(document.forms['searchHighForm'].elements['store_search'].value);
+			listTable.filter['merchant_id'] = Utils.trim(document.forms['searchHighForm'].elements['merchant_id'].value);
+			listTable.filter['store_keyword'] = Utils.trim(document.forms['searchHighForm'].elements['store_keyword'].value);
+			listTable.filter['store_type'] = Utils.trim(document.forms['searchHighForm'].elements['store_type'].value);
+				//卖场 start
+				{if $rs_enabled and !$rs_id}
+				listTable.filter['rs_id'] = Utils.trim(document.forms['searchHighForm'].elements['rs_id'].value);
+				{/if}
+				//卖场 end
+			{/if}
+
+			var use_type = Utils.trim(document.forms['searchHighForm'].elements['use_type'].value);
+			var keyword = Utils.trim(document.forms['searchHighForm'].elements['keyword'].value);
+			listTable.filter['use_type'] = use_type;
+			listTable.filter['keyword'] = keyword;
+			
+			if(document.forms['searchHighForm'].elements['is_going'].checked){
+				listTable.filter['is_going'] = 1;
+			}else{
+				listTable.filter['is_going'] = 0;
+			}
+			
+			listTable.filter['page'] = 1;
+			listTable.loadList("favourable_list");
+		}
+		
+	$.divselect("#drop_select","#drop_val",function(obj){
+		changeAction();
+	});
+	
+	function changeAction()
+	{
+	
+	 var type = $("input[name='type']").val();
+	 var review_status = $("#review_status");
+	  // 切换商品审核列表的显示
+	
+	  review_status.css("display",type == 'review_to' ? '' : 'none');
+	  if(type != 'review_to')
+	  {
+		review_status.css("display", 'none');
+	  }
+	}
+	</script>
+</body>
+</html>
+{/if}

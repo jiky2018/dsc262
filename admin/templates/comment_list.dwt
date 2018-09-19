@@ -1,0 +1,151 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.goods_alt} - {$ur_here}</div>
+        <div class="content">
+            {include file="library/common_tabs_info.lbi"}        
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.list.0}</li>
+                    <li>{$lang.operation_prompt_content.list.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-head">
+                    <div class="refresh ml0">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+					<div class="search">
+                    	<form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+                        {include file ='library/search_store.lbi'}
+                    	<div class="input">
+                        	<input type="text" name="keywords" class="text nofocus" placeholder="{$lang.search_comment}" autocomplete="off">
+							<input type="submit" class="btn" name="secrch_btn" ectype="secrch_btn" value="" />
+                        </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="common-content">
+					<form method="POST" action="comment_manage.php?act=batch_drop" name="listForm" onsubmit="return confirm_bath()">
+                	<div class="list-div" id="listDiv">
+                    	<div class="flexigrid ht_goods_list">
+						{/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                	<th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars"></label></div></th>
+                                	<th width="5%"><div class="tDiv">{$lang.record_id}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.user_name}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.goods_steps_name}</div></th>
+                                    <th width="6%"><div class="tDiv">{$lang.comment_type}</div></th>
+                                    <th width="25%"><div class="tDiv">{$lang.comment_obj}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.ip_address}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.comment_time}</div></th>
+                                    <th width="7%"><div class="tDiv">{$lang.whether_display}</div></th>
+                                    <th class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+								{foreach from=$comment_list item=comment}
+                            	<tr>
+									<td class="sign">
+                                        <div class="tDiv">
+                                            <input type="checkbox" name="checkboxes[]" value="{$comment.comment_id}" class="checkbox" id="checkbox_{$comment.comment_id}" />
+                                            <label for="checkbox_{$comment.comment_id}" class="checkbox_stars"></label>
+                                        </div>
+                                    </td>
+                                    <td><div class="tDiv">{$comment.comment_id}</div></td>
+									<td><div class="tDiv">{if $comment.user_name}{$comment.user_name}{else}{$lang.anonymous}{/if}</div></td>
+									<td><div class="tDiv">{if $comment.ru_name}<font style="color:#F00;">{$comment.ru_name}</font>{else}{$lang.self}{/if}</div></td>
+									<td><div class="tDiv">{$lang.type[$comment.comment_type]}</div></td>
+									<td><div class="tDiv"><a href="../{if $comment.comment_type eq '0' || $comment.comment_type eq '2'|| $comment.comment_type eq '3'}goods{else}article{/if}.php?id={$comment.id_value}" target="_blank">{$comment.title}</a></div></td>
+									<td><div class="tDiv">{$comment.ip_address}</div></td>
+									<td><div class="tDiv">{$comment.add_time}</div></td>
+									<!--<td><div class="tDiv">{if $comment.status eq 0}{$lang.hidden}{else}{$lang.display}{/if}</div></td>-->
+									<td>
+                                    	<div class="tDiv">
+                                        	<div class="switch {if $comment.status}active{/if}" title="{if $comment.status}{$lang.yes}{else}{$lang.no}{/if}" onclick="listTable.switchBt(this, 'toggle_status', {$comment.comment_id})">
+                                            	<div class="circle"></div>
+                                            </div>
+                                            <input type="hidden" value="0" name="">
+                                        </div>
+									</td>
+									<td class="handle">
+                                        <div class="tDiv ht_tdiv">
+                                            <a href="comment_manage.php?act=reply&amp;id={$comment.comment_id}" class="btn_see"><i class="sc_icon sc_icon_see"></i>{$lang.view}</a>
+                                            <a href="javascript:;" onclick="listTable.remove({$comment.comment_id}, '{$lang.drop_confirm}')" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>
+                                        </div>
+                                    </td>
+                                </tr>
+								{foreachelse}
+								<tr><td class="no-records" colspan="20">{$lang.no_records}</td></tr>								
+								{/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+									<td colspan="12">
+                                        <div class="tDiv">
+                                            <div class="tfoot_btninfo">
+                                                <div class="shenhe">
+                                                    <div id="sel_action" class="imitate_select select_w120">
+                                                        <div class="cite">{$lang.please_select}</div>
+                                                        <ul>
+                                                            <li><a href="javascript:;" data-value="remove" class="ftx-01">{$lang.drop_select}</a></li>
+                                                            <li><a href="javascript:;" data-value="allow" class="ftx-01">{$lang.allow}</a></li>
+                                                            <li><a href="javascript:;" data-value="deny" class="ftx-01">{$lang.forbid}</a></li>
+                                                        </ul>
+                                                        <input name="sel_action" type="hidden" value="remove" id="">
+                                                    </div>
+                                                    <input type="hidden" name="act" value="batch" />
+                                                    <input type="submit" name="drop" id="btnSubmit" value="{$lang.button_submit}" class="btn btn_disabled" disabled="true" ectype="btnSubmit" />
+                                                </div>										
+                                            </div>
+                                            <div class="list-page">
+                                                {include file="library/page.lbi"}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table> 
+						{if $full_page}
+                        </div>
+                    </div>
+					</form>
+                </div>
+            </div>
+		</div>
+	</div>
+	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript" src="js/jquery.purebox.js"></script>
+	<script type="text/javascript">
+	//列表导航栏设置下路选项
+	$(".ps-container").perfectScrollbar();
+	
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+	cfm = new Object();
+	cfm['allow'] = '{$lang.cfm_allow}';
+	cfm['remove'] = '{$lang.cfm_remove}';
+	cfm['deny'] = '{$lang.cfm_deny}';
+	
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+	
+	
+	function confirm_bath()
+	{
+		var action = document.forms['listForm'].elements['sel_action'].value;
+		return confirm(cfm[action]);
+	}
+	</script>
+</body>
+</html>
+{/if}

@@ -1,0 +1,179 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<!-- #BeginLibraryItem "/library/js_languages_new.lbi" --><!-- #EndLibraryItem -->
+</head>
+
+<body>
+	<!-- #BeginLibraryItem "/library/page_header_common.lbi" --><!-- #EndLibraryItem -->
+    <div class="content" ectype="lazyDscWarp">
+    	<div class="banner home-banner">
+        	<div class="bd">
+				<!-- #BeginLibraryItem "/library/index_ad.lbi" --><!-- #EndLibraryItem -->
+            </div>
+            <div class="hd">
+            	<ul></ul>
+            </div>
+            <div class="vip-outcon">
+            	{* DSC 提醒您：动态载入index_user_info.lbi，显示首页分类小广告 *}{insert name='index_user_info'}
+            </div>
+        </div>
+        <div class="channel-content" ectype="channel">
+        {* DSC 提醒您：动态载入seckill_goods_list.lbi，显示首页分类小广告 *}{insert name='index_seckill_goods'}
+		{* DSC 提醒您：动态载入index_ad_cat.lbi，显示首页分类小广告 *}{insert name='get_adv_child' ad_arr=$rec_cat}
+		<!-- #BeginLibraryItem "/library/index_brand_ad.lbi" --><!-- #EndLibraryItem -->
+        </div>
+        <div class="floor-content" ectype="goods_cat_level">
+			<!-- TemplateBeginEditable name="首页楼层" -->
+<!-- #BeginLibraryItem "/library/cat_goods.lbi" -->
+
+ <!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/cat_goods.lbi" -->
+
+ <!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/cat_goods.lbi" -->
+
+ <!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/cat_goods.lbi" -->
+
+ <!-- #EndLibraryItem -->
+<!-- TemplateEndEditable -->
+		</div>
+        <div class="floor-loading" ectype="floor-loading"><div class="floor-loading-warp"><img src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/images/load/loading.gif"></div></div>
+        <div class="other-content">
+            {* DSC 提醒您：动态载入expert_field.lbi，显示首页达人专区小广告 *}{insert name='get_adv_child' ad_arr=$expert_field}
+            {* DSC 提醒您：动态载入recommend_merchants.lbi，显示首页推荐店铺小广告 *}{insert name='get_adv_child' ad_arr=$recommend_merchants}
+            <!-- #BeginLibraryItem "/library/guess_you_like.lbi" --><!-- #EndLibraryItem -->
+        </div>
+        
+     	<!-- 楼层悬浮栏 -->
+        <div class="lift lift-mode-{$floor_nav_type|default:one} lift-hide" ectype="lift" data-type="{$floor_nav_type|default:one}" style="z-index:100001">
+            <div class="lift-list" ectype="liftList">
+                <div class="lift-item lift-h-seckill lift-item-first" ectype="liftItem" data-target="#h-seckill"><span>秒杀活动</span><i class="lift-arrow"></i></div>
+                <div class="lift-item lift-h-need lift-item-current" ectype="liftItem" data-target="#h-need"><span>推荐商品</span><i class="lift-arrow"></i></div>
+                <div class="lift-item" ectype="liftItem" data-target="#h-brand"><span>品牌推荐</span><i class="lift-arrow"></i></div>
+                {foreach from=$floor_data item=data key=key}
+                <div class="lift-item lift-floor-item" ectype="liftItem"><span>{$data.name}</span><i class="lift-arrow"></i></div>
+                {/foreach}
+                <div class="lift-item lift-master" ectype="liftItem" data-target="#master"><span>达人专区</span><i class="lift-arrow"></i></div>
+                <div class="lift-item lift-storeRec" ectype="liftItem" data-target="#storeRec"><span>店铺推荐</span><i class="lift-arrow"></i></div>
+                <div class="lift-item" ectype="liftItem" data-target="#guessYouLike"><span>还没逛够</span><i class="lift-arrow"></i></div>
+                <div class="lift-item lift-item-top" ectype="liftItem">{if $floor_nav_type eq "one"}<i class="iconfont icon-returntop"></i>{else}TOP<i class="iconfont icon-top-alt"></i>{/if}</div>
+            </div>
+        </div>
+        <!-- 悬浮导航栏 -->
+        <div class="attached-search-container" ectype="suspColumn">
+            <div class="w w1200">
+                <div class="categorys site-mast">
+                    <div class="categorys-type"><a href="{$url_categoryall}" target="_blank">{$lang.all_goods_cat}</a></div>
+                    <div class="categorys-tab-content">
+                        {insert name='category_tree_nav' cat_model=$nav_cat_model cat_num=$nav_cat_num}
+                    </div>
+                </div>
+                <div class="mall-search">
+                   <div class="dsc-search">
+                        <div class="form">
+                            <form id="searchForm" name="searchForm" method="get" action="search.php" onSubmit="return checkSearchForm(this)" class="search-form">
+                                <input autocomplete="off" name="keywords" type="text" id="keyword2" value="{if $search_keywords}{$search_keywords}{else}{insert name='rand_keyword'}{/if}" class="search-text"/>
+                                <input type="hidden" name="store_search_cmt" value="{$search_type|default:0}">
+                                <button type="submit" class="button button-goods" onclick="checkstore_search_cmt(0)" >搜商品</button>
+                                <button type="submit" class="button button-store" onclick="checkstore_search_cmt(1)" >搜店铺</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="suspend-login">
+                    {* DSC 提醒您：动态载入index_suspend_info.lbi，显示首页首页悬浮登录入口 *}{insert name='index_suspend_info'}
+                </div>
+                <div class="shopCart" id="ECS_CARTINFO">
+                    {* DSC 提醒您：根据用户id来调用cart_info.lbi显示不同的界面  *}{insert name='cart_info'}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {* DSC 提醒您：动态载入user_menu_position.lbi，显示首页分类小广告 *}{insert name='user_menu_position'}
+    
+    <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+    <!--{if $cfg_bonus_adv eq 1}-->
+        {* DSC 提醒您：动态载入bonushome_ad.lbi，显示首页分类小广告 *}{insert name='get_adv_child' ad_arr=$bonushome}
+    <!--{/if}-->
+    {insert_scripts files='jquery.SuperSlide.2.1.1.js,jquery.yomi.js,cart_common.js,cart_quick_links.js'}
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/dsc-common.js"></script>
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/asyLoadfloor.js"></script>
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.purebox.js"></script>
+    <script type="text/javascript">
+	/*首页轮播*/
+	var length = $(".banner .bd").find("li").length;
+	if(length>1){
+		$(".banner").slide({titCell:".hd ul",mainCell:".bd ul",effect:"fold",interTime:3500,delayTime:500,autoPlay:true,autoPage:true,trigger:"click",endFun:function(i,c,s){
+			$(window).resize(function(){
+				var width = $(window).width();
+				s.find(".bd li").css("width",width);
+			});
+		}});
+	}else{
+		$(".banner .hd").hide();
+	}
+	$(".vip-item").slide({titCell:".tit a",mainCell:".con"});
+	$(".seckill-channel").slide({mainCell:".box-bd ul",effect:"leftLoop",autoPlay:true,autoPage:true,interTime:5000,delayTime:500,vis:5,scroll:1,trigger:"click"});
+	
+	function load_js_content(key){
+		var Floor = $("#floor_" + key);
+		Floor.slide({titCell:".hd-tags li",mainCell:".floor-tabs-content",titOnClassName:"current"});
+		Floor.find(".floor-left-slide").slide({titCell:".hd ul",mainCell:".bd ul",effect:"left",interTime:3500,delayTime:500,autoPlay:true,autoPage:true});
+	}
+	$("*[ectype='time']").each(function(){
+		$(this).yomi();
+	});
+	
+	//页面刷新自动返回顶部
+	$("body,html").animate({scrollTop:0},50);
+	
+	$(function(){
+		//判断首页那些广告位是否存在，处理左侧悬浮楼层栏
+		var index_ad_cat = $("input[name='index_ad_cat']").val();
+		
+		if(index_ad_cat == 0){
+			$(".lift-h-need").hide();
+		}else{
+			$(".lift-h-need").show();
+		}
+		
+		//秒杀活动
+		var seckill_goods = $("input[name='seckill_goods']").val();
+		if(seckill_goods == 0){
+			$(".lift-h-seckill").hide();
+		}else{
+			$(".lift-h-seckill").show();
+		}
+	});
+	
+	//楼层异步加载封装函数调用
+	$.homefloorLoad();
+	
+	$(window).scroll(function(){
+		var scrollTop = $(document).scrollTop();
+		var navTop = $("*[ectype='channel']").offset().top;  //by yanxin
+			
+		if(scrollTop>navTop){
+			$("*[ectype='suspColumn']").addClass("show");
+		}else{
+			$("*[ectype='suspColumn']").removeClass("show");
+		}
+	});
+	
+	//去掉悬浮框 我的购物车
+	$(".attached-search-container .shopCart-con a span").text("");
+    </script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!-- {if $history_goods} -->
+<div class="history" id="history">
+    <div class="mt">
+        <h2>{$lang.Recent_browse}</h2>
+        <a onclick="clear_history()" class="clear_history ftx-05" href="javascript:void(0);">{$lang.clear}</a>
+    </div>
+    <div class="mc" id="history_list">
+    	<ul>
+        	<!--{foreach from=$history_goods item=goods}-->
+        	<li>
+            	<div class="item">
+                    <div class="p-img"><a href="{$goods.url}" target="_blank"><img src="{$goods.goods_thumb}" width="72" height="72"/></a></div>
+                    <div style="width:90px; float:left;">
+                    	<div class="p-name"><a href="{$goods.url}" target="_blank">{$goods.short_name}</a></div>
+                        <div class="p-price">
+                            <!-- {if $goods.promote_price neq ''} -->
+                                {$goods.promote_price}
+                            <!-- {else} -->
+                                {$goods.shop_price}
+                            <!-- {/if} -->
+                        </div>
+                        <div class="p-num">{$lang.Sold}：<strong> {$goods.sales_volume|default:0}</strong>{$lang.his_bi}</div>
+                    </div>
+                </div>
+            </li>
+            <!-- {/foreach} -->
+        </ul>
+    </div>    
+</div>
+<!-- {/if} -->
+<script type="text/javascript">
+if(document.getElementById('history_list')){
+	if (document.getElementById('history_list').innerHTML.replace(/\s/g,'').length<1)
+	{
+		document.getElementById('history').style.display='none';
+	}
+	else
+	{
+		document.getElementById('history').style.display='block';
+	}
+}
+function clear_history()
+{
+Ajax.call('user.php', 'act=clear_history',clear_history_Response, 'GET', 'TEXT',1,1);
+}
+function clear_history_Response(res)
+{
+document.getElementById('history_list').innerHTML = '<div class="history_tishi">{$lang.no_history}<br /><a href="index.php" class="ftx-05">{$lang.go_shoping}</a></div>';
+}
+</script>

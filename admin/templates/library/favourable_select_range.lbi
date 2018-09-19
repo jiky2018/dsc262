@@ -1,0 +1,211 @@
+<div class="modal-body">
+	<div class="body_info floor_info">
+        <div class="search">
+            <div class="search_con mr10"><input width="20" name="keyword_rs" type="text" placeholder="{$lang.search_key}" id="keyword_rs" class="text text_6 mr0"></div>
+            <a href="javascript:void(0);" class="sc-btn fl" ectype="{if $is_rs}changedmer{else}changedrs{/if}">{$lang.button_submit_alt}</a>
+            <div class="checkobx-item">
+                <input type="checkbox" name="is_selected" id="is_selected" class="ui-checkbox" onclick="checkd_selected(this)"/>
+                <label class="ui-label" for="is_selected">已选择{if $is_rs}商家{else}卖场{/if}</label>
+            </div>
+        </div>
+        <div class="table_list" ectype='rs_list'>
+            <div class="gallery_album" data-act="{if $is_rs}changedmer{else}changedrs{/if}" data-goods='1' data-inid="rs_list" data-url='get_ajax_content.php' data-where="keyword={$filter.keyword}&type=1">
+                <ul class="ga-goods-ul" id="rs_list">
+                    {if $is_rs}
+                    {foreach from=$range_list item=list}
+                    <li class="on">
+                        <div class="name">{$list.shop_name}</div>
+                        <div class="choose"><a href="javascript:void(0);" class="on" onclick="selected_mer(this,'{$list.user_id}')"><i class="iconfont icon-gou"></i>已选择</a></div>
+                    </li>
+                    {foreachelse}
+                    <li class="notic">请先搜索商家</li>
+                    {/foreach}                    
+                    {else}
+                    {foreach from=$range_list item=list}
+                    <li class="on">
+                        <div class="name">{$list.rs_name}</div>
+                        <div class="choose"><a href="javascript:void(0);" class="on" onclick="selected_mer(this,'{$list.rs_id}')"><i class="iconfont icon-gou"></i>已选择</a></div>
+                    </li>
+                    {foreachelse}
+                    <li class="notic">请先搜索卖场</li>
+                    {/foreach}
+                    {/if}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{if $is_rs}
+<script type="text/javascript">
+    //查询卖场下的商家
+    $(document).on("click","*[ectype='changedmer']",function(){
+        var keyword = $("#keyword_rs").val();
+		var mer_ids = $("input[name='ext_ids']").val();
+        Ajax.call('favourable.php?is_ajax=1&act=changedmer', "keyword=" + keyword + "&mer_ids=" + mer_ids + "&type=1", mer_nameResponse, "GET", "JSON");       
+    })
+    
+    function mer_nameResponse(result)
+    {
+      if (result.error == 0)
+      {
+          document.getElementById('rs_list').innerHTML = result.content;
+          $(".select-list2").perfectScrollbar("destroy");
+          $(".select-list2").perfectScrollbar();
+      }
+    }
+
+    ajaxchangedmer(1);
+    function checkd_selected(obj){
+		var obj = $(obj);
+		var is_selected =$("input[name='is_selected']").is(':checked');
+		var length = obj.parents(".floor_info").find(".rs_list li.on").length;
+		var mer_ids = $("input[name='ext_ids']").val();
+		var type = 1;
+        if(is_selected == true){
+            $(".icon-gou").parents('li').show();
+			$(".icon-plus").parents('li').hide();
+			
+			if(length < 6){
+				$("*[ectype='rs_list']").perfectScrollbar("destroy");
+			}
+            type = 0;
+        }else{
+            $(".icon-gou,.icon-dsc-plus").parents('li').show();
+			$("*[ectype='rs_list']").perfectScrollbar();
+        }
+        ajaxchangedmer(type);
+    }
+    
+    function ajaxchangedmer(type){
+        var keyword = $("input[name='keyword_rs']").val();
+        var mer_ids = $("input[name='ext_ids']").val();
+		
+		$("[ectype='rs_list']").html("<i class='icon-spin'><img src='images/visual/load.gif' width='30' height='30'></i>");
+		var rs_id = {$is_rs};
+		function ajax(){
+			Ajax.call('favourable.php?is_ajax=1&act=changedmer', "keyword=" + keyword + "&mer_ids=" + mer_ids + "&type=" + type + "&rs_id=" + rs_id, function(data){
+				$("[ectype='rs_list']").html(data.content);
+				
+				$("*[ectype='rs_list']").perfectScrollbar("destroy");
+				$("*[ectype='rs_list']").perfectScrollbar();
+			} , 'POST', 'JSON');
+		}
+		
+		setTimeout(function(){ajax()},300);
+    }
+    
+	//选中卖场
+	function selected_mer(obj,mer_id){
+		var obj = $(obj);
+		var arr = '';
+		var mer_ids = $("input[name='ext_ids']").val();
+	   
+		if(obj.hasClass("on")){
+			obj.removeClass("on");
+			obj.html('<i class="iconfont icon-dsc-plus"></i>选择');
+			arr = mer_ids.split(',');
+			for(var i =0;i<arr.length;i++){
+				if(arr[i] == mer_id){
+					 arr.splice(i,1);
+				}
+			}
+		}else{
+			$(obj).addClass('on');
+			$(obj).html('<i class="iconfont icon-gou"></i>已选择');
+			if(mer_ids){
+					arr = mer_ids + ','+mer_id;
+			}else{
+					arr = mer_id;
+			}
+		}
+		$("input[name='ext_ids']").val(arr);
+	}
+</script>
+{else}
+<script type="text/javascript">
+    //查询卖场
+    $(document).on("click","*[ectype='changedrs']",function(){
+        var keyword = $("#keyword_rs").val();
+		var rs_ids = $("input[name='ext_ids']").val();
+        Ajax.call('favourable.php?is_ajax=1&act=changedrs', "keyword=" + keyword + "&rs_ids=" + rs_ids + "&type=1", rs_nameResponse, "GET", "JSON");       
+    })
+    
+    function rs_nameResponse(result)
+    {
+      if (result.error == 0)
+      {
+          document.getElementById('rs_list').innerHTML = result.content;
+          $(".select-list2").perfectScrollbar("destroy");
+          $(".select-list2").perfectScrollbar();
+      }
+    }
+
+    ajaxchangedrs(1);
+    function checkd_selected(obj){
+		var obj = $(obj);
+		var is_selected =$("input[name='is_selected']").is(':checked');
+		var length = obj.parents(".floor_info").find(".rs_list li.on").length;
+		var rs_ids = $("input[name='ext_ids']").val();
+		var type = 1;
+        if(is_selected == true){
+            $(".icon-gou").parents('li').show();
+			$(".icon-plus").parents('li').hide();
+			
+			if(length < 6){
+				$("*[ectype='rs_list']").perfectScrollbar("destroy");
+			}
+            type = 0;
+        }else{
+            $(".icon-gou,.icon-dsc-plus").parents('li').show();
+			$("*[ectype='rs_list']").perfectScrollbar();
+        }
+        ajaxchangedrs(type);
+    }
+    
+    function ajaxchangedrs(type){
+        var keyword = $("input[name='keyword_rs']").val();
+        var rs_ids = $("input[name='ext_ids']").val();
+		
+		$("[ectype='rs_list']").html("<i class='icon-spin'><img src='images/visual/load.gif' width='30' height='30'></i>");
+		
+		function ajax(){
+			Ajax.call('favourable.php?is_ajax=1&act=changedrs', "keyword=" + keyword + "&rs_ids=" + rs_ids + "&type=" + type, function(data){
+				$("[ectype='rs_list']").html(data.content);
+				
+				$("*[ectype='rs_list']").perfectScrollbar("destroy");
+				$("*[ectype='rs_list']").perfectScrollbar();
+			} , 'POST', 'JSON');
+		}
+		
+		setTimeout(function(){ajax()},300);
+    }
+    
+	//选中卖场
+	function selected_rs(obj,rs_id){
+		var obj = $(obj);
+		var arr = '';
+		var rs_ids = $("input[name='ext_ids']").val();
+	   
+		if(obj.hasClass("on")){
+			obj.removeClass("on");
+			obj.html('<i class="iconfont icon-dsc-plus"></i>选择');
+			arr = rs_ids.split(',');
+			for(var i =0;i<arr.length;i++){
+				if(arr[i] == rs_id){
+					 arr.splice(i,1);
+				}
+			}
+		}else{
+			$(obj).addClass('on');
+			$(obj).html('<i class="iconfont icon-gou"></i>已选择');
+			if(rs_ids){
+					arr = rs_ids + ','+rs_id;
+			}else{
+					arr = rs_id;
+			}
+		}
+		$("input[name='ext_ids']").val(arr);
+	}
+</script>
+{/if}
+

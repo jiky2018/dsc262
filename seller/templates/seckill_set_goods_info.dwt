@@ -1,0 +1,115 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="btn-info"  ectype="item">
+                    <a href="javascript:void(0);" class="sc-btn sc-blue-btn" ectype="setupGoods"><i class="icon icon-plus"></i>设置商品</a>                 
+                    <input type="hidden" name="tb_id" value="{$tb_id}">
+                    <input type="hidden" name="sec_id" value="{$sec_id}">   
+                    <input type="hidden" name="cat_goods" value="{$cat_goods}">
+                </div>
+                <div class="list-div" id="listDiv">
+					{/if}
+                    	<table class="ecsc-default-table">
+                        	<thead>
+                            	<tr>
+                                	<th width="5%"><div class="tDiv">{$lang.record_id}</div></th>
+                                    <th width="30%"><div class="tDiv">商品名称</div></th>
+                                    <th width="15%"><div class="tDiv">商品价格</div></th>
+                                    <th width="15%"><div class="tDiv">秒杀价</div></th>
+                                    <th width="15%"><div class="tDiv">秒杀数量</div></th>
+									<th width="15%"><div class="tDiv">限购数量</div></th>
+									<th width="5%"><div class="handle">操作</div></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+							{foreach from=$seckill_goods item=sg}
+                            	<tr>
+                                	<td><div class="tDiv">{$sg.id}</div></td>
+                                	<td><div class="tDiv">{$sg.goods_name}</div></td>
+									<td><div class="tDiv">{$sg.shop_price}</div></td>
+									<td><div class="tDiv"><input class="text w50 tc fn" style="margin-right:0px;" onblur="listTable.editInput(this, 'edit_sec_price', {$sg.id} );" autocomplete="off" value="{$sg.sec_price}" type="text"></div></td>
+									<td><div class="tDiv"><input class="text w50 tc fn" style="margin-right:0px;" onblur="listTable.editInput(this, 'edit_sec_num', {$sg.id} );" autocomplete="off" value="{$sg.sec_num}" type="text"></div></td>
+									<td><div class="tDiv"><input class="text w50 tc fn" style="margin-right:0px;" onblur="listTable.editInput(this, 'edit_sec_limit', {$sg.id} );" autocomplete="off" value="{$sg.sec_limit}" type="text"></div></td>
+                                    <td class="ecsc-table-handle tr">
+										<div class="tDiv a1">
+											<span><a href="javascript:;" onclick="listTable.remove({$sg.id}, '{$lang.drop_confirm}', 'sg_remove')" title="{$lang.remove}" class="btn_trash"><i class="icon icon-trash"></i><p>{$lang.remove}</p></a></span>									
+										</div>
+									</td>
+                                </tr>
+							{foreachelse}
+							<tr><td class="no-records"colspan="7">{$lang.no_records}</td></tr>
+							{/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="7">
+                                        {include file="page.dwt"}
+                                    </td>
+                                </tr>
+                            </tfoot>                          
+                        </table>
+					{if $full_page}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+{insert_scripts files="jquery.purebox.js"}
+<script type="text/javascript">
+		//分页传值
+		listTable.recordCount = {$record_count|default:0};
+		listTable.pageCount = {$page_count|default:1};
+		listTable.query = 'sg_query';
+		listTable.filter.sec_id = {$sec_id};
+		listTable.filter.tb_id 	= {$tb_id};
+
+		{foreach from=$filter item=item key=key}
+		listTable.filter.{$key} = '{$item}';
+		{/foreach}	
+
+		//设置商品
+		$(document).on("click","*[ectype='setupGoods']",function(){
+			var _this = $(this),
+				spec_attr = new Object(),
+				cat_id = _this.parents("[ectype='item']").find("input[name='cateValue[]']").val(),
+				cat_goods = _this.parents("[ectype='item']").find("input[name='cat_goods']").val();
+                                
+			spec_attr.goods_ids = cat_goods;
+			Ajax.call('seckill.php', "act=goods_info" + "&goods_type=1&cat_id=" + cat_id + "&spec_attr="+$.toJSON(spec_attr) , function(data){
+				var content = data.content;
+				pb({
+					id:"set_up_goods",
+					title: "设置商品",
+					width: 1000,
+					content: content,
+					ok_title: "确定",
+					cl_title: "取消",
+					drag: true,
+					foot: true,
+					cl_cBtn: true,
+					onOk: function(){
+						var goods_ids = $("#set_up_goods").find("input[name='goods_ids']").val();
+						var tb_id = $("input[name='tb_id']").val();
+						var sec_id = $("input[name='sec_id']").val();
+						Ajax.call('get_ajax_content.php','act=add_seckill_goods&goods_ids='+goods_ids+'&sec_id='+sec_id+'&tb_id='+tb_id,function(data){
+							document.getElementById("listDiv").innerHTML = data.content;
+						},'GET','JSON');
+					}
+				});
+			}, 'POST', 'JSON');
+		});	
+</script>
+ </body>
+</html>
+{/if}

@@ -1,0 +1,106 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.11_system} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit">
+					<i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span>
+				</div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.setting.0}</li>
+                    <li>{$lang.operation_prompt_content.setting.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<div class="common-head">
+                   	{if $action_link}
+                    <div class="fl">
+                        <a href="{$action_link.href}"><div class="fbutton"><div class="add" title="{$action_link.text}"><span><i class="icon icon-plus"></i>{$action_link.text}</span></div></div></a>
+                    </div>
+                    {/if}
+                    <div class="refresh{if !$action_link} ml0{/if}">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>                   
+                    <div class="search">
+                    	<form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+                        <div class="input">
+                            <input type="text" name="keyword" class="text nofocus" placeholder="{$lang.keyword}" autocomplete="off" />
+                            <input type="submit" class="btn" name="secrch_btn" ectype="secrch_btn" value="" />
+                        </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="common-content">
+                	<div class="list-div"  id="listDiv">
+                        {/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                    <th width="5%"><div class="tDiv">{$lang.record_id}</div></th>
+                                    <th width="15%"><div class="tDiv">{$lang.spec}</div></th>
+                                    <th width="20%"><div class="tDiv">{$lang.printer}</div></th>
+                                    <th width="20%"><div class="tDiv">{$lang.width}(mm)</div></th>
+                                    <th width="15%"><div class="tDiv">{$lang.sort_order}</div></th>
+									<th width="15%"><div class="tDiv">{$lang.set_default}</div></th>
+                                    <th width="10%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {foreach from=$print_setting item=list}
+                            	<tr>
+                                    <td><div class="tDiv">{$list.id}</div></td>
+                                    <td><div class="tDiv">{$list.specification}</div></td>
+                                    <td><div class="tDiv"><input name="printer" class="text w120" value="{$list.printer}" onkeyup="listTable.editInput(this, 'edit_order_printer',{$list.id})" type="text"></div></td>
+									<td><div class="tDiv"><input name="width" class="text w120" value="{$list.width}" onkeyup="listTable.editInput(this, 'edit_print_width',{$list.id})" type="text"></div></td>
+                                    <td><div class="tDiv"><input name="sort_order" class="text w50" value="{$list.sort_order}" onkeyup="listTable.editInput(this, 'edit_sort_order',{$list.id})" type="text"></div></td>
+                                    <td><div class="tDiv">
+										<div class="switch {if $list.is_default eq 1}active{/if}" title="{if $list.is_default eq 1}{$lang.yes}{else}{$lang.no}{/if}" data-type="only" onclick="listTable.switchBt(this, 'toggle_order_is_default', {$list.id})">
+											<div class="circle"></div>
+										</div>
+										<input type="hidden" value="{$list.is_default}" name="">								
+									</div></td>
+                                    <td class="handle">
+                                        <div class="tDiv a3">
+                                            <a href="tp_api.php?act=order_print_setting_edit&id={$list.id}" title="{$lang.edit}" class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>
+                                            <a href="javascript:;" onclick="listTable.remove({$list.id}, '{$lang.drop_confirm}', 'order_print_setting_remove')" title="{$lang.remove}" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {foreachelse}
+                                    <tr><td class="no-records" colspan="12">{$lang.no_records}</td></tr>
+                                {/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="12">
+                                        <div class="list-page">
+                                            {include file="library/page.lbi"}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        {if $full_page}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+ 	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+		listTable.recordCount = {$record_count|default:0};
+		listTable.pageCount = {$page_count|default:1};
+		listTable.query = 'order_print_setting_query';
+		
+		{foreach from=$filter item=item key=key}
+		listTable.filter.{$key} = '{$item}';
+		{/foreach}
+    </script>
+</body>
+</html>
+{/if}

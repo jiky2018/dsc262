@@ -1,0 +1,93 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.mail} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.list.0}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-head">
+                    <div class="fl">
+                    	<a href="{$action_link.href}"><div class="fbutton"><div class="csv" title="{$action_link.text}"><span><i class="icon icon-download-alt"></i>{$action_link.text}</span></div></div></a>
+                    </div>
+                    <div class="refresh">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>					
+                </div>
+                <div class="common-content">
+					<form method="post" action="email_list.php" name="listForm">
+                	<div class="list-div" id="listDiv">
+						{/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                	<th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars"></label></div></th>
+                                	<th width="7%"><div class="tDiv">{$lang.record_id}</div></th>
+                                    <th width="50%"><div class="tDiv">{$lang.email_val}</div></th>
+                                    <th width="40%" class="handle">{$lang.stat.name}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+								{foreach from=$emaildb item=val}
+                            	<tr>
+                                    <td class="sign">
+                                        <div class="tDiv">
+                                            <input type="checkbox" name="checkboxes[]" value="{$val.id}" class="checkbox" id="checkbox_{$val.id}" />
+                                            <label for="checkbox_{$val.id}" class="checkbox_stars"></label>
+                                        </div>
+                                    </td>
+                                    <td><div class="tDiv">{$val.id}</div></td>
+                                    <td><div class="tDiv">{$val.email}</div></td>                               
+                                    <td class="handle">{$lang.stat[$val.stat]}</td>
+                                </tr>
+                                {foreachelse}
+                                    <tr><td class="no-records" colspan="20">{$lang.no_records}</td></tr>								
+								{/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                	<td colspan="12">
+                                        <div class="tDiv">
+                                            <div class="tfoot_btninfo">
+                                                <div class="shenhe">
+                                                    <input type="hidden" name="act" value="" />
+                                                    <input type="button" id="btnSubmit1" value="{$lang.button_exit}" disabled="true" class="btn btn_disabled" onClick="javascript:document.listForm.act.value='batch_exit';document.listForm.submit();" ectype="btnSubmit" />
+                                                    <input type="button" id="btnSubmit2" value="{$lang.button_remove}" disabled="true" class="btn btn_disabled" onClick="javascript:document.listForm.act.value='batch_remove';document.listForm.submit();" ectype="btnSubmit" />
+                                                    <input type="button" id="btnSubmit3" value="{$lang.button_unremove}" disabled="true" class="btn btn_disabled" onClick="javascript:document.listForm.act.value='batch_unremove';document.listForm.submit();" ectype="btnSubmit" />
+                                                </div>
+                                            </div>
+                                            <div class="list-page">
+                                               {include file="library/page.lbi"}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+						{if $full_page}
+                    </div>
+					</form>
+                </div>
+            </div>
+		</div>
+	</div>
+ 	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+	</script>
+</body>
+</html>
+{/if}

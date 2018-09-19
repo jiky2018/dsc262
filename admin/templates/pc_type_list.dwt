@@ -1,0 +1,101 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.promotion} - {$ur_here}</div>
+        <div class="content">
+        	<div class="tabs_info">
+            	<ul>
+                    <li><a href="value_card.php?act=list">{$lang.vc_type_list}</a></li>
+					<li><a href="value_card.php?act=vc_list">{$lang.value_card_list}</a></li>
+					<li class="curr"><a href="pay_card.php?act=list">{$lang.pc_type_list}</a></li>
+                    <li><a href="pay_card.php?act=pc_list">{$lang.pay_card_list}</a></li>
+				</ul>
+            </div>	
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.pc_type_list.0}</li>
+                    <li>{$lang.operation_prompt_content.pc_type_list.1}</li>
+                    <li>{$lang.operation_prompt_content.pc_type_list.2}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<div class="common-head">
+                	<div class="fl">
+						<a href="{$action_link.href}"><div class="fbutton"><div class="add" title="{$action_link.text}"><span><i class="icon icon-plus"></i>{$action_link.text}</span></div></div></a>
+					</div>
+                    <div class="refresh">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+                </div>
+                <div class="common-content">
+                    <form method="post" action="" name="listForm">
+                        <div class="list-div" id="listDiv" >
+                        {/if}
+                            <table cellpadding="1" cellspacing="1">
+                                <thead>
+                                    <tr>
+                                        <th	width="10%"><div class="tDiv">{$lang.record_id}</div></th>
+                                        <th	width="30%"><div class="tDiv">{$lang.type_name}</div></th>
+                                        <th	width="15%"><div class="tDiv">{$lang.type_money}</div></th>
+                                        <th	width="10%"><div class="tDiv">{$lang.send_count}</div></th>
+                                        <th	width="10%"><div class="tDiv">{$lang.use_count}</div></th>
+                                        <th width="20%" class="handle">{$lang.handler}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {foreach from=$type_list item=type}
+                                    <tr>
+                                        <td><div class="tDiv">{$type.type_id}</div></td>
+                                        <td><div class="tDiv">{$type.type_name|escape:html}</div></td>
+                                        <td><div class="tDiv">{$type.type_money}</div></td>
+                                        <td><div class="tDiv">{$type.send_count}</div></td>
+                                        <td><div class="tDiv">{$type.use_count}</div></td>
+                                        <td class="handle">
+                                            <div class="tDiv a3">
+                                                <a href="pay_card.php?act=send&amp;id={$type.type_id}" title="{$lang.view_detail}" class="btn_region"><i class="icon icon-screenshot"></i>{$lang.send}</a>
+                                                <a href="pay_card.php?act=pc_list&amp;tid={$type.type_id}" title="{$lang.view_detail}" class="btn_see"><i class="sc_icon sc_icon_see"></i>{$lang.view}</a>
+                                                <a href="pay_card.php?act=edit&amp;type_id={$type.type_id}"  title="{$lang.edit}" class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>
+                                                <a href="javascript:;" onclick="listTable.remove({$type.type_id}, '{$lang.drop_confirm}')" title="{$lang.remove}" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>
+                                            </div>								
+                                        </td>
+                                    </tr>
+                                    {foreachelse}
+                                    <tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+                                    {/foreach}
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="12">
+                                            <div class="list-page">
+                                                {include file="library/page.lbi"}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        {if $full_page}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+	//分页传值
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+    </script>
+</body>
+</html>
+{/if}

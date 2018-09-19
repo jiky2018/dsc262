@@ -1,0 +1,246 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        <div class="site wrapper">
+            {include file ='library/seller_menu_left.lbi'}
+            <div class="ecsc-layout-right">
+                <div class="main-content" id="mainContent">
+                	{include file ='library/url_here.lbi'}
+					{include file ='library/seller_menu_tab.lbi'}
+                    <div class="search-info">
+                        <div class="search-form">
+                        <form method="post" action="javascript:searchOrder()" name="searchForm" target="_self">
+                            <div class="search-key">
+                                <input type="text" class="text w150" name="order_sn" id="consignee" value="" placeholder="{$lang.order_sn}">
+                                <input type="submit" class="submit" value="{$lang.button_search}">
+                            </div>
+                        </form>
+                        </div>
+                    </div>
+                    <div class="btn-info">
+                    	<a href="javascript:void(0);" onclick="get_auto_order_detection()" class="sc-btn sc-blue-btn">一键确认收货</a>
+                    </div>
+                     {/if}
+                    <form method="post" action="order.php?act=operate" name="listForm" onsubmit="return check()">
+                   
+                    <div class="table_list" id="listDiv">
+                    	<table class="ecsc-default-table">
+                            <thead>
+                                <tr>
+									<th width="12%" class="tl pl10">{$lang.order_sn}</th>
+									<th width="12%">{$lang.goods_steps_name}</th>
+									<th width="10%" class="tl">{$lang.order_time}</th>
+									<th width="20%" class="tl">{$lang.consignee}</th>
+									<th width="9%">{$lang.total_fee}</th>
+									<th width="10%">{$lang.all_status}</th>
+									{if $is_detection eq 1}
+									<th width="12%">{$lang.await_time}</th>
+									<th width="12%">{$lang.auto_confirm_time}</th>
+									{/if}
+                                </tr>
+                            </thead>
+                            <tbody>
+								{if $is_detection}
+								{foreach from=$order_list item=order key=okey}
+								<tr>
+								<td class="tl pl10">
+									{$order.order_sn}
+									{if $order.is_stages eq 1}<div class="order_code">白条分期</div>{/if}
+									{if $order.extension_code eq "group_buy"}
+										<div class="order_code">{$lang.group_buy}</div>
+									{elseif $order.extension_code eq "exchange_goods"}
+										<div class="order_code">{$lang.exchange_goods}</div>
+									{elseif $order.extension_code eq "auction"}
+										<div class="order_code">{$lang.auction}</div>
+									{elseif $order.extension_code eq "snatch"}
+										<div class="order_code">{$lang.snatch}</div>
+									{elseif $order.extension_code eq "presale"}
+										<div class="order_code">{$lang.presale}</div>
+									{/if}
+
+									{if $order.order_child > 0}
+										<font class="to_order_sn red">
+										{$lang.to_order_sn3}
+											<div id="div_order_{$order.order_id}" class="div_order_id">
+											{foreach from=$order.child_list item=list}
+											{$lang.sub_order_sn}：{$list.order_sn}
+											<br/> 
+											{/foreach}
+											</div>
+										</font>
+									{else}
+										{if $order.main_order_id > 0}
+										<font class="to_order_sn org">{$lang.sub_order_sn2}</font>
+										{/if}
+									{/if}
+								</td>
+								<td>
+									{if $order.order_child eq 0}
+									{if $order.user_name}
+										<font class="red">{$order.user_name}</font>
+									{else}
+										<font>{$lang.self}</font>
+									{/if}
+								{else}
+									<font class="blue3">{$lang.to_order_sn2}</font>
+									{/if}
+								</td>
+								<td class="tl">{$order.buyer|escape}<br />{$order.short_order_time}</td>
+								<td class="tl"><a href="mailto:{$order.email}"> {$order.consignee|escape}</a>{if $order.mobile} [TEL: {$order.mobile|escape}]{/if} <br />[{$order.region}] {$order.address|escape}</td>
+								<td>{$order.formated_total_fee}</td>
+								<td>{$lang.ss[$order.shipping_status]}<br />{$lang.not_confirm_order}</td>
+								{if $is_detection eq 1}
+								<td>{$order.auto_delivery_time}天{if $order.is_auto_confirm}<br/><font class="red">(已到期)</font>{/if}</td>
+								<td><font{if $order.is_auto_confirm} class="green"{/if}>{$order.auto_confirm_time}</font></td>
+								{/if}
+								</tr>
+								{foreachelse}
+								<tr><td class="no-records"  colspan="12">{$lang.no_records}</td></tr>
+								{/foreach}
+								{/if}
+                            </tbody>
+							{if $is_detection}
+                            <tfoot>
+								<tr>
+									<td colspan="12">
+										<div class="list-page">
+											{include file="page.dwt"}
+										</div>
+									</td>
+								</tr>
+                            </tfoot>
+							{/if}
+                        </table>
+                    </div>
+                    
+                    </form>
+                    {if $full_page}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+	<script type="text/javascript">
+        //列表导航栏设置下路选项
+        $(".ps-container").perfectScrollbar();
+    
+        //分页传值
+        listTable.recordCount = {$record_count|default:0};
+        listTable.pageCount = {$page_count|default:1};
+        listTable.query = 'detection_query';
+    
+        {foreach from=$filter item=item key=key}
+        listTable.filter.{$key} = '{$item}';
+        {/foreach}		
+        
+		function get_auto_order_detection(){
+			var val = '';
+			var order_id = $("input[name='order_id_list']").val();
+			val = '&order_id_list=' + order_id;
+			
+			location.href = "order.php?act=auto_order_detection" + val;
+		}
+
+
+       $.divselect("#shop_name_select","#shop_name_val",function(obj){
+        var val = obj.attr("data-value");
+        get_store_search(val);
+    });
+    function get_store_search(val){
+        if(val == 1){
+                $("#merchant_box").css("display",'');
+                $("#store_keyword").css("display",'none');
+                $("#store_type").css("display",'none')
+        }else if(val == 2){
+                $("#merchant_box").css("display",'none');
+                $("#store_keyword").css("display",'');
+                $("#store_type").css("display",'none')
+        }else if(val == 3){
+                $("#merchant_box").css("display",'none');
+                $("#store_keyword").css("display",'');
+                $("#store_type").css("display",'')
+        }else{
+                 $("#merchant_box").css("display",'none');
+                $("#store_keyword").css("display",'none');
+                $("#store_type").css("display",'none')
+        }
+}
+$.gjSearch("-240px");  //高级搜索
+
+/**
+ * 搜索用户
+ */
+function searchOrder()
+{
+    var frm = $("form[name='formSearch_senior']");
+    listTable.filter['store_search'] = Utils.trim(frm.find("input[name='store_search']").val());
+    listTable.filter['merchant_id'] = Utils.trim(frm.find("input[name='merchant_id']").val());
+    listTable.filter['store_keyword'] = Utils.trim(frm.find("input[name='store_keyword']").val());
+    listTable.filter['store_type'] = Utils.trim(frm.find("input[name='store_type']").val());
+
+    listTable.filter['order_sn'] = Utils.trim(($("form[name='searchForm']").find("input[name='order_sn']").val() != '') ? $("form[name='searchForm']").find("input[name='order_sn']").val() :  frm.find("input[name='order_sn']").val());
+    listTable.filter['consignee'] = Utils.trim(frm.find("input[name='consignee']").val());
+    listTable.filter['page'] = 1;
+    listTable.query = "detection_query";
+    listTable.loadList();
+}
+
+{if $is_detection eq 2}
+function start(page)
+{
+	var val = '';
+			
+	{if $filter.order_id_list}
+	var order_id = '{$filter.order_id_list}';
+		val = '&order_id_list=' + order_id;
+	{/if}
+	
+	Ajax.call('order.php?act=ajax_order_detection&is_ajax=1&start=1' + val, 'page=' + page, start_response, 'GET', 'JSON');
+}
+/**
+ * 处理反馈信息
+ * @param: result
+ * @return
+ */
+function start_response(result)
+{
+	var tbl = document.getElementById("listTable"); //获取表格对象
+	
+	//创建新任务行
+	if(result.order){
+		var row = tbl.insertRow(-1);
+		cell = row.insertCell(0);
+		cell.innerHTML = "<div class='tDiv'>" + result.order.order_sn + "</div>";
+		cell = row.insertCell(1);
+		cell.innerHTML = "<div class='tDiv'>" + result.order.user_name + "</div>";
+		cell = row.insertCell(2);
+		cell.innerHTML = "<div class='tDiv'>" + result.order.buyer + "<br />" + result.order.short_order_time + "</div>";
+		cell = row.insertCell(3);
+		cell.innerHTML = "<div class='tDiv'>" + result.order.consignee + "</div>";
+		cell = row.insertCell(4);
+		cell.innerHTML = "<div class='tDiv'>" + result.order.formated_total_fee + "</div>";
+		cell = row.insertCell(5);
+		cell.innerHTML = "<div class='tDiv'>" + result.order.new_shipping_status + "</div>";
+	}else{
+		$("#listTable").find("tbody").append("<tr><td colspan='10' class='no-records'>暂无确认发货信息</td></tr>")
+	}
+	
+	if(result.stop_ajax == 1){
+		start(result.page);
+	}
+}
+
+$(function(){
+	start(1);
+});
+{/if}
+    </script>
+</body>
+</html>
+{/if}

@@ -1,0 +1,255 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.goods_psi} - {$ur_here}</div>
+        <div class="content">
+			{include file='library/psi_goods_tab.lbi'}
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit">
+					<i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span>
+				</div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.purchase.0}</li>
+                </ul>
+            </div>
+            <div class="flexilist order_info">
+				<form action="goods_psi.php?act=purchase_operate" method="post" name="theForm">
+            	<div class="common-head">
+                    <div class="search">
+						<div class="select">
+							<div class="fl">{$lang.select_warehouse}：</div>
+							<div id="" class="imitate_select select_w170 mr0">
+								<div class="cite">{$lang.please_select}</div>
+								<ul>
+									{foreach from=$warehouse_list item=list}
+									<li><a href="javascript:;" data-value="{$list.region_id}" class="ftx-01">{$list.region_name}</a></li>
+									{/foreach}
+								</ul>
+								<input name="region_id" type="hidden" value="" id="">
+							</div>						
+						</div>
+						<div class="select">
+							<div class="fl">{$lang.select_supplier}：</div>
+							<div id="" class="imitate_select select_w170">
+								<div class="cite">{$lang.please_select}</div>
+								<ul>
+									{foreach from=$suppliers_list item=list}
+									<li><a href="javascript:;" data-value="{$list.suppliers_id}" class="ftx-01">{$list.suppliers_name}</a></li>
+									{/foreach}
+								</ul>
+								<input name="suppliers_id" type="hidden" value="{$suppliers_list.0.suppliers_id|default:0}" id="">
+							</div>						
+						</div>
+						<a href="javascript:;" ectype="setupGoods" class="btn32 blue_btn fl">{$lang.select_storage_goods}</a>	
+						<div class="select">
+							<div class="input">
+								<input type="text" name="global_nums" class="text" placeholder="{$lang.set_number}" autocomplete="off" />
+							</div>
+							<a href="javascript:;" class="btn32 blue_btn fl ml10" ectype="setGlobalNums" >{$lang.button_submit_alt}</a>
+						</div>
+                    </div>
+                </div>
+				<div class="common-content">  
+					<!--商品信息-->
+					<div id="listDiv">
+					{/if}
+						<div class="step">
+                        	<div class="step_title"><i class="ui-step"></i><h3>{$lang.goods_info}</h3></div>
+							<div class="step_info">
+								<div class="order_goods_fr pis_purchase">
+                                    <table class="table" border="0" cellpadding="0" cellspacing="0">
+										<thead>
+											<tr>
+												<th width="30%" class="first">{$lang.goods_info}</th>
+                                                <th width="20%">{$lang.goods_sn}</th>
+                                                <th width="14%">{$lang.existing_number}</th>
+                                                <th width="14%">{$lang.batch_number}</th>
+                                                <th width="14%">{$lang.purchase_number}</th>
+												<th width="8%" class="handle">{$lang.handler}</th>
+											</tr>
+										</thead>
+										<tbody>
+											{foreach from=$purchase_goods item=goods}
+											{if $goods.product_list}
+											{foreach from=$goods.product_list item=list name=list}
+											<tr class="product_{$goods.goods_id}">
+												{if $smarty.foreach.list.first}
+												<td rowspan="{$goods.rowspan}" class="tdr first">
+                                                	<div class="tDiv goods_list_info">
+                                                    	<div class="img"><img src="{$goods.goods_thumb}" width="72" height="72" /></div>
+                                                        <div class="desc">
+                                                        	<div class="name">{$goods.goods_name}<input type="hidden" name="goods_id[{$goods.goods_id}]" ectype="goods_hidden_id" value="{$goods.goods_id}"/></div>
+                                                            {if $goods.select_area}
+                                                            <div class="select">
+                                                                <div class="fl lh30">{$lang.select_region}：</div>
+                                                                <div id="region_id" class="imitate_select select_w170">
+                                                                    <div class="cite">{$lang.please_select}</div>
+                                                                    <ul>
+                                                                        {foreach from=$goods.area_list item=list}
+                                                                        <li><a href="javascript:;" data-value="{$list.region_id}" class="ftx-01">{$list.region_name}</a></li>
+                                                                        {/foreach}
+                                                                    </ul>
+                                                                    <input name="area_id[{$goods.goods_id}]" type="hidden" value="{$goods.area_id}" id="region_id_val">
+                                                                </div>
+                                                            </div>
+                                                            {/if}
+                                                        </div>
+                                                    </div>
+												</td>
+												{/if}
+												<td>{$list.attr_value}：{$list.product_sn}</td>
+												<td>{$list.product_number}</td>
+												<td><input type="text" name="batch_number[{$goods.goods_id}][{$list.product_id}]" class="text" /></td>
+												<td><input type="text" name="product_number[{$goods.goods_id}][{$list.product_id}]" class="text" ectype="changeNums" /></td>
+												{if $smarty.foreach.list.first}
+												<td class="handle tdl" rowspan="{$goods.rowspan}"><a href="javascript:void(0);" class="btn_trash" ectype="btnTrash" data-goodsid="{$goods.goods_id}"><i class="icon icon-trash"></i>{$lang.drop}</a></td>
+												{/if}
+											</tr>
+											{/foreach}					
+											{else}
+											<tr class="product_{$goods.goods_id}">
+												<td class="first">
+                                                	<div class="tDiv goods_list_info">
+                                                    	<div class="img"><img src="{$goods.goods_thumb}" width="72" height="72" /></div>
+                                                        <div class="desc">
+                                                        	<div class="name">{$goods.goods_name}<input type="hidden" name="goods_id[{$goods.goods_id}]" ectype="goods_hidden_id" value="{$goods.goods_id}"/></div>
+                                                            {if $goods.select_area}
+                                                            <div class="select">
+                                                                <div class="fl lh30">{$lang.select_region}：</div>
+                                                                <div id="region_id" class="imitate_select select_w170">
+                                                                    <div class="cite">{$lang.please_select}</div>
+                                                                    <ul>
+                                                                        {foreach from=$goods.area_list item=list}
+                                                                        <li><a href="javascript:;" data-value="{$list.region_id}" class="ftx-01">{$list.region_name}</a></li>
+                                                                        {/foreach}
+                                                                    </ul>
+                                                                    <input name="area_id[{$goods.goods_id}]" type="hidden" value="{$goods.area_id}" id="region_id_val">
+                                                                </div>
+                                                            </div>
+                                                            {/if}
+                                                        </div>
+                                                    </div>
+												</td>
+                                                <td class="product_sn">{$goods.goods_sn}</td>
+                                                <td>{$goods.goods_number}</td>
+                                                <td><input type="text" name="batch_number[{$goods.goods_id}]" class="text" /></td>
+                                                <td><input type="text" name="goods_number[{$goods.goods_id}]" class="text" ectype="changeNums" /></td>
+                                                <td class="handle"><a href="javascript:void(0);" class="btn_trash" ectype="btnTrash" data-goodsid="{$goods.goods_id}"><i class="icon icon-trash"></i>{$lang.drop}</a></td>
+											</tr>						
+											{/if}
+											{foreachelse}
+												<tr><td class="no-records" colspan="6">{$lang.no_records}</td></tr>										
+											{/foreach}
+											<input type="hidden" name="already_select" value="{$goods_ids}">
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					<input type="hidden" name="goods_ids" value="{$goods_ids}"/>
+					{if $full_page}							
+					</div>
+					
+					<!--操作信息-->
+					<div class="step order_total">
+						<div class="step_title"><i class="ui-step"></i><h3>{$lang.handle_info}</h3></div>
+						<div class="step_info">
+							<div class="order_operation order_operation100">
+								<div class="item">
+									<div class="label">{$lang.handle_remarks}：</div>
+									<div class="value">
+										<div class="bf100 fl"><textarea name="remark" class="textarea"></textarea></div>
+										<div class="order_operation_btn">	
+											<input name="confirm" type="submit" value="{$lang.op_confirm}" class="btn btn25 red_btn" />
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				</form>
+            </div>
+		</div>
+	</div>
+ 	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+		//选择入库商品
+		$(document).on("click","*[ectype='setupGoods']",function(){
+			var region_id = $("input[name='region_id']").val();
+			var _this = $(this),
+				spec_attr = new Object(),
+				cat_id = _this.parents("[ectype='item']").find("input[name='cateValue[]']").val(),
+				cat_goods = _this.parents("[ectype='item']").find("input[name='cat_goods[]']").val();
+             
+			spec_attr.goods_ids = cat_goods;
+			Ajax.call('goods_psi.php', "act=goods_info" + "&spec_attr="+$.toJSON(spec_attr) + "&region_id="+ region_id , function(data){
+				var content = data.content;
+				pb({
+					id:"select_purchase_goods",
+					title: "{$lang.select_storage_goods}",
+					width: 1000,
+					content: content,
+					ok_title: "{$lang.button_submit_alt}",
+					cl_title: "{$lang.cancel}",
+					drag: true,
+					foot: true,
+					cl_cBtn: true,
+					onOk: function(){
+						var goods_ids = $("input[name='goods_ids']").val();
+						var selected = $("input[name='already_select']").val();
+						Ajax.call('goods_psi.php','act=add_purchase_goods&goods_ids=' + goods_ids + '&selected=' + selected + '&region_id=' + region_id ,function(data){
+							document.getElementById("listDiv").innerHTML = data.content;
+							reset_select(".goods_list_info");
+						},'GET','JSON');
+					}
+				});
+			}, 'POST', 'JSON');
+		});	
+		
+		$("*[ectype='setGlobalNums']").on("click",function(){
+			var val = $("input[name='global_nums']").val();
+			$(".order_goods_fr").find("*[ectype='changeNums']").val(val);			
+		});
+		
+		$.divselect("#region_id","#region_id_val",function(obj){
+			var goods_ids = $("#select_purchase_goods").find("input[name='goods_ids']").val();
+			var selected = $("input[name='already_select']").val();
+			var area_id = $(obj).data("value");
+			var region_id = $("input[name='region_id']").val();
+			Ajax.call('goods_psi.php','act=add_purchase_goods&goods_ids=' + goods_ids + '&selected=' + selected + '&region_id=' + region_id + '&area_id=' + area_id ,function(data){
+				document.getElementById("listDiv").innerHTML = data.content;
+				reset_select(".goods_list_info");
+			},'GET','JSON');
+		});
+		
+		$(document).on("click","*[ectype='btnTrash']",function(){
+			var tr = $(this).parents("tr"),
+				tbody = tr.parents("tbody"),
+				tr_length = tbody.find("tr").length,
+				id = $(this).data("goodsid");
+			
+			$(".product_" + id).remove();
+
+			if(tr_length == 1){
+				tbody.append("<tr><td class='no-records' colspan='6'>{$lang.no_records}</td></tr>");
+			}
+			
+			var str = "";
+			$("[ectype='goods_hidden_id']").each(function(){
+				var val = $(this).val();
+				str += val + ',';
+			});
+			
+			str = str.substring(0,str.length-1);
+			
+			$("input[name='already_select']").val(str);
+			$("input[name='goods_ids']").val(str);
+		});
+	</script>
+</body>
+</html>
+{/if}

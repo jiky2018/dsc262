@@ -1,0 +1,127 @@
+{include file="admin_pageheader"}
+
+<div class="wrapper">
+    <div class="title">{$page_title}</div>
+    <div class="content_tips">
+        <div class="tabs_info">
+            <ul>
+                <li><a href="../mobile/index.php?r=team/admin/index">拼团商品</a></li>
+                <li class="curr"><a href="../mobile/index.php?r=team/admin/category">活动频道</a></li>
+                <li><a href="../mobile/index.php?r=team/admin/teaminfo">开团团队</a></li>
+                <li style = "display:none"><a href="../mobile/index.php?r=team/admin/teamrecycle">回收站</a></li>
+            </ul>
+        </div>
+        <div class="explanation" id="explanation">
+            <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4><span id="explanationZoom" title="收起提示"></span></div>
+            <ul>
+               <li>显示平台内所有参与拼团的频道，管理员可以选择添加频道，再将不同的商品添加到各个频道内，多样地展示商品。</li>
+                <li>主频道将显示在拼团首页，每个主频道下可添加四个子频道</li>
+            </ul>
+        </div>
+        <div class="flexilist">
+            <div class="main-info">
+                <form method="post" action="{url('addcategory')}" enctype="multipart/form-data" class="form-horizontal" role="form">
+                <div class="switch_info">
+                    <div class="item">
+                        <div class="label-t">频道名称</div>
+                        <div class="label_value">
+                            <input type="text" id="name" name="data[name]" class="text" value="{$cat_info['name']}">
+                            <p class="notic">频道将显示在首页头部，前台点击可以切换不同的频道</p>
+                        </div>
+
+                    </div>
+                    <div class="item">
+                        <div class="label-t">上级频道</div>
+                        <div class="label_value">
+                            <select name="data[parent_id]" class="text">
+                                <option value='0'>请选择一级频道</option>
+                                {foreach $cat_select as $cat}
+                                <option value="{$cat['id']}" {if $cat_info['parent_id'] == $cat['id'] }selected{/if} >{$cat['name']}</option>
+                                {/foreach}
+                            </select>
+                            <p class="notic">若不选择上级频道，则此频道为顶级频道</p>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="label-t">子级频道小图标：</div>
+                        <div class="label_value">
+                            <input class="text" type="file" value="" name="tc_img" class="form-control input-sm">
+                            {if $cat_info['tc_img']}
+                            <div>
+                                <p class="label_value">
+                                    <img style="width: 80px;height: 80px" src="{$cat_info['tc_img']}">
+                                </p>
+                            </div>
+                            {/if}
+                        </div>
+
+
+                    </div>
+                    <div class="item">
+                        <div class="label-t">描述</div>
+                        <div class="label_value">
+                            <textarea name="data[content]" class="textarea" rows="5">{$cat_info['content']}</textarea>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="label-t">排序</div>
+                        <div class="label_value">
+                            <input type="text" name="data[sort_order]" class="text" value="{$cat_info['sort_order']}">
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="label-t">是否显示</div>
+                        <div class="label_value">
+                            <div class="type-file-box">
+                                <div class="checkbox_items">
+                                    <div class="checkbox_item">
+                                        <input type="radio" name="data[status]" value="1" {if $cat_info['status']==1}checked{/if}>
+                                        <label class="">是</label>
+                                    </div>
+                                    <div class="checkbox_item">
+                                        <input type="radio" name="data[status]" value="0" {if $cat_info['status']==0}checked{/if}>
+                                        <label class="">否</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="label-t">&nbsp;</div>
+                        <div class="lable_value info_btn">
+                            <input type="hidden" name="data[id]" value="{$cat_info['id']}">
+                            <input type="hidden" name="parent_id1" value="{$cat_info['parent_id']}">
+                            <input type="submit" name="submit" value="确定" class="button" style="margin:0 auto;"></div>
+                    </div>
+                </div>
+                </form>
+            </div>
+    </div>
+</div>
+<script>
+    $("#explanationZoom").on("click",function(){
+        var explanation = $(this).parents(".explanation");
+        var width = $(".content_tips").width();
+        if($(this).hasClass("shopUp")){
+            $(this).removeClass("shopUp");
+            $(this).attr("title","收起提示");
+            explanation.find(".ex_tit").css("margin-bottom",10);
+            explanation.animate({
+                width:width
+            },300,function(){
+                $(".explanation").find("ul").show();
+            });
+        }else{
+            $(this).addClass("shopUp");
+            $(this).attr("title","提示相关设置操作时应注意的要点");
+            explanation.find(".ex_tit").css("margin-bottom",0);
+            explanation.animate({
+                width:"118"
+            },300);
+            explanation.find("ul").hide();
+        }
+    });
+
+
+</script>
+{include file="admin/footer"}

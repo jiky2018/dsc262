@@ -1,0 +1,350 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$ur_here}</div>
+			<form action="order.php?act=operate" method="post" name="theForm">
+			<div class="content">
+            	<div class="flexilist order_info">
+                    <div class="common-content">
+                        <!--订单基本信息-->
+                        <div class="step">
+                            <div class="step_title"><i class="ui-step"></i><h3>{$lang.base_info}</h3></div>
+                            <div class="section">
+                                <dl>
+                                    <dt>{$lang.return_time}</dt>
+                                    <dd>{$back_order.apply_time}</dd>
+                                    <dt>{$lang.label_user_name}</dt>
+                                    <dd>{$back_order.user_name|default:$lang.anonymous}</dd>
+                                </dl>
+                                <dl>
+                                    <dt>{$lang.delivery_sn_number}</dt>
+                                    <dd>{$back_order.return_sn}</dd>
+                                    <dt>{$lang.label_shipping_fee}</dt>
+                                    <dd>{$back_order.shipping_fee}</dd>
+                                </dl>
+                                <dl>
+                                    <dt>{$lang.label_order_time}</dt>
+                                    <dd>{$back_order.formated_add_time}</dd>
+                                    <dt>{$lang.label_all_status}</dt>
+                                    <dd>{$back_order.return_status}</dd>
+                                    
+                                </dl>
+                                <dl>
+                                    <dt>{$lang.label_order_sn}</dt>
+                                    <dd>{$back_order.order_sn}{if $back_order.extension_code eq "group_buy"}<a href="group_buy.php?act=edit&id={$back_order.extension_id}">{$lang.group_buy}</a>{elseif $back_order.extension_code eq "exchange_goods"}<a href="exchange_goods.php?act=edit&id={$back_order.extension_id}">{$lang.exchange_goods}</a>{/if}</dd>
+                                    <dt>{$lang.label_back_shipping}</dt>
+                                    <dd>{$back_order.back_shipp_shipping}</dd>
+                                </dl>
+                                <dl style="width:33.334%;">
+                                    <dt>{$lang.label_apply_time}</dt>
+                                    <dd>{$back_order.apply_time}</dd>
+                                    <dt>{$lang.label_back_invoice_no}</dt>
+                                    <dd>{$back_order.back_invoice_no}</dd>
+                                </dl>
+                            </div>
+                        </div>
+                        
+                        <!--收货人信息-->
+                        <div class="step">
+                            <div class="step_title"><i class="ui-step"></i><h3>{$lang.consignee_info}</h3></div>
+                            <div class="section">
+                                <dl>
+                                    <dt>{$lang.label_consignee}</dt>
+                                    <dd>{$back_order.addressee|escape}</dd>
+                                    <dt>{$lang.label_mobile}</dt>
+                                    <dd>{$back_order.phone|escape}</dd>
+                                </dl>
+                                <dl>
+                                    <dt>{$lang.label_zipcode}</dt>
+                                    <dd>{if $back_order.zipcode}{$back_order.zipcode}{/if}</dd>
+                                    <dt>{$lang.problem_desc}</dt>
+                                    <dd>{$back_order.return_brief}</dd>
+                                </dl>
+                                <dl style="width:66.6%;">
+                                    <dt>{$lang.label_address}</dt>
+                                    <dd>[{$back_order.region}] {$back_order.address|escape}</dd>
+                                    <dt>{$lang.label_postscript}</dt>
+                                    <dd>{$back_order.remark}</dd>
+                                </dl>
+                            </div>
+                        </div>
+                        
+                        <!--商品信息-->
+                        <div class="step">
+                            <div class="step_title"><i class="ui-step"></i><h3>{$lang.goods_info}</h3></div>
+                            <div class="step_info">
+                                <div class="order_goods_fr">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th width="30%"><span class="pl20">{$lang.goods_name}</span></th>
+                                                <th width="15%">{$lang.goods_sn}</th>
+                                                <th width="15%">{$lang.product_sn}</th>
+                                                <th width="20%">{$lang.goods_attr}</th>
+                                                <th width="10%">{$lang.label_send_number}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        	{foreach from=$goods_list item=goods}
+                                            <tr>
+                                                <td>
+                                                	<div class="order_goods_div">
+                                                        <div class="img"><a href="../goods.php?id={$goods.goods_id}" target="_blank"><img src="{$goods.goods_thumb}" width="72" height="72" /></a></div>
+                                                        <div class="name ml10">
+                                                            {if $goods.goods_id gt 0 && $goods.extension_code neq 'package_buy'}
+                                                                <a href="../goods.php?id={$goods.goods_id}" target="_blank">{$goods.goods_name} {if $goods.brand_name}[ {$goods.brand_name} ]{/if}</a>
+                                                            {/if}
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>{$goods.goods_sn}</td>
+                                                <td>{$goods.product_sn}</td>
+                                                <td>{$goods.goods_attr|nl2br}</td>
+                                                <td>{$goods.send_number}</td>
+                                            </tr>
+                                            {/foreach}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!--商品维修-->
+                        <div class="step">
+                            <div class="step_title"><i class="ui-step"></i><h3>{if $back_order.return_type eq 0}{$lang.product_repair}{elseif $back_order.return_type eq 1}{$lang.product_return}{elseif $back_order.return_type eq 2}{$lang.product_change}{elseif $back_order.return_type eq 3}{$lang.only_return_money}{/if}</h3></div>
+                            <div class="step_info step_info2">
+                            	<div class="step_info_fl">
+                                    <table class="table" width="100%">
+                                        <thead>
+                                            <tr class="tr">
+                                                <th width="40%" class="first">{$lang.goods_name_brand}</th>
+                                                <th width="10%">{$lang.goods_sn}</th>
+                                                <th width="10%">{$lang.product_sn}</th>
+                                                <th width="20%">{$lang.goods_attr}</th>
+                                                <th width="12%">{$lang.product_price}</th>
+                                                <th width="8%">{$lang.goods_number}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {foreach from=$return_list item=goods}
+                                            <tr>
+                                                <td>
+                                                	<div class="tdName">
+                                                    	<div class="img"><img src="{$goods.goods_thumb}" width="72" height="72" /></div>
+                                                        <div class="name">
+                                                        {if $goods.goods_id gt 0 && $goods.extension_code neq 'package_buy'}
+                                                        <a href="../goods.php?id={$goods.goods_id}" target="_blank">{$goods.goods_name} {if $goods.brand_name}[ {$goods.brand_name} ]{/if}</a>
+                                                        {/if}
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>{$goods.goods_sn}</td>
+                                                <td>{$goods.product_sn}</td>
+                                                <td>{$goods.goods_attr|nl2br}</td>
+                                                <td>{if $goods.return_type eq 2}-{/if}{$goods.refound}</td>
+                                                <td>{$goods.return_number}</td>
+                                            </tr>
+                                            {/foreach}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="step_info_fr">
+									<div class="hh_desc return_order_hh_desc">
+                                        <div class="item">
+                                            {if $back_order.return_type eq 0 || $back_order.return_type eq 2}
+                                            	<div class="label">{$lang.seller_mail}：</div>
+                                            	{if $back_order.out_shipping_name}
+                                            	<strong>{$back_order.out_shipp_shipping}</strong>
+                                                <div class="label">{$lang.courier_sz}：</div>
+                                                <strong>{$back_order.out_invoice_no}</strong>
+                                                <a href="order.php?act=return_edit&ret_id={$back_order.ret_id}&order_id={$back_order.order_id}&step=back_shipping" class="blue">{$lang.edit}</a>
+                                            	{else}
+                                                <div class="imitate_select select_w140">
+                                                    <div class="cite">{$lang.select_courier}</div>
+                                                    <ul>
+                                                    	{foreach from=$shipping_list item=shipping }
+                                                        <li><a href="javascript:;" data-value="{$shipping.shipping_id}" class="ftx-01">{$shipping.shipping_name}</a></li>
+                                                        {/foreach}
+                                                    </ul>
+                                                    <input name="shipping_name" type="hidden" value="0">
+                                                </div>
+                                                <div class="bf100 fl mt10">
+                                                    <div class="label">{$lang.courier_sz}：</div>
+                                                    <input type="text" class="text w120 mr0" autocomplete="off"  name="invoice_no"/>
+                                                    <input type="submit" value="{$lang.button_submit}" class="button ml10" onclick="return check_shipping()"  name="send_submit" />
+                                                </div>
+                                            	{/if}
+                                            {/if}
+                                        </div>
+                                        
+                                  		<div class="item">
+                                        	<div class="label">{$lang.buyers_return_reason}：</div>
+                                        	<span class="red">{$back_order.return_cause}</span>
+                                        </div>
+                                        {if $back_order.return_type eq 1 || $back_order.return_type eq 3}
+                                        	
+                                            {if $back_order.discount_percent_decimal > 0}
+                                        	<div class="item">
+                                                <div class="label">{$lang.return_discount}：</div>
+                                                <span class="price">{$back_order.formated_discount_amount}({$back_order.discount_percent}%)</span>
+                                                <input type="hidden" name="discount_percent" value="{$back_order.discount_percent_decimal}"/>
+                                            </div>
+                                        	{/if}
+                                            
+                                            <div class="item">
+                                                <div class="label">{$lang.amount_return}：</div>
+                                                {if $back_order.discount_percent_decimal > 0}
+                                                <span class="price">{$back_order.formated_goods_amount} - {$back_order.formated_discount_amount} = {$back_order.formated_should_return}</span>
+                                                {else}
+                                                <span class="price">{$back_order.formated_should_return}</span>
+                                                {/if}
+                                                <input type="hidden" name="refound_amount" value="{$back_order.should_return1}"/>
+                                            </div>
+                                             {if $back_order.return_shipping_fee > 0}
+                                            <div class="item">
+                                                <div class="label cl">{$lang.is_shipping_money}：</div>
+                                                <span class="price">{$back_order.formated_return_shipping_fee}</span>
+                                                <input type="hidden" name="return_shipping_fee" value="{$back_order.return_shipping_fee}"/>
+                                            </div>
+                                            {/if}
+                                            
+                                            {if $back_order.actual_return > 0}
+                                            <div class="item">
+                                                <div class="label cl">{$lang.actual_return}：</div>
+                                                <span class="price">{$back_order.formated_actual_return}</span>
+                                            </div>
+                                            {else}
+                                            <div class="item">
+                                                <div class="label cl">{$lang.label_total}</div>
+                                                <span class="price">{$back_order.formated_return_amount}</span>
+                                            </div>
+                                            {/if}
+                                        {/if}
+                                  </div>
+                                  <script type="text/javascript">
+                                      function check_shipping(){
+										var frm =  document.forms['theForm'];
+										var shipping_name = frm['shipping_name'].value;
+										var invoice_no = frm['invoice_no'].value;
+										if( shipping_name <= 0 ){
+											alert('{$lang.select_courier}');
+											return false;
+										}
+										if(invoice_no == ''|| invoice_no == null ){
+											alert('{$lang.fillin_courier_number}');
+											return false;
+										}
+                                      }
+                                  </script>  
+                                </div>
+                            </div>
+                        </div>
+                        {if $back_order.img_list}
+                        <div class="step">
+                            <div class="step_title"><i class="ui-step"></i><h3>{$lang.user_file_image}</h3></div>
+                            <div class="step_info">
+                                <div class="hh_items">
+                                    {foreach from=$back_order.img_list item=img}
+                                        <a href="{$img.img_file}" target="_blank"><img src="{$img.img_file}" width="100" height="100" style="border:1px #ccc solid; padding:2px;" /></a>
+                                    {/foreach}
+                                </div>
+                            </div>
+                        </div>
+                        {/if}
+                        
+                        <!--操作信息-->
+                        <div class="step order_total">
+                            <div class="step_title"><i class="ui-step"></i><h3>{$lang.action_info}</h3></div>
+                            <div class="step_info">
+                                <div class="order_operation order_operation100">
+                                    <div class="item">
+                                        <div class="label">{$lang.operation_notes}：</div>
+                                        <div class="value"><textarea name="action_note" cols="80" rows="3" class="textarea"></textarea></div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.current_executable_operation}：</div>
+                                        <div class="value info_btn">
+                                            {if $back_order.return_status1 neq 6}
+                                                {if $back_order.agree_apply neq 1}
+                                                  <input class="btn btn25 red_btn" type="submit" value="{$lang.agree_apply}" name="agree_apply">
+                                                {/if}
+                                                
+                                                {if $back_order.return_status1 lt 1 && $back_order.return_status1 ge 0 && $back_order.agree_apply}
+                                                  <input class="btn btn25 red_btn" type="submit" value="{$lang.receive_goods}" name="receive_goods">
+                                                {/if}
+                                                
+                                                {if $back_order.return_type eq 1 || $back_order.return_type eq 3 && $back_order.chargeoff_status eq 0 && $back_order.agree_apply}
+                                                    {if $back_order.refound_status1 eq 0 }
+                                                    <input class="btn btn25 red_btn" type="submit" value="{$lang.refound}" name="refound">
+                                                    {/if}
+                                                {/if}
+                                                
+                                                {if $back_order.return_type neq 1}
+                                                    {if $back_order.return_status1 lt 2 && $back_order.return_status1 ge 0}
+                                                    <input class="btn btn25 red_btn" type="submit" value="{$lang.swapped_out_single}" name="swapped_out_single">
+                                                    <input class="btn btn25 red_btn" type="submit" value="{$lang.swapped_out}" name="swapped_out">
+                                                    {/if}
+                                                {/if}    
+                                                
+                                                {if $back_order.return_status1 ge 2 }
+                                                    {if $back_order.return_status1 lt 4 }
+                                                    <input class="btn btn25 red_btn" type="submit" value="{$lang.complete}" name="complete">
+                                                    {/if}
+                                                {/if}    
+                                            {/if}
+                                            
+                                            {if $back_order.refound_status1 neq 1 && $back_order.agree_apply neq 1}
+                                                {if $back_order.return_status1 neq 6}
+                                                <input class="btn btn25 red_btn" type="submit" value="{$lang.refuse}" name="refuse_apply">	
+                                                {else}
+                                                <input class="btn btn25 red_btn" type="button" title="{$lang.unable_to_click}" value="{$lang.is_refuse_apply}" name="no_refuse_apply">	    
+                                                {/if}   	
+                                            {/if}
+                                
+                                            <input class="btn btn25 red_btn" type="submit" value="{$lang.after_service}" name="after_service">
+                                            <input type="hidden" value="{$back_order.order_id}" name="order_id">
+                                            <input type="hidden" value="{$back_order.rec_id}" name="rec_id" />
+                                            <input type="hidden" value="{$back_order.ret_id}" name="ret_id" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="operation_record">
+                                <table cellpadding="0" cellspacing="0">
+                                    <thead>
+                                    	<tr>
+                                            <th width="5%">&nbsp;</th>
+                                            <th width="15%">{$lang.action_user}</th>
+                                            <th width="15%">{$lang.action_time}</th>
+                                            <th width="20%">{$lang.return_status}</th>
+                                            <th width="15%">{$lang.refound_status}</th>
+                                            <th width="30%">{$lang.action_note}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {foreach from=$action_list item=action}
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                            <td>{$action.action_user}</td>
+                                            <td>{$action.action_time}</td>
+                                            <td>{$action.return_status}</td>
+                                            <td>{$action.refound_status}</td>
+                                            <td>{$action.action_note|nl2br}</td>
+                                        </tr>
+                                    {/foreach}
+                                    </tbody>
+                                </table>
+                            </div>
+                    	</div>
+                    </div>
+                </div>
+			</form>
+            </div>
+		</div>
+	</div>
+	{include file ='library/pagefooter.lbi'}
+</body>
+</html>

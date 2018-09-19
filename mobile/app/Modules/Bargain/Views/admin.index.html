@@ -1,0 +1,207 @@
+{include file="admin_pageheader"}
+<div class="wrapper">
+    <div class="title">砍价 - 商品列表</div>
+    <div class="content_tips">
+       <!--  <div class="tabs_info">
+            <ul>
+                <li class="curr"><a href="../mobile/index.php?r=team/admin/index">砍价商品</a></li>
+                <li><a href="../mobile/index.php?r=team/admin/category">活动频道</a></li>
+                <li><a href="../mobile/index.php?r=team/admin/teaminfo">开团团队</a></li>
+                <li style = "display:none"><a href="../mobile/index.php?r=team/admin/teamrecycle">回收站</a></li>
+            </ul>
+        </div> -->
+        <div class="explanation" id="explanation">
+            <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4><span id="explanationZoom" title="收起提示"></span></div>
+            <ul>
+            <li>显示平台内所有参与拼团的商品信息，将商品添加到不同的排行榜内显示。</li>
+            <li>同一款商品，砍价商品活动结束之前，不可添加新的砍价活动。</li>
+            </ul>
+        </div>
+        <div class="flexilist">
+
+            <div class="common-head">
+                <div class="fl">
+                    <a href="{url('bargain/admin/addgoods')}"><div class="fbutton"><div class="add" title="添加砍价商品"><span><i class="fa fa-plus"></i>添加砍价商品</span></div></div></a>
+                </div>
+                <form action="{url('bargain/admin/index')}" method="post">
+                    <div class="search">
+                         <select name="is_audit" class="text">
+                            <option value="3" {if $audit == 3}selected{/if}>审核状态</option>
+                            <option value="0" {if $audit == 0}selected{/if}>未审核</option>
+                            <option value="1" {if $audit == 1}selected{/if}>审核未通过</option>
+                            <option value="2" {if $audit == 2}selected{/if}>审核已通过</option>
+                        </select>
+                        <div class="input">
+                            <input type="text" name="keyword" class="text nofocus" placeholder="关键词" autocomplete="off">
+                            <input type="submit" value="" class="btn" name="export">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="common-content">
+                <div class="list-div  ht_goods_list"  id="listDiv">
+                    <table cellspacing="0" cellpadding="0" border="0">
+                        <tr class="active">
+                            <th width="3%"><div class="tDiv"style="min-width:40px">编号</div></th>
+                            <th width="12%"><div class="tDiv">商品名称</div></th>
+                            <th width="7%"><div class="tDiv">商家名称</div></th>
+                            <th width="14%"><div class="tDiv">活动时间</div></th>
+                            <th width="8%"><div class="tDiv" style="min-width:100px">原价/最低价</div></th>
+                            <th width="10%"><div class="tDiv">热销活动</div></th>
+                            <th width="10%"><div class="tDiv">SKU/库存</div></th>
+                            <th width="10%"><div class="tDiv">活动状态</div></th>
+                            <th width="8%"><div class="tDiv">审核状态</div></th>
+                            <th width="14%" class="handle" ><div style="min-width:84px">操作</div></th>
+                        </tr>
+                        {if $list}
+                        {foreach $list as $list}
+                        <tr>
+
+                            <td><div class="tDiv">{$list.id}</div></td>
+                            <td>
+                                <div class="tDiv goods_list_info">
+                                   <div class="img">
+                                       <img src="{$list.goods_thumb}" width="68" height="68">
+                                   </div>
+                                    <div class="desc">
+                                        <div class="name">
+                                        <span  title="男士衣服" data-toggle="tooltip" class="span">{$list.goods_name}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                             </td>
+
+                            <td>
+                            <div class="tDiv" title="{$list.user_name}" data-toggle="tooltip"><font class="red">{$list.user_name}</font></div>
+                            </td>
+                            <td>
+                                <div class="tDiv">
+                                    <p>开始：{$list.start_time}</p>
+                                    <p>结束：{$list.end_time}</p>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="tDiv">
+                                    <p>原价：{$list.shop_price}</p>
+                                    <p>低价：{$list.target_price}</p>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="tDiv">
+                                    <div style="line-height:15px;"><span class="fl">热销</span>
+                                        <div class="switch fl ml10 {if $list.is_hot}active{/if}" id="goodsis_hot{$list.id}" title="{if $list.is_hot}是{else}否{/if}" onclick="edit_goods({$list.id})">
+                                        <div class="circle"></div>
+                                        </div>
+                                        <input type="hidden" value="0" name="">
+                                    </div>
+                                </div>
+                            </td>
+                            <td><div class="tDiv">{$list.goods_number}</div></td>
+                            <td>
+                                <div class="tDiv">
+                                    <font class="blue">{$list.is_status}</font>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="tDiv">
+                                    <font class="blue">{$list.is_audit}</font>
+                                </div>
+                            </td>
+                            <td class="handle">
+                                <div class="tDiv ht_tdiv" style="padding-bottom:0px;">
+                                    <a href="{url('bargain/admin/bargainlog',array('bargain_id'=>$list['id']))}" class="btn_see"><i class="sc_icon sc_icon_see"></i>活动详情</a>
+                                    <a href="{url('bargain/admin/addgoods',array('id'=>$list['id']))}" class="btn_edit"><i class="fa fa-edit"></i>编辑</a>
+                                    {if $list.status eq 1}
+                                    <a href='javascript:void(0);' onclick="if(confirm('您确定要移除该砍价活动吗？')){window.location.href='{url('bargain/admin/removegoods', array('type'=>delete,'id'=>$list['id']))}'}" class="btn_trash"><i class="fa fa-trash"></i>移除</a>
+                                    {else}
+                                    <a href='javascript:void(0);' onclick="if(confirm('您确定要关闭该砍价活动吗？')){window.location.href='{url('bargain/admin/removegoods', array('type'=>status,'id'=>$list['id']))}'}" class="btn_trash"><i class="fa fa-trash"></i>关闭</a>
+                                    {/if}
+
+                                </div>
+                            </td>
+                        </tr>
+                        {/foreach}
+                        {else}
+                        <tbody>
+                        <tr><td class="no-records" colspan="11">没有找到任何记录</td></tr>
+                        </tbody>
+                        {/if}
+                        <tfoot>
+                            <tr>
+                                <td colspan="12">
+                                <div class="list-page">
+                                {include file="admin_pageview"}
+                                </div>
+                                </td>
+                            </tr>
+                        </tfoot>
+                  </table>
+              </div>
+          </div>
+    </div>
+    </div>
+</div>
+
+<script>
+    function edit_goods(id)
+    {
+        $.post("{url('bargain/admin/editgoods')}", {id:id}, function(data){
+            if($("#goodsis_hot" + id).hasClass("active")){
+                $("#goodsis_hot" + id).removeClass("active");
+            }else{
+                $("#goodsis_hot" + id).addClass("active");
+            }
+        }, 'json');
+    }
+
+    function confirm_bath()
+    {
+        Items = document.getElementsByName('checkboxes[]');
+        var arr = new Array();
+        for (i=0; Items[i]; i++){
+            if (Items[i].checked){
+                var selected = 1;
+                arr.push(Items[i].value);
+            }
+        }
+        var options=$("#group_id option:selected");  //获取选中的项
+        var group = (options.val());   //拿到选中项的值
+        if(group == 0){
+            return false;
+        }
+        if(selected != 1){
+            return false;
+        }else{
+            $.post("{url('team/admin/removegoods')}", {id:arr,group:group}, function(data){
+                if(data.url){
+                    window.location.href = data.url;
+                }
+            }, 'json');
+        }
+    }
+
+
+    $("#explanationZoom").on("click",function(){
+        var explanation = $(this).parents(".explanation");
+        var width = $(".content_tips").width();
+        if($(this).hasClass("shopUp")){
+            $(this).removeClass("shopUp");
+            $(this).attr("title","收起提示");
+            explanation.find(".ex_tit").css("margin-bottom",10);
+            explanation.animate({
+            width:width
+            },300,function(){
+                $(".explanation").find("ul").show();
+            });
+        }else{
+            $(this).addClass("shopUp");
+            $(this).attr("title","提示相关设置操作时应注意的要点");
+            explanation.find(".ex_tit").css("margin-bottom",0);
+            explanation.animate({
+            width:"118"
+            },300);
+            explanation.find("ul").hide();
+        }
+    });
+</script>
+{include file="admin/footer"}

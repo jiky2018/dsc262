@@ -1,0 +1,113 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="mass_sms.php" class="s-back">{$lang.back}</a>{$lang.17_mass_sms} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit">
+					<i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span>
+				</div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.log.0}</li>
+                    <li>{$lang.operation_prompt_content.log.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<div class="common-head">
+                    <div class="fl">
+                        <a href="javascript:confirm_redirect('{$lang.send_all_confirm}', 'mass_sms.php?act=send_all&template_id={$smarty.get.template_id}')"><div class="fbutton"><div class="add" title="{$lang.send_all}"><span><i class="icon icon-signin"></i>{$lang.send_all}</span></div></div></a>
+                    </div>
+                    <div class="refresh">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+                </div>
+                <div class="common-content">
+				<form method="post" action="mass_sms.php" name="listForm" onsubmit="return confirm(batch_opt_confirm);">
+                	<div class="list-div" id="listDiv">
+                    	<div class="flexigrid ht_goods_list">
+						{/if}
+                    	<table cellpadding="0" cellspacing="0" border="0" class="table_layout">
+                        	<thead>
+                            	<tr>
+									<th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars"></label></div></th>								
+                                    <th width="5%"><div class="tDiv">{$lang.record_id}</div></th>
+                                    <th width="12%"><div class="tDiv">{$lang.user_name}</div></th>
+                                    <th width="20%"><div class="tDiv">{$lang.phone_tel}</div></th>
+                                    <th width="20%"><div class="tDiv">{$lang.send_out_state}</div></th>
+                                    <th width="20%"><div class="tDiv">{$lang.send_out_time}</div></th>
+                                    <th class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+							{foreach from=$log item=list}
+                            	<tr>
+								    <td class="sign">
+                                        <div class="tDiv">
+                                            <input type="checkbox" name="checkboxes[]" value="{$list.id}" class="checkbox" id="checkbox_{$list.id}" />
+                                            <label for="checkbox_{$list.id}" class="checkbox_stars"></label>
+                                        </div>
+                                    </td>
+                                    <td><div class="tDiv">{$list.id}</div></td>
+                                    <td><div class="tDiv">{$list.user_name}</div></td>
+                                    <td><div class="tDiv">{if $list.mobile_phone}{$list.mobile_phone}{else}-{/if}</div></td>
+                                    <td><div class="tDiv{if $list.send_status eq 2} red{/if}">{$lang.send_status.$list.send_status}</div></td> 
+                                    <td><div class="tDiv">{if $list.last_send}{$list.last_send}{else}-{/if}</div></td> 
+                                    <td class="handle">
+										<div class="tDiv ht_tdiv">
+                                            {if $list.send_status neq 1 and $list.mobile_phone neq ''}
+											<a href="javascript:confirm_redirect('{$lang.send_confirm}', 'mass_sms.php?act=send&amp;id={$list.id}')" title="{$lang.send}" class="btn_edit"><i class="icon icon-signin"></i>{$lang.send}</a>
+                                            {/if}
+											<a href="javascript:;" onclick="listTable.remove({$list.id},'{$lang.drop_confirm}','remove_log')" title="{$lang.remove}" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>									
+										</div>
+									</td>
+                                </tr>
+							{foreachelse}
+							<tr><td class="no-records" colspan="7">{$lang.no_records}</td></tr>
+							{/foreach}
+                            </tbody>
+                            <tfoot>					
+                            	<tr>
+                                    <td colspan="7">
+										<div class="tDiv">
+											<div class="tfoot_btninfo">
+											     <div class="shenhe">
+                                                    <input type="hidden" name="act" value="batch_log">
+                                                    <input type="hidden" name="template_id" value="{$smarty.get.template_id}">
+												    <input type="submit" name="send" id="btnSubmit" value="{$lang.send}" class="btn btn_disabled" disabled="true" ectype="btnSubmit" />
+                                                    <input type="submit" name="drop" id="btnSubmit" value="{$lang.drop}" class="btn btn_disabled" disabled="true" ectype="btnSubmit" />
+											     </div>										
+											</div>											
+											<div class="list-page">
+												{include file="library/page.lbi"}
+											</div>
+										</div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+						{if $full_page}
+                        </div>
+                    </div>
+				</form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+    listTable.query = 'log_query';
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}	
+    </script>
+</body>
+</html>
+{/if}

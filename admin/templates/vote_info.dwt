@@ -1,0 +1,118 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$lang.article} - {$ur_here}</div>
+            <div class="content">
+            <div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>请注意设置调查主题的日期。</li>
+                    <li>{$lang.operation_prompt_content_common}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="mian-info">
+                    <form action="vote.php" method="post" name="theForm" enctype="multipart/form-data" id="vote_form">
+                        <div class="switch_info user_basic" style="display:block;">
+                            <div class="item">
+                                <div class="label">{$lang.require_field}&nbsp;{$lang.vote_name}：</div>
+                                <div class="label_value">
+                                    <input type="text" name='vote_name' value='{$vote_arr.vote_name}' class="text" autocomplete="off" id="vote_name"/>
+                                    <div class="form_prompt"></div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.begin_end_date}：</div>
+                                <div class="label_value">
+                                    <div class="text_time" id="text_time1">
+                                            <input type="text" name="start_time" value="{$vote_arr.start_time}" id="start_time" class="text mr0" readonly />
+                                    </div>
+                                    <span class="bolang">&nbsp;&nbsp;~&nbsp;&nbsp;</span>
+                                    <div class="text_time" id="text_time2">
+                                            <input type="text" name="end_time" value="{$vote_arr.end_time}" id="end_time" class="text" readonly />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.can_multi}：</div>
+                                <div class="label_value">
+                                    <div class="checkbox_items">
+                                        <div class="checkbox_item">
+                                            <input type="radio" class="ui-radio" name="can_multi" id="sex_0" value="0" {if $vote_arr.can_multi eq 0} checked="true" {/if} />
+                                            <label for="sex_0" class="ui-radio-label">{$lang.is_multi}</label>
+                                        </div>
+                                        <div class="checkbox_item">
+                                            <input type="radio" class="ui-radio" name="can_multi" id="sex_1" value="1" {if $vote_arr.can_multi eq 1} checked="true" {/if} />
+                                            <label for="sex_1" class="ui-radio-label">{$lang.no_multi}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">&nbsp;</div>
+                                <div class="label_value info_btn">
+                                    <a href="javascript:;" class="button" id="submitBtn">{$lang.button_submit}</a>
+                                    <input type="hidden" name="act" value="{$form_act}" />
+                                    <input type="hidden" name="id" value="{$vote_arr.vote_id}" />
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+ {include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+	//日期选择插件调用start sunle
+	var opts1 = {
+		'targetId':'start_time',
+		'triggerId':['start_time'],
+		'alignId':'text_time1',
+		'format':'-',
+		'hms':'off',
+		'min':''
+	},opts2 = {
+		'targetId':'end_time',
+		'triggerId':['end_time'],
+		'alignId':'text_time2',
+		'format':'-',
+		'hms':'off',
+		'min':''
+	}
+	xvDate(opts1);
+	xvDate(opts2);
+	//日期选择插件调用end sunle
+
+	//表单验证
+	$(function(){
+		$("#submitBtn").click(function(){
+			if($("#vote_form").valid()){
+					$("#vote_form").submit();
+			}
+		});
+	
+		$('#vote_form').validate({
+			errorPlacement:function(error, element){
+				var error_div = element.parents('div.label_value').find('div.form_prompt');
+				element.parents('div.label_value').find(".notic").hide();
+				error_div.append(error);
+			},
+			rules : {
+				vote_name : {
+					required : true
+				}
+			},
+			messages : {
+				vote_name : {
+					required : '<i class="icon icon-exclamation-sign"></i>'+vote_name_empty
+				}
+			}
+		});
+	});
+    </script>
+</body>
+</html>

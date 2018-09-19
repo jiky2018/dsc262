@@ -1,0 +1,360 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<link rel="icon" href="animated_favicon.gif" type="image/gif" />
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/base.css" />
+<link href="{$ecs_css_path}" rel="stylesheet" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS|{$page_title}" href="{$feed_url}" />
+<link href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/area_stock.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/purebox.css">
+{* 包含脚本文件 *}
+{insert_scripts files='jquery-1.9.1.min.js,jquery.json.js,transport_jquery.js,common.js,shopping_flow.js'}
+
+
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/sc_common.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/scroll_city.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/scroll_top.js"></script>
+<!-- #BeginLibraryItem "/library/js_languages.lbi" --><!-- #EndLibraryItem -->
+</head>
+
+<body class="single-root">
+    <!-- #BeginLibraryItem "/library/page_header_flow.lbi" --><!-- #EndLibraryItem -->
+    <div id="container" class="coudanBg">
+        <div class="ecscshop-filter-bar w1200">
+            <div class="ecscshop-title"><i class="ecscshop-icon single-icon-ja"></i><h3>{$lang.Shopping_together_single}</h3></div>
+        </div>
+        <div class="checkout-warp mb10 w1200" style="position:relative; padding-top:222px;">
+            <div class="single float-nav-wrap" id="coudan-top-list">
+                <!-- #BeginLibraryItem "/library/coudan_top_list.lbi" --><!-- #EndLibraryItem -->
+            </div>
+            <div id="filter">
+                <div class="component-filter-sort w1200">
+                    <div class="filter-sortbar">
+                        <div class="button-strip">
+                            <a href="coudan.php?id={$active_id}&sort=goods_id&order=<!-- {if $pager.search.sort == 'goods_id' && $pager.search.order == 'DESC'} -->ASC<!-- {else} -->DESC<!-- {/if} -->" class="button-strip-item <!-- {if $pager.search.sort == 'goods_id'}-->current<!-- {/if} -->">默认<i class="icon <!-- {if $pager.search.sort == 'goods_id' && $pager.search.order == 'DESC'} -->icon-down<!-- {else} -->icon-up<!-- {/if} -->"></i></a>
+                            
+                            <a href="coudan.php?id={$active_id}&sort=shop_price&order=<!-- {if $pager.search.sort == 'shop_price' && $pager.search.order == 'DESC'} -->ASC<!-- {else} -->DESC<!-- {/if} -->" class="button-strip-item <!-- {if $pager.search.sort == 'shop_price'}-->current<!-- {/if} -->">价格<i class="icon <!-- {if $pager.search.sort == 'shop_price' && $pager.search.order == 'DESC'} -->icon-down<!-- {else} -->icon-up<!-- {/if} -->"></i></a>
+
+                            <a href="coudan.php?id={$active_id}&sort=sales_volume&order=<!-- {if $pager.search.sort == 'sales_volume' && $pager.search.order == 'DESC'} -->ASC<!-- {else} -->DESC<!-- {/if} -->" class="button-strip-item <!-- {if $pager.search.sort == 'sales_volume'}-->current<!-- {/if} -->">销量<i class="icon <!-- {if $pager.search.sort == 'sales_volume' && $pager.search.order == 'DESC'} -->icon-down<!-- {else} -->icon-up<!-- {/if} -->"></i></a>
+                        </div>
+                        <div class="button-page">
+                            <span class="pageState"><span>{$pager.page}</span>/{$pager.page_count}</span>
+                            <a href="{$pager.page_next}" class="pageNext">></a>
+                            <a href="{$pager.page_prev}" class="pagePrev"><</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="plist">
+                <ul class="plist-items">
+                    <!-- {foreach from=$favourable_goods item=goods} -->
+                    <li>
+                        <div class="item">
+                            <div class="p-img"><a href="{$goods.url}" target="_blank"><img src="{$goods.goods_thumb}" width="152" height="152" /></a></div>
+                            <div class="p-price">{$goods.format_shop_price}</div>
+                            <div class="p-name"><a href="{$goods.url}" target="_blank">{$goods.goods_name}</a></div>
+                            <div class="p-btns"><a href="javascript:void(0)" id="{$goods.goods_id}" onclick="add_cart({$goods.goods_id},{$active_id})">{$lang.btn_add_to_cart}</a></div>
+                        </div>    
+                    </li>
+                    <!-- {/foreach} -->
+                </ul>
+                <input type="hidden" value="{$region_id}" id="region_id" name="region_id">
+                <input type="hidden" value="{$area_id}" id="area_id" name="area_id">
+            </div>
+            <div id="plist">
+            	<!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+            </div>
+            <script type="text/javascript">
+            var select_spe = "{$lang.select_spe}";
+            var compare_no_goods = "{$lang.compare_no_goods}";
+            var btn_buy = "{$lang.btn_buy}";
+            var is_cancel = "{$lang.is_cancel}";
+            function add_cart(goodsId, active_id)
+            {
+              var goods        = new Object();
+              var spec_arr     = new Array();
+              var fittings_arr = new Array();
+              var number       = 1;
+              var formBuy      = document.forms['ECS_FORMBUY'];
+              var quick        = 0;
+
+              // 检查是否有商品规格 
+              if (formBuy)
+              {
+                spec_arr = getSelectedAttributes(formBuy);
+
+                if (formBuy.elements['number'])
+                {
+                  number = formBuy.elements['number'].value;
+                }
+
+                quick = 1;
+              }
+              
+              //ecmoban模板堂 --zhuo 仓库ID start
+              if(document.getElementById('region_id')){
+                  var warehouse_id = document.getElementById('region_id').value;
+                  goods.warehouse_id   = warehouse_id; 
+              }
+              
+              //地区ID
+              if(document.getElementById('area_id')){
+                  var area_id = document.getElementById('area_id').value;
+                  goods.area_id = area_id; 
+              }
+              //ecmoban模板堂 --zhuo 仓库ID end
+
+              goods.active_id = active_id;
+              goods.quick    = quick;
+              goods.spec     = spec_arr;
+              goods.goods_id = goodsId;
+              goods.number   = number;
+              //goods.parent   = (typeof(parentId) == "undefined") ? 0 : parseInt(parentId);
+
+              Ajax.call('coudan.php?act=ajax_update_cart', 'goods=' + $.toJSON(goods), add_cart_response, 'POST', 'JSON');
+            }
+            function add_cart_response(result)
+            {
+                if (result.error > 0)
+                  {
+                    // 如果需要缺货登记，跳转
+                    if (result.error == 2)
+                    {
+						var add_cart_divId = 'flow_add_cart';
+						var content = '<div id="flow_add_cart">' + 
+											'<div class="tip-box icon-box">' +
+												'<span class="warn-icon m-icon"></span>' + 
+												'<div class="item-fore">' +
+													'<h3 class="rem ftx-04">' + result.message + '</h3>' +
+												'</div>' +
+											'</div>' +
+										'</div>';
+						pb({
+							id:add_cart_divId,
+							title : json_languages.title,
+							width:455,
+							height:88,
+							ok_title:json_languages.determine,
+							cl_title:json_languages.cancel,
+							content:content, 	//调取内容
+							drag:false,
+							foot:true,
+							onOk:function(){
+								location.href = 'user.php?act=add_booking&id=' + result.goods_id + '&spec=' + result.product_spec;
+							}
+						});
+						
+						$('#' + add_cart_divId + ' .tip-box h3').css({
+							'line-height' : '20px',
+							'padding-top' : '5px',
+							'font-size'	  : '14px'	
+						});
+						
+						$('#' + add_cart_divId + ' .item-fore').css({
+							'height' : '68px'
+						});
+						
+						$('#' + add_cart_divId + ' .pb-ft .pb-ok').addClass('color_df3134');
+                    }
+                    // 没选规格，弹出属性选择框
+                    else if (result.error == 6)
+                    {
+                      openCoudanSpeDiv(result.message, result.goods_id, result.parent, result.warehouse_id, result.area_id, result.active_id);
+                    }
+                    else
+                    {
+                      alert(result.message);
+                    }
+                  }
+                  else
+                  {
+                    // 更新加入购物车的活动商品
+
+                    var cartInfo = document.getElementById('coudan-top-list');
+                    if (cartInfo)
+                    {
+                      cartInfo.innerHTML = result.content;
+                    }
+                  }
+            }
+            //生成属性选择层
+            function openCoudanSpeDiv(message, goods_id, parent, warehouse_id, area_id, active_id) 
+            {
+              pb({
+						id:'addCartLog',
+						title:json_languages.Select_attr,
+						width:500,
+						content:message,
+						ok_title:json_languages.determine,
+						cl_title:json_languages.cancel,
+						drag:false,
+						foot:true,
+						onOk:function(){
+							submit_div(goods_id, parent, warehouse_id, area_id,active_id);	
+						}
+				});
+				$('.pb-ok').addClass('color_df3134');
+				$(".attr_list .item li").click(function(){
+					var type=$(this).find('input').attr("type");
+					if(type == "checkbox")
+					{
+						var length = 0;
+						if($(this).hasClass("selected"))
+						{
+							$(this).removeClass("selected");
+							$(this).find("input[type='checkbox']").prop("checked",false);
+							length =$(this).parent().find(".selected").length;
+							if(length<1){
+								alert(Select_attr);
+								$(this).addClass("selected");
+								$(this).find("input[type='checkbox']").prop("checked",true);	
+							}
+						}
+						else
+						{
+							$(this).addClass("selected");
+							$(this).find("input[type='checkbox']").prop("checked",true);	
+						}
+						
+						
+					}
+					else
+					{
+						$(this).addClass("selected").siblings().removeClass("selected");
+						$(this).find("input[type='radio']").prop("checked",true);
+					}
+				});
+            }
+            //获取选择属性后，再次提交到购物车
+            function submit_div(goods_id, parentId, warehouse_id, area_id, active_id) 
+            {
+              var goods        = new Object();
+              var spec_arr     = new Array();
+              var fittings_arr = new Array();
+              var number       = 1;
+              var input_arr      = document.getElementsByTagName('input'); 
+              var quick        = 1;
+
+              var spec_arr = new Array();
+              var j = 0;
+
+              for (i = 0; i < input_arr.length; i ++ )
+              {
+                var prefix = input_arr[i].name.substr(0, 5);
+
+                if (prefix == 'spec_' && (
+                  ((input_arr[i].type == 'radio' || input_arr[i].type == 'checkbox') && input_arr[i].checked)))
+                {
+                  spec_arr[j] = input_arr[i].value;
+                  j++ ;
+                }
+              }
+              goods.active_id = active_id;
+
+              goods.quick    = quick;
+              goods.spec     = spec_arr;
+              goods.goods_id = goods_id;
+              goods.warehouse_id = warehouse_id;
+              goods.area_id = area_id;
+              goods.number   = number;
+              //goods.parent   = (typeof(parentId) == "undefined") ? 0 : parseInt(parentId);
+
+              Ajax.call('coudan.php?act=ajax_update_cart', 'goods=' + $.toJSON(goods), add_cart_response, 'POST', 'JSON');
+
+            }
+            /**
+             * 获得选定的商品属性
+             */
+            function getSelectedAttributes(formBuy)
+            {
+              var spec_arr = new Array();
+              var j = 0;
+
+              for (i = 0; i < formBuy.elements.length; i ++ )
+              {
+                var prefix = formBuy.elements[i].name.substr(0, 5);
+                
+                if (prefix == 'spec_' && (
+                  ((formBuy.elements[i].type == 'radio' || formBuy.elements[i].type == 'checkbox') && formBuy.elements[i].checked) ||
+                  formBuy.elements[i].tagName == 'SELECT'))
+                {
+                  spec_arr[j] = formBuy.elements[i].value;
+                  j++ ;
+                }
+              }
+
+              return spec_arr;
+            }
+            </script>
+
+            <script type="text/javascript">
+            //  在凑单页面删除购物车里的商品
+                $(function(){
+                    $(document).on("click",".coudan_cart_goods",function(){
+                        var rec_id = $(this).data('id');
+                        var favourable_id = $("#spec-list").attr('favorable');
+                        delete_cart_fav_goods(rec_id, favourable_id);
+                    });
+
+                    function delete_cart_fav_goods(rec_id, favourable_id)
+                    {
+                        Ajax.call('coudan.php?act=delete_cart_fav_goods', 'rec_id=' + rec_id + '&favourable_id=' + favourable_id, delete_cart_fav_goods_response, 'POST', 'JSON');
+                    }
+
+                    function delete_cart_fav_goods_response(result)
+                    {
+                      if (result.error > 0)
+                      {
+                        // 如果需要缺货登记，跳转
+                        if (result.error == 2)
+                        {
+                          if (confirm(result.message))
+                          {
+                            location.href = 'user.php?act=add_booking&id=' + result.goods_id + '&spec=' + result.product_spec;
+                          }
+                        }
+                        // 没选规格，弹出属性选择框
+                        else if (result.error == 6)
+                        {
+                          openCoudanSpeDiv(result.message, result.goods_id, result.parent, result.warehouse_id, result.area_id, result.active_id);
+                        }
+                        else
+                        {
+                          alert(result.message);
+                        }
+                      }
+                      else
+                      {
+                        // 更新加入购物车的活动商品
+
+                        var cartInfo = document.getElementById('coudan-top-list');
+                        if (cartInfo)
+                        {
+                          cartInfo.innerHTML = result.content;
+                        }
+                      }
+                    }
+
+                });
+            </script>
+
+        </div>
+    </div>
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.purebox.js"></script>
+    <!-- #BeginLibraryItem "/library/page_footer_flow.lbi" --><!-- #EndLibraryItem -->
+    <script>
+		$("#spec-items").slide({mainCell:".spec-con ul",effect:"left",autoPlay:false,autoPage:true,scroll:1,vis:11,prevCell:".spec-forward",nextCell:".spec-backward"});
+		$.scrollLeft("#coudan-top-list");
+	</script>
+</body>
+</html>

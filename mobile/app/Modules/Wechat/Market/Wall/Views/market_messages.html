@@ -1,0 +1,130 @@
+
+<div class="wrapper">
+	<div class="title"><a href="{url('market_list', array('type' => $config['keywords']))}" class="s-back">返回</a>{$lang['wechat_menu']} - {$config.name}记录</div>
+	<div class="content_tips">
+        <div class="tabs_info">
+            <ul>
+                <li {if empty($config['status'])} class="curr"{/if}><a href="{url('data_list', array('type' => $config['keywords'], 'function' => 'messages', 'id' => $config['market_id'], 'status'=>0))}">未审核消息</a></li>
+                <li {if $config['status']} class="curr"{/if}><a href="{url('data_list', array('type' => $config['keywords'], 'function' => 'messages', 'id' => $config['market_id'], 'status'=>'all'))}">全部消息</a></li>
+                <li><a href="{url('data_list', array('type' => $config['keywords'], 'function' => 'users', 'id' => $config['market_id']))}">参与会员</a></li>
+                <li><a href="{url('data_list', array('type' => $config['keywords'], 'function' => 'prizes', 'id' => $config['market_id']))}">获奖名单</a></li>
+            </ul>
+        </div>
+	    <div class="explanation" id="explanation">
+            <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4><span id="explanationZoom" title="收起提示"></span></div>
+            <ul>
+                <li>一、未审核消息列表，点击审核成功通过的消息方可显示在大屏幕上。</li>
+                <li>二、全部消息列表，可查看所有消息，如果审核有误，可移除到未审核。</li>
+                <li>三、删除操作，即永久删除此消息，不可恢复。</li>
+            </ul>
+        </div>
+		<div class="flexilist of">
+            <div class="common-content">
+                <div class="col-md-12 col-sm-12 col-lg-12" style="padding:0;">
+                    <div class="list-div">
+                        <table class="table-hover table-striped">
+                            <tr class="text-center">
+                                <th class="text-center">昵称</th>
+                                <th class="text-center">内容</th>
+                                <th class="text-center">留言时间</th>
+                                <th class="text-center">审核时间</th>
+                                <th class="text-center">状态</th>
+                                <th class="text-center" width="30%">操作</th>
+                            </tr>
+                            {foreach $list as $val}
+                            <tr class="text-center wall-list">
+                                <td>{$val['nickname']}</td>
+                                <td>{$val['content']}</td>
+                                <td>{$val['addtime']}</td>
+                                <td>{$val['checktime']}</td>
+                                <td>{$val['status']}</td>
+                                <td class="info_btn">
+                                    {$val['handler']}
+                                    {if $config['status'] == 'all' && $val['status'] == '已审核'}
+                                    <a class="button btn-warning move" data-href="{url('market_action', array('type' => $config['keywords'], 'function' => 'messages', 'handler' => 'move','market_id' => $config['market_id'], 'msg_id' => $val['id'], 'user_id' => $val['user_id'], 'status' => 'all'))}" href="javascript:;">移除</a>
+                                    {/if}
+                                    <a class="button btn-danger bg-red data_delete" data-href="{url('market_action', array('type' => $config['keywords'], 'handler' => 'data_delete', 'market_id' => $config['market_id'], 'msg_id' => $val['id'], 'user_id' => $val['id']))}" href="javascript:;">删除</a>
+                                </td>
+                            </tr>
+                            {/foreach}
+                            {if empty($list)}
+                            <tr class="no-records" ><td colspan="6">没有找到任何记录</td></tr>
+                            {/if}
+                        </table>
+                    </div>
+                </div>
+		    </div>
+	    </div>
+        <div class="list-div of">
+            <table cellspacing="0" cellpadding="0" border="0">
+                <tfoot>
+                    <tr>
+                        <td colspan="6">
+                            {include file="pageview"}
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+	</div>
+</div>
+<script type="text/javascript">
+$(function(){
+    // 审核
+    $(".check").click(function(){
+        var url = $(this).attr("data-href");
+        $.get(url, '', function(data){
+            layer.msg(data.msg);
+            if(data.error == 0 ){
+                if(data.url != ''){
+                    // layer.msg(data.url);
+                    window.location.href = data.url;
+                }else{
+                    window.location.reload();
+                }
+            }
+            return false;
+        }, 'json');
+    });
+
+    // 移除审核
+    $(".move").click(function(){
+        var url = $(this).attr("data-href");
+        $.get(url, '', function(data){
+            layer.msg(data.msg);
+            if(data.error == 0 ){
+                if(data.url != ''){
+                    // layer.msg(data.url);
+                    window.location.href = data.url;
+                }else{
+                    window.location.reload();
+                }
+            }
+            return false;
+        }, 'json');
+    });
+
+    // 删除消息记录
+    $(".data_delete").click(function(){
+        var url = $(this).attr("data-href");
+        //询问框
+        layer.confirm('您确定要删除此条记录吗？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            $.get(url, '', function(data){
+                layer.msg(data.msg);
+                if(data.error == 0 ){
+                    if(data.url != ''){
+                        // layer.msg(data.url);
+                        window.location.href = data.url;
+                    }else{
+                        window.location.reload();
+                    }
+                }
+                return false;
+            }, 'json');
+        });
+    });
+
+});
+</script>

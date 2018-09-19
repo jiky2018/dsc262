@@ -1,0 +1,91 @@
+{* TitlePicWidth: 2 *}
+{* TitlePicHeight: 38 *}
+
+{* 说明：$title_pic，分类标题图片地址； *}
+{* 说明：$base_style，基本风格样式颜色； *}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<link rel="icon" href="animated_favicon.gif" type="image/gif" />
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/base.css" />
+<link href="{$ecs_css_path}" rel="stylesheet" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS|{$page_title}" href="{$feed_url}" />
+<link href="{$site_domain}themes/<?php echo $GLOBALS['_CFG']['template']; ?>/css/preview.css" rel="stylesheet" type="text/css" >
+{* 包含脚本文件 *}
+{insert_scripts files='jquery-1.9.1.min.js,jquery.json.js,transport_jquery.js,common.js,utils.js,cart_common.js,cart_quick_links.js'}
+
+
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/sc_memake.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/sc_common.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/rotate3di.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/magiczoomplus.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/scroll_city.js"></script>
+<!-- #BeginLibraryItem "/library/js_languages.lbi" --><!-- #EndLibraryItem -->
+</head>
+
+<body>
+<!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
+<div class="w1200">
+    <div class="nch-breadcrumb-layout">
+        <div class="nch-breadcrumb wrapper" id="ur_here">
+             <div id="ur_here">
+                <!-- #BeginLibraryItem "/library/ur_here.lbi" --><!-- #EndLibraryItem -->
+            </div>
+        </div>
+    </div>       
+</div>
+<div class="pc-wrapper dsc-ecmoban">{$pc_page.out}</div>
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+<input name="warehouse_id" type="hidden" value="{$warehouse_id}">
+<input name="area_id" type="hidden" value="{$area_id}">
+<script type="text/javascript">
+	if($(".shop_banner").hasClass("shade")){
+		$(".shop_banner").slide({titCell:".hd ul",mainCell:".bd ul",effect:"fold",autoPlay:true,autoPage:true,interTime:2000,delayTime:500,scroll:1,vis:1,endFun:function(i,c,s){
+			$(window).resize(function(){
+				var width = $(window).width();
+				s.find(".bd li").css("width",width);
+			});
+		}});
+	}else{
+		$(".shop_banner").find("li").show();
+		$(".shop_banner").slide({titCell:".hd ul",mainCell:".bd ul",effect:"left",autoPlay:true,autoPage:true,interTime:2000,delayTime:500,scroll:1,vis:1,endFun:function(i,c,s){
+			$(window).resize(function(){
+				var width = $(window).width();
+				s.find(".bd li").css("width",width);
+			});
+		}});
+	}
+	
+	if($(".adv_module").hasClass("yesSlide")){
+		$(".adv_module").find("li").show();
+		$(".adv_module").slide({titCell:".hd ul",mainCell:".bd ul",effect:"left",autoPlay:true,autoPage:true,interTime:3500,delayTime:500,scroll:1,vis:1});
+	}
+	$(function(){
+		  //重新加载商品模块
+		  $("[data-mode='floor']").each(function(){
+			  var _this = $(this);
+			  var goods_ids = _this.data("goodsid");
+			  var warehouse_id = $("input[name='warehouse_id']").val();
+			  var area_id = $("input[name='area_id']").val();
+			  if(goods_ids){
+				   Ajax.call('ajax_dialog.php?act=getguessYouLike', 'goods_ids=' + goods_ids + "&warehouse_id=" + warehouse_id + "&area_id=" + area_id + "&type=topic", function(data){
+					   if(data.content){
+							_this.find(".view ul").html(data.content);
+						}
+				   } , 'POST', 'JSON');
+			  }
+		  })
+	  });
+</script>
+</body>
+</html>

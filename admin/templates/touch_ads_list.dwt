@@ -1,0 +1,137 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{if $ads_type eq 1}{$lang.ectouch}{else}{$lang.ad_type1}{/if} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.list.0}</li>
+                    <li>{$lang.operation_prompt_content.list.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<div class="common-head">
+                   	{if $action_link}
+                    <div class="fl">
+                        <a href="{$action_link.href}"><div class="fbutton"><div class="add" title="{$action_link.text}"><span><i class="icon icon-plus"></i>{$action_link.text}</span></div></div></a>
+                    </div>
+                    {/if}
+                    <div class="refresh{if !$action_link} ml0{/if}">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+                    
+                    <div class="search">
+                    	<form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+                        <div class="select" id="keyword">
+                            <div class="label">{$lang.position_id}：</div>
+                            <div id="keywordselect" class="imitate_select select_w320 mr0">
+                                <div class="cite">{$lang.select_position_id}</div>
+                                <ul>
+                                   <li><a href="javascript:;" data-value="0">{$lang.select_position_id}</a></li>
+                                   {foreach from=$position_list item=pos}
+                                   <li><a href="javascript:;" data-value="{$pos.position_name}">{$pos.position_name} [{$pos.ad_width}×{$pos.ad_height}]</a></li>
+                                   {/foreach}
+                                </ul>
+                                <input name="keyword" type="hidden" value="0" id="keywordval">
+                            </div>
+                        </div>
+                        <div class="input" style="margin-left:10px;">
+                            <input type="text" name="adName" class="text nofocus" placeholder="{$lang.ad_name}" autocomplete="off" />
+                            <input type="submit" class="btn" name="secrch_btn" ectype="secrch_btn" value="" />
+                        </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="common-content">
+                	<div class="list-div"  id="listDiv">
+                        {/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                    <th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars"></label></div></th>
+                                    <th width="5%"><div class="tDiv"><a href="javascript:listTable.sort('ad_id'); ">{$lang.record_id}</a></div></th>
+                                    <th width="14%"><div class="tDiv"><a href="javascript:listTable.sort('ad_name'); ">{$lang.ad_name}</a></div></th>
+                                    <th width="8%"><div class="tDiv">{$lang.goods_steps_name}</div></th>
+                                    <th width="15%"><div class="tDiv"><a href="javascript:listTable.sort('position_id'); ">{$lang.position_id}</a></div></th>
+                                    <th width="8%"><div class="tDiv"><a href="javascript:listTable.sort('media_type'); ">{$lang.media_type}</a></div></th>
+                                    <th width="10%"><div class="tDiv"><a href="javascript:listTable.sort('start_date'); ">{$lang.start_date}</a></div></th>
+                                    <th width="10%"><div class="tDiv"><a href="javascript:listTable.sort('end_date'); ">{$lang.end_date}</a></div></th>
+                                    <th width="8%"><div class="tDiv tc"><a href="javascript:listTable.sort('click_count'); ">{$lang.click_count}</a></div></th>
+                                    <th width="8%"><div class="tDiv tc">{$lang.ads_stats}</div></th>
+                                    <th width="12%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {foreach from=$ads_list item=list}
+                            	<tr>
+                                    <td class="sign"><div class="tDiv"><input type="checkbox" name="checkbox" class="checkbox" id="checkbox_{$list.ad_id}" /><label for="checkbox_{$list.ad_id}" class="checkbox_stars"></label></div></td>
+                                    <td><div class="tDiv">{$list.ad_id}</div></td>
+                                    <td><div class="tDiv"><span onclick="listTable.edit(this, 'edit_ad_name', {$list.ad_id})" title="{$list.ad_name|escape:html}" data-toggle="tooltip" class="span">{$list.ad_name|escape:html}</span></div></td>
+                                    <td><div class="tDiv">{if $list.user_name}<font style="color:#F00;">{$list.user_name}</font>{else}<font class="blue">{$lang.self}</font>{/if}</div></td>
+                                    <td><div class="tDiv">{if $list.position_id eq 0}{$lang.outside_posit}{else}{$list.position_name}{/if}</div></td>
+                                    <td>
+                                        <div class="tDiv">
+                                            {if ($list.type == $lang.imgage)}
+                                            <span class="show">
+                                                <a href="{if strpos($list.ad_code,'www')}{$list.ad_code}{else}../data/afficheimg/{$list.ad_code}{/if}" class="nyroModal"><i class="icon icon-picture" data-tooltipimg="{if strpos($list.ad_code,'www')}{$list.ad_code}{else}../data/afficheimg/{$list.ad_code}{/if}" ectype="tooltip" title="tooltip"></i></a>
+                                            </span>
+                                            {/if}
+                                        </div>
+                                    </td>
+                                    <td><div class="tDiv">{$list.start_date}</div></td>
+                                    <td><div class="tDiv">{$list.end_date}</div></td>
+                                    <td><div class="tDiv tc">{$list.click_count}</div></td>
+                                    <td><div class="tDiv tc">{$list.ad_stats}</div></td>
+                                    <td class="handle">
+                                        <div class="tDiv a3">
+                                            {if $list.position_id eq 0}
+                                            <a href="{if $ads_type eq 1}touch_ads.php{else}ads.php{/if}?act=add_js&type={$list.media_type}&id={$list.ad_id}" title="{$lang.add_js_code}" class="btn_see"><i class="sc_icon sc_icon_see"></i>{$lang.view_content}</a>
+                                            {/if}
+                                            <a href="{if $ads_type eq 1}touch_ads.php{else}ads.php{/if}?act=edit&id={$list.ad_id}" title="{$lang.edit}" class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>
+                                            <a href="javascript:;" onclick="listTable.remove({$list.ad_id}, '{$lang.drop_confirm}')" title="{$lang.remove}" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {foreachelse}
+                                    <tr><td class="no-records" colspan="12">{$lang.no_records}</td></tr>
+                                {/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="12">
+                                    	<div class="list-page">
+                                            {include file="library/page.lbi"}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        {if $full_page}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+ 	{include file ='library/pagefooter.lbi'}
+    
+    <script type="text/javascript">
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+
+	$(function(){
+		//点击查看图片
+		$('.nyroModal').nyroModal();
+	});
+    </script>
+</body>
+</html>
+{/if}

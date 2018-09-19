@@ -1,0 +1,159 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">促销 - {$ur_here}</div>
+        <div class="content">
+        	<div class="tabs_info">
+            	<ul>
+                    {foreach from=$group_list item=group key=group_key name="bar_group"}
+                    {if $group_key eq $current}
+                    <li {if $current eq 'cus'}class="curr"{/if}><a href="javascript:viod(0);">{$group.text}</a></li>
+                    {else}
+                    <li {if $current eq 'sys'}class="curr"{/if}><a href="javascript:viod(0);" onclick="javascript:location.href='{$group.url}';">{$group.text}</a></li>
+                    {/if}
+                    {/foreach}
+                </ul>
+            </div>			
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4><span id="explanationZoom" title="收起提示"></span></div>
+                <ul>
+                	<li>可从管理平台手动添加一名新会员，并填写相关信息。</li>
+                    <li>标识“<em>*</em>”的选项为必填项，其余为选填项。</li>
+                    <li>新增会员后可从会员列表中找到该条数据，并再次进行编辑操作，但该会员名称不可变。</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<!--商品列表-->
+                <div class="common-head">
+                    <div class="fl">
+                        <a href="{$action_link_special.href}"><div class="fbutton"><div class="add" title="{$action_link_special.text}"><span><i class="icon icon-plus"></i>{$action_link_special.text}</span></div></div></a>
+                    </div>			
+                </div>
+                <div class="common-content">
+                	<div class="list-div" id="listDiv">
+                            {/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                    <th width="32%"><div class="tDiv">{$lang.title_flash_name}</div></th>
+                                    <th width="20%"><div class="tDiv">{$lang.title_flash_type}</div></th>
+                                    <th width="20%"><div class="tDiv">{$lang.title_flash_time}</div></th>
+                                    <th width="18%"><div class="tDiv">{$lang.title_flash_status}</div></th>
+                                    <th width="10%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+				{foreach from=$ad_list item=item key=key}
+                            	<tr>
+                                    <td><div class="tDiv">{$item.ad_name}</div></td>
+                                     <td><div class="tDiv">{$item.type_name}</div></td>
+                                     <td><div class="tDiv">{$item.add_time}</div></td>
+                                    <td>
+                                        <div class="tDiv">
+                                            <div class="switch {if $item.ad_status}active{/if}" title="{if $item.ad_status}是{else}否{/if}" onclick="custom_status({$item.ad_id}, {$item.ad_status})">
+                                                <div class="circle"></div>
+                                            </div>
+                                            <input type="hidden" value="0" name="">
+                                        </div>
+                                    </td>                               
+                                    <td class="handle">
+                                        <div class="tDiv a2">
+                                            <a href="flashplay.php?act=custom_edit&id={$item.ad_id}" title="{$lang.edit}" class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>
+                                            <a href="flashplay.php?act=custom_del&id={$item.ad_id}" onclick="return check_del();" title="{$lang.custom_drop_img}" class="btn_trash"><i class="icon icon-trash"></i>删除</a>
+                                        </div>
+                                    </td>
+                                </tr>
+								{foreachelse}
+								<tr><td class="no-records"  colspan="20">{$lang.no_records}</td></tr>								
+								{/foreach}
+                            </tbody>
+                        </table>
+                            {if $full_page}
+                    </div>
+                </div>
+                <!--商品列表end-->
+            </div>
+		</div>
+	</div>
+         {include file ='library/pagefooter.lbi'}
+<script type="text/javascript">
+  var status_code = 0; //{$ad.ad_type};
+          
+          
+/**
+ * 广告状态修改
+ */
+function custom_status(ad_id, ad_status)
+{
+  if (ad_id)
+  {
+    Ajax.call('flashplay.php?is_ajax=1&act=custom_status&ad_status=' + ad_status, 'id=' + ad_id, custom_status_edit, 'GET', 'JSON');
+  }
+}
+function custom_status_edit(result)
+{
+  if (result.error == 0)
+  {
+    document.getElementById('listDiv').innerHTML = result.content;
+
+  }
+}
+
+function check_del()
+{
+  if (confirm('{$lang.custom_del_confirm}'))
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+/**
+ * 系统设置提示
+ */
+function system_set()
+{
+  alert('{$lang.tab_change_alert}');
+}
+
+/**
+ * 判断当前浏览器类型
+ */
+function navigator_type()
+{
+  var type_name = '';
+
+  if (navigator.userAgent.indexOf('MSIE') != -1)
+  {
+    type_name = 'IE'; // IE
+  }
+  else if(navigator.userAgent.indexOf('Firefox') != -1)
+  {
+    type_name = 'FF'; // FF
+  }
+  else if(navigator.userAgent.indexOf('Opera') != -1)
+  {
+    type_name = 'Opera'; // Opera
+  }
+  else if(navigator.userAgent.indexOf('Safari') != -1)
+  {
+    type_name = 'Safari'; // Safari
+  }
+  else if(navigator.userAgent.indexOf('Chrome') != -1)
+  {
+    type_name = 'Chrome'; // Chrome
+  }
+
+  return type_name;
+}
+</script>
+</body>
+</html>
+{/if}

@@ -1,0 +1,81 @@
+{include file='pageheader.dwt'}
+<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+
+<div class="list-div" style="text-align:center;">
+  <div class="fh_message">
+  <div class="fr_content">
+  	<div class="img">
+    {if $msg_type==0}
+    <i class="fh_icon information"></i>
+    {elseif $msg_type eq 1}
+    <i class="fh_icon warning"></i>
+    {else}
+    <i class="fh_icon confirm"></i>
+    {/if}
+  	</div>
+  	<h3 class="{if $msg_type==0}information{elseif $msg_type eq 1}warning{else}confirm{/if}">{$msg_detail}</h3>
+    <span class="ts" id="redirectionMsg">{if $auto_redirect}{$lang.auto_redirection}{/if}</span>
+    <ul class="msg-link">
+    {foreach from=$links item=link}
+    <li><a href="{$link.href}" {if $link.target}target="{$link.target}"{/if}>{$link.text}</a></li>
+    {/foreach}
+    </ul>
+  </div>
+  </div>
+</div>
+
+</div>
+{if $auto_redirect}
+<script type="text/javascript">
+<!--
+var seconds = 3;
+var defaultUrl = "{$default_url}";
+
+{literal}
+onload = function()
+{
+  if (defaultUrl == 'javascript:history.go(-1)' && window.history.length == 0)
+  {
+    document.getElementById('redirectionMsg').innerHTML = '';
+    return;
+  }
+
+  window.setInterval(redirection, 1000);
+}
+function redirection()
+{
+  if (seconds <= 0)
+  {
+    window.clearInterval();
+    return;
+  }
+
+  seconds --;
+  document.getElementById('spanSeconds').innerHTML = seconds;
+
+  if (seconds == 0)
+  {
+    //window.clearInterval(); //ie11不支持此写法
+    location.href = defaultUrl;
+  }
+}
+//-->
+
+var height = $(window).height();
+var header = $("header").height();
+var footer = $(".footer").outerHeight();
+//var fr_content = $(".fr_content").outerHeight();
+$(".fh_message").height(height-header-footer);
+//$(".fr_content").css("margin-top",(height-header-footer-fr_content)/2);
+$(window).resize(function(){
+	height = $(window).height();
+	header = $("header").height();
+	footer = $(".footer").outerHeight();
+	//fr_content = $(".fr_content").outerHeight();
+	$(".fh_message").height(height-header-footer);
+	//$(".fr_content").css("margin-top",(height-header-footer-fr_content)/2);
+});
+</script>
+{/literal}
+{/if}
+{include file='pagefooter.dwt'}

@@ -1,0 +1,135 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="seller_grade.php?act=list" class="s-back" ></a>{$lang.seller} - {$ur_here}</div>
+        <div class="content">
+        	{include file ='library/seller_step_tab.lbi'}		
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit">
+					<i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span>
+                    {if $open eq 1}
+                    <div class="view-case">
+                    	<div class="view-case-tit"><i></i>{$lang.view_tutorials}</div>
+                        <div class="view-case-info">
+                        	<a href="http://help.ecmoban.com/article-3221.html" target="_blank">{$lang.tutorials_bonus_list_one}</a>
+                        </div>
+                    </div>			
+                    {/if}				
+				</div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.allot.0}</li>
+                    <li>{$lang.operation_prompt_content.allot.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+						<form method="POST" action="merchants_privilege.php" name="theFrom">
+                    	<div class="switch_info business_info" style="background:none;">
+                            <div class="step">
+                            	<div class="tit">
+                                    <div class="checkbox_items">
+                                    	<div class="checkbox_item">{$lang.require_field}{$lang.grade_allot}</div>
+                                    </div>
+                                </div>
+                                <div class="qx_items">
+                                	<div class="qx_item">
+                                        <div class="center">
+                                            <div id="grade_id" class="imitate_select select_w320">
+                                                <div class="cite">{$lang.select_please}</div>
+                                                <ul>
+                                                    {foreach from=$seller_grade item=seller_grade}
+                                                    <li><a href='javascript:;' data-value='{$seller_grade.id}' class='ftx-01'>{$seller_grade.grade_name}</a></li>
+                                                    {/foreach}
+                                                </ul>
+                                                <input name="grade_id" type="hidden" value="{$grade_id}" id="grade_id_val">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="step">
+                            	<div class="tit">
+                                    <div class="checkbox_items">
+                                    	<div class="checkbox_item">{$lang.initialize_merchants_allot}</div>
+                                    </div>
+                                </div>
+                                <div class="qx_items">
+                                	<div class="qx_item">
+                                        <div class="checkbox_items">
+                                            <div class="checkbox_item">
+                                                <input type="checkbox" value="1" name="initialize_allot" id="initialize_allot" class="ui-checkbox"/>
+                                                <label for="initialize_allot" class="ui-label">{$lang.edit_allot}<font class="red">{$lang.prudent_operation}</font></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="ajax_allot">
+                                {include file ='library/ajax_allot.lbi'}
+                            </div>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+	{include file ='library/pagefooter.lbi'}
+	<script language="javascript">
+		$.divselect("#grade_id","#grade_id_val",function(obj){
+			var val = obj.attr("data-value");
+			ajax_allot(val);
+		});
+		
+		function ajax_allot(val){
+			$.jqueryAjax('get_ajax_content.php', 'act=ajax_allot&grade_id='+val, function(data){
+				$("#ajax_allot").html(data);
+			});
+		}
+
+		$("#checkall").click(function(){
+			var checkbox = $(this).parents(".switch_info").find('input:checkbox[type="checkbox"]');
+			if($(this).prop("checked") == true){
+				checkbox.prop("checked",true);
+			}else{
+				checkbox.prop("checked",false);
+			}
+		});
+		
+		$("input[name='chkGroup']").click(function(){
+			var checkbox = $(this).parents(".tit").next(".qx_items").find('input:checkbox[type="checkbox"]');
+			if($(this).prop("checked") == true){
+				checkbox.prop("checked",true);
+			}else{
+				checkbox.prop("checked",false);
+			}
+		});
+		
+		$("input[name='action_code[]']").click(function(){    
+			var qx_items = $(this).parents(".qx_items");
+			var length = qx_items.find("input[name='action_code[]']").length;
+			var length2 =  qx_items.find("input[name='action_code[]']:checked").length;
+			if(length == length2){
+				qx_items.prev().find("input[name='chkGroup']").prop("checked",true);
+			}else{
+				qx_items.prev().find("input[name='chkGroup']").prop("checked",false);
+			}
+		});
+		
+		$(".qx_items").each(function(index, element) {
+			var length = $(this).find("input[name='action_code[]']").length;
+			var length2 = $(this).find("input[name='action_code[]']:checked").length;
+			
+			if(length == length2){
+				$(this).prev().find("input[name='chkGroup']").prop("checked",true);
+			}else{
+				$(this).prev().find("input[name='chkGroup']").prop("checked",false);
+			}
+		});
+    </script>
+</body>
+</html>

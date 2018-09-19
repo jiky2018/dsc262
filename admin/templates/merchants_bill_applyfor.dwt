@@ -1,0 +1,270 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+<div class="warpper">
+    <div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$lang.seller} - {$ur_here}</div>
+    <div class="content">
+        {include file="library/commission_tab.lbi"}
+        <div class="explanation" id="explanation">
+            <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+            <ul>
+                <li>{$lang.operation_prompt_content_common}</li>
+                <li>{$lang.operation_prompt_content.apply_for.0}</li>
+            </ul>
+        </div>
+        <div class="flexilist">
+            <div class="common-content">
+                <div class="mian-info">
+                    <form method="post" action="merchants_commission.php" name="theForm" id="submitForm" enctype="multipart/form-data">
+                        <div class="switch_info">
+                            <!-- {if $type eq 'frozen' || $type eq 'unfreeze'} -->
+                            <div class="item">
+                                <div class="label">{$lang.proportion}：</div>
+                                <div class="label_value">{$bill.gain_proportion}%</div>
+                            </div>
+                            <div class="item">
+                                {if $bill.chargeoff_status eq 2}
+                                <div class="label">{$lang.is_receive_commissions}：</div>
+                                {else}
+                                <div class="label">{$lang.receive_commissions}：</div>
+                                {/if}
+                                <div class="label_value red">{$bill.format_gain_commission}</div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.proportions}：</div>
+                                <div class="label_value">{$bill.should_proportion}%</div>
+                            </div>
+                            <div class="item">
+                                {if $bill.chargeoff_status eq 2}
+                                <div class="label">{$lang.settlement_commission}：</div>
+                                {else}
+                                <div class="label">{$lang.period_checkout}：</div>
+                                {/if}
+                                <div class="label_value red">
+                                {if $bill.settle_accounts > 0}{$bill.should_amount}【{$lang.total}】 - {$bill.settle_accounts}【{$lang.knot}】 = {/if}{$bill.format_should_amount}{if $bill.settle_accounts > 0}【{$lang.real}】{/if}
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.is_frozen_amount}：</div>
+                                <div class="label_value red">{$bill.format_frozen_money}</div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.frozen_days_set}：</div>
+                                <div class="label_value red">{$bill.frozen_data} {$lang.tian}</div>
+                            </div>
+                            {if $bill.chargeoff_status neq 2}
+                            <div class="item">
+                                <div class="label">{$lang.frozen_amount}：</div>
+                                <div class="label_value">
+                                    <div class="date-item">
+                                        <div id="div_frozen_money" class="imitate_select select_w75">
+                                          <div class="cite">{$lang.add}</div>
+                                          <ul>
+                                             <li><a href="javascript:;" data-value="1" class="ftx-01">{$lang.add}</a></li>
+                                             <li><a href="javascript:;" data-value="-1" class="ftx-01">{$lang.reduce}</a></li>
+                                          </ul>
+                                        </div>
+                                        <input type="text" name="frozen_money" class="text w120" value="" placeholder="0.00" />
+                                        <div class="notic">{$lang.frozen_amount_notic}</div>
+                                        <input name="add_sub_frozen_money" type="hidden" value="1" id="input_frozen_money">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.frozen_time}：</div>
+                                <div class="label_value">
+                                    <div id="div_frozen_data" class="imitate_select select_w75">
+                                        <div class="cite">{$lang.add}</div>
+                                        <ul>
+                                            <li><a href="javascript:;" data-value="1" class="ftx-01">{$lang.add}</a></li>
+                                            <li><a href="javascript:;" data-value="-1" class="ftx-01">{$lang.reduce}</a></li>
+                                        </ul>
+                                    </div>
+                                    <input type="text" name="frozen_data" class="text w120" value="" placeholder="0" />
+                                    <div class="notic">{$lang.number_days}</div>
+                                    <input name="add_sub_frozen_data" type="hidden" value="1" id="input_frozen_data">
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">&nbsp;</div>
+                                <div class="label_value">
+                                    <div class="notic">{$lang.frozen_time_notic}</div>
+                                </div>
+                            </div>
+                            {else}
+                            <div class="item">
+                                <div class="label">{$lang.frozen_money}：</div>
+                                <div class="label_value">
+                                    <input type="text" name="frozen_money" class="text w120" value="" placeholder="0.00" />
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">&nbsp;</div>
+                                <div class="label_value">
+                                    <div class="notic">{$lang.frozen_money_notic}</div>
+                                </div>
+                            </div>
+                            {/if}
+                            <!-- {else} -->
+                            <div class="item">
+                                <div class="label">{$lang.bill_number}：</div>
+                                <div class="label_value">{$bill.bill_sn}</div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.bill_time}：</div>
+                                <div class="label_value">{$bill.format_start_time} ～ {$bill.format_end_time}</div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.bill_money}：</div>
+                                <div class="label_value">{$bill.format_order_amount}</div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.freight_money}：</div>
+                                <div class="label_value">{$bill.format_shipping_amount}</div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.back_money}：</div>
+                                <div class="label_value">
+                                    <span class="fl"><em class="org2">{$bill.format_return_fee}</em> + <em class="org2">{$bill.format_shipping_fee}</em> =&nbsp;&nbsp;</span>
+                                    <span class="fl"><em class="org2 fl">{$bill.format_return_amount}</em>&nbsp;&nbsp;&nbsp;&nbsp;<em class="notic fl">{$lang.back_money_notic}</em></span>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.proportion}：</div>
+                                <div class="label_value">{$bill.gain_proportion}%</div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.receive_commissions}：</div>
+                                <div class="label_value red">{$bill.format_gain_commission}</div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.proportions}：</div>
+                                <div class="label_value">{$bill.should_proportion}%</div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.period_checkout}：</div>
+                                <div class="label_value red">
+                                {if $bill.settle_accounts > 0}{$bill.should_amount}【{$lang.total}】 - {$bill.settle_accounts}【{$lang.knot}】 = {/if}{$bill.format_should_amount}{if $bill.settle_accounts > 0}【{$lang.real}】{/if}
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.out_of_account_state}：</div>
+                                <div class="label_value">{if $bill.chargeoff_status eq 1}{$lang.chargeoff_status.0}{elseif $bill.chargeoff_status eq 2}{$lang.chargeoff_status.1}（{$bill.format_settleaccounts_time}）{elseif $bill.chargeoff_status eq 3}{$lang.chargeoff_status.2}{else}{$lang.chargeoff_status.3}{/if}</div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.chargeoff_time}：</div>
+                                <div class="label_value">{$bill.format_chargeoff_time}</div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.application_status}：</div>
+                                <div class="label_value red">{if $bill.bill_apply eq 1}{$lang.application_yes}{else}{$lang.application_no}{/if}</div>
+                            </div>
+                            {if $bill.bill_apply neq 0}
+                                {if $bill.apply_time}
+                                <div class="item">
+                                    <div class="label">{$lang.application_time}：</div>
+                                    <div class="label_value">{$bill.format_apply_time}</div>
+                                </div>
+                                {/if}
+                                {if $bill.apply_note}
+                                <div class="item">
+                                    <div class="label">{$lang.chargeoff_desc}：</div>
+                                    <div class="label_value"><textarea class="textarea" name="apply_note" style=" background:#FFF" disabled>{$bill.apply_note}</textarea></div>
+                                </div>
+                                {/if}
+                                <div class="item">
+                                    <div class="label">{$lang.adopt_status}：</div>
+                                    <div class="label_value">
+                                        {if $bill.check_status eq 0}
+                                        <div class="checkbox_items">
+                                            <div class="checkbox_item">
+                                                <input type="radio" name="check_status" value="0" class="ui-radio" autocomplete="off" id="check_status0" checked />
+                                                <label class="ui-radio-label" for="check_status0">{$lang.bill_adopt_status.0}</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                                <input type="radio" name="check_status" value="1" class="ui-radio" autocomplete="off" id="check_status1" />
+                                                <label class="ui-radio-label" for="check_status1">{$lang.bill_adopt_status.1}</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                                <input type="radio" name="check_status" value="2" class="ui-radio" autocomplete="off" id="check_status2" />
+                                                <label class="ui-radio-label" for="check_status2">{$lang.bill_adopt_status.2}</label>
+                                            </div>
+                                        </div>
+                                        {else}    
+                                            {if $bill.check_status eq 1}{$lang.bill_status.0}{else eq 2}{$lang.bill_status.1}{/if}
+                                        {/if}
+                                    </div>
+                                </div>
+                                {if $bill.check_status eq 0}
+                                <div class="item reject_note hide">
+                                    <div class="label">{$lang.bill_status_no_notic}：</div>
+                                    <div class="label_value"><textarea class="textarea" name="reject_note"></textarea></div>
+                                </div>
+                                {else}
+                                    {if $bill.reject_note}
+                                    <div class="item">
+                                        <div class="label">{$lang.bill_status_no_notic}：</div>
+                                        <div class="label_value"><textarea class="textarea" name="reject_note" style=" background:#FFF" disabled>{$bill.reject_note}</textarea></div>
+                                    </div>
+                                    {/if}
+                                {/if}
+                            {/if}    
+                            <!-- {/if} -->
+                            
+                            {if $bill.bill_apply neq 0}
+                            <div class="item">
+                                <div class="label">&nbsp;</div>
+                                <div class="label_value info_btn">
+                                    <input type="submit" value="{$lang.button_submit}" class="button" id="submitBtn" />
+                                    <input type="reset" value="{$lang.button_reset}" class="button button_reset" />
+                                    <input type="hidden" name="act" value="{$form_act}" />
+                                    <!-- {if $type eq 'frozen'} -->
+                                    <input type="hidden" name="type" value="bill_frozen" />
+                                    <!-- {elseif $type eq 'unfreeze'} -->
+                                    <input type="hidden" name="type" value="bill_unfreeze" />
+                                    <!-- {/if} -->
+                                    <input type="hidden" name="bill_id" value="{$bill.id}"/>
+                                    <input type="hidden" name="seller_id" value="{$bill.seller_id}"/>
+                                </div>
+                            </div>	
+                            {/if}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/pagefooter.lbi'}
+<script type="text/javascript">
+$(function(){
+    $.divselect("#div_frozen_money","#input_frozen_money");
+    $.divselect("#div_frozen_data","#input_frozen_data");
+    
+    $(":input[name='check_status']").click(function(){
+        var val = $(this).val();
+        
+        if(val == 2){
+            $(".reject_note").show();
+        }else{
+            $(".reject_note").hide();
+        }
+    });
+	
+	//避免表单重复提交
+	var btn = document.getElementById("submitBtn");
+
+	btn.onclick = function(){     
+		//防止表单重复提交
+		if(checkSubmit() == true){
+			$(this).parents("form").submit();
+		}else{
+			return false;
+		}
+	};
+})
+</script>
+</body>
+</html>

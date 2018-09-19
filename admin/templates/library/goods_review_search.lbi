@@ -1,0 +1,304 @@
+<!--高级搜索 start-->
+<form action="javascript:searchGoods()" name="searchHighForm">
+<div class="gj_search">
+	<div class="search-gao-list" id="searchBarOpen">
+		<i class="icon icon-zoom-in"></i>{$lang.advanced_search}
+	</div>
+	<div class="search-gao-bar" style="right:-350px;">
+		<div class="handle-btn" id="searchBarClose"><i class="icon icon-zoom-out"></i>{$lang.pack_up}</div>
+		<div class="title"><h3>{$lang.advanced_search}</h3></div>
+        <div class="searchContent w300">
+            <div class="layout-box">
+                {if $smarty.get.act neq "trash"}
+                <dl class="w300">
+                    <dt>{$lang.category}</dt>
+                    <dd>
+                        <div class="categorySelect">
+                            <div class="selection">
+                                <input type="text" name="category_name" id="category_name" class="text w260 mr0 valid" value="{$lang.select_cat}" autocomplete="off" readonly data-filter="cat_name" />
+                                <input type="hidden" name="cat_id" id="cat_id" value="0" data-filter="cat_id" />
+                            </div>
+                            <div class="select-container" style="width:290px; display:none;">
+                                {include file="library/filter_category.lbi"}
+                            </div>
+                        </div>
+                    </dd>
+                </dl>
+                <dl class="w140">
+                    <dt>{$lang.act_rec}</dt>
+                    <dd>
+                        <div id="" class="imitate_select select_w140">
+                            <div class="cite">{$lang.please_select}</div>
+                            <ul>
+                                <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.intro_type}</a></li>
+                                {foreach from=$intro_list item=data key=key}
+                                <li><a href="javascript:;" data-value="{$key}" class="ftx-01">{$data}</a></li>
+                                {/foreach}
+                            </ul>
+                            <input name="intro_type" type="hidden" value="{$smarty.get.intro_type|default:0}" id="">
+                        </div>
+                    </dd>
+                </dl>
+                {if $judge_supplier_enabled}
+                <dl class="w140">
+                    <dt>{$lang.supplier}</dt>
+                    <dd>
+                        <div id="" class="imitate_select select_w140">
+                            <div class="cite">{$lang.please_select}</div>
+                            <ul>
+                                <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.intro_type}</a></li>
+                                {foreach from=$suppliers_list_name item=data key=key}
+                                <li><a href="javascript:;" data-value="{$key}" class="ftx-01">{$data}</a></li>
+                                {/foreach}
+                            </ul>
+                            <input name="suppliers_id" type="hidden" value="{$smarty.get.suppliers_id|default:0}" id="">
+                        </div>
+                    </dd>
+                </dl>
+                {/if}
+                <dl class="w140">
+                    <dt>{$lang.is_on_sale}</dt>
+                    <dd>	
+                        <div id="" class="imitate_select select_w140">
+                            <div class="cite">{$lang.please_select}</div>
+                            <ul>
+                                <li><a href="javascript:;" data-value="-1" class="ftx-01">{$lang.intro_type}</a></li>
+                                <li><a href="javascript:;" data-value="1" class="ftx-01">{$lang.on_sale}</a></li>
+                                <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.not_on_sale}</a></li>
+                            </ul>
+                            <input name="is_on_sale" type="hidden" value="-1" id="">
+                        </div>								
+                    </dd>
+                </dl>
+                {/if}
+                {if $priv_ru eq 1}
+                <dl class="w300">
+                    <dt>{$lang.steps_shop_name}</dt>
+                    <dd>
+                        <div id="" class="imitate_select select_w140 mr10">
+                            <div class="cite">{$lang.please_select}</div>
+                            <ul>
+                                <li><a href="javascript:get_store_search(0);" data-value="0" class="ftx-01">{$lang.select_please}</a></li>
+                                <li><a href="javascript:get_store_search(4);" data-value="4" class="ftx-01">{$lang.platform_self}</a></li>
+                                <li><a href="javascript:get_store_search(1);" data-value="1" class="ftx-01">{$lang.s_shop_name}</a></li>
+                                <li><a href="javascript:get_store_search(2);" data-value="2" class="ftx-01">{$lang.s_qw_shop_name}</a></li>
+                                <li><a href="javascript:get_store_search(3);" data-value="3" class="ftx-01">{$lang.s_brand_type}</a></li>
+                            </ul>
+                            <input name="store_search" type="hidden" value="0" id="">
+                        </div>
+                        <div id="" class="imitate_select select_w140" style="display:none">
+                            <div class="cite">{$lang.please_select}</div>
+                            <ul>
+                                <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.select_please}</a></li>
+                                {foreach from=$store_list item=store}
+                                <li><a href="javascript:;" data-value="{$store.ru_id}" class="ftx-01">{$store.store_name}</a></li>
+                                {/foreach}
+                            </ul>
+                            <input name="merchant_id" type="hidden" value="0" id="">
+                        </div>
+                        <input name="store_keyword" type="text" style="display:none" class="text w120 mr0" autocomplete="off"/>	
+                        <div id="" class="imitate_select select_w140 mt10" style="display:none">
+                            <div class="cite">{$lang.please_select}</div>
+                            <ul>
+                                <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.steps_shop_type}</a></li>
+                                <li><a href="javascript:;" data-value="{$lang.flagship_store}" class="ftx-01">{$lang.flagship_store}</a></li>
+                                <li><a href="javascript:;" data-value="{$lang.exclusive_shop}" class="ftx-01">{$lang.exclusive_shop}</a></li>
+                                <li><a href="javascript:;" data-value="{$lang.franchised_store}" class="ftx-01">{$lang.franchised_store}</a></li>
+                                <li><a href="javascript:;" data-value="{$lang.shop_store}" class="ftx-01">{$lang.shop_store}</a></li>
+                            </ul>
+                            <input name="store_type" type="hidden" value="0" id="">
+                        </div>
+                    </dd>
+                </dl>
+                {/if}
+                
+                <dl class="w300">
+                    <dt>{$lang.brand}</dt>
+                    <dd>
+                        <div id="selbrand" class="imitate_select select_w140 mr10">
+                            <div class="cite">{$lang.please_select}</div>
+                            <ul>
+                                <li><a href="javascript:get_selbrand(0);" data-value="0" class="ftx-01">{$lang.goods_brand}</a></li>
+                                <li><a href="javascript:get_selbrand(1);" data-value="1" class="ftx-01">{$lang.06_goods_brand_list}</a></li>
+                                <li><a href="javascript:get_selbrand(2);" data-value="2" class="ftx-01">{$lang.07_merchants_brand}</a></li>
+                            </ul>
+                            <input name="sel_brand" type="hidden" value="0" id="">
+                        </div>
+                        <div id="sel_mode" class="imitate_select select_w140" style="display: none;">
+                            <div class="cite">{$lang.please_select}</div>
+                            <ul>
+                                <li><a href="javascript:get_brand_type(0);" data-value="0" class="ftx-01">{$lang.please_select}</a></li>
+                                <li><a href="javascript:get_brand_type(1);" data-value="1" class="ftx-01">按关键字</a></li>
+                                <li><a href="javascript:get_brand_type(2);" data-value="2" class="ftx-01">按列表</a></li>
+                            </ul>
+                            <input name="sel_mode" type="hidden" value="0" id="">
+                        </div>
+                        <input type="text" name="brand_keyword" id="brand_keyword" style="display: none;" class="text w120 mt10" autocomplete="off" />
+                        <div id="brandId" class="imitate_select select_w140" {if $priv_ru eq 1}style="display:none"{/if}>
+                            <div class="cite">{$lang.please_select}</div>
+                            <ul>
+                                <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.goods_brand}</a></li>
+                                {foreach from=$brand_list item=data key=key}
+                                <li><a href="javascript:;" data-value="{$key}" class="ftx-01">{$data}</a></li>
+                                {/foreach}
+                            </ul>
+                            <input name="brand_id" type="hidden" value="" id="">
+                        </div>								
+                        {if $priv_ru eq 1}
+                        <div id="storeBrand" class="imitate_select select_w140 mt10" style="display:none">
+                            <div class="cite">{$lang.please_select}</div>
+                            <ul>
+                                <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.goods_brand}</a></li>
+                                {foreach from=$store_brand item=data key=key}
+                                <li><a href="javascript:;" data-value="{$key}" class="ftx-01">{$data}</a></li>
+                                {/foreach}
+                            </ul>
+                            <input name="store_brand" type="hidden" value="" id="">
+                        </div>								
+                        {/if}							
+                    </dd>
+                </dl>
+                <dl class="w140">
+                    <dt>{$lang.keyword}</dt>
+                    <dd>
+                        <input type="text" name="keyword" size="15" class="text w270 mr0" autocomplete="off" />						
+                    </dd>
+                </dl>				
+            </div>
+        </div>
+        <div class="bot_btn">
+            <input type="submit" class="btn red_btn" name="tj_search" value="提交查询" />
+            <input type="reset" class="btn btn_reset" name="reset" value="重置" />
+        </div>
+	</div>
+</div>
+</form>
+<!--高级搜索 end-->	
+
+{literal}
+<script type="text/javascript">
+	$.gjSearch("-350px");
+	
+	{if $priv_ru eq 1}
+	function get_store_search(val){
+		if(val == 1){
+			$("input[name=merchant_id]").parent(".imitate_select").show();
+			$("input[name=store_keyword]").hide();
+			$("input[name=store_type]").parent(".imitate_select").hide();
+		}else if(val == 2){
+			$("input[name=merchant_id]").parent(".imitate_select").hide();
+			$("input[name=store_keyword]").show();
+			$("input[name=store_type]").parent(".imitate_select").hide();			
+		}else if(val == 3){
+			$("input[name=merchant_id]").parent(".imitate_select").hide();
+			$("input[name=store_keyword]").show();
+			$("input[name=store_type]").parent(".imitate_select").show();			
+		}else{
+			$("input[name=merchant_id]").parent(".imitate_select").hide();
+			$("input[name=store_keyword]").hide();
+			$("input[name=store_type]").parent(".imitate_select").hide();			
+		}
+	}
+	{/if}
+	
+	function searchGoods()
+	{
+		{if $smarty.get.act neq "trash"}
+		listTable.filter['cat_id'] = document.forms['searchHighForm'].elements['cat_id'].value;
+		
+		//传品牌归属值 ecmoban模板堂 --zhuo
+		if(document.forms['searchHighForm'].elements['sel_brand']){
+			listTable.filter['sel_brand'] = document.forms['searchHighForm'].elements['sel_brand'].value;
+			listTable.filter['store_brand'] = document.forms['searchHighForm'].elements['store_brand'].value;
+		}
+		
+		listTable.filter['brand_id'] = document.forms['searchHighForm'].elements['brand_id'].value;
+		listTable.filter['intro_type'] = document.forms['searchHighForm'].elements['intro_type'].value;
+		  {if $judge_supplier_enabled}
+		  listTable.filter['suppliers_id'] = document.forms['searchHighForm'].elements['suppliers_id'].value;
+		  {/if}
+		listTable.filter['is_on_sale'] = document.forms['searchHighForm'].elements['is_on_sale'].value;
+		{/if}
+
+		{if $priv_ru eq 1}
+		listTable.filter['store_search'] = Utils.trim(document.forms['searchHighForm'].elements['store_search'].value);
+		listTable.filter['merchant_id'] = Utils.trim(document.forms['searchHighForm'].elements['merchant_id'].value);
+		listTable.filter['store_keyword'] = Utils.trim(document.forms['searchHighForm'].elements['store_keyword'].value);
+		listTable.filter['store_type'] = Utils.trim(document.forms['searchHighForm'].elements['store_type'].value);
+		{/if}
+
+		listTable.filter['keyword'] = Utils.trim(document.forms['searchHighForm'].elements['keyword'].value);
+		// 品牌搜索  -qin
+		if(document.forms['searchHighForm'].elements['brand_keyword']){
+			listTable.filter['brand_keyword'] = Utils.trim(document.forms['searchHighForm'].elements['brand_keyword'].value);
+		}
+		if(document.forms['searchHighForm'].elements['sel_mode']){
+			listTable.filter['sel_mode'] = Utils.trim(document.forms['searchHighForm'].elements['sel_mode'].value);
+		}
+
+		listTable.filter['page'] = 1;
+
+		listTable.loadList();
+	}
+
+// 显示品牌选择方式
+function get_brand_type(val)
+{
+	//var selbrand = document.getElementById('selbrand').value;
+	var selbrand = $("input[name=sel_brand]").val();
+	var brandId = document.getElementById('brandId');
+	var storeBrand = document.getElementById('storeBrand');
+	var brand_keyword = document.getElementById('brand_keyword');
+
+	var sel_mode = document.getElementById('sel_mode');
+	if(val == 0)
+	{
+		brandId.style.display = 'none';
+		storeBrand.style.display = 'none';
+		brand_keyword.style.display = 'none';
+	}
+	else if(val == 1)
+	{
+		brand_keyword.style.display = '';
+		brandId.style.display = 'none';
+		storeBrand.style.display = 'none';
+	}
+	else if(val == 2)
+	{
+		if(selbrand == 1){
+			brandId.style.display = '';
+			storeBrand.style.display = 'none';
+		}else if(selbrand == 2){
+			brandId.style.display = 'none';
+			storeBrand.style.display = '';
+		}
+		
+		brand_keyword.style.display = 'none';
+	}
+}
+
+//判断选择品牌归属 ecmoban模板堂 --zhuo
+function get_selbrand(val){
+	
+	var sel_mode = document.getElementById('sel_mode');
+	var brandId = document.getElementById('brandId');
+	var storeBrand = document.getElementById('storeBrand');
+	var brand_keyword = document.getElementById('brand_keyword');
+
+	var selbrand = document.getElementById('selbrand').value;
+	
+	if(val == 1)
+	{	
+		sel_mode.style.display = '';
+	}else if(val == 2){
+		sel_mode.style.display = '';
+	}else{
+		sel_mode.style.display = 'none';
+	}
+	
+	brand_keyword.style.display = 'none';
+	brandId.style.display = 'none';
+	storeBrand.style.display = 'none';
+}
+</script>
+{/literal}

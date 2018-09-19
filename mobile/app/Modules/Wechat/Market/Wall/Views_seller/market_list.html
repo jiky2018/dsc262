@@ -1,0 +1,87 @@
+
+<div class="wrapper-right of">
+    <div class="tabmenu">
+        <ul class="tab">
+            <li><a href="{url('market_index')}" class="s-back">返回</a></li>
+            <li role="presentation" class="active"><a href="#home" role="tab" data-toggle="tab"> {$lang['wechat_market']} - {$config.name}</a></li>
+        </ul>
+    </div>
+
+    <div class="explanation" id="explanation">
+        <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4></div>
+        <ul>
+            <li>一、上墙信息，即当前活动所有用户的留言数量。参与人员，即当前活动参与用户的数量。</li>
+            <li>二、点击数据：可查看当前活动消息并审核，参与人员，获奖名单。</li>
+            <li>三、点击上墙地址，获得微信墙二维码地址，用微信扫描即可进入参与活动。</li>
+            <li>四、大屏幕：主要是用来展示在幻灯片大屏幕上，显示参与用户，用户留言，进行抽奖。（可单独用一台电脑打开，然后通过幻灯片放大展示）</li>
+        </ul>
+    </div>
+	<div class="wrapper-list mt20" >
+		<div class="common-head">
+            <div class="fl mb20">
+            	<a href="{url('market_edit', array('type' => $config['keywords']))}" class="sc-btn sc-blue-btn" ><div class="fbutton"><div class="add " title="添加活动"><span><i class="fa fa-plus"></i>添加活动</span></div></div></a>
+            </div>
+        </div>
+
+    	<div class="list-div" id="listDiv">
+			<table id="list-table" class="ecsc-default-table" style="">
+            <thead>
+                <tr class="text-center">
+                    <!-- <th class="text-center">活动ID</th> -->
+                    <th class="text-center">活动名称</th>
+                    <th class="text-center">关键词</th>
+                    <th class="text-center">活动时间</th>
+                    <th class="text-center">上墙信息</th>
+                    <th class="text-center">参与人数</th>
+                    <th class="text-center">状态</th>
+                    <th class="text-center">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+            {foreach $list as $val}
+            <tr class="text-center wall-list">
+                <!-- <td>{$val['id']}</td> -->
+                <td>{$val['name']}</td>
+                <td>{$val['command']}</td>
+                <td>{$val['starttime']} ~ {$val['endtime']}</td>
+                <td>{$val['msg_count']}</td>
+                <td>{$val['user_count']}</td>
+                <td>{$val['status']}</td>
+                <td class="handle">
+                <div class="tDiv">
+                    <a class="btn_edit" href="{url('market_edit', array('type' => $config['keywords'], 'id' => $val['id']))}"><i class="fa fa-edit"></i>编辑</a>
+                    <a class="btn_see" href="{url('data_list', array('type' => $config['keywords'], 'function' => 'messages', 'id' => $val['id'], 'status' => 0))}"><i class="fa fa-eye"></i>消息</a>
+                    <a class="btn_see" href="{url('wechat/wall/wall_msg', array('wall_id' => $val['id']))}" target="_blank"><i class="fa fa-desktop"></i>大屏幕</a>
+                    <a class="btn_see fancybox-img fancybox-img.iframe getqr" href="{url('market_qrcode', array('type' => $config['keywords'], 'id' => $val['id']))}"><i class="fa fa-qrcode"></i>上墙二维码</a>
+                    <a class="btn_trash delete_confirm" data-href="{url('market_del', array('type' => $config['keywords'], 'id' => $val['id']))}" href="javascript:;"><i class="fa fa-trash-o"></i>删除</a>
+                </div>
+                </td>
+            </tr>
+            {/foreach}
+            </tbody>
+            {if empty($list)}
+            <tr class="no-records" ><td colspan="7">没有找到任何记录</td></tr>
+            {/if}
+            </table>
+        </div>
+
+        {include file="seller_pageview"}
+
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    $(function(){
+        $(".getqr").click(function(){
+            var url = $(this).attr("href");
+            $.get(url, '', function(data){
+                if(data.status <= 0 ){
+                    $.fancybox.close();
+                    alert(data.msg);
+                    return false;
+                }
+            }, 'json');
+        });
+    })
+</script>

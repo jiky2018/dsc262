@@ -1,0 +1,132 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">移动应用 - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>该页面展示了商城所有的百宝箱。</li>
+                    <li>可在页面中编辑百宝箱的显示和排序。</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<div class="common-head">
+                    <div class="fl">
+                        <a href="ecjia_discover.php?act=add"><div class="fbutton"><div class="add" title="添加商品"><span><i class="icon icon-plus"></i>添加百宝箱</span></div></div></a>
+                    </div>
+                    <div class="refresh{if !$action_link} ml0{/if}">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+                </div>
+                <div class="common-content">
+                	<div class="list-div"  id="listDiv">
+                        {/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                    <th width="14%"><div class="tDiv">菜单图标</div></th>
+                                    <th width="15%"><div class="tDiv">菜单链接</div></th>
+                                    <th width="8%"><div class="tDiv">是否显示</div></th>
+                                    <th width="10%"><div class="tDiv">菜单排序</div></th>
+                                    <th width="12%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {foreach from=$shortcut item=list key=key}
+                            	<tr>
+                                    <td><div class="tDiv"><a href="{$list.src|escape:html}"><img src="../{$list.src|escape:html}" width="60" height="60"></a></div></td>
+                                    <td><div class="tDiv"><a href="{$list.url}" target="_blank">{$list.url}</a><br>{$list.text}</div></td>
+                                    <td>
+                                        <div class="tDiv">
+                                            <div class="switch {if $list.display}active{/if}" title="{if $list.display}是{else}否{/if}" onclick="listTable.switchBt(this, 'toggle_display', {$key})">
+                                                <div class="circle"></div>
+                                            </div>
+                                            <input type="hidden" value="0" name="">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="tDiv">
+                                            <span onclick="javascript:listTable.edit(this, 'edit_sort', {$key})">{$list.sort}</span>
+                                        </div>
+                                    </td>
+                                    <td class="handle">
+                                        <div class="tDiv a3">
+                                            <a href="ecjia_discover.php?act=edit&id={$key}" title="{$lang.edit}" class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>
+                                            <a href="javascript:;" onclick="listTable.remove({$key}, '{$lang.drop_confirm}')" title="{$lang.remove}" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {foreachelse}
+                                    <tr><td class="no-records" colspan="12">{$lang.no_records}</td></tr>
+                                {/foreach}
+                            </tbody>
+                        </table>
+                        {if $full_page}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+ 	{include file ='library/pagefooter.lbi'}
+    
+    <script type="text/javascript">
+		listTable.recordCount = {$record_count|default:0};
+		listTable.pageCount = {$page_count|default:1};
+		
+		{foreach from=$filter item=item key=key}
+		listTable.filter.{$key} = '{$item}';
+		{/foreach}
+		
+		$(function(){
+			//点击查看图片
+			$('.nyroModal').nyroModal();
+		});
+		
+        $.divselect("#shop_name_select","#shop_name_val",function(obj){
+            var val = obj.attr("data-value");
+            get_store_search(val);
+        });
+        function get_store_search(val){
+			if(val == 1){
+				$("#merchant_box").css("display",'');
+				$("#store_keyword").css("display",'none');
+				$("#store_type").css("display",'none')
+			}else if(val == 2){
+				$("#merchant_box").css("display",'none');
+				$("#store_keyword").css("display",'');
+				$("#store_type").css("display",'none')
+			}else if(val == 3){
+				$("#merchant_box").css("display",'none');
+				$("#store_keyword").css("display",'');
+				$("#store_type").css("display",'')
+			}else{
+				$("#merchant_box").css("display",'none');
+				$("#store_keyword").css("display",'none');
+				$("#store_type").css("display",'none')
+			}
+        }
+
+		function searchAds()
+		{
+			var frm = $("form[name='searchForm']");
+			listTable.filter['store_search'] = Utils.trim(frm.find("input[name='store_search']").val());
+			listTable.filter['merchant_id'] = Utils.trim(frm.find("input[name='merchant_id']").val());
+			listTable.filter['store_keyword'] = Utils.trim(frm.find("input[name='store_keyword']").val());
+			listTable.filter['store_type'] = Utils.trim(frm.find("input[name='store_type']").val());
+			
+			listTable.filter['adName'] = frm.find("input[name='adName']").val();
+			listTable.filter['keyword'] = Utils.trim(frm.find("input[name='keyword']").val());
+			listTable.filter['page'] = 1;
+			
+			listTable.loadList();
+		}
+    	$.gjSearch("-240px");  //高级搜索
+    </script>
+</body>
+</html>
+{/if}

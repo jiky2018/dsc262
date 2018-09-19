@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<!-- #BeginLibraryItem "/library/js_languages_new.lbi" --><!-- #EndLibraryItem -->
+</head>
+<body class="bonusBody">
+    <!-- #BeginLibraryItem "/library/page_header_common.lbi" --><!-- #EndLibraryItem -->
+    <div id="content" class="bonus_content">
+        <div class="w w1200">
+        	<div class="bonus_warp">
+            	<div class="bonus_icon"></div>
+                <div class="bonus_info">
+                	<div class="bonus_info_title">
+                    	<h1>{$bonus_info.type_name}</h1>
+                        <span>面值：{$bonus_info.type_money_formatted}</span>
+                    </div>
+                	<div class="bonus_info_con">
+                    	<p>最小订单金额：{$bonus_info.min_goods_amount_formatted}</p>
+                        <p>使用开始时间：{$bonus_info.use_start_date}</p>
+                        <p>使用结束时间：{$bonus_info.use_end_date}</p>
+                        {if $bonus_info.usebonus_type}
+                        <p>{$lang.general_audience}</p>
+                        {else}
+                        <p>仅限{$bonus_info.shop_name}使用</p>
+                        {/if}
+                    </div>
+                    <div class="bonus_info_btn">
+                    	{if $exist}
+                        <input type="button" value="已领取" class="sc-btn sc-btn-disabled btn30 w90 mt10" ectype="get_bonus">
+                        {elseif !$left}
+                        <input type="button" value="已领完" class="sc-btn sc-btn-disabled btn30 w90 mt10" ectype="get_bonus">
+                        {else}
+                        <input type="button" value="领取" class="sc-btn sc-redBg-btn btn30 w90 mt10" ectype="get_bonus">
+                        {/if}
+                        <input type="hidden" name="id" value="{$smarty.get.id}"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/dsc-common.js"></script>
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.purebox.js"></script>
+    <script type="text/javascript">
+    $(document).on('click', "[ectype='get_bonus']", function(){
+        var type_id = $("input[name='id']").val();
+        if(user_id > 0){
+            $.jqueryAjax('bonus.php', 'act=get_bonus&type_id='+type_id, function(data){
+                if(data.error == 0){
+                    $("[ectype='get_bonus']").val('已领取');
+					$("[ectype='get_bonus']").addClass("sc-btn-disabled").removeClass("sc-redBg-btn");
+                }
+                pbDialog(data.message,"",0,"","",120);
+            });
+        }else{
+            $.notLogin("get_ajax_content.php?act=get_login_dialog",'bonus.php?act=bonus_info&id='+type_id);
+        }
+    })
+</script>
+</body>
+</html>

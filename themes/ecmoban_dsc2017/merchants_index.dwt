@@ -1,0 +1,179 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<!-- #BeginLibraryItem "/library/js_languages_new.lbi" --><!-- #EndLibraryItem -->
+</head>
+
+<body class="bg-ligtGary">
+	<!-- #BeginLibraryItem "/library/page_header_common.lbi" --><!-- #EndLibraryItem -->
+    <div class="shop-header">
+         <!-- #BeginLibraryItem "/library/merchants_store_top.lbi" --><!-- #EndLibraryItem -->
+        <div class="bottom">
+            <div class="w w1200">
+                <div class="shop-head-category">
+                    <div class="all-cate"><a href="javascript:;">{$lang.all_seller_cat}<i class="iconfont icon-liebiao"></i></a></div>
+                    <div class="cate-tab-content">
+                    	{foreach from=$cat_store_list item=cat name=no1}
+                        <!-- {if $smarty.foreach.no1.iteration<6}--> 
+                        <dl>
+                            <dt><a href="{$cat.url}">{$cat.cat_name}</a></dt>
+                            {foreach from=$cat.child_tree item=tree}
+                            <a href="{$tree.url}">{$tree.name}</a>
+                            {/foreach}
+                        </dl>
+                        <!-- {/if} -->
+                        {/foreach}
+                    </div>
+                </div>
+                <div class="shop-nav">
+                    <ul>
+                        <li>
+                            <a href="{$merchants_url}" {if $cat_id eq 0}class="current"{/if}>{$lang.Shop_home}</a>
+                        </li>
+                        {foreach from=$store_category item=category key=key name=no}
+                        <!-- {if $smarty.foreach.no.iteration<6}-->
+                        <li class="s_box_id">
+                            <a href="{$category.url}" {if $category.opennew eq 1} target="_blank"{/if}>{$category.cat_name}</a>
+                        </li>
+                        <!-- {/if} -->
+                        {/foreach}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- banner -->
+    <div class="shop-banner">
+        <div class="w w1200">
+            <div class="bd">
+                <ul>
+                    <!--{foreach from=$banner_list item=ad name=noad}-->
+                    <li><a href="{$ad.img_link}" target="_blank" style="background:url({$ad.img_url}) no-repeat center 0px;"></a></li>
+                    <!--{/foreach}-->
+                </ul>
+            </div>
+            <div class="hd"><ul></ul></div>
+        </div>
+    </div>
+    <!-- main -->
+    <div class="shop-home">
+        <div class="w1200 w">
+            <!-- under banner ad -->
+            <div class="under-banner">
+            	{* DSC 提醒您：动态载入merchants_index.lbi，显示首页分类小广告 *}{insert name='get_adv_child' ad_arr=$merchants_index}
+            </div>
+            <!-- floor -->
+            <div class="shop-floor-wp">
+                <!--{foreach from=$get_cat_goods item=top_goods name=foo}-->
+                {if $top_goods.goods}
+                <div class="shop-floor">
+                    <div class="f-hd"><h2>{$top_goods.cat_name}</h2></div>
+                    <div class="f-bd">
+                        <ul class="list clearfix">
+                            <li class="first">{* DSC 提醒您：动态载merchants_index_flow.lbi，显示首页分类小广告 *}{insert name='get_adv_child' ad_arr=$merchants_index_flow id=$top_goods.cat_id}</li>
+                            <!--{foreach from=$top_goods.goods item=goods name=child_no}--> 
+                            <li class="goods-item">
+                                <div class="p-img"><a href="{$goods.url}" target="_blank"><img src="{$goods.thumb}" alt=""></a></div>
+                                <div class="p-name"><a href="{$goods.url}" title="{$goods.short_name|escape:html}" target="_blank">{$goods.short_name}</a></div>
+                                <div class="p-price">
+                                {if $goods.promote_price}
+                                	{$goods.promote_price}
+                                {else}
+                                    {$goods.shop_price}
+                                {/if}
+                                </div>
+                            </li>
+                    		<!--{/foreach}-->
+                        </ul>
+                    </div>
+                </div>
+                {/if}
+                <!--{foreachelse}-->
+                <div class="no_records">
+                    <i class="no_icon_two"></i>
+                    <div class="no_info">
+                        <h3>{$lang.information_null}</h3>
+                    </div>
+                </div>
+                <!--{/foreach}-->
+
+				<!--{if $goods_hot}-->
+                <div class="shop-floor">
+                    <div class="f-hd"><h2>热卖商品</h2></div>
+                    <div class="f-bd">
+                        <ul class="list clearfix">
+                            <li class="first"><a href=""><img src="images/shop/f.jpg" alt=""></a></li>
+                            {foreach from=$goods_hot item=goods key=key name=sale}
+                            <!-- {if $smarty.foreach.sale.iteration<9}-->
+                            <li class="goods-item">
+                                <div class="p-img"><a href="{$goods.url}" title="{$goods.goods_name|escape:html}" target="_blank"><img src="{$goods.goods_thumb}" alt=""></a></div>
+                                <div class="p-name"><a href="{$goods.url}" title="{$goods.goods_name|escape:html}" target="_blank">{$goods.goods_name}</a></div>
+                                <div class="p-price">
+                                	{if $goods.promote_price}
+                                		{$goods.promote_price}
+                                    {else}
+                                    	{$goods.shop_price}
+                                    {/if}
+                                </div>
+                            </li>
+                            <!-- {/if} -->
+                            {/foreach}
+                        </ul>
+                    </div>
+                </div>
+                <!--{/if}-->
+                
+                <!--{if $promotion_goods}-->
+                <div class="shop-floor">
+                    <div class="f-hd"><h2>促销商品</h2></div>
+                    <div class="f-bd">
+                        <ul class="list clearfix">
+                            <li class="first"><a href=""><img src="images/shop/f.jpg" alt=""></a></li>
+                            {foreach from=$promotion_goods item=promotion_goods name=pro}
+                            <!-- {if $smarty.foreach.pro.iteration<9}-->
+                            <li class="goods-item">
+                                <div class="p-img"><a href="{$promotion_goods.url}" title="{$promotion_goods.name|escape:html}" target="_blank"><img src="{$promotion_goods.thumb}" alt=""></a></div>
+                                <div class="p-name"><a href="{$promotion_goods.url}" title="{$promotion_goods.name|escape:html}" target="_blank">{$promotion_goods.name}</a></div>
+                                <div class="p-price">
+                                	{if $promotion_goods.promote_price}
+                                    	{$promotion_goods.promote_price}
+                                    {else}
+                                    	{$promotion_goods.shop_price}
+                                    {/if}
+                                </div>
+                            </li>
+                            <!-- {/if} -->
+                            {/foreach}
+                        </ul>
+                    </div>
+                </div>
+                <!--{/if}-->
+            </div>
+            <!-- 楼层电梯 -->
+        </div>
+    </div>
+    <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+    {insert_scripts files='jquery.SuperSlide.2.1.1.js,common.js,parabola.js,shopping_flow.js'}
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/dsc-common.js"></script>
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.purebox.js"></script>
+    <script type="text/javascript">
+	$(function(){
+		$(".shop-banner").slide({
+			effect: 'leftLoop',
+			mainCell: '.bd ul',
+			titCell: '.hd ul',
+			autoPage: true
+		})
+	})
+    </script>
+</body>
+</html>

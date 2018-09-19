@@ -1,0 +1,334 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="ecsc-form-goods">
+                    <form method="post" action="offline_store.php" name="theForm"  id="offline_store_form" enctype="multipart/form-data">
+                    <div class="wrapper-list border1">
+                    	<dl>
+                        	<dt>{$lang.require_field}&nbsp;{$lang.stores_user}：</dt>
+                            <dd>
+								<input type="text" class="text" name="stores_user" maxlength="60" size = "30" value="{$offline_store.stores_user}" />
+								<div class="form_prompt"></div>
+							</dd>
+                        </dl>
+                        {if $act eq "insert"}
+                        <dl>
+                        	<dt>{$lang.require_field}&nbsp;{$lang.stores_pwd}：</dt>
+                            <dd>
+                                <input type="password"   style="display:none"/>
+								<input type="password" class="text" name="stores_pwd" maxlength="60" size = "30" id='stores_pwd'/>
+								<div class="form_prompt"></div>
+							</dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.require_field}&nbsp;{$lang.confirm_pwd}：</dt>
+                            <dd>
+                                <input type="password"   style="display:none"/>
+								<input type="password" class="text" name="confirm_pwd" maxlength="60" size = "30" />
+								<div class="form_prompt"></div>
+							</dd>
+                        </dl>
+                        {elseif $act eq "update"}
+                        <dl>
+                        	<dt>{$lang.newpass}：</dt>
+                            <dd>
+                                <input type="password"   style="display:none"/>
+                                <input type="password" name="newpass" maxlength="20" value="" size="20" class="text ignore" />
+                                <div class="form_prompt"></div>
+							</dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.confirm_pwd}：</dt>
+                            <dd>
+                                <input type="password"   style="display:none"/>
+							<input type="password" name="newconfirm_pwd" maxlength="20" size="20" class="text ignore" />
+							<div class="form_prompt"></div>
+							</dd>
+                        </dl>
+                        {/if}
+                        <dl>
+                        	<dt>{$lang.require_field}&nbsp;{$lang.stores_name}：</dt>
+                            <dd>
+                                <input type="text" class="text" name="stores_name" maxlength="60" size = "30" value="{$offline_store.stores_name}" />
+								<div class="form_prompt"></div>
+                                <div class="notic">{$lang.stores_name_dsc}</div>
+                            </dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.require_field}&nbsp;{$lang.area_info}：</dt>
+                            <dd>
+                                <div id="dlcountry" class="ui-dropdown smartdropdown alien mr15">
+                                    <input type="hidden" value="{$offline_store.country|default:0}" name="country" id="selcountry">
+                                    <div class="txt">国家</div>
+                                    <i class="down u-dropdown-icon"></i>
+                                    <div class="options clearfix" style="max-height:300px;">
+                                        {foreach from=$countries item=list}
+                                        <span class="liv" data-text="{$list.region_name}" data-type="1"  data-value="{$list.region_id}">{$list.region_name}</span>
+                                        {/foreach}
+                                    </div>
+                                </div>
+                                <div id="dlProvinces" class="ui-dropdown smartdropdown alien">
+                                    <input type="hidden" value="{$offline_store.province}" name="province" id="selProvinces">
+                                    <div class="txt">省/直辖市</div>
+                                    <i class="down u-dropdown-icon"></i>
+                                    <div class="options clearfix" style="max-height:300px;">
+                                        {foreach from=$provinces item=list}
+                                        <span class="liv" data-text="{$list.region_name}" data-type="2"  data-value="{$list.region_id}">{$list.region_name}</span>
+                                        {/foreach}
+                                    </div>
+                                </div>
+                                <div id="dlCity" class="ui-dropdown smartdropdown alien">
+                                    <input type="hidden" value="{$offline_store.city}" name="city" id="selCities">
+                                    <div class="txt">市</div>
+                                    <i class="down u-dropdown-icon"></i>
+                                    <div class="options clearfix" style="max-height:300px;">
+                                        {foreach from=$cities item=list}
+                                        <span class="liv" data-text="{$list.region_name}" data-type="3"  data-value="{$list.region_id}">{$list.region_name}</span>
+                                        {/foreach}
+                                    </div>
+                                </div>
+                                <div id="dlRegion" class="ui-dropdown smartdropdown alien">
+                                    <input type="hidden" value="{$offline_store.district}" name="district" id="selDistricts">
+                                    <div class="txt">区/县</div>
+                                    <i class="down u-dropdown-icon"></i>
+                                    <div class="options clearfix" style="max-height:300px;">
+                                        {foreach from=$city item=list}
+                                        <span class="liv" data-text="{$list.region_name}" data-type="4"  data-value="{$list.region_id}">{$list.region_name}</span>
+                                        {/foreach}
+                                    </div>
+                                </div>
+								<div class="form_prompt"></div>								
+                                <div class="notic">{$lang.area_info_dsc}</div>
+                            </dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.require_field}&nbsp;{$lang.stores_address}：</dt>
+                            <dd>
+                            	<input type="text" class="text" name="stores_address" maxlength="60" size = "30" value="{$offline_store.stores_address}" />
+								<div class="form_prompt"></div>
+                            	<div class="notic">{$lang.stores_address_dsc}</div>
+                            </dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.require_field}&nbsp;{$lang.stores_tel}：</dt>
+                            <dd>
+                            	<input type="text" class="text" name="stores_tel" maxlength="60" size = "30" value="{$offline_store.stores_tel}" />
+								<div class="form_prompt"></div>
+                                <div class="notic">{$lang.stores_tel_dsc}</div>
+                            </dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.require_field}&nbsp;{$lang.stores_email}：</dt>
+                            <dd>
+                            	<input type="text" class="text" name="email" maxlength="60" size = "30" value="{$offline_store.email}" />
+								<div class="form_prompt"></div>
+                                <div class="notic">{$lang.stores_email_dsc}</div>
+                            </dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.stores_opening_hours}：</dt>
+                            <dd>
+                            	<input type="text" class="text" name="stores_opening_hours" maxlength="60" size = "30" value="{$offline_store.stores_opening_hours}" />
+								<div class="form_prompt"></div>
+                                <div class="notic">{$lang.stores_opening_hours_dsc}</div>
+                            </dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.stores_traffic_line}：</dt>
+                            <dd>
+                            	<textarea class="textarea" maxlength="50" rows="2" name="stores_traffic_line">{$offline_store.stores_traffic_line}</textarea>
+								<div class="form_prompt"></div>
+                                <div class="notic">{$lang.stores_traffic_line_dsc}</div>
+                            </dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.require_field}&nbsp;{$lang.stores_img}：</dt>
+                            <dd>
+                            	<div class="type-file-box">
+                                	<div class="input">
+                                    <input type="text" name="textfile" class="type-file-text" id="textfield" value="{if $offline_store.stores_img}{$offline_store.stores_img|escape}{/if}" autocomplete="off" readonly />
+                                    <input type="button" name="button" id="button" class="type-file-button" value="上传..."/>
+                                    <input type="file" class="type-file-file" id="stores_img" name="stores_img" data-state="imgfile" size="30" hidefocus="true" value="" />
+                                    </div>
+                                    {if $offline_store.stores_img}
+                                    <span class="show">
+                                        <a href="../{$offline_store.stores_img|escape}" target="_blank" class="nyroModal"><i class="icon icon-picture" onmouseover="toolTip('<img src=../{$offline_store.stores_img|escape}>')" onmouseout="toolTip()"></i></a>
+                                    </span>
+                                    {/if}
+                                    <div class="form_prompt"></div>
+                                    <input type="hidden" name="file_url" value="{$offline_store.stores_img|escape}" autocomplete="off" readonly />
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.is_confirm}：</dt>
+                            <dd>
+                            	<div class="checkbox_items">
+                                	<div class="checkbox_item">
+                                    	<input type="radio" name="is_confirm" value="0" class="ui-radio" id="is_confirm_0" {if $offline_store.is_confirm eq 0}checked=""{/if} class="radio"/>
+                                        <label class="ui-radio-label" for="is_confirm_0">关闭</label>
+                                    </div>
+                                    <div class="checkbox_item">
+                                    	<input type="radio" name="is_confirm" value="1" class="ui-radio" id="is_confirm_1" {if $offline_store.is_confirm eq 1}checked=""{/if}/>
+                                        <label class="ui-radio-label" for="is_confirm_1">开启</label>
+                                    </div>
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl class="button_info">
+                        	<dt>&nbsp;</dt>
+                            <dd>
+                                <input type="submit" class="sc-btn sc-blueBg-btn btn35" id="submitBtn" name="sub" value="{$lang.button_submit}" />
+                                <input type="reset" class="sc-btn btn35 sc-blue-btn" value="{$lang.button_reset}" />
+                                <input type="hidden" name="act" value="{$act}"/>
+                                <input type="hidden" name="id" value="{$offline_store.id}"/>
+                            </dd>
+                        </dl>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+{insert_scripts files="../js/utils.js"}
+<script type="text/javascript" src="../js/jquery.picTip.js"></script>
+<script type="text/javascript" src="js/region.js"></script>
+<script>
+<!--
+{literal}
+onload = function()
+{
+  {/literal}
+  get_value = '{$bonus_arr.send_type}';
+  {literal}
+  
+  startCheckOrder();
+}
+
+var action = '{$act}';
+$(function(){
+	$.levelLink();
+	$('.nyroModal').nyroModal();
+	
+	//表单验证
+	$("#submitBtn").click(function(){
+		if($("#offline_store_form").valid()){
+			$("#offline_store_form").submit();
+		}
+	});
+	
+	$('#offline_store_form').validate({
+		errorPlacement:function(error, element){
+			var error_div = element.parents('dl').find('div.form_prompt');
+			//element.parents('dl').find(".notic").hide();
+			error_div.html("").append(error);
+		},
+		ignore:".ignore",
+		rules:{
+			stores_user :{
+				required : true
+			},
+			stores_pwd:{
+				required : true,
+				minlength:6
+			},
+			confirm_pwd:{
+				required : true,
+				equalTo:"#stores_pwd"
+			},
+			country:{
+				required : true
+			},
+			stores_name:{
+				required : true
+			},
+			stores_address:{
+				required : true
+			},
+			textfile:{
+				required : true
+			},
+			stores_tel : {
+				required : true,
+				isTel : true
+			},
+			email:{
+				required : true
+			},
+			country : {
+				min : 1
+			},
+			province : {
+				min : 1
+			},
+			city : {
+				min : 1
+			},
+			district : {
+				min : 1
+			}
+		},
+		messages:{
+			stores_user:{
+				 required : '<i class="icon icon-exclamation-sign"></i>'+stores_user_null
+			},
+			stores_pwd:{
+				 required : '<i class="icon icon-exclamation-sign"></i>'+stores_pwd_null,
+				 minlength : '<i class="icon icon-exclamation-sign"></i>'+pwd_not_six
+			},
+			confirm_pwd:{
+				 required : '<i class="icon icon-exclamation-sign"></i>'+confirm_pwd_null,
+				 equalTo:'<i class="icon icon-exclamation-sign"></i>'+confirm_pwd_equal
+			},
+			stores_name:{
+				 required : '<i class="icon icon-exclamation-sign"></i>'+stores_name_null
+			},
+			country:{
+				 required : '<i class="icon icon-exclamation-sign"></i>'+country_null
+			},
+			stores_address:{
+				 required : '<i class="icon icon-exclamation-sign"></i>'+stores_address_null
+			},
+			textfile:{
+				required : '<i class="icon icon-exclamation-sign"></i>'+stores_img_null
+			},
+			stores_tel:{
+				required : '<i class="icon icon-exclamation-sign"></i>'+stores_tel_null,
+				isTel : '<i class="icon icon-exclamation-sign"></i>'+stores_tel_error,
+			},
+			email:{
+				required : '<i class="icon icon-exclamation-sign"></i>'+stores_email_null,
+				email : '<i class="icon icon-exclamation-sign"></i>'+stores_email_error
+			},
+			country : {
+				min : '<i class="icon icon-exclamation-sign"></i>'+country_null
+			},
+			province : {
+				min : '<i class="icon icon-exclamation-sign"></i>'+province_null
+			},
+			city : {
+				min : '<i class="icon icon-exclamation-sign"></i>'+city_null
+			},
+			district : {
+				min : '<i class="icon icon-exclamation-sign"></i>'+district_null
+			}
+		}			
+	});
+});
+</script>
+{/literal}
+
+</body>
+</html>

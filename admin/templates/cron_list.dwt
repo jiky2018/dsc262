@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.11_system} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit">
+					<i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span>
+                    {if $open eq 1}
+                    <div class="view-case">
+                    	<div class="view-case-tit"><i></i>{$lang.view_tutorials}</div>
+                        <div class="view-case-info">
+                        	<a href="http://help.ecmoban.com/article-6878.html" target="_blank">{$lang.tutorials_bonus_list_one}</a>
+                        </div>
+                    </div>			
+                    {/if}	
+				</div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.list.0}</li>
+                    <li>{$lang.operation_prompt_content.list.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                	<div class="list-div" id="listDiv">
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                    <th width="13%"><div class="tDiv">{$lang.cron_name}</div></th>
+                                    <th width="20%"><div class="tDiv">{$lang.cron_desc}</div></th>
+                                    <th width="16%"><div class="tDiv">{$lang.cron_this}</div></th>
+                                    <th width="16%"><div class="tDiv">{$lang.cron_next}</div></th>
+                                    <th width="3%"><div class="tDiv">{$lang.if_open}</div></th>
+                                    <th width="22%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {foreach from=$modules item=module}
+                            	<tr>
+                                    <td><div class="tDiv">{if $module.install == 1}{$module.name}{else}{$module.name}{/if}</div></td>
+                                    <td><div class="tDiv">{$module.desc|nl2br}</div></td>
+                                    <td><div class="tDiv">{$module.thistime}</div></td>
+                                    <td><div class="tDiv">{$module.nextime}</div></td>
+                                    <td>
+                                    	<div class="tDiv">
+                                            {if $module.install == "1"}
+                                            <div class="switch {if $module.enable eq 1}active{/if}" title="{if $module.enable eq 1}{$lang.yes}{else}{$lang.no}{/if}" onclick="listTable.switchBt(this, 'toggle_show', '{$module.code}')">
+                                            	<div class="circle"></div>
+                                            </div>
+                                            <input type="hidden" value="0" name="">
+                                            {else}－{/if}
+                                        </div>
+                                    </td>
+                                    <td class="handle">
+                                        <div class="tDiv a3">
+                                        {if $module.install == "1"}
+                                            <a href="javascript:confirm_redirect(lang_removeconfirm, 'cron.php?act=uninstall&code={$module.code}')" class="btn_trash"><i class="icon icon-trash"></i>{$lang.uninstall}</a>
+                                            <a href="cron.php?act=edit&code={$module.code}"  title="{$lang.edit}" class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>
+                                            <a href="cron.php?act=do&code={$module.code}" title="{$lang.cron_do}" class="btn_region"><i class="icon icon-cog"></i>{$lang.cron_do}</a>
+                                        {else}
+                                        	<a href="cron.php?act=install&code={$module.code}"  title="{$lang.install}" class="btn_inst"><i class="sc_icon sc_icon_inst"></i>{$lang.install}</a>
+                                        {/if}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {foreachelse}
+                                <tr><td class="no-records" colspan="12">{$lang.no_records}</td></tr>
+                                {/foreach}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+	{include file ='library/pagefooter.lbi'}
+</body>
+</html>

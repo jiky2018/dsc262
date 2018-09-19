@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+ 
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        <div class="site wrapper">
+			{include file ='library/seller_menu_left.lbi'}
+            <div class="ecsc-layout-right">
+                <div class="main-content" id="mainContent">
+					{include file ='library/url_here.lbi'}
+					{include file ='library/seller_menu_tab.lbi'}
+                    <div class="ecsc-form-goods">
+                        <div class="explanation" id="explanation">
+                            <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4></div>
+                            {$lang.use_help}
+                        </div>
+                        
+                        <form action="goods_produts_batch.php?act=upload" method="post" enctype="multipart/form-data" name="theForm" id="goods_produts_batch_form">
+                        <div class="switch_info mt20">
+                            {if $goods_name}
+                            <div class="item">
+                                <div class="label">{$lang.goods_name}</div>
+                                <div class="label_value">
+                                    {$goods_name}
+                                </div>
+                            </div>
+                            {/if}
+                            <div class="item">
+                                <div class="label">{$lang.file_charset}</div>
+                                <div class="label_value">
+                                    <div id="format" class="imitate_select select_w320">
+                                        <div class="cite">请选择</div>
+                                        <ul>
+                                            <li><a href="javascript:;" data-value="0" class="ftx-01">请选择</a></li>
+                                            {foreach from=$lang_list item=data key=key}
+                                            <li><a href="javascript:;" data-value="{$key}" class="ftx-01">{$data}</a></li>
+                                            {/foreach}
+                                        </ul>
+                                        <input name="data_cat" type="hidden" value="UTF8" id="format_val">
+                                    </div>										
+                                </div>
+                            </div>								
+                            <div class="item">
+                                <div class="label">{$lang.csv_file}</div>
+                                <div class="label_value">
+                                    <div class="type-file-box">
+                                        <div class="input">
+                                            <input type="text" name="textfile" class="type-file-text" id="textfield" value="" readonly>
+                                            <input type="button" name="button" id="button" class="type-file-button" value="上传..." />
+                                            <input type="file" class="type-file-file" id="file" name="file" data-state="csvfile" size="30" hidefocus="true" />
+                                        </div>
+                                    </div>
+                                    <div class="form_prompt"></div>
+                                    <p class="bf100 fl red">{$lang.notice_file}</p>
+                                    <div class="fl bf100">
+                                        {foreach from=$download_list item=download key=charset}
+                                            {if $charset eq 'zh_cn'}
+                                                <a onclick="get_produts_batch('{$charset}', {$goods_id}, {$model}, {$warehouse_id});" href="javascript:;" class="bule">{$download}</a>
+                                            {/if}
+                                        {/foreach}
+                                    </div>
+                                </div>
+                            </div>													
+                            <div class="item">
+                                <div class="label">&nbsp;</div>
+                                <div class="label_value info_btn pl5">
+                                    <input type="hidden" name="goods_id" value="{$goods_id|default:0}" />
+                                    <input type="hidden" name="model" value="{$model|default:0}" />
+                                    <input name="submit" type="submit" id="submitBtn" value="{$lang.button_submit}" class="sc-btn sc-blueBg-btn btn35" />
+                                </div>
+                            </div>								
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{include file ='library/seller_footer.lbi'}
+
+{literal}
+<script type="text/javascript">
+	$(function(){
+		//表单验证
+		$("#submitBtn").click(function(){
+			if($("#goods_produts_batch_form").valid()){
+				$("#goods_produts_batch_form").submit();
+			}
+		});
+	
+		$('#goods_produts_batch_form').validate({
+			errorPlacement:function(error, element){
+				var error_div = element.parents('div.label_value').find('div.form_prompt');
+				element.parents('div.label_value').find(".notic").hide();
+				error_div.append(error);
+			},
+			rules:{
+				textfile:{
+					required : true
+				}
+			},
+			messages:{
+				textfile:{
+					required : '<i class="icon icon-exclamation-sign"></i>请选择上传文件'
+				}
+			}			
+		});
+	});
+	
+	function get_produts_batch(charset, goods_id, model, warehouse_id){
+		location.href="goods_produts_batch.php?act=download&charset=" +charset+ "&goods_id=" +goods_id+ "&model=" + model;
+	}
+</script>
+{/literal}
+</body>
+</html>

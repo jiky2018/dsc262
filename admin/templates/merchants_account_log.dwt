@@ -1,0 +1,319 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.seller} - {$ur_here}</div>
+        <div class="content">
+        	<div class="tabs_info">
+            	<ul>
+                	<li {if $act_type eq 'merchants_seller_account'}class="curr"{/if}><a href="{$action_link3.href}">{$action_link3.text}</a></li>
+                    <li {if $act_type eq 'detail' && $log_type eq 4}class="curr"{/if}><a href="{$action_link2.href}">{$action_link2.text}</a></li>
+                    <li {if $act_type eq 'detail' && $log_type eq 3}class="curr"{/if}><a href="{$action_link1.href}">{$action_link1.text}</a></li>
+                    <li {if $act_type eq 'detail' && $log_type eq 2}class="curr"{/if}><a href="{$action_link4.href}">{$action_link4.text}</a></li>
+                    <li {if $act_type eq 'detail' && $log_type eq 5}class="curr"{/if}><a href="{$action_link5.href}">{$action_link5.text}</a></li>
+                    <li {if $act_type eq 'account_log'}class="curr"{/if}><a href="{$action_link.href}">{$action_link.text}</a></li>
+                    <li {if $act_type eq 'account_log_list'}class="curr"{/if}><a href="{$action_link6.href}">{$action_link6.text}</a></li>
+                </ul>
+            </div>
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.list.0}</li>
+                    <li>{$lang.operation_prompt_content.list.1}</li>
+                    <li>{$lang.operation_prompt_content.list.2}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-head">
+                   	<div class="refresh ml0">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+                    {if $act_type eq 'detail'}
+                    <div class="search">
+                    	<form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+                        <div class="input">
+                            <input type="text" name="order_sn" class="text nofocus" placeholder="{$lang.label_order_sn}" autocomplete="off" />
+                            <input type="submit" class="btn" name="secrch_btn" ectype="secrch_btn" value="" />
+                        </div>
+                        </form>
+                    </div>
+                    {/if}
+                </div>
+                <div class="common-content">
+                	<div class="list-div" id="listDiv">
+                            {/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                  <th width="5%"><div class="tDiv">{$lang.record_id}</div></th>
+                                  <th width="15%"><div class="tDiv">{$lang.goods_steps_name}</div></th>
+                                  {if $act_type neq 'account_log'}
+                                  <th width="20%"><div class="tDiv">{$lang.label_order_sn}</div></th>
+                                  {/if}
+                                  <th width="15%"><div class="tDiv">{$lang.label_total_fee}</div></th>
+                                  <th width="15%"><div class="tDiv">冻结资金</div></th>
+                                  <th width="15%"><div class="tDiv">{$lang.label_log_type}</div></th>
+                                  <th width="15%"><div class="tDiv">{$lang.label_add_time}</div></th>
+                                  <th width="12%"><div class="tDiv">{$lang.status}</div></th>
+                                  <th width="6%"><div align="center">{$lang.handler}</div></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+								{foreach from=$log_list item=log name=nolog}
+                                <tr>
+                                  <td><div class="tDiv">{$log.log_id}</div></td>
+                                  <td><div class="tDiv"><font class="red">{$log.shop_name}</font></div></td>
+                                  {if $act_type neq 'account_log'}
+                                  <td><div class="tDiv">
+                                    {if $log.log_type eq 2}
+                                        {$log.order_sn}
+                                    {elseif $log.log_type eq 3}  
+                                        {$log.apply_sn}
+                                    {/if}
+                                  </div></td>
+                                  {/if}
+                                  <td><div class="tDiv">{$log.amount}</div></td>
+                                  <td><div class="tDiv">{$log.frozen_money}</div></td>
+                                  <td><div class="tDiv">
+                                    {if $log.log_type eq 2}
+                                        结算(收入)
+                                    {elseif $log.log_type eq 3}  
+                                        充值<br/>
+                                        <em style="color:#ff5256">({$log.payment_info.pay_name})</em>
+                                    {elseif $log.log_type eq 1 || $log.log_type eq 4}     
+                                        {$lang.label_deposit}
+                                        <br/>
+                                        <em style="color:#e23435">(
+                                        {if $log.deposit_mode}
+                                            {$lang.label_user_balance}
+                                        {else}
+                                            {$lang.label_offline_money}
+                                        {/if}
+                                        )</em>
+                                    {elseif $log.log_type eq 5} 
+                                    解冻冻结资金
+                                    {/if}
+                                  </div></td>
+                                  <td><div class="tDiv">{$log.add_time}</div></td>  
+                                  <td>
+                                      <div class="tDiv">
+                                          {if $log.log_type eq 1 && $log.is_paid eq 1 || $log.log_type eq 4 && $log.is_paid eq 1 || $log.log_type eq 5 && $log.is_paid eq 1}
+                                            {$lang.off_stocks}
+                                          {elseif $log.log_type eq 5 && $log.is_paid eq 2}
+                                            {$lang.refuse_apply_for}
+                                          {else}
+                                            {$lang.stay_dispose}
+                                          {/if}
+                                          
+                                          {if $log.certificate_img}
+                                          <a href="../{$log.certificate_img}" class="nyroModalWzs ml5" target="_blank">{$lang.transfer_certificate}</a>
+                                          {/if}
+                                      </div>
+                                  </td>  
+                                  <td class="handle"><div class="tDiv a3" align="center">
+                                    <a href="merchants_account.php?act=check&log_id={$log.log_id}&act_type={$act_type}" class="btn_see"><i class="sc_icon sc_icon_see"></i>{$lang.check}</a>
+                                  </div></td>
+                                </tr>
+                              {foreachelse}
+                              <tr><td class="no-records" colspan="8">{$lang.no_records}</td></tr>
+                              {/foreach}
+                            </tbody>   
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="12">
+                                        <div class="list-page">
+                                            {include file="library/page.lbi"}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>    
+                            {if $full_page}
+                    </div>
+                </div>
+                <!--商品分类列表end-->
+            </div>
+            <div class="gj_search">
+                <div class="search-gao-list" id="searchBarOpen">
+                    <i class="icon icon-zoom-in"></i>{$lang.advanced_search}
+                </div>
+                <div class="search-gao-bar">
+                    <div class="handle-btn" id="searchBarClose"><i class="icon icon-zoom-out"></i>{$lang.pack_up}</div>
+                    <div class="title"><h3>{$lang.advanced_search}</h3></div>
+                    <form method="get" name="formSearch_senior" action="javascript:searchUser()">
+                        <div class="searchContent">
+                            <div class="layout-box">
+                                {if $act_type eq 'detail'}
+                                <dl>
+                                    <dt>{$lang.label_order_sn}</dt>
+                                    <dd><input type="text" value="" name="order_sn" class="s-input-txt" autocomplete="off" /></dd>
+                                </dl>
+                                <dl>
+                                    <dt>{$lang.label_out_up}</dt>
+                                    <dd>
+                                        <div  class="select_w145 imitate_select">
+                                            <div class="cite">{$lang.please_select}</div>
+                                            <ul>
+                                               <li><a href="javascript:;" data-value="0">{$lang.please_select}</a></li>
+                                               <li><a href="javascript:;" data-value="2">{$lang.label_account_up}</a></li>
+                                                <li><a href="javascript:;" data-value="4">{$lang.label_account_out}</a></li>
+                                            </ul>
+                                            <input name="out_up" type="hidden" value="0">
+                                        </div>
+                                    </dd>
+                                </dl>
+                                <dl>
+                                    <dt>{$lang.label_log_type}</dt>
+                                    <dd>
+                                        <div  class="select_w145 imitate_select">
+                                            <div class="cite">{$lang.please_select}</div>
+                                            <ul>
+                                               <li><a href="javascript:;" data-value="0">{$lang.please_select}</a></li>
+                                               <li><a href="javascript:;" data-value="2">结算</a></li>
+                                                <li><a href="javascript:;" data-value="3">充值</a></li>
+                                                <li><a href="javascript:;" data-value="4">提现</a></li>
+                                            </ul>
+                                            <input name="log_type" type="hidden" value="0">
+                                        </div>
+                                    </dd>
+                                </dl>
+                                
+                                {/if}
+                                <dl>
+                                    <dt>{$lang.handler}</dt>
+                                    <dd>
+                                        <div  class="select_w145 imitate_select">
+                                            <div class="cite">{$lang.please_select}</div>
+                                            <ul>
+                                               <li><a href="javascript:;" data-value="0">{$lang.please_select}</a></li>
+                                               <li><a href="javascript:;" data-value="1">{$lang.off_stocks}</a></li>
+                                                <li><a href="javascript:;" data-value="2">{$lang.stay_dispose}</a></li>
+                                            </ul>
+                                            <input name="handler" type="hidden" value="0">
+                                        </div>
+                                    </dd>
+                                </dl>
+                                <dl>
+                                    <dt>{$lang.steps_shop_name}</dt>
+                                    <dd>
+                                        <div id="shop_name_select" class="select_w145 imitate_select">
+                                            <div class="cite">{$lang.please_select}</div>
+                                            <ul>
+                                               <li><a href="javascript:;" data-value="0">{$lang.select_please}</a></li>
+                                               <li><a href="javascript:;" data-value="1">{$lang.s_shop_name}</a></li>
+                                               <li><a href="javascript:;" data-value="2">{$lang.s_qw_shop_name}</a></li>
+                                               <li><a href="javascript:;" data-value="3">{$lang.s_brand_type}</a></li>
+                                            </ul>
+                                            <input name="store_search" type="hidden" value="0" id="shop_name_val">
+                                        </div>
+                                    </dd>
+                                </dl>
+                                <dl style="display:none" id="merchant_box">
+                                    
+                                    <dd>
+                                        <div class="select_w145 imitate_select">
+                                            <div class="cite">{$lang.please_select}</div>
+                                            <ul>
+                                               <li><a href="javascript:;" data-value="0">{$lang.please_select}</a></li>
+                                               {foreach from=$store_list item=store}
+                                               <li><a href="javascript:;" data-value="{$store.ru_id}">{$store.store_name}</a></li>
+                                               {/foreach}
+                                            </ul>
+                                            <input name="merchant_id" type="hidden" value="0" >
+                                        </div>
+                                    </dd>
+                                </dl>
+                                <dl id="store_keyword" style="display:none" >
+                                    <dd><input type="text" value="" name="store_keyword" class="s-input-txt" autocomplete="off" /></dd>
+                                </dl>
+                                <dl style="display:none" id="store_type">
+                                    <dd>
+                                        <div class="select_w145 imitate_select">
+                                            <div class="cite">{$lang.please_select}</div>
+                                            <ul>
+                                               <li><a href="javascript:;" data-value="0">{$lang.steps_shop_type}</a></li>
+                                               <li><a href="javascript:;" data-value="{$lang.flagship_store}">{$lang.flagship_store}</a></li>
+                                               <li><a href="javascript:;" data-value="{$lang.exclusive_shop}">{$lang.exclusive_shop}</a></li>
+                                               <li><a href="javascript:;" data-value="{$lang.franchised_store}">{$lang.franchised_store}</a></li>
+                                               <li><a href="javascript:;" data-value="{$lang.shop_store}">{$lang.shop_store}</a></li>
+                                            </ul>
+                                            <input name="store_type" type="hidden" value="0" >
+                                        </div>
+                                    </dd>
+                                </dl>
+                                <dl class="bot_btn">
+                                    <dd>
+                                       <input type="submit" class="btn red_btn" name="tj_search" value="{$lang.button_inquire}" /><input type="reset" class="btn btn_reset" name="reset" value="{$lang.button_reset_alt}" />
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+		</div>
+	</div>
+	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript" src="js/jquery.purebox.js"></script>
+    <script type="text/javascript">
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+	listTable.act_type = '{$act_type}';
+
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+	
+	$.divselect("#shop_name_select","#shop_name_val",function(obj){
+		var val = obj.attr("data-value");
+		get_store_search(val);
+	});
+	
+	function get_store_search(val){
+		if(val == 1){
+			$("#merchant_box").css("display",'');
+			$("#store_keyword").css("display",'none');
+			$("#store_type").css("display",'none')
+		}else if(val == 2){
+			$("#merchant_box").css("display",'none');
+			$("#store_keyword").css("display",'');
+			$("#store_type").css("display",'none')
+		}else if(val == 3){
+			$("#merchant_box").css("display",'none');
+			$("#store_keyword").css("display",'');
+			$("#store_type").css("display",'')
+		}else{
+			$("#merchant_box").css("display",'none');
+			$("#store_keyword").css("display",'none');
+			$("#store_type").css("display",'none')
+		}
+	}
+		
+	$.gjSearch("-240px");  //高级搜索
+	
+	
+	/* 搜索用户 */
+	function searchUser(){
+		var frm = $("form[name='formSearch_senior']");
+		listTable.filter['store_search'] = Utils.trim(frm.find("input[name='store_search']").val());
+		listTable.filter['merchant_id'] = Utils.trim(frm.find("input[name='merchant_id']").val());
+		listTable.filter['store_keyword'] = Utils.trim(frm.find("input[name='store_keyword']").val());
+		listTable.filter['store_type'] = Utils.trim(frm.find("input[name='store_type']").val());
+		listTable.filter['handler'] = Utils.trim(frm.find("input[name='handler']").val());
+		{if $act_type eq 'detail'}
+			listTable.filter['order_sn'] = Utils.trim(($("form[name='searchForm']").find("input[name='order_sn']").val() != '') ? $("form[name='searchForm']").find("input[name='order_sn']").val() :  frm.find("input[name='order_sn']").val());
+		listTable.filter['out_up'] = Utils.trim(frm.find("input[name='out_up']").val());
+		listTable.filter['log_type'] = Utils.trim(frm.find("input[name='log_type']").val());
+		{/if}
+		
+		listTable.filter['page'] = 1;
+		listTable.loadList();
+	}
+    </script>
+</body>
+</html>
+{/if}

@@ -1,0 +1,135 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>众筹 - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content_common}</li>
+                    <li>注意上传发起人图片的尺寸，以免出错。</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+                        <form action="zc_initiator.php?act={$state}" method="post" name="theForm" enctype="multipart/form-data" id="zc_initiator_form">
+                            <div class="switch_info">
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}{$lang.initiator_name}：</div>
+                                    <div class="label_value">
+										<input type='text' name='name' value='{$result.name}' class="text" />
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}{$lang.initiator_img}：</div>
+                                    <div class="label_value">
+                                        <div class="type-file-box">
+                                            <input type="button" name="button" id="button" class="type-file-button" value="" />
+                                            <input type="file" class="type-file-file" id="img" name="img" data-state="imgfile" size="30" hidefocus="true" value="" />
+                                            {if $result.img}
+                                            <span class="show">
+                                                <a href="../{$result.img}" target="_blank" class="nyroModal"><i class="icon icon-picture" data-tooltipimg="../{$result.img}" ectype="tooltip" title="tooltip"></i></a>
+                                            </span>
+                                            {/if}
+                                            <input type="text" name="textfile" class="type-file-text" value="{if $result.img}../{$result.img}{/if}" id="textfield" autocomplete="off" readonly />
+                                        </div>
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>								
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}{$lang.company_name}：</div>
+                                    <div class="label_value">
+										<input type='text' name='company' value='{$result.company}' class="text" />
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.initiator_detail}：</div>
+                                    <div class="label_value">
+										<textarea rows="3" cols="20" name='intro' class="textarea">{$result.intro}</textarea>
+                                    </div>
+                                </div>								
+                                <div class="item">
+                                    <div class="label">{$lang.initiator_desc}：</div>
+                                    <div class="label_value">
+										<textarea rows="5" cols="40" name='describe' class="textarea">{$result.describe}</textarea>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.initiator_rank}：</div>
+                                    <div class="label_value">
+                                        <div class="checkbox_items">
+											{foreach from=$logo item=logo name=logo}
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="logo" id="logo_{$logo.id}" value="{$logo.id}" {if $result.rank eq $logo.id or (!$result.rank eq $logo.id and $smarty.foreach.logo.iteration eq 1)} checked="true" {/if}  />
+                                                <label for="logo_{$logo.id}" class="ui-radio-label">{$logo.logo_name}</label>
+                                            </div>    
+											{/foreach}
+                                        </div>
+                                    </div>
+                                </div>								
+                                <div class="item">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="label_value info_btn">
+										<input type="submit" class='button' value="{$lang.button_submit}" id="submitBtn" />
+										<input type="reset" class='button button_reset' value="{$lang.button_reset}" />
+										<input type='hidden' name='init_id' value='{$result.id}' />
+                                    </div>
+                                </div>								
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+    </div>
+ {include file ='library/pagefooter.lbi'}
+    
+	<script type="text/javascript">
+	$(function(){
+		//表单验证
+		$("#submitBtn").click(function(){
+			if($("#zc_initiator_form").valid()){
+				$("#zc_initiator_form").submit();
+			}
+		});
+	
+		$('#zc_initiator_form').validate({
+			errorPlacement:function(error, element){
+				var error_div = element.parents('div.label_value').find('div.form_prompt');
+				element.parents('div.label_value').find(".notic").hide();
+				error_div.append(error);
+			},
+			rules:{
+				name :{
+					required : true
+				},
+				company :{
+					required : true
+				},
+				textfile:{
+					required : true
+				}
+			},
+			messages:{
+				name:{
+					 required : '<i class="icon icon-exclamation-sign"></i>{$lang.initiator_name}{$lang.empty}'
+				},
+				company :{
+					required : '<i class="icon icon-exclamation-sign"></i>{$lang.company_name}{$lang.empty}'
+				},
+				textfile:{
+					required : '<i class="icon icon-exclamation-sign"></i>{$lang.initiator_img}{$lang.empty}'
+				}
+			}			
+		});
+		$('.nyroModal').nyroModal();	
+	});
+	</script>
+</body>
+</html>

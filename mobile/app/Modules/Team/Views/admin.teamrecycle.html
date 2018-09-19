@@ -1,0 +1,186 @@
+{include file="admin_pageheader"}
+<div class="wrapper">
+    <div class="title">拼团 - 回收站</div>
+    <div class="content_tips">
+        <div class="tabs_info">
+            <ul>
+                <li><a href="../mobile/index.php?r=team/admin/index">拼团商品</a></li>
+                <li><a href="../mobile/index.php?r=team/admin/category">活动频道</a></li>
+                <li><a href="../mobile/index.php?r=team/admin/teaminfo">开团团队</a></li>
+                <li style = "display:none" class="curr"><a href="../mobile/index.php?r=team/admin/teamrecycle">回收站</a></li>
+            </ul>
+        </div>
+        <div class="explanation" id="explanation">
+            <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4><span id="explanationZoom" title="收起提示"></span></div>
+            <ul>
+            <li>显示平台内所有删除拼团的商品信息，将商品恢复到拼团商品列表。</li>
+            </ul>
+        </div>
+        <div class="flexilist">
+
+            <div class="common-head">
+                <form action="{url('team/admin/teamrecycle')}" method="post">
+                    <div class="search">
+                        <div class="input">
+                            <input type="text" name="keyword" class="text nofocus" placeholder="关键词" autocomplete="off">
+                            <input type="submit" value="" class="btn" name="export">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="common-content">
+                <div class="list-div"  id="listDiv">
+                    <table cellspacing="0" cellpadding="0" border="0">
+                        <tr class="active">
+                            <th></th>
+                            <th><div class="tDiv">编号</div></th>
+                            <th width="20%"><div class="tDiv">商品名称</div></th>
+                            <th><div class="tDiv">商品图片</div></th>
+                            <th><div class="tDiv">商家名称</div></th>
+                            <th><div class="tDiv">原价/拼团/货号</div></th>
+                            <th><div class="tDiv">添加排行(按钮)</div></th>
+                            <th><div class="tDiv">排序</div></th>
+                            <th><div class="tDiv">SKU/库存</div></th>
+                            <th><div class="tDiv">购买人次</div></th>
+                            <th><div class="tDiv">操作</div></th>
+                        </tr>
+                        {if $list}
+                        {foreach $list as $list}
+                        <tr>
+                            <td>
+                                <div class="tDiv">
+                                    <div class="checkbox">
+                                        <label>
+                                        <input type="checkbox"  value="{$list.id}" name="checkboxes[]">
+                                        </label>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><div class="tDiv">{$list.id}</div></td>
+                            <td><div class="tDiv clamp2">{$list.goods_name}</div></td>
+                            <td>
+                                <div class="tDiv">
+                                  <span class="show">
+                                <img style="width: 60px;height: 60px" src="{$list.goods_thumb}" />
+                                </span>
+                                </div>
+                            </td>
+                            <td><div class="tDiv">{$list.user_name}</div></td>
+                            <td>
+                                <div class="tDiv">
+                                    <p>拼团：{$list.team_price}</p>
+                                    <p>原价：{$list.shop_price}</p>
+                                    <p>货号：{$list.goods_sn}</p>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="tDiv">
+                                    <div style="line-height:15px;">
+                                        <span class="fl">精品</span>
+                                        <div class="switch fl ml10 {if $list.is_best}active{/if}" title="{if $list.is_best}是{else}否{/if}" onclick="listTable.switchBt(this, 'toggle_best', {$list.goods_id})">
+                                        <div class="circle"></div>
+                                        </div>
+                                        <input type="hidden" value="0" name="">
+                                    </div></br>
+                                    <div style="line-height:15px;">
+                                        <span class="fl">新品</span>
+                                        <div class="switch fl ml10 {if $list.is_new}active{/if}" title="{if $list.is_new}是{else}否{/if}" onclick="listTable.switchBt(this, 'toggle_best', {$list.goods_id})">
+                                        <div class="circle"></div>
+                                        </div>
+                                        <input type="hidden" value="0" name="">
+                                    </div></br>
+                                    <div style="line-height:15px;"><span class="fl">热销</span>
+                                        <div class="switch fl ml10 {if $list.is_hot}active{/if}" title="{if $list.is_hot}是{else}否{/if}" onclick="listTable.switchBt(this, 'toggle_best', {$list.goods_id})">
+                                        <div class="circle"></div>
+                                        </div>
+                                        <input type="hidden" value="0" name="">
+                                    </div>
+                                </div>
+                            </td>
+                            <td><div class="tDiv">{$list.sort_order}</div></td>
+                            <td><div class="tDiv">{$list.goods_number}</div></td>
+                            <td><div class="tDiv">{$list.limit_num}人次</div></td>
+                            <td>
+                                <div class="tDiv">
+                                    <a href='javascript:void(0);' onclick="if(confirm('您确定要恢复该拼团商品吗？')){window.location.href='{url('team/admin/recycleegoods', array('id'=>$list['id']))}'}" class="btn_trash"><i class="icon icon-trash"></i>恢复</a>
+                                </div>
+                            </td>
+                        </tr>
+                        {/foreach}
+                        {else}
+                        <tbody>
+                        <tr><td class="no-records" colspan="11">没有找到任何记录</td></tr>
+                        </tbody>
+                        {/if}
+                        <tfoot>
+                            <tr>
+                                <td colspan="4">
+                                    <div class="tDiv of">
+                                      <div class="tfoot_btninfo">
+                                            <input type="submit" onclick="confirm_bath()"  id="btnSubmit" value="批量恢复" class="button">
+                                        </div>
+                                    </div>
+                                </td>
+                                <td colspan="7">
+                                <div class="list-page">
+                                {include file="admin_pageview"}
+                                </div>
+                                </td>
+                            </tr>
+                        </tfoot>
+                  </table>
+              </div>
+          </div>
+    </div>
+    </div>
+</div>
+
+<script>
+    function confirm_bath()
+    {
+        Items = document.getElementsByName('checkboxes[]');
+        var arr = new Array();
+        for (i=0; Items[i]; i++){
+            if (Items[i].checked){
+                var selected = 1;
+                arr.push(Items[i].value);
+            }
+        }
+        if(selected != 1){
+            return false;
+        }else{
+            $.post("{url('team/admin/recycleegoods')}", {id:arr}, function(data){
+                if(data.url){
+                    window.location.href = data.url;
+                }
+            }, 'json');
+        }
+    }
+
+
+</script>
+<script>
+    $("#explanationZoom").on("click",function(){
+        var explanation = $(this).parents(".explanation");
+        var width = $(".content_tips").width();
+        if($(this).hasClass("shopUp")){
+            $(this).removeClass("shopUp");
+            $(this).attr("title","收起提示");
+            explanation.find(".ex_tit").css("margin-bottom",10);
+            explanation.animate({
+            width:width
+            },300,function(){
+                $(".explanation").find("ul").show();
+            });
+        }else{
+            $(this).addClass("shopUp");
+            $(this).attr("title","提示相关设置操作时应注意的要点");
+            explanation.find(".ex_tit").css("margin-bottom",0);
+            explanation.animate({
+            width:"118"
+            },300);
+            explanation.find("ul").hide();
+        }
+    });
+</script>
+{include file="admin/footer"}

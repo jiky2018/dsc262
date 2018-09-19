@@ -1,0 +1,75 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+{if $fittings}
+<div class="title">
+    <b class="icon-circle"><i>!</i></b>{$lang.Package_flow_desc}
+</div>
+<div class="scroll">
+    <!--{foreach from=$fittings item=goods_list name=no key=key}--> 
+    <form action="javascript:void(0);" method="post" name="ECS_FORMBUY_{$goods_list.goods_id}" id="ECS_FORMBUY_{$goods_list.goods_id}" >
+    <div style="clear: {if $key mod 2 eq 0}left{else}none{/if};" class="tm-combo-item {if $goods_list.goods_number eq 0}hover{/if}" id="tm-combo-item_{$goods_list.goods_id}">
+        <div class="tm-img">
+            <a href="{$goods_list.url}" title="{$goods_list.short_name}" target="_blank" class="combo_goods_{$goods_list.goods_id}"><img src="{$goods_list.goods_thumb}" width="60" height="60"></a>
+        </div>
+        <div class="tm-meta" rev="{$goods_list.goods_id}">
+            {foreach from=$goods_list.properties.spe item=spec name=nospec key=spec_key}
+            {if $spec.name}
+            <dl class="tb-prop tm-clear fitt_input">
+                <dt class="tm-metatit">{$spec.name}：</dt>
+                <dd>
+                    <ul class="J_combosSaleProp">
+                    {if $spec.is_checked > 0}
+                        {foreach from=$spec.values item=value name=novalue key=val_key}
+                        <li title="" class="tb-txt"> 
+                        	{if $key eq 0}
+                            <a {if $value.combo_checked eq 1}class="tb-txt-a"{/if} href="javascript:void(0);" rev="{$value.id}" onclick="fitt_changeAtt(this, {$goods_list.goods_id}, '{$group_rev}', 1, $('#fittings_goods').val());"> 
+                            {else}
+                            <a {if $value.combo_checked eq 1}class="tb-txt-a"{/if} href="javascript:void(0);" rev="{$value.id}" onclick="fitt_changeAtt(this, {$goods_list.goods_id}, '{$group_rev}', 0, $('#fittings_goods').val());"> 
+                            {/if}
+                            <span>
+                                {if $value.img_flie}
+                                <img width="25" height="25" src="{$value.img_flie}" style="vertical-align:middle; padding-right:5px; margin-left:-5px; padding:2px;" />
+                                {/if}
+                                <i>{$value.label}</i>
+                            </span>
+                            <input style="display:none" id="fitt_spec_value_{$value.id}" type="radio" name="fitt_spec_{$spec_key}" class="fitt_spec_value" value="{$value.id}" {if $value.combo_checked eq 1}checked="checked"{/if} /> 
+                            </a> 
+                        </li>
+                        {/foreach}
+                    {else}
+                        {foreach from=$spec.values item=value name=novalue key=val_key}
+                        <li title="" class="tb-txt"> 
+                        	{if $key eq 0}
+                            <a {if $value.combo_checked eq 1}class="tb-txt-a"{/if} href="javascript:void(0);" onclick="fitt_changeAtt(this, {$goods_list.goods_id}, '{$group_rev}', 1, $('#fittings_goods').val());"> 
+                            {else}
+                            <a {if $value.combo_checked eq 1}class="tb-txt-a"{/if} href="javascript:void(0);" onclick="fitt_changeAtt(this, {$goods_list.goods_id}, '{$group_rev}', 0, $('#fittings_goods').val());"> 
+                            {/if}
+                            	<span>{$value.label}</span>
+                            	<input style="display:none" id="fitt_spec_value_{$value.id}" type="radio" name="fitt_spec_{$spec_key}" class="fitt_spec_value" value="{$value.id}" {if $value.combo_checked eq 1}checked="checked"{/if} />  
+                        	</a> 
+                        </li>
+                        {/foreach}    
+                    {/if}
+                    </ul>
+                </dd>
+            </dl>
+            {/if}
+            {/foreach}
+            <dl class="tb-stock tm-clear">
+                <dt class="tm-metatit">{$lang.Stock_flow}：</dt>
+                <dd>
+                    <span class="tm-stock_{$goods_list.goods_id}">{$goods_list.goods_number}</span>&nbsp;&nbsp
+                    <span class="tm-stock_title_{$goods_list.goods_id}">{if $goods_list.goods_number eq 0}<font style="color:#F00;">({$lang.goods_null})</font>{/if}</span>
+                </dd>
+            </dl>
+        </div>
+        <div class="tm-notice">{$lang.goods_info_select}</div>
+        <input name="fitt_jq_{$goods_list.goods_id}" class="fitt_jq_{$goods_list.goods_id}" value="" type="hidden">
+    </div>
+    </form>
+    <!-- {/foreach} -->
+</div>
+{else}
+<div style="text-align:center; color:#666; height:210px; font-size:14px; font-weight:bold; padding-top:200px;" class="title"><b class="icon-circle"><i>!</i></b>{$lang.select_combination}</div>
+{/if}
+ 

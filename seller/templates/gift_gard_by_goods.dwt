@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+                {include file ='library/seller_menu_tab.lbi'}
+                <form action="" name="searchForm">
+                    <div class="goods_search_div">
+                        <div class="search_select">
+                            <div class="categorySelect">
+                                <div class="selection">
+                                    <input type="text" name="category_name" id="category_name" class="text w250 valid" value="请选择分类" autocomplete="off" readonly data-filter="cat_name" />
+                                    <input type="hidden" name="category_id" id="category_id" value="0" data-filter="cat_id" />
+                                </div>
+                                <div class="select-container" style="display:none;">
+                                    {include file="library/filter_category.lbi"}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="search_select">
+                            <div class="brandSelect">
+                                <div class="selection">
+                                    <input type="text" name="brand_name" id="brand_name" class="text w120 valid" value="请选择品牌" autocomplete="off" readonly data-filter="brand_name" />
+                                    <input type="hidden" name="brand_id" id="brand_id" value="0" data-filter="brand_id" />
+                                </div>
+                                <div class="brand-select-container" style="display:none;">
+                                    {include file="library/filter_brand.lbi"}
+                                </div>
+                            </div>                            
+                        </div>
+                        <div class="search-key">
+                            <input type="text" name="keyword" size="30" class="text text_2 mr10" placeholder="请输入关键字" autocomplete="off" data-filter="keyword" autocomplete="off"  />
+                            <a href="javascript:void(0);" class="sc-btn sc-blueBg-btn" onclick="searchGoods()">搜索</a>
+                        </div>
+                    </div>
+                </form>
+                <form name="theForm">
+                    <div class="info_warp">
+                        <div class="move_div">
+                            <div class="move_left">
+                                <h4>{$lang.all_goods}</h4>
+                                <div class="move_info">
+                                    <div class="move_list" id="source_select">
+                                        <ul>
+                                        </ul>	
+                                    </div>
+                                </div>
+                                <div class="move_handle">
+                                    <input type="hidden" value="{$gift_ids}" id="gift_ids">
+                                    <a href="javascript:void(0);" class="sc-btn btn25 moveAll" ectype="moveAll">全选</a>
+                                    <a href="javascript:void(0);" onclick="addGoods()" class="sc-btn btn25 sc-blueBg-btn" ectype="sub">确定</a>
+                                </div>
+                            </div>
+                            <div class="move_middle" onclick="addGoods()">
+                                <div class="move_point"></div>
+                            </div>
+                            <div class="move_right">
+                                <h4>{$lang.send_bouns_goods}</h4>
+                                <div class="move_info">
+                                    <div class="move_list" id="target_select" >
+                                        <ul>
+                                            {foreach from=$goods_list item=goods} 
+                                            <li><i class='sc_icon sc_icon_no'></i><a href='javascript:void(0);'>{$goods.goods_name}</a><input type='hidden' name='target_select' value='{$goods.goods_id}'></li>
+                                            {/foreach}
+                                        </ul>											
+                                    </div>
+                                </div>
+                                <div class="move_handle">
+                                    <a href="javascript:void(0);" class="sc-btn btn25 moveAll" ectype="moveAll">全选</a>
+                                    <a href="javascript:void(0);" onclick="delGoods()" class="sc-btn btn25 sc-blueBg-btn">移除</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="button-bottom">
+                    <div class="button_info">
+                        <input type="button" class="sc-btn sc-blueBg-btn btn35" value="发放" onClick="javascript:location.href='gift_gard.php?act=bonus_list&bonus_type={$bonus_type}'" style="float:none;" />
+                    </div>
+                    </div>
+                </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript">
+    $(".move_list").perfectScrollbar();
+        $(".brand-list").perfectScrollbar();
+function searchGoods(){
+            
+            var elements  = document.forms['searchForm'].elements;
+            var filters   = new Object;
+            filters.cat_id = elements['category_id'].value;
+            filters.brand_id = elements['brand_id'].value;
+            filters.keyword = Utils.trim(elements['keyword'].value);
+            $("#source_select").find("ul").html("<i class='icon-spinner icon-spin'></i>");
+            
+            setTimeout(function(){Ajax.call('bonus.php?is_ajax=1&act=get_goods_list', filters, searchGoodsResponse, 'GET', 'JSON');},300);
+            
+        }
+        
+        function searchGoodsResponse(result){
+            
+        $("#source_select").find("li,i").remove();
+    
+        var goods = result.content;
+            if (goods)
+            {
+              for (i = 0; i < goods.length; i++)
+              {
+                $("#source_select").find("ul").append("<li><i class='sc_icon sc_icon_ok'></i><a href='javascript:;' data-value='"+goods[i].value+"' class='ftx-01'>"+goods[i].text+"</a><input type='hidden' name='user_search[]' value='"+goods[i].value+"'></li>")
+              }
+            }		
+        }
+    
+        function addGoods()
+        {
+          var goods_ids = [];//商品id
+          var gift_ids = $("#gift_ids").val();
+          $("#source_select").find("li").each(function(){
+              if($(this).attr("class") == 'current'){
+                  var goods_name = $(this).text();
+                  var goods_id = $(this).find("input").val();
+                  var exists = false;
+                    $("#target_select").find("li").each(function(){
+                        if($(this).find("input").val() == goods_id){
+                              exists = true;
+                              return false;
+                          }
+                    })
+                    if(exists == false){
+                        goods_ids.push(goods_id);
+                        $("#target_select").find("ul").append("<li><i class='sc_icon sc_icon_no'></i><a href='javascript:void(0);' >"+goods_name+"</a><input type='hidden' name='target_select' value='"+goods_id+"'></li>")		  
+                    }
+              }
+          });
+          if(goods_ids){
+              Ajax.call("gift_gard.php","is_ajax=1&act=add_bonus_goods&add_ids="+$.toJSON(goods_ids)+"&JSON="+$.toJSON(gift_ids),'',"GET","JSON");
+          }
+        }
+        
+        function delGoods()
+        {
+          var goods_ids = [];//商品id
+          var gift_ids = $("#gift_ids").val();
+          $("#target_select").find("li").each(function(){
+              if($(this).attr("class") == 'current'){
+                  var goods_id = $(this).find("input").val();
+                  goods_ids.push(goods_id);
+                  $(this).remove();
+                }
+            });
+          Ajax.call("gift_gard.php","is_ajax=1&act=drop_bonus_goods&drop_ids="+$.toJSON(goods_ids)+"&JSON="+$.toJSON(gift_ids),'',"GET","JSON");
+        }
+  {/literal}
+//-->
+</script>
+</body>
+</html>

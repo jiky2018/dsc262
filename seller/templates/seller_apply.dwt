@@ -1,0 +1,134 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+				{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="search-info">
+                    <div class="search-form">
+                        <form action="javascript:searchOrder()" name="searchForm">
+                            <input name="apply_sn" type="text" id="apply_sn" size="15" class="text text_2 mr10" placeholder="{$lang.apply_sn}">
+                            <div class="imitate_select select_w120">
+                                <div class="cite">{$lang.pay_starts|escape}</div>
+                                <ul>
+                                    <li><a href="javascript:;" data-value="-1" class="ftx-01">{$lang.pay_starts|escape}</a></li>
+                                    <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.no_pay}</a></li>
+                                    <li><a href="javascript:;" data-value="1" class="ftx-01">{$lang.is_pay}</a></li>
+                                </ul>
+                                <input name="pay_starts" type="hidden" value="-1">
+                            </div>
+                            
+                            <div class="imitate_select select_w120">
+                                <div class="cite">{$lang.apply_status|escape}</div>
+                                <ul>
+                                    <li><a href="javascript:;" data-value="-1" class="ftx-01">{$lang.apply_status|escape}</a></li>
+                                    <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.is_confirm.0}</a></li>
+                                    <li><a href="javascript:;" data-value="1" class="ftx-01">{$lang.is_confirm.1}</a></li>
+                                    <li><a href="javascript:;" data-value="2" class="ftx-01">{$lang.is_confirm.2}</a></li>
+                                    <li><a href="javascript:;" data-value="3" class="ftx-01">{$lang.is_confirm.3}</a></li>
+                                </ul>
+                                <input name="apply_starts" type="hidden" value="-1">
+                            </div>
+                            <div class="search-key">
+                                <input name="grade_name" type="text" id="grade_name" size="15" class="text text_2" placeholder="{$lang.grade_name|escape}">
+                                <input type="submit" value="{$lang.button_search}" class="submit" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                {/if}
+                <div class="list-div" id="listDiv">
+                    <table class="ecsc-default-table">
+                    	<thead>
+                        <tr>
+                            <th>{$lang.apply_sn}</th>
+                            <th>{$lang.shop_name}</th>
+                            <th>{$lang.grade_name}</th>
+                            <th>{$lang.total_amount}</th>
+                            <th>{$lang.refund_price}</th>
+                            <th>{$lang.payable_amount}</th>
+                            <th>{$lang.back_price}</th>
+                            <th>{$lang.pay}</th>
+                            <th>{$lang.add_time}</th>
+                            <th>{$lang.apply_status}</th>
+                            <th width="10%">{$lang.handler}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {foreach from=$apply_list item=list}
+                        <tr class="bd-line">
+                            <td align="center" class="first-cell">
+                                <a href='merchants_upgrade.php?act=edit&apply_id={$list.apply_id}&grade_id={$list.grade_id}'>{$list.apply_sn|escape:html}</a>
+                            </td>
+                            <td align="center">{$list.shop_name|escape:html}</td>
+                            <td align="center">{$list.grade_name|escape:html}</td>
+                            <td align="center">{$list.total_amount|escape:html}</td>
+                            <td align="center">{$list.refund_price}</td>
+                            <td align="center">{$list.payable_amount}</td>
+                            <td align="center">{$list.back_price}</td>
+                            <td align="center">{$list.pay_name}</td>
+                            <td align="center">{$list.add_time}</td>
+                            <td align="center">{$list.status_paid},{$list.status_apply}</td>
+                            <td class="ecsc-table-handle{if $list.apply_status eq 3 || $list.pay_status eq 0} tr{/if}">
+                                <span><a href="merchants_upgrade.php?act=edit&apply_id={$list.apply_id}&grade_id={$list.grade_id}" title="{if $list.apply_status eq 0 && $list.pay_status eq 0}{$lang.edit}{else}{$lang.view}{/if}" class="btn-orange"><i class="{if $list.apply_status eq 0 && $list.pay_status eq 0}icon-edit{else}sc_icon_see{/if} icon"></i><p>{if $list.apply_status eq 0 && $list.pay_status eq 0}{$lang.edit}{else}{$lang.view}{/if}</p></a></span>
+                                {if $list.apply_status eq 3 || $list.pay_status eq 0}
+                                <span><a href="javascript:;" onclick="listTable.remove({$list.apply_id}, '{$lang.drop_confirm}')" title="{$lang.drop}" class="btn-red"><i class="icon icon-trash"></i><p>{$lang.drop}</p></a></span>
+                                {/if}
+                            </td>
+                        </tr>
+                        {foreachelse}
+                        <tr><td class="no-records" colspan="11">{$lang.no_article}</td></tr>
+                        {/foreach}
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                        	<td colspan="10">
+                            	{include file="page.dwt"}
+                            </td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                {if $full_page}
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript" language="JavaScript">
+    listTable.recordCount = {$record_count};
+    listTable.pageCount = {$page_count};
+
+    {foreach from=$filter item=item key=key}
+    listTable.filter.{$key} = '{$item}';
+    {/foreach}
+    onload = function()
+    {
+    // 开始检查订单
+    startCheckOrder();
+    }
+    
+     /**
+     * 搜索订单
+     */
+    function searchOrder()
+    {
+        listTable.filter['apply_sn'] = Utils.trim(document.forms['searchForm'].elements['apply_sn'].value);
+        listTable.filter['grade_name'] = Utils.trim(document.forms['searchForm'].elements['grade_name'].value);
+        listTable.filter['pay_starts'] = document.forms['searchForm'].elements['pay_starts'].value;
+        listTable.filter['apply_starts'] = document.forms['searchForm'].elements['apply_starts'].value;
+        listTable.filter['page'] = 1;
+        listTable.loadList();
+    }
+</script>
+</body>
+</html>
+{/if}

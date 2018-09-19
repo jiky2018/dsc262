@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+    <div class="warpper">
+        <div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>消息模板 - {$ur_here}</div>
+        <div class="content">
+            <div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content_common}</li>
+                    <li>注意消息模板内容的变量的填写。</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+                        <form action="ecjia_sms.php" method="post" name="theForm" enctype="multipart/form-data" id="sms_form" >
+                            <div class="switch_info" id="conent_area">
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}&nbsp;消息模板：</div>
+                                    <div class="label_value">
+                                        <input type="text" name="template_code" class="text" value="{$push_templates.template_code}" autocomplete="off" /><div class="notic m20">{$lang.ad_name_notic2}</div><div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}&nbsp;模板主题：</div>
+                                    <div class="label_value">
+                                        <input type="text" name="subject" class="text" value="{$push_templates.template_subject}" autocomplete="off" />
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">模板内容：</div>
+                                    <div class="label_value">
+                                        <textarea class="textarea" name="content" placeholder="消息模板内容">{$push_templates.template_content}</textarea>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="label_value info_btn">
+                                        <input type="submit" name="submit" value="{$lang.button_submit}" class="button mr10" id="submitBtn" />
+                                        <input type="hidden" name="act" value="{$form_action}" />
+                                        <input type="hidden" name="id" value="{$push_templates.template_id}" />
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {include file ='library/pagefooter.lbi'}
+    
+    <script type="text/javascript">
+        $(function(){
+            $("#submitBtn").click(function(){
+                if($("#sms_form").valid()){
+                    $("#sms_form").submit();
+                }
+            });
+
+            $('#sms_form').validate({
+                errorPlacement:function(error, element){
+                    var error_div = element.parents('div.label_value').find('div.form_prompt');
+                    element.parents('div.label_value').find(".notic").hide();
+                    error_div.append(error);
+                },
+                rules : {
+                    template_code : {
+                        required : true
+                    },
+                    subject : {
+                        required : true
+                    }
+                },
+                messages : {
+                    template_code : {
+                        required : '<i class="icon icon-exclamation-sign"></i>'+'消息模板不可为空'
+                    },
+                    subject : {
+                        required : '<i class="icon icon-exclamation-sign"></i>'+'消息主题不可为空'
+                    }
+                }
+            });
+
+            $("input[name='group']").click(function(){
+                var val = $(this).val();
+                if (val == 'guider') {
+                    $('.administrator').hide();
+                    $('.ru_shop').hide();
+                }
+                else
+                {
+                    $('.administrator').show();
+                    $('.ru_shop').show();
+                }
+            })
+        })
+    </script>     
+</body>
+</html>

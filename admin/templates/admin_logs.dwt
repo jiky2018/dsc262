@@ -1,0 +1,149 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="javascript:;" ectype="goback" class="s-back">{$lang.back}</a>权限-{$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>该页面展示管理员的操作日志。</li>
+                    <li>侧边栏可进行高级搜索。</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<!--商品分类列表-->
+                <div class="common-head">
+                    <div class="refresh ml0">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+                    
+                    <div class="search">
+                        <form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+                        <div class="input">
+                            <input type="text" name="keywords" class="text nofocus" placeholder="管理员名称" autocomplete="off" />
+                            <input type="submit" class="btn" name="secrch_btn" ectype="secrch_btn" value="" />
+                        </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="common-content">
+                    <form method="POST" action="admin_logs.php?act=batch_drop" name="listForm">
+                	<div class="list-div" id="listDiv">
+                        {/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                            <thead>
+                            	<tr>
+                                    <th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars"></label></div></th>
+                                    <th width="5%"><div class="tDiv"><a href="javascript:listTable.sort('log_id');">{$lang.log_id}</a></div></th>
+                                    <th width="15%"><div class="tDiv"><a href="javascript:listTable.sort('user_id');">{$lang.user_id}</a></div></th>
+                                    <th width="15%"><div class="tDiv"><a href="javascript:listTable.sort('log_time');">{$lang.log_time}</a></div></th>
+                                    <th width="15%"><div class="tDiv"><a href="javascript:listTable.sort('ip_address');">{$lang.ip_address}</a></div></th>
+                                    <th width="47%"><div class="tDiv">{$lang.log_info}</div></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {foreach from=$log_list item=list}
+                            	<tr>
+                                    <td class="sign"><div class="tDiv"><input type="checkbox" name="checkboxes[]" value="{$list.log_id}" class="checkbox" id="checkbox_{$list.log_id}" /><label for="checkbox_{$list.log_id}" class="checkbox_stars"></label></div></td>
+                                    <td><div class="tDiv">{$list.log_id|escape:html}</div></td>
+                                    <td><div class="tDiv">{$list.user_name}</div></td>
+                                    <td><div class="tDiv">{$list.log_time}</div></td>
+                                    <td><div class="tDiv">{$list.ip_address}</div></td>
+                                    <td><div class="tDiv">{$list.log_info}</div></td>
+                                </tr>
+                                {foreachelse}
+                                    <tr><td class="no-records" colspan="12">{$lang.no_records}</td></tr>
+                                {/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="12">
+                                        <div class="tDiv">
+                                        	<div class="tfoot_btninfo">
+                                            	<input type="submit" ectype="btnSubmit" value="{$lang.drop_logs}" class="btn btn_disabled" disabled />
+                                            </div>
+                                            <div class="list-page">
+                                                {include file="library/page.lbi"}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        {if $full_page}
+                    </div>
+                    </form>
+                </div>
+                <!--商品分类列表end-->
+            </div>
+            <div class="gj_search">
+                <div class="search-gao-list" id="searchBarOpen">
+                    <i class="icon icon-zoom-in"></i>高级操作
+                </div>
+                <div class="search-gao-bar">
+                    <div class="handle-btn" id="searchBarClose"><i class="icon icon-zoom-out"></i>{$lang.pack_up}</div>
+                    <div class="title"><h3>高级操作</h3></div>
+                        <div class="searchContent">
+                            <div class="layout-box">
+                                <form name="theForm" method="POST" action="admin_logs.php">
+                                    <dl>
+                                        <dt>{$lang.view_ip}</dt>
+                                        <dd>
+                                            <div id="ip_list" class="select_w145 imitate_select">
+                                              <div class="cite">{$lang.select_ip}</div>
+                                              <ul>
+                                                <li><a href="javascript:;" data-value="0">{$lang.select_ip}</a></li>
+                                                 {foreach from=$ip_list  item=item key=k}
+                                                 <li><a href="javascript:;" data-value="{$k}">{$item}</a></li>
+                                                 {/foreach}
+                                              </ul>
+                                               <input name="ip" type="hidden" value="0" id="ip_list_val">
+                                            </div>
+                                        </dd>
+                                        <input type="submit" class="btn btn30 red_btn mt10" name="tj_search" value="提交查询" />
+                                    </dl>
+                                </form>
+                                <form name="Form2" action="admin_logs.php?act=batch_drop" method="POST">
+                                    <dl>
+                                        <dt>{$lang.drop_logs}</dt>
+                                        <dd>
+                                            <div class="select_w145 imitate_select">
+                                                <div class="cite">{$lang.select_date}</div>
+                                                <ul>
+                                                   <li><a href="javascript:;" data-value="0">{$lang.select_date}</a></li>
+                                                   <li><a href="javascript:;" data-value="1">{$lang.week_date}</a></li>
+                                                   <li><a href="javascript:;" data-value="2">{$lang.month_date}</a></li>
+                                                   <li><a href="javascript:;" data-value="3">{$lang.three_month}</a></li>
+                                                   <li><a href="javascript:;" data-value="4">{$lang.six_month}</a></li>
+                                                   <li><a href="javascript:;" data-value="5">{$lang.a_yaer}</a></li>
+                                                </ul>
+                                                <input name="log_date" type="hidden" value="0" >
+                                            </div>
+                                        </dd>
+                                        <dt><input type="submit" class="btn btn30 red_btn mt10" name="drop_type_date" value="清除日志" /></dt>
+                                    </dl>
+                                </form>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+    	</div>
+	</div>
+ 	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+		listTable.recordCount = {$record_count|default:0};
+		listTable.pageCount = {$page_count|default:1};
+		{foreach from=$filter item=item key=key}
+		listTable.filter.{$key} = '{$item}';
+		{/foreach}
+		$.gjSearch("-240px");  //高级搜索
+    </script>
+</body>
+</html>
+{/if}

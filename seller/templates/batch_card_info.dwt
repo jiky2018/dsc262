@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+            	{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <!--start-->
+				<div class="ecsc-form-goods">
+                	<div class="explanation" id="explanation">
+                        <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4></div>
+                    	{$lang.use_help}
+                    </div>
+					<form method="post" action="virtual_card.php" name="theForm" enctype="multipart/form-data" id="batch_card_info_form">
+					<div class="wrapper-list border1 mt20">
+                    	<dl>
+                        	<dt>{$lang.require_field}&nbsp;{$lang.separator}：</dt>
+                            <dd>
+                            	<input type="text" name="separator" maxlength="60" size="6" value="," class="text text_2" />
+                                <div class="form_prompt"></div>
+                            </dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.uploadfile}：</dt>
+                            <dd>
+                            	<div class="type-file-box">
+                                	<div class="input">
+                                        <input type="text" name="textfile" class="type-file-text" id="textfield" readonly>
+                                        <input type="button" name="button" id="button" class="type-file-button" value="上传...">
+                                        <input type="file" class="type-file-file" id="uploadfile" name="uploadfile" size="30" data-state="csvfile" hidefocus="true" value="">
+                                    </div>
+                                </div>
+                                <div class="form_prompt"></div>
+                                <div class="notic bf100">{$lang.notice_file}</div>
+                            </dd>
+                        </dl>
+                        <dl>
+                        	<dt>&nbsp;</dt>
+                            <dd class="lh"><a href="../data/virtual_goods_list.csv" class="blue">{$lang.download_file}</a></dd>
+                        </dl>
+                        <dl class="button_info">
+                        	<dt>&nbsp;</dt>
+                            <dd>
+                                <input type="submit" value="{$lang.button_submit}" class="sc-btn sc-blueBg-btn btn35" id="submitBtn" />
+                                <input type="reset" value="{$lang.button_reset}" class="sc-btn btn35 sc-blue-btn" />
+                                <input type="hidden" name="act" value="batch_confirm" />
+                                <input type="hidden" name="goods_id" value="{$goods_id}" />
+                            </dd>
+                        </dl>
+                    </div>
+				</form>
+				</div>
+                <!--end-->
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<!--start-->
+<script language="JavaScript">
+$(function(){
+	//表单验证
+	$("#submitBtn").click(function(){
+		if($("#batch_card_info_form").valid()){
+			$("#batch_card_info_form").submit();
+		}
+	});
+	
+	$('#batch_card_info_form').validate({
+		errorPlacement:function(error, element){
+			var error_div = element.parents('dl').find('div.form_prompt');
+			//element.parents('dl').find(".notic").hide();
+			error_div.append(error);
+		},
+		rules:{
+			separator :{
+				required : true
+			}
+		},
+		messages:{
+			separator:{
+				 required : '<i class="icon icon-exclamation-sign"></i>分隔符不可以不填写'
+			}
+		}			
+	});
+});	
+</script>
+<!--end-->
+</body>
+</html>

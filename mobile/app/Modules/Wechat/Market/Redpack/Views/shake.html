@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+		<title>{$page_title}</title>
+        <meta http-equiv="pragma" content="no-cache">
+        <meta http-equiv="cache-control" content="no-cache">
+        <meta http-equiv="expires" content="0">
+        <script type="text/javascript">var ROOT_URL = '__ROOT__/';</script>
+        <script src="__PUBLIC__/vendor/common/jquery.min.js"></script>
+        <script src="__PUBLIC__/vendor/layer/layer.js"></script>
+
+    <style>
+    * { margin: 0; padding: 0; }
+    body { background: #292D2E; }
+    .hand { width: 190px; height: 300px; background: url("{$plugin_themes}/images/hand.png") no-repeat; position: absolute; top: 50px; left: 50%; margin-left: -95px; }
+    .hand-animate { -webkit-animation: hand_move infinite 2s; }
+    .result { background: #393B3C; border: #2C2C2C 1px solid; box-shadow: inset #4D4F50 0 0 0 1px; border-radius: 10px; color: #fff; padding: 10px; width: 300px; position: absolute; top: 300px; left: 50%; margin-left: -161px; opacity: 0;
+        -webkit-transition: all 1s;
+           -moz-transition: all 1s;
+            -ms-transition: all 1s;
+             -o-transition: all 1s;
+                transition: all 1s; }
+    .result .pic { width: 50px; height: 50px; float: left; background: #fff; }
+    .result .con { overflow: hidden; zoom: 1; padding-left: 10px; line-height: 24px; }
+    .result-show { opacity: 1; margin-top: 50px; }
+    .loading { position: absolute; top: 240px; left: 50%; margin-left: -50px; width: 100px; height: 100px; background: url("{$plugin_themes}/images/spinner.png") no-repeat; background-size: 100px 100px; opacity: 0;
+        -webkit-animation: loading infinite linear .5s;
+           -moz-animation: loading infinite linear .5s;
+            -ms-animation: loading infinite linear .5s;
+             -o-animation: loading infinite linear .5s;
+                animation: loading infinite linear .5s;
+        -webkit-transition: all .5s;
+           -moz-transition: all .5s;
+            -ms-transition: all .5s;
+             -o-transition: all .5s;
+                transition: all .5s; }
+    .loading-show { opacity: 1; }
+
+    @-webkit-keyframes hand_move {
+        0% {
+            -webkit-transform: rotate(0);
+               -moz-transform: rotate(0);
+                -ms-transform: rotate(0);
+                 -o-transform: rotate(0);
+                    transform: rotate(0); }
+        50% {
+            -webkit-transform: rotate(15deg);
+               -moz-transform: rotate(15deg);
+                -ms-transform: rotate(15deg);
+                 -o-transform: rotate(15deg);
+                    transform: rotate(15deg); }
+        100% {
+            -webkit-transform: rotate(0);
+               -moz-transform: rotate(0);
+                -ms-transform: rotate(0);
+                 -o-transform: rotate(0);
+                    transform: rotate(0); }
+    }
+    @-webkit-keyframes loading {
+        0% {
+            -webkit-transform: rotate(0);
+               -moz-transform: rotate(0);
+                -ms-transform: rotate(0);
+                 -o-transform: rotate(0);
+                    transform: rotate(0); }
+        100% {
+            -webkit-transform: rotate(360deg);
+               -moz-transform: rotate(360deg);
+                -ms-transform: rotate(360deg);
+                 -o-transform: rotate(360deg);
+                    transform: rotate(360deg); }
+    }
+    </style>
+	</head>
+<body>
+<div id="hand" class="hand hand-animate"></div>
+<div id="loading" class="loading"></div>
+<div id="result" class="result">
+    <div class="pic"><img id="shake_icon" src="" width="50" height="50"/></div>
+    <div class="con">摇一摇结果<br/><a id="shake_result" href="" style="text-decoration:none;color:#fff"></a></div>
+</div>
+<audio style="display:hidden" id="finishMusic" preload="metadata" src="{$plugin_themes}/images/shake_match.mp3" ></audio>
+
+<script type="text/javascript">
+    $(function(){
+        // 判断微信浏览器
+        var ISWeixin = !!navigator.userAgent.match(/MicroMessenger/i); //wp手机无法判断
+        if(!ISWeixin){
+            var rd_url = location.href.split('#')[0];  // remove hash
+            var oauth_url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri='+encodeURIComponent(rd_url) + '&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect';
+            location.href = oauth_url;
+            return false;
+        }
+
+        var SHAKE_THRESHOLD = 800;
+        var last_update = new Date().getTime(); // 当前时间戳毫秒值
+        var i = 0;
+        var last = 0;
+        var x = y = z = last_x = last_y = last_z = 0;
+        var finish = document.getElementById('finishMusic');
+        if (window.DeviceMotionEvent) {
+            window.addEventListener('devicemotion', deviceMotionHandler, false);
+        } else {
+            alert('本设备不支持摇一摇！');
+        }
+        function deviceMotionHandler(eventData) {
+            var acceleration = eventData.accelerationIncludingGravity;
+            var curTime = new Date().getTime();
+            if ((curTime - last_update) > 200) {
+                var diffTime = curTime - last_update;
+                last_update = curTime;
+                x = acceleration.x;
+                y = acceleration.y;
+                z = acceleration.z;
+                var speed = Math.abs(x + y + z - last_x - last_y - last_z) / diffTime * 10000;
+                var status = document.getElementById("status");
+                if (speed > SHAKE_THRESHOLD) {
+                    i++;
+                    if(i >= 8){
+                        finish.play();
+                        i = 0;
+                        getAjax();
+                    }
+                }
+                last_x = x;
+                last_y = y;
+                last_z = z;
+            }
+        }
+
+        var back_url = "{$back_url}"; //活动页面URL
+
+        function getAjax() {
+            //先声明一个异步请求对象
+            var xmlHttpReg = null;
+            if (window.ActiveXObject) {
+                xmlHttpReg = new ActiveXObject("Microsoft.XMLHTTP");//如果是IE
+            } else if (window.XMLHttpRequest) {
+                xmlHttpReg = new XMLHttpRequest(); //实例化一个xmlHttpReg
+            }
+            //如果实例化成功,就调用open()方法,就开始准备向服务器发送请求
+            if (xmlHttpReg != null) {
+                xmlHttpReg.onreadystatechange = doResult; //设置回调函数
+                xmlHttpReg.open("post", "{url('market_show')}", true);
+                xmlHttpReg.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+                xmlHttpReg.send("type=redpack&fucntion=shake&market_id="+{$market_id}+"&time="+last_update+"&last="+last);
+            }
+
+            //设定回调函数doResult(),一旦readyState的值改变,将会调用这个函数,readyState=4表示完成相应
+            function doResult() {
+                // console.log(xmlHttpReg.readyState);
+                if (xmlHttpReg.readyState == 4) {
+                    //4代表执行完成
+                    if (xmlHttpReg.status == 200) {
+                        //200代表执行成功
+                        //将xmlHttpReg.responseText的值赋给ID为resText的元素
+                        var res = eval('('+xmlHttpReg.responseText+')');
+
+                        document.getElementById("shake_icon").src = res['icon'];
+                        document.getElementById("shake_result").innerHTML = res['content'];
+                        document.getElementById("shake_result").href = res['url'];
+
+                        last = new Date().getTime(); // console.log(last);
+
+                        document.getElementById("result").className = "result";
+                        document.getElementById("loading").className = "loading loading-show";
+                        setTimeout(function(){
+                            //document.getElementById("hand").className = "hand";
+                            document.getElementById("result").className = "result result-show";
+                            document.getElementById("loading").className = "loading";
+
+                            setTimeout("location.href = '" + back_url + "'", 3000); // 3秒后返回活动页面
+
+                        }, 1000);
+                    }
+                }
+            }
+        }
+
+    });
+</script>
+</body>
+</html>

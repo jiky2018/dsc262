@@ -1,0 +1,142 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<div class="car_goods_items">
+	<div class="category_left">
+        {include file="/library/search_filter.lbi"}
+        <div class="car_goods_list goods_network_list">
+            <!-- {if $category > 0} -->
+            <form name="compareForm" action="compare.php" method="post" onSubmit="return compareGoods(this);" class="goodslistForm" data-state="0">
+            <!-- {/if} -->
+            <div class="goods-list">
+                {if $goods_list}
+                <ul class="gl-warp" ectype="items">
+                    <!--{foreach from=$goods_list item=goods }-->
+                    <!-- {if $goods.goods_id} -->
+                    <li class="gl-item">
+                        <div class="gl-i-wrap network-wrap">
+                            <div class="p-img">
+                                <a href="{$goods.url}" target="_blank"><img src="{$goods.goods_thumb}" width="200" height="200"/></a>
+                                <div class="{if $goods.is_new == 1}new_picon pi1{elseif $goods.is_hot == 1}new_picon pi2{elseif $goods.is_best == 1}new_picon pi3{/if}"></div>
+                            </div>
+                            <div class="sider">
+                                <ul>
+                                    <li class="curr"><img src="{$goods.goods_thumb}" width="28" height="28" /></li>
+                                    <li><img src="{$goods.goods_thumb}" width="28" height="28" /></li>
+                                    <li><img src="images/201512/thumb_img/464_thumb_G_1451069256998.jpg" width="28" height="28" /></li>
+                                    <li><img src="{$goods.goods_thumb}" width="28" height="28" /></li>
+                                    <li><img src="{$goods.goods_thumb}" width="28" height="28" /></li>
+                                    <li><img src="{$goods.goods_thumb}" width="28" height="28" /></li>
+                                    <li><img src="{$goods.goods_thumb}" width="28" height="28" /></li>
+                                    <li><img src="{$goods.goods_thumb}" width="28" height="28" /></li>
+                                </ul>
+                                <a href="javascript:void(0);" class="goods_prev"></a>
+                                <a href="javascript:void(0);" class="goods_next"></a>
+                            </div>
+                            <div class="p-price">
+                                <strong>
+                                    {if $goods.promote_price neq ''}
+                                        {$goods.promote_price}
+                                    {else}
+                                        {$goods.shop_price}
+                                    {/if}
+                                </strong>
+                            </div>
+                            <div class="p-num">{$lang.sales_volume}：{$goods.sales_volume}</div>
+                            <div class="p-name"><a href="{$goods.url}" title="{$goods.name|escape:html}">{$goods.goods_name}</a></div>
+                            <div class="p-commit">
+                                <div class="p-commit-left">
+                                    <div class="p-eva">{$lang.existing}<em>{$goods.review_count} +</em>{$lang.comments_rank}</div>
+                                    <div class="p-store"><a href="{$goods.store_url}" target="_blank" class="p-brand"><i class="icon"></i>{$goods.rz_shopName}</a></div>
+                                </div>
+                                <div class="p-commit-right">
+                                    {if $goods.prod eq 1}
+                                        {if $goods.goods_number > 0}
+                                            <a onClick="javascript:addToCart({$goods.goods_id},0,event,this,'flyItem');" class="addCartBtn" rev="{$goods.goods_thumb}" data-dialog="addCart_dialog" data-id="" data-divid="addCartLog" data-url="" data-title="{$lang.select_attr}">
+                                               <i class="icon_addCart"></i> 
+                                            </a>
+                                        {else}
+                                            <a href="javascript:;">
+                                                <i class="icon-shopping-cart"></i>
+                                            </a>
+                                        {/if}
+                                    {else}
+                                    <a onClick="javascript:addToCart({$goods.goods_id},0,event,this,'flyItem');" class="addCartBtn" rev="{$goods.goods_thumb}">
+                                        <i class="icon_addCart"></i>
+                                    </a>
+                                    {/if}
+                                </div>
+                            </div>
+                            {if $goods.prod eq 1}
+                                {if !$goods.goods_number > 0}
+                                    <div class="p-focus"><span>{$lang.No_goods}</span></div>
+                                {/if}
+                            {/if}
+                            <div class="p-operation">
+                                <a href="javascript:;" id="compareLink"><input id="{$goods.goods_id}" type="checkbox" onClick="Compare.add(this, {$goods.goods_id},'{$goods.goods_name|escape:"html"}','{$goods.type}', '{$goods.goods_thumb}', '{$goods.shop_price}', '{$goods.market_price}')"/><label for="{$goods.goods_id}">{$lang.compare}</label></a>
+                                <a href="javascript:collect({$goods.goods_id});" class="choose-btn-coll {if $goods.is_collect}selected{/if}"><b></b>{$lang.collect}</a>
+                                <!--start 在线客服 bylu-->
+                                {if $goods.is_IM eq 1 || $goods.is_dsc}
+                                <a id="IM" onclick="openWin(this)" href="javascript:;" goods_id="{$goods.goods_id}"  class="seller-btn custom"><i class="icon"></i>{$lang.Customer_service_p}</a>
+                                {else}
+                                {if $goods.kf_type eq 1}
+                                <a href="http://www.taobao.com/webww/ww.php?ver=3&touid={$basic_info.kf_ww}&siteid=cntaobao&status=1&charset=utf-8" class="seller-btn custom" target="_blank"><i class="icon"></i>{$lang.Customer_service_p}</a>
+                                {else}
+                                <a href="http://wpa.qq.com/msgrd?v=3&uin={$basic_info.kf_qq}&site=qq&menu=yes" class="seller-btn custom" target="_blank"><i class="icon"></i>{$lang.Customer_service_p}</a>
+                                {/if}
+                                {/if}
+                                <!--end 在线客服 bylu-->
+                            </div>
+                            <!--{if $dwt_filename eq 'history_list'}--> 
+                            <div class="history_close">
+                                <a href="javascript:delHistory({$goods.goods_id})"><img src="../images/p-del.png"></a>
+                            </div>
+                            <!--{/if}--> 
+                        </div>
+                    </li>
+                    <!-- {/if} --> 
+                    <!--{/foreach}--> 
+                </ul>
+                {else}
+                <div class="notContent">{$lang.information_null}</div>
+                {/if}
+            </div>
+            <div class="floor_loading" style="display:none">
+                <div style="width:120px; height:100px; margin:auto;"><img src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/images/loading.gif"></div>
+            </div>
+            <!-- {if $category > 0} -->
+            </form>
+            <!-- {/if} -->
+            <div id="flyItem" class="fly_item"><img src="" width="40" height="40"></div>
+            <input type="hidden" value="{$region_id}" id="region_id" name="region_id">
+            <input type="hidden" value="{$area_id}" id="area_id" name="area_id">
+        </div>
+	</div>
+    {include file="/library/category_recommend_best.lbi"}
+</div>    
+<script type="Text/Javascript" language="JavaScript">
+<!--
+{literal}
+function selectPage(sel)
+{
+  sel.form.submit();
+}
+{/literal}
+//-->
+</script> 
+<script type="text/javascript">
+window.onload = function()
+{
+  Compare.init();
+  fixpng();
+}
+{foreach from=$lang.compare_js item=item key=key}
+{if $key neq 'button_compare'}
+var {$key} = "{$item}";
+{else}
+var button_compare = '';
+{/if}
+{/foreach}
+var compare_no_goods = "{$lang.compare_no_goods}";
+var btn_buy = "{$lang.btn_buy}";
+var is_cancel = "{$lang.is_cancel}";
+var select_spe = "{$lang.select_spe}";
+</script>

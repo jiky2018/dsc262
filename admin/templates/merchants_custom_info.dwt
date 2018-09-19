@@ -1,0 +1,218 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>商家 - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4><span id="explanationZoom" title="收起提示"></span></div>
+                <ul>
+                	<li>标识“<em>*</em>”的选项为必填项，其余为选填项。</li>
+                    <li>请设置舒适的店铺橱窗色调，橱窗可隐藏。</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info mian-info-temp">
+                        <form method="post" action="merchants_custom.php" name="theForm" enctype="multipart/form-data" id="merchants_window_form">
+                            <div class="switch_info">
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}{$lang.window_name}：</div>
+                                    <div class="label_value">
+										<input type="text" class="text" name="winname" maxlength="60" value="{$seller_win.win_name}" autocomplete="off" />
+                                    	<div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.window_type}：</div>
+                                    <div class="label_value">
+                                        <div class="checkbox_items">
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="wintype" id="wintype_0" value="0" {if $seller_win.win_type eq 0} checked="true" {/if} onclick="changecutom(1);" />
+                                                <label for="wintype_0" class="ui-radio-label">{$lang.custom_content}</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="wintype" id="wintype_1" value="1" {if $seller_win.win_type eq 1} checked="true" {/if} onclick="changecutom(0);" />
+                                                <label for="wintype_1" class="ui-radio-label">{$lang.merchandise_cabinet}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>								
+                                <div class="item" id="goods_type" style="display:{if $seller_win.win_type neq 1}none{/if}">
+                                    <div class="label">{$lang.window_css}：</div>
+                                    <div class="label_value">
+										<div id="win_goods_type_div" class="imitate_select select_w320">
+											<div class="cite">请选择</div>
+											<ul>
+												{foreach from=$type_list item=list key=key}
+												<li><a href="javascript:;" data-value="{$list.value}" class="ftx-01">{$list.name}</a></li>
+												{/foreach}
+											</ul>
+											<input name="win_goods_type" type="hidden" value="{$seller_win.win_goods_type}" id="win_goods_type_val">
+										</div>
+                                    </div>
+                                </div>
+                                <div class="item" style="position:relative;">
+                                    <div class="label">{$lang.window_color}：</div>
+                                    <div class="label_value">
+										<input type="text" class="text text_2" name="wincolor" maxlength="40" size="15" value="{$seller_win.win_color}" id="wincolor" class="mr10" />
+										<input type="button" value="{$lang.select_color}" class="go_color btn btn30 red_btn" />
+										<input type='text' id="full" autocomplete="off" style="display:none" />
+                                    </div>
+                                </div>								
+                                <div class="item">
+                                    <div class="label">{$lang.sort_order}：</div>
+                                    <div class="label_value">
+										<input type="text" name="winorder" maxlength="40" size="15" value="{$seller_win.win_order}" class="text text_2" autocomplete="off" />
+                                    </div>
+                                </div>	
+                                <div class="item">
+                                    <div class="label">{$lang.whether_display}：</div>
+                                    <div class="label_value">
+                                        <div class="checkbox_items">
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="isshow" id="isshow_1" value="1" {if $seller_win.is_show eq 1} checked="true" {/if}  />
+                                                <label for="isshow_1" class="ui-radio-label">{$lang.yes}</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="isshow" id="isshow_0" value="0" {if $seller_win.is_show eq 0} checked="true" {/if}  />
+                                                <label for="isshow_0" class="ui-radio-label">{$lang.no}</label>
+                                            </div>
+                                        </div>
+										<label class="blue_label">{$lang.notice_custom}</label>
+                                    </div>
+                                </div>
+                                <div class="item" id="cutmedit" style="display:{if $seller_win.win_type eq 1}none{/if}">
+                                    <div class="label">{$lang.custom_content}：</div>
+                                    <div class="label_value">
+										{$FCKeditor}
+                                    </div>
+                                </div>								
+                                <div class="item">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="label_value info_btn">
+										<input type="submit" class="button" value="{$lang.button_submit}" id="submitBtn" />
+										<input type="reset" class="button button_reset" value="{$lang.button_reset}" />
+										<input type="hidden" name="act" value="{$form_action}" />
+										<input type="hidden" name="id" value="{$seller_win.id}" />
+										<input type="hidden" name="old_navimg" value="{$seller_win.win_img}">
+                                    </div>
+                                </div>								
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+    </div>
+ 	{include file ='library/pagefooter.lbi'}
+ 	{insert_scripts files="spectrum-master/spectrum.js"}
+	{literal}
+	<script language="JavaScript">
+	$(function(){
+		{if $seller_win.win_type eq 0}
+			$('#goods_type').hide();
+		{/if}
+		
+		//表单验证
+		$("#submitBtn").click(function(){
+			if($("#merchants_window_form").valid()){
+				$("#merchants_window_form").submit();
+			}
+		});
+	
+		$('#merchants_window_form').validate({
+			errorPlacement:function(error, element){
+				var error_div = element.parents('div.label_value').find('div.form_prompt');
+				element.parents('div.label_value').find(".notic").hide();
+				error_div.append(error);
+			},
+			rules:{
+				winname :{
+					required : true
+				}
+			},
+			messages:{
+				winname:{
+					required : '<i class="icon icon-exclamation-sign"></i>橱窗名称不能为空'
+				}
+			}			
+		});
+	});
+
+	function changecutom(type)
+	{
+		if(type)
+		{
+			$(".mian-info").addClass("mian-info-temp");
+			$("#cutmedit").show();
+			$("#goods_type").hide();
+		}
+		else
+		{
+			$(".mian-info").removeClass("mian-info-temp");
+			$("#cutmedit").hide();
+			$("#goods_type").show();	
+		}
+	}
+
+	//选色 start
+	$(function(){
+		$('.sp-palette-buttons-disabled').hide();
+		
+		$('.go_color').click(function(){
+			$('.sp-palette-buttons-disabled').show();
+		});
+		
+		$('.sp-choose').click(function(){
+			$('.sp-palette-buttons-disabled').hide();
+			var sp_color = $('.sp-input').val();
+			$('#wincolor').val(sp_color);
+		});
+	})
+
+	$("#update").click (function() {
+		console.log($("#full").spectrum("option", "palette"));
+		$("#full").spectrum("option", "palette", [
+			["red", "green", "blue"]    
+		]);
+	});
+
+	$("#full").spectrum({
+		color: "#FFF",
+		flat: true,
+		showInput: true,
+		className: "full-spectrum",
+		showInitial: true,
+		showPalette: true,
+		showSelectionPalette: true,
+		maxPaletteSize: 10,
+		preferredFormat: "hex",
+		localStorageKey: "spectrum.demo",
+		move: function (color) {
+			
+		},
+		palette: [
+			["rgb(0, 0, 0)", "rgb(67, 67, 67)", "rgb(102, 102, 102)",
+			"rgb(204, 204, 204)", "rgb(217, 217, 217)","rgb(255, 255, 255)"],
+			["rgb(152, 0, 0)", "rgb(255, 0, 0)", "rgb(255, 153, 0)", "rgb(255, 255, 0)", "rgb(0, 255, 0)",
+			"rgb(0, 255, 255)", "rgb(74, 134, 232)", "rgb(0, 0, 255)", "rgb(153, 0, 255)", "rgb(255, 0, 255)"], 
+			["rgb(230, 184, 175)", "rgb(244, 204, 204)", "rgb(252, 229, 205)", "rgb(255, 242, 204)", "rgb(217, 234, 211)", 
+			"rgb(208, 224, 227)", "rgb(201, 218, 248)", "rgb(207, 226, 243)", "rgb(217, 210, 233)", "rgb(234, 209, 220)", 
+			"rgb(221, 126, 107)", "rgb(234, 153, 153)", "rgb(249, 203, 156)", "rgb(255, 229, 153)", "rgb(182, 215, 168)", 
+			"rgb(162, 196, 201)", "rgb(164, 194, 244)", "rgb(159, 197, 232)", "rgb(180, 167, 214)", "rgb(213, 166, 189)", 
+			"rgb(204, 65, 37)", "rgb(224, 102, 102)", "rgb(246, 178, 107)", "rgb(255, 217, 102)", "rgb(147, 196, 125)", 
+			"rgb(118, 165, 175)", "rgb(109, 158, 235)", "rgb(111, 168, 220)", "rgb(142, 124, 195)", "rgb(194, 123, 160)",
+			"rgb(166, 28, 0)", "rgb(204, 0, 0)", "rgb(230, 145, 56)", "rgb(241, 194, 50)", "rgb(106, 168, 79)",
+			"rgb(69, 129, 142)", "rgb(60, 120, 216)", "rgb(61, 133, 198)", "rgb(103, 78, 167)", "rgb(166, 77, 121)",
+			"rgb(91, 15, 0)", "rgb(102, 0, 0)", "rgb(120, 63, 4)", "rgb(127, 96, 0)", "rgb(39, 78, 19)", 
+			"rgb(12, 52, 61)", "rgb(28, 69, 135)", "rgb(7, 55, 99)", "rgb(32, 18, 77)", "rgb(76, 17, 48)"]
+		]
+	});
+	//选色 end
+	</script>
+	{/literal}
+</body>
+</html>

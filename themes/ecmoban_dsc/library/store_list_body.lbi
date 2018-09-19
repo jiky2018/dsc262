@@ -1,0 +1,98 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<div class="storeDialog">
+    <div class="storeDialog-top">
+        <div class="dt">{$lang.Selection_region}：</div>
+        <div class="dd">
+            <select id="selProvinces" onchange="region.changed(this, 2, 'selCities')">
+                <option value=''>{$lang.Please_select}</option>
+                {foreach from=$provinces item=region}
+                <option value="{$region.region_id}" > {$region.region_name}</option>
+                {/foreach}
+            </select>
+
+            <select  id="selCities" onchange="region.changed(this, 3, 'selDistricts')" style="display:none">
+                <option value=''>{$lang.Please_select}</option>
+                {foreach from=$cities item=region}
+                <option value="{$region.region_id}" {if $region.region_id eq 35}selected{/if}>{$region.region_name}</option>
+                {/foreach}
+            </select>
+
+            <select  id="selDistricts" onchange="get_store_list(this)" style="display:none">
+                <option value=''>{$lang.Please_select}</option>
+                {foreach from=$city item=region}
+                <option value="{$region.region_id}" {if $region.region_id eq 369}selected{/if}>{$region.region_name}</option>
+                {/foreach}
+            </select>
+        </div>
+		<div style="float:right;padding-right: 30px;"><a href="javascript:;" onclick="all_stores({$goods_id})"> {$lang.all_store_list}</a></div>
+        <input type="hidden" id="goods_id" value="{$goods_id}"/>
+    </div>
+    
+    <div class="store-content">
+        <ul class="store_see" id="store_see">
+        {foreach from=$store_list item=store_list}
+        <li>
+            <div class="td s_title" title="{$store_list.stores_name}" data-toggle="tooltip"><i></i>{$store_list.stores_name}</div>
+            <div class="td s_address">{$lang.address}：[{$store_list.province}&nbsp;{$store_list.city}&nbsp;{$store_list.district}]&nbsp;{$store_list.stores_address}</div>
+            <div class="td handle"><a href="javascript:bool=2;addToCart({$store_list.goods_id},0,0,'','',{$store_list.id})" >{$lang.Since_lift_new}</a></div>
+        </li>
+        {/foreach}
+        </ul>
+        <div class="notic_store" style="display:none;"></div>
+    </div>
+</div>
+<script type="text/javascript">
+    function get_store_list(obj){
+        var formBuy      = document.forms['ECS_FORMBUY'];
+        var goods_id = document.getElementById('goods_id').value;
+        var province = document.getElementById('selProvinces').value;
+        var city = document.getElementById('selCities').value;
+        var district = obj.value;
+        var spec_arr = '';
+        // 检查是否有商品规格 
+        if (formBuy)
+        {
+            spec_arr = getSelectedAttributes(formBuy);
+        }
+
+        if(district > 0){
+            Ajax.call('ajax_dialog.php?act=get_store_list', 'province=' + province + '&city=' + city + '&district=' + district + '&goods_id=' + goods_id + '&spec_arr=' + spec_arr, get_store_listResponse, 'GET', 'JSON'); 
+        }
+    }
+    function get_store_listResponse(result){
+        if(result.error > 0){
+            $("#store_see").html(result.content);
+			$("#store_see").show();
+			$(".notic_store").hide();
+			$(".store_see").perfectScrollbar();
+        }else{
+            $("#store_see").html('');
+			$("#store_see").hide();
+			$(".notic_store").show();
+			$(".notic_store").html(json_languages.store_goods_null)
+        }
+    }
+	$(function(){
+		$("[data-toggle='tooltip']").tooltip({ position: { my: "top+15", at:"center" } });
+	});
+	
+	function all_stores(goodsId){
+		
+		var formBuy      = document.forms['ECS_FORMBUY'];
+		if (formBuy)
+		{
+			spec_arr = getSelectedAttributes(formBuy);
+		}		
+		
+		Ajax.call('ajax_dialog.php?act=all_stores_list', 'goods_id=' + goodsId + '&spec_arr=' + spec_arr , all_store_listResponse, 'GET', 'JSON');		
+	}
+	
+	function all_store_listResponse(result){
+        if(result.error > 0){
+            $("#store_see").html(result.content);
+			$("#store_see").show();
+			$(".notic_store").hide();
+			$(".store_see").perfectScrollbar();
+		}
+    }
+</script>

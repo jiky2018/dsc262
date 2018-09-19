@@ -1,0 +1,162 @@
+{include file="admin_pageheader"}
+
+<div class="wrapper">
+  <div class="title">分销订单列表</div>
+  <div class="content_tips">
+    <div class="tabs_info">
+      <ul>
+          <li class="{if $status =='' && $able == ''}curr{/if}"><a href="{url('drp_order_list')}">{$lang.sch_stats.all}</a></li>
+          <li class="{if $status == '0' && $able == '1'}curr{/if}"><a href="{url('drp_order_list',array('status'=>0,'able'=>1))}">{$lang.sch_stats.0}</a></li>
+          <li class="{if $status == '0' && $able == '2'}curr{/if}"><a href="{url('drp_order_list',array('status'=>0,'able'=>2))}">不足{$able_day}天</a></li>
+          <li class="{if $status == '1'}curr{/if}"><a href="{url('drp_order_list',array('status'=>1))}">{$lang.sch_stats.1}</a></li>
+          <li class="{if $status == '2'}curr{/if}"><a href="{url('drp_order_list',array('status'=>2))}">{$lang.sch_stats.2}</a></li>
+      </ul>
+    </div>
+    <div class="explanation" id="explanation">
+        <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4><span id="explanationZoom" title="收起提示"></span></div>
+        <ul>
+            <li>一、分销订单显示条件：订单里的商品为分销商品。</li>
+            <li>二、分销订单可操作条件：分销比例设置里的订单佣金可分成时间（默认7天）之后，才出现可分成操作。</li>
+            <li>三、分销订单点击分成会根据分销商不同级别与等级计算所获得的佣金。
+            <font color='red'>佣金计算公式：商品分销佣金（例如 10元） * 分销商等级与级别 对应佣金比例 （例如：30%） = 3 元。</font>
+            </li>
+            <li>四、分销订单点击撤销分成把分销商所获得佣金收回。</li>
+            <li>五、支持批量分成，搜索订单号。</li>
+        </ul>
+    </div>
+    <div class="flexilist">
+        <div class="common-head">
+            <form action="{url('drporderlist')}" method="post">
+              <div class="search">
+                <div class="input">
+                    <input type="text" name="order_sn" class="text nofocus" placeholder="{$lang.sch_order}" autocomplete="off"><input type="submit" value="" class="btn" name="export">
+                </div>
+              </div>
+            </form>
+        </div>
+        <div class="common-content">
+          <div class="list-div"  id="listDiv">
+             <table cellspacing="0" cellpadding="0" border="0">
+                <tr class="active">
+                  <th></th>
+                  <th><div class="tDiv">{$lang.order_sn}</div></th>
+                  <th><div class="tDiv">{$lang.order_stats.name}</div></th>
+                  <th><div class="tDiv">{$lang.sch_stats.name}</div></th>
+                  <th><div class="tDiv">{$lang.drp_info}</div></th>
+                  <th><div class="tDiv">{$lang.drp_ru_name}</div></th>
+                  <th><div class="tDiv">{$lang.drp_action}</div></th>
+                </tr>
+                {if $list}
+                {foreach $list as $list}
+                <tr>
+                    <td>
+                        <div class="tDiv">
+                          <div class="checkbox">
+                              <label>
+                                  <input type="checkbox"  value="{$list.order_id}" {if $list.drp_is_separate == 0 && $list.separate_able == 1 && $on == 1}name="checkboxes[]"{else}disabled="disabled"{/if}>
+                              </label>
+                          </div>
+                        </div>
+                    </td>
+                  <td><div class="tDiv">{$list.order_sn}</div></td>
+                  <td><div class="tDiv">{$lang.order_stats[$list.order_status]},{$lang.ps[$list.pay_status]},{$lang.ss[$list.shipping_status]}</div></td>
+                  <td><div class="tDiv">{$lang.sch_stats[$list.drp_is_separate]}</div></td>
+                  {if $list.info}
+                  <td><div class="tDiv">{$list.info}</div></td>
+                  {else}
+                  <td><div class="tDiv">暂无操作，等待订单处理</div></td>
+                  {/if}
+                  <td><div class="tDiv">{$list.shop_name}</div></td>
+                  <td><div class="tDiv">
+                      {if $list.drp_is_separate == 0 && $list.separate_able == 1 && $on == 1}
+                      <a href="{url('separatedrporder',array('oid'=>$list.order_id))}">{$lang.drp_affiliate_separate}</a>&nbsp;|
+                      <a href="{url('deldrporder',array('oid'=>$list.order_id))}">&nbsp;{$lang.drp_affiliate_cancel}</a>
+                      {elseif $list.drp_is_separate == 1}
+                      {$lang.sch_stats.1}&nbsp;|<a href="{url('rollbackdrporder',array('log_id'=>$list.log_id))}">&nbsp;{$lang.drp_affiliate_rollback}</a>
+                      {else}
+                      {if $list.drp_is_separate == 0}
+                      不足{$able_day}天
+                      {else}
+                      -
+                      {/if}
+                      {/if}
+                      </div>
+                  </td>
+                </tr>
+                {/foreach}
+                {else}
+                <tbody>
+                     <tr><td class="no-records" colspan="7">没有找到任何记录</td></tr>
+                </tbody>
+                {/if}
+                <tfoot>
+                    <tr>
+                        <td colspan="3">
+                            <div class="tDiv of">
+                              <div class="tfoot_btninfo">
+                                   <input type="submit" onclick="confirm_bath()"  id="btnSubmit" value="{$lang.drp_affiliate_batch}" class="button bg-green">
+                                </div>
+                            </div>
+                        </td>
+                        <td colspan="7">
+                            <div class="list-page">
+                                {include file="admin_pageview"}
+                            </div>
+                        </td>
+                    </tr>
+                </tfoot>
+             </table>
+          </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    function confirm_bath()
+    {
+        Items = document.getElementsByName('checkboxes[]');
+        var arr = new Array();
+        for (i=0; Items[i]; i++){
+            if (Items[i].checked){
+                var selected = 1;
+                  arr.push(Items[i].value);
+            }
+        }
+        if(selected != 1){
+            return false;
+        }else{
+            $.post("{url('separatedrporder')}", {oid:arr}, function(data){
+                    if(data.url){
+                        window.location.href = data.url;
+                    }
+            }, 'json');
+        }
+
+    }
+</script>
+<script>
+    $("#explanationZoom").on("click",function(){
+        var explanation = $(this).parents(".explanation");
+        var width = $(".content_tips").width();
+        if($(this).hasClass("shopUp")){
+            $(this).removeClass("shopUp");
+            $(this).attr("title","收起提示");
+            explanation.find(".ex_tit").css("margin-bottom",10);
+            explanation.animate({
+                width:width
+            },300,function(){
+                $(".explanation").find("ul").show();
+            });
+        }else{
+            $(this).addClass("shopUp");
+            $(this).attr("title","提示相关设置操作时应注意的要点");
+            explanation.find(".ex_tit").css("margin-bottom",0);
+            explanation.animate({
+                width:"118"
+            },300);
+            explanation.find("ul").hide();
+        }
+    });
+</script>
+{include file="admin/footer"}

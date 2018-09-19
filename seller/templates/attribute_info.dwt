@@ -1,0 +1,271 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+            	{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="ecsc-form-goods">
+                    <form action="attribute.php" method="post" name="theForm" id="attribute_form">
+                    <div class="wrapper-list border1">
+                    	<dl>
+                        	<dt>{$lang.require_field}&nbsp;{$lang.label_attr_name}</dt>
+                            <dd>
+                            	<input type='text' name='attr_name' value="{$attr.attr_name}" size="30" class="text" />
+                                <div class="form_prompt"></div>
+                            </dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.require_field}&nbsp;{$lang.label_cat_id}</dt>
+                            <dd>
+                                <div class="imitate_select select_w170">
+                                    <div class="cite">{$lang.select_please}</div>
+                                    <ul style="display: none;">
+                                        {$goods_type_list}
+                                    </ul>
+                                    <input name="cat_id" type="hidden" value="{$attr.cat_id}">
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl id="attrGroups" style="display:none">
+                        	<dt>{$lang.label_attr_group}</dt>
+                            <dd>
+                                {if $attr_groups}
+                                <div class="imitate_select select_w170">
+                                    <div class="cite">{$lang.select_please}</div>
+                                    <ul style="display: none;">
+                                        <li><a data-value="">{$lang.select_please}</a></li>
+                                        {foreach from=$attr_groups key=key item=item}
+                                            <li><a data-value="{$key}">{$item}</a></li>
+                                        {/foreach}
+                                    </ul>
+                                    <input name="attr_group" type="hidden" value="{$attr.attr_group}">
+                                </div>										
+                                <div class="form_prompt"></div>
+                                {/if}
+                            </dd>
+                        </dl>
+                        <dl>
+                        	<dt>分类筛选样式：</dt>
+                            <dd>
+                            	<div class="checkbox_items">
+                                	<div class="checkbox_item">
+                                        <input name="attr_cat_type" type="radio" value="0" class="ui-radio" id="attr_cat_type_0" {if $attr.attr_cat_type eq 0}checked="checked" {/if} />
+                                        <label class="ui-radio-label" for="attr_cat_type_0">普通</label>
+                                    </div>
+                                    <div class="checkbox_item">
+                                        <input name="attr_cat_type" type="radio" value="1" class="ui-radio" id="attr_cat_type_1" {if $attr.attr_cat_type eq 1}checked="checked" {/if} />
+                                        <label class="ui-radio-label" for="attr_cat_type_1">颜色</label>
+                                    </div>
+                           		</div>
+                            </dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.label_attr_index}</dt>
+                            <dd>
+                            	<div class="checkbox_items">
+                                	<div class="checkbox_item">
+                                        <input type="radio" name="attr_index" value="0" class="ui-radio" id="attr_index_0" {if $attr.attr_index eq 0}checked="true"{/if} />
+                                        <label class="ui-radio-label" for="attr_index_0">{$lang.no_index}</label>
+                                    </div>
+                                    <div class="checkbox_item">
+                                        <input type="radio" name="attr_index" value="1" class="ui-radio" id="attr_index_1" {if $attr.attr_index eq 1}checked="true"{/if} />
+                                        <label class="ui-radio-label" for="attr_index_1">{$lang.keywords_index}</label>
+                                    </div>
+                                    <div class="checkbox_item">
+                                        <input type="radio" name="attr_index" value="2" class="ui-radio" id="attr_index_2" {if $attr.attr_index eq 2}checked="true"{/if} />
+                                        <label class="ui-radio-label" for="attr_index_2">{$lang.range_index}</label>
+                                    </div>
+								</div>
+								<div class="notic" id="noticeindex">{$lang.note_attr_index}</div>
+                            </dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.label_is_linked}</dt>
+                            <dd>
+                            	<div class="checkbox_items">
+                                	<div class="checkbox_item">
+                                        <input type="radio" name="is_linked" value="0" class="ui-radio" id="is_linked_0" {if $attr.is_linked eq 0} checked="true" {/if} />
+                                        <label class="ui-radio-label" for="is_linked_0">{$lang.no}</label>
+                                    </div>
+                                    <div class="checkbox_item">
+                                        <input type="radio" name="is_linked" value="1" class="ui-radio" id="is_linked_1" {if $attr.is_linked eq 1} checked="true" {/if} />
+                                        <label class="ui-radio-label" for="is_linked_1">{$lang.yes}</label>
+                                    </div>
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.label_attr_type}：</dt>
+                            <dd>
+                            	<div class="checkbox_items">
+                                	<div class="checkbox_item">
+                                  		<input type="radio" name="attr_type" value="0" class="ui-radio" id="attr_type_0" {if $attr.attr_type eq 0} checked="true" {/if} />
+                                        <label class="ui-radio-label" for="attr_type_0">{$lang.attr_type_values[0]}</label>
+                                    </div>
+                                    <div class="checkbox_item">
+                                  		<input type="radio" name="attr_type" value="1" class="ui-radio" id="attr_type_1" {if $attr.attr_type eq 1} checked="true" {/if} />
+                                        <label class="ui-radio-label" for="attr_type_1">{$lang.attr_type_values[1]}</label>
+                                  	</div>
+                                    <div class="checkbox_item">
+                                  		<input type="radio" name="attr_type" value="2" class="ui-radio" id="attr_type_2" {if $attr.attr_type eq 2} checked="true" {/if} />
+                                        <label class="ui-radio-label" for="attr_type_2">{$lang.attr_type_values[2]}</label>
+                                	</div>
+                                </div>
+                                <div class="notic" id="noticeAttrType">{$lang.note_attr_type}</div>
+                            </dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.label_attr_input_type}</dt>
+                            <dd>
+                            	<div class="checkbox_items">
+                                    <div class="checkbox_item">
+                                        <input type="radio" name="attr_input_type" value="0" class="ui-radio" id="attr_input_type_0" {if $attr.attr_input_type eq 0} checked="true" {/if} onclick="radioClicked(0)"/>
+                                        <label class="ui-radio-label" for="attr_input_type_0">{$lang.text}</label>
+                                    </div>
+                                    <div class="checkbox_item">
+                                        <input type="radio" name="attr_input_type" value="1" class="ui-radio" id="attr_input_type_1" {if $attr.attr_input_type eq 1} checked="true" {/if} onclick="radioClicked(1)"/>
+                                        <label class="ui-radio-label" for="attr_input_type_1">{$lang.select}</label>
+                                    </div>
+                                    <div class="checkbox_item">
+                                        <input type="radio" name="attr_input_type" value="2" class="ui-radio" id="attr_input_type_2" {if $attr.attr_input_type eq 2} checked="true" {/if} onclick="radioClicked(0)"/>
+                                        <label class="ui-radio-label" for="attr_input_type_2">{$lang.text_area}</label>
+                                    </div>
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.label_attr_values}</dt>
+                            <dd><textarea name="attr_values" cols="30" rows="5" class="textarea">{$attr.attr_values}</textarea></dd>
+                        </dl>
+                        {if $attr.attr_name}
+                        <dl>
+                        	<dt>&nbsp;</dt>
+                            <dd>
+                            	<a href="attribute.php?act=add_img&attr_id={$attr.attr_id}&attr_name={$attr.attr_name}" class="org">{$lang.add_attribute_img}</a>
+                                {if $attr.attr_cat_type eq 1}
+                                <a href="attribute.php?act=set_gcolor&attr_id={$attr.attr_id}" class="org">{$lang.add_attribute_color}</a>
+                                {/if}
+                            </dd>
+                        </dl>
+                        {/if}
+                        <dl class="button_info">
+                        	<dt>&nbsp;</dt>
+                            <dd>
+                                <input type="submit" value="{$lang.button_submit}" class="sc-btn sc-blueBg-btn btn35" id="submitBtn" />
+                                <input type="reset" value="{$lang.button_reset}" class="sc-btn btn35 sc-blue-btn" />     
+                                <input type="hidden" name="act" value="{$form_act}" />
+                                <input type="hidden" name="attr_id" value="{$attr.attr_id}" />
+                            </dd>
+                        </dl>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript">
+$(function(){
+	//表单验证
+	$("#submitBtn").click(function(){
+		if($("#attribute_form").valid()){
+			$("#attribute_form").submit();
+		}
+	});
+
+	$('#attribute_form').validate({
+		errorPlacement:function(error, element){
+			var error_div = element.parents('dl').find('div.form_prompt');
+			//element.parents('dl').find(".notic").hide();
+			error_div.append(error);
+		},
+		rules:{
+			attr_name:{
+				required : true
+			}
+		},
+		messages:{
+			attr_name:{
+				required : '<i class="icon icon-exclamation-sign"></i>属性名称不能为空'
+			}
+		}			
+	});
+	
+	//属性值录入方式切换
+	$("input[name='attr_input_type']").click(function(){
+		var val = $(this).val();
+		if(val != 1){
+			$("textarea[name='attr_values']").attr("disabled",true);
+		}else{
+			$("textarea[name='attr_values']").attr("disabled",false);
+		}
+	});
+	
+	if($("#attr_input_type_0").is(":checked")){
+		$("textarea[name='attr_values']").attr("disabled",true);
+	}
+});
+
+/**
+ * 点击类型按钮时切换选项的禁用状态
+ */
+function radioClicked(n)
+{
+  document.forms['theForm'].elements["attr_values"].disabled = n > 0 ? false : true;
+}
+
+/**
+ * 改变商品类型的处理函数
+ */
+function onChangeGoodsType(catId)
+{
+  Ajax.call('attribute.php?act=get_attr_groups&cat_id=' + catId, '', changeGoodsTypeResponse, 'GET', 'JSON');
+}
+
+function changeGoodsTypeResponse(res)
+{
+  if (res.error == 0)
+  {
+    var row = document.getElementById('attrGroups');
+    if (res.content.length == 0) {
+      row.style.display = 'none';
+    } else {
+      row.style.display = document.all ? 'block' : 'table-row';
+
+      var sel = document.forms['theForm'].elements['attr_group'];
+
+      sel.length = 0;
+
+      for (var i = 0; i < res.content.length; i++)
+      {
+        var opt = document.createElement('OPTION');
+        opt.value = i;
+        opt.text = res.content[i];
+        sel.options.add(opt);
+        if (i == '{$attr.attr_group}')
+        {
+          opt.selected=true;
+        }
+      }
+    }
+  }
+
+  if (res.message)
+  {
+    alert(res.message);
+  }
+}
+//-->
+
+{/literal}
+</script>
+</body>
+</html>

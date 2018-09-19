@@ -1,0 +1,92 @@
+{include file="admin_pageheader"}
+
+<div class="wrapper">
+  <div class="title">分销排行</div>
+  <div class="content_tips">
+    <div class="tabs_info">
+      <ul>
+          <li class="{if $act ==''}curr{/if}"><a href="{url('drp_list',array('where'=>''))}">全部</a></li>
+          <li class="{if $act =='1'}curr{/if}"><a href="{url('drp_list',array('where'=>1))}">一年</a></li>
+          <li class="{if $act =='2'}curr{/if}"><a href="{url('drp_list',array('where'=>2))}">半年</a></li>
+          <li class="{if $act =='3'}curr{/if}"><a href="{url('drp_list',array('where'=>3))}">一个月</a></li>
+      </ul>
+    </div>
+    <div class="explanation" id="explanation">
+        <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4><span id="explanationZoom" title="收起提示"></span></div>
+        <ul>
+            <li>分销排行可以按照满一年，半年，一个月进行排行查询。</li>
+            <li>分销排行按照销售佣金进行排序。</li>
+        </ul>
+    </div>
+    <div class="flexilist">
+      <div class="common-content">
+        <div class="list-div">
+          <form action="{url('shop')}" method="post" class="form-horizontal" role="form">
+          <table cellspacing="0" cellpadding="0" border="0">
+              <tr class="active">
+                <th><div class="tDiv">编号</div></th>
+                <th><div class="tDiv">店铺名</div></th>
+                <th><div class="tDiv">用户名</div></th>
+                <th><div class="tDiv">分销等级</div></th>
+                <th><div class="tDiv">销售佣金</div></th>
+                <th><div class="tDiv">手机号</div></th>
+                <th><div class="tDiv">开店时间</div></th>
+              </tr>
+              {if $list}
+              {foreach $list as $val}
+              <tr>
+                <td><div class="tDiv">{$val['id']}</div></td>
+                <td><div class="tDiv">{$val['shop_name']}</div></td>
+                <td><div class="tDiv">{$val['name']}</div></td>
+                <td><div class="tDiv">{$val['credit_name']}</div></td>
+                <td><div class="tDiv">{$val['money']}</div></td>
+                <td><div class="tDiv">{$val['mobile']}</div></td>
+                <td><div class="tDiv">{$val['create_time']}</div></td>
+              </tr>
+              {/foreach}
+              {else}
+              <tbody>
+                     <tr><td class="no-records" colspan="7">没有找到任何记录</td></tr>
+              </tbody>
+              {/if}
+              <tfoot>
+                  <tr>
+                      <td colspan="7">
+                          <div class="list-page">
+                              {include file="admin_pageview"}
+                          </div>
+                      </td>
+                  </tr>
+              </tfoot>
+          </table>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+    $("#explanationZoom").on("click",function(){
+        var explanation = $(this).parents(".explanation");
+        var width = $(".content_tips").width();
+        if($(this).hasClass("shopUp")){
+            $(this).removeClass("shopUp");
+            $(this).attr("title","收起提示");
+            explanation.find(".ex_tit").css("margin-bottom",10);
+            explanation.animate({
+                width:width
+            },300,function(){
+                $(".explanation").find("ul").show();
+            });
+        }else{
+            $(this).addClass("shopUp");
+            $(this).attr("title","提示相关设置操作时应注意的要点");
+            explanation.find(".ex_tit").css("margin-bottom",0);
+            explanation.animate({
+                width:"118"
+            },300);
+            explanation.find("ul").hide();
+        }
+    });
+</script>
+{include file="admin/footer"}

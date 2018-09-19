@@ -1,0 +1,634 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<link rel="icon" href="animated_favicon.gif" type="image/gif" />
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/base.css" />
+<link href="{$ecs_css_path}" rel="stylesheet" type="text/css" />
+<link href="{$ecs_css_suggest}" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/purebox.css">
+{* 包含脚本文件 *}
+{insert_scripts files='jquery-1.9.1.min.js,jquery.json.js,transport_jquery.js,jquery.divbox.js,common.js,shopping_flow.js,region.js,utils.js'}
+<script type="text/javascript" src="js/calendar.php?lang={$cfg_lang}"></script>
+<link href="js/calendar/calendar.min.css" rel="stylesheet" type="text/css" />
+<link href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/merchants.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/sc_common.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/rotate3di.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/scroll_city.js"></script>
+<!-- #BeginLibraryItem "/library/js_languages.lbi" --><!-- #EndLibraryItem -->
+<script type="text/javascript">
+	function openDiv() {
+		if(document.getElementById('shop_categoryMain_id')){
+			var shop_categoryMain = document.getElementById('shop_categoryMain_id');//  主营类目
+			var addCategoryMain_Id = document.getElementById('addCategoryMain_Id');//  一级类目
+			addCategoryMain_Id.value = shop_categoryMain.value;
+			selectChildCate(shop_categoryMain.value);
+		}
+		
+		$("#divSCA").OpenDiv();
+	}
+
+	function closeDiv() {
+		$("#divSCA").CloseDiv();	
+	}
+</script>
+</head>
+<body>
+<!-- #BeginLibraryItem "/library/page_header_merchants_flow.lbi" --><!-- #EndLibraryItem -->
+
+<div class="merSteps">
+	<div class="w1200">
+	{if $sid eq 1}
+    <form id="stepForm" action="merchants_steps_action.php" method="post" name="stepForm">
+    <div class="panel">
+        <div class="panel-nav">
+            <div class="progress-item {if $sid eq 1}ongoing{elseif  $sid eq 2}passed{elseif  $sid eq 3}passed{else}passed{/if}">
+                <div class="number">1</div>
+                <div class="progress-desc">{$lang.merchants_step_one}</div>
+                <div class="arrow-background"></div>
+                <div class="arrow-foreground"></div>
+            </div>
+            <div class="progress-item {if $sid eq 1}tobe{elseif  $sid eq 2}ongoing{elseif  $sid eq 3}passed{else}passed{/if}">
+                <div class="number">2</div>
+                <div class="progress-desc">{$lang.merchants_step_two}</div>
+                <div class="arrow-background"></div>
+                <div class="arrow-foreground"></div>
+            </div>
+            <div class="progress-item {if $sid eq 1}tobe{elseif  $sid eq 2}tobe{elseif  $sid eq 3}ongoing{else}passed{/if}">
+                <div class="number">3</div>
+                <div class="progress-desc">{$lang.merchants_step_three}</div>
+                <div class="arrow-background"></div>
+                <div class="arrow-foreground"></div>
+            </div>
+            <div class="progress-item {if $sid eq 1}tobe{elseif  $sid eq 2}tobe{elseif  $sid eq 3}tobe{else}ongoing{/if}">
+                <div class="number">4</div>
+                <div class="progress-desc">{$lang.merchants_step_four}</div>
+            </div>
+        </div>
+        <div class="panel-content">
+        	<div class="bg-top"></div>
+            <div class="bg-warp">
+                <div class="title">{$lang.merchants_step_five}</div>
+                <div class="textareay">
+                    <div class="agreement">
+                        {$steps.article_centent}
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <input name="agreement" type="hidden" value="1" />
+                    <input name="nextStepBtn" class="btn" type="submit" value="{$lang.merchants_step_six}" />
+                </div>
+            </div>
+            <div class="bg-bottom"></div>
+        </div>
+    </div>    
+    </form>
+	{else}
+	<div class="panel">
+    	<div class="panel-nav">
+            <div class="progress-item {if $sid eq 1}ongoing{elseif  $sid eq 2}passed{elseif  $sid eq 3}passed{else}passed{/if}">
+                <div class="number">1</div>
+                <div class="progress-desc">{$lang.merchants_step_one}</div>
+                <div class="arrow-background"></div>
+                <div class="arrow-foreground"></div>
+            </div>
+            <div class="progress-item {if $sid eq 1}tobe{elseif  $sid eq 2}ongoing{elseif  $sid eq 3}passed{else}passed{/if}">
+                <div class="number">2</div>
+                <div class="progress-desc">{$lang.merchants_step_two}</div>
+                <div class="arrow-background"></div>
+                <div class="arrow-foreground"></div>
+            </div>
+            <div class="progress-item {if $sid eq 1}tobe{elseif  $sid eq 2}tobe{elseif  $sid eq 3}ongoing{else}passed{/if}">
+                <div class="number">3</div>
+                <div class="progress-desc">{$lang.merchants_step_three}</div>
+                <div class="arrow-background"></div>
+                <div class="arrow-foreground"></div>
+            </div>
+            <div class="progress-item {if $sid eq 1}tobe{elseif  $sid eq 2}tobe{elseif  $sid eq 3}tobe{else}ongoing{/if}">
+                <div class="number">4</div>
+                <div class="progress-desc">{$lang.merchants_step_four}</div>
+            </div>
+        </div>
+        {if $step neq 'stepSubmit'}
+        <form enctype="multipart/form-data" id="stepForm" method="post" action="merchants_steps_action.php" name="stepForm" onsubmit="return validate();">
+        	<div class="panel-content">
+                <div class="bg-top"></div>
+                <div class="bg-warp">
+                	<div class="title">
+                        <span>{$process.process_title}</span>
+                    </div>
+                    {foreach from=$steps_title item=title}
+                        {if $title.special_type eq 1 && $title.fields_special neq ''}
+                        <div class="btn-group mt0">
+                        {$title.fields_special}
+                        </div>
+                        {/if}
+                        
+                        {if $title.steps_style eq 0}
+                            <!-- #BeginLibraryItem "/library/basic_type.lbi" --><!-- #EndLibraryItem -->
+                        {elseif $title.steps_style eq 1}
+                            <!-- #BeginLibraryItem "/library/shop_type.lbi" --><!-- #EndLibraryItem -->
+                        {elseif $title.steps_style eq 2}
+                            <!-- #BeginLibraryItem "/library/cate_type.lbi" --><!-- #EndLibraryItem -->
+                        {elseif $title.steps_style eq 3}
+                            <!-- #BeginLibraryItem "/library/brank_type.lbi" --><!-- #EndLibraryItem --> 
+                        {elseif $title.steps_style eq 4}
+                            <!-- #BeginLibraryItem "/library/shop_info.lbi" --><!-- #EndLibraryItem -->
+                        {/if}
+                        {if $title.special_type eq 2 && $title.fields_special neq ''}
+                        <div class="btn-group">
+                            {if $brandView neq 'addBrand'}
+                                {$title.fields_special}
+                            {/if}    
+                        </div>
+                        {/if}
+                    {/foreach}
+                    {if $brandView neq 'addBrand'}
+                        <div class="btn-group mt0" style="text-align:center;">
+                            <input name="numAdd" value="1" id="numAdd" type="hidden" />
+                            <input name="pid_key" type="hidden" value="{$pid_key}" />
+                            <input name="sid" type="hidden" value="{$sid}" />
+                            <input name="step" type="hidden" value="{$step}" />
+                            {if $brandView eq 'brandView'}
+                            <input name="brandView" type="hidden" value="{$brandView}" />
+                            <input id="nextStepBtn" class="btnOrg" type="submit" value="{$lang.Preservation}">
+                            <input class="btnOrgBor" type="button" onclick="location.href='merchants_steps.php?step=stepThree&pid_key=2'" value="{$lang.back}">
+                            {elseif $brandView eq 'add_brand'}
+                            <input name="brandView" type="hidden" value="{$brandView}" />
+                            {else}
+                                {if $process.fields_next}
+                                <input id="nextStepBtn" class="btn" type="submit" value="{$process.fields_next}">
+                                {/if}
+                            {/if}
+                            {if $pid_key>1 || $sid>=3}
+                            <input class="btn btn-w" id="js-pre-step" type="button" value="{$lang.merchants_step_Seven}" />
+                            {/if}
+                        </div>
+                    {/if}
+                </div>
+                <div class="bg-bottom"></div>
+            </div>
+        </form>
+        {else}
+			<div class="panel-content">
+            	<div class="bg-top"></div>
+                <div class="bg-warp pannel_end">
+                	<div class="settled-state">
+                        {if $shop_info.merchants_audit eq 0}
+                        <span>{$lang.under_review_one}</span>
+                        {elseif $shop_info.merchants_audit eq 1}
+                        <span>{$lang.under_review_two}</span>
+                        {elseif $shop_info.merchants_audit eq 2}
+                        <span>{$lang.under_review_three}</span>
+                            {if $shop_info.merchants_message}
+                            <span>{$shop_info.merchants_message}</span>
+                            {/if}
+                        {/if}
+                	</div>
+                	<h3 class="ordertitle">{$lang.merchants_step_complete_one}</h3>
+                    {if $shop_info.merchants_audit eq 1}
+                    <div class="item">
+                        <div class="label">{$lang.merchants_step_complete_two}：</div>
+                        <strong class="orange2">{$shop_info.hopeLoginName}</strong>
+                    </div>
+                    <div class="item" style="display:none">
+                    	<div class="label">{$lang.password}：</div>
+                    	<strong class="orange2">{$lang.merchants_step_complete_three}</strong>
+                    </div>
+                    {/if}
+                    
+                    <div class="item">
+                    	<div class="label">{$lang.audit_shop_one}：</div>
+                        <strong class="orange2">{$shop_info.shop_name}</strong>
+                    </div>
+                    
+                    <div class="item"><div class="label">{$lang.audit_shop_two}：</div><strong class="orange2">{$shop_info.shop_class_keyWords}</strong></div>
+                    
+                    <div class="setted-footer"><a href="index.php">{$lang.back_home}</a><a href="user.php">{$lang.user_center}</a>{if $shop_info.merchants_audit eq 1}<a href="user.php?act=merchants_upgrade">{$lang.seller_Grade}</a>{/if}</div>
+                </div>
+                <div class="bg-bottom"></div>
+            </div>
+        {/if}
+    </div>
+    {/if}
+    </div>
+</div>
+
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem --> 
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.purebox.js"></script>
+</body>
+<script type="text/javascript">
+var process_request = "{$lang.process_request}";
+{foreach from=$lang.passport_js item=item key=key}
+var {$key} = "{$item}";
+{/foreach}
+var username_exist = "{$lang.username_exist}";
+var compare_no_goods = "{$lang.compare_no_goods}";
+var btn_buy = "{$lang.btn_buy}";
+var is_cancel = "{$lang.is_cancel}";
+var select_spe = "{$lang.select_spe}";
+
+$(function(){
+	$("#js-pre-step").click(function(){
+		var pid_key={$pid_key}-2;
+		var step='{$step}';
+		if(step>-1)
+		{
+			location.href="merchants_steps.php?step="+step+"&pid_key="+pid_key;	
+		}
+		else
+		{
+			history.go(-1);
+		}
+	})
+});
+
+function validate(){
+	
+	var cate_result = get_element('shoprz_type', 'shoprz_Html', 0, json_languages.merchants_step_error_one);
+	
+	if(cate_result == false){
+		return false;
+	}
+	
+	var title_brand_list = document.getElementById('title_brand_list');
+	
+	if(title_brand_list && title_brand_list.value == 0){
+		var title_brand_listHTML =  document.getElementById('title_brand_listHTML');
+		title_brand_listHTML.innerHTML = '&nbsp;&nbsp;&nbsp;&nbsp'+json_languages.merchants_step_error_two;
+		return false;
+	}
+	
+	if(document.getElementById('subShoprz_type')){
+		var subShoprz = document.getElementById('subShoprz_type');
+		if(subShoprz.style.display == 'block' || subShoprz.style.display == ''){
+			if(subShoprz.value == 0){
+				if(document.getElementById('subShoprz_Html')){
+					var subShoprz_Html = document.getElementById('subShoprz_Html');
+					subShoprz_Html.innerHTML = json_languages.merchants_step_error_three;
+					
+					return false;
+				}
+			}else{
+				if(document.getElementById('subShoprz_Html')){
+					var subShoprz_Html = document.getElementById('subShoprz_Html');
+					subShoprz_Html.innerHTML = '';
+				}
+			}
+		}
+	}
+	
+	var cate_result = get_element('shop_categoryMain_id', 'cate_Html', 0, json_languages.merchants_step_error_four);
+	
+	if(cate_result == false){
+		return false;
+	}else{
+		
+		if(document.getElementById('shop_categoryMain_id')){
+			
+			var seller_category = $(".seller_category").size();
+			
+			if(seller_category == 0){
+				$("#categorySpan").removeClass("hide");
+				return false;
+			}else{
+				$("#categorySpan").addClass("hide");
+			}
+		}
+	}
+	
+	var brandName_result = get_element('brandName', 'brandNameHTML', '', json_languages.merchants_step_error_five);
+	
+	if(brandName_result == false){
+		return false;
+	}
+	
+	var brandFirst_result = get_element('brandFirstChar', 'brandFirstCharHTML', '', json_languages.merchants_step_error_six);
+	if(brandFirst_result == false){
+		return false;
+	}
+
+	var text_brandView_brandLogo = document.getElementById('textBrandLogo');
+	if(text_brandView_brandLogo && text_brandView_brandLogo.value == ''){
+		var brandLogo_result = get_element('brandLogo', 'textBrandLogoHTML', '', json_languages.merchants_step_error_seven);
+		
+		if(brandLogo_result == false){
+			var textBrandLogo_result = get_element('textBrandLogo', '', '', '');
+			if(textBrandLogo_result == false){
+				return false;
+			}
+		}
+	}
+
+	var brandType_result = get_element('brandType', 'brandTypeHTML', 0, json_languages.merchants_step_error_Eight);
+	
+	if(brandType_result == false){
+		return false;
+	}
+	
+	var operateType_result = get_element('brand_operateType', 'operateTypeHTML', 0, json_languages.merchants_step_error_Nine);
+	
+	if(operateType_result == false){
+		return false;
+	}
+	
+	var brandEndTime_result = get_element('ec_brandEndTime', 'brandEndTimeHTML', '', json_languages.merchants_step_error_ten);
+	
+	if(brandEndTime_result == false){
+		var textBrandLogo_result = get_element('brandEndTime_permanent', '', false, '', 'checkbox');
+
+		if(textBrandLogo_result == false){
+			return false;
+		}
+	}
+	
+	var rz_shopName_result = get_element('rz_shopName', 'rz_shopNameHTML', '', json_languages.merchants_step_error_Eleven);
+	
+	if(rz_shopName_result == false){
+		return false;
+	}
+	
+	var hopeLoginName_result = get_element('hopeLoginName', 'hopeLoginNameHTML', '', json_languages.merchants_step_error_Twelve);
+	
+	if(hopeLoginName_result == false){
+		return false;
+	}
+	
+	{if $choose_process eq 1}
+	{foreach from=$steps_title item=title}
+		{foreach from=$title.cententFields item=fields}
+			{if $fields.chooseForm eq 'input' || $fields.chooseForm eq 'textarea'} //纯文本
+				var input_{$fields.textFields} = document.forms['stepForm'].elements['{$fields.textFields}'].value;
+				{if $fields.will_choose eq 1}
+					if(input_{$fields.textFields} == ''){
+						
+						document.getElementById('{$fields.textFields}').innerHTML = '请填写{$fields.fieldsFormName}';
+						document.forms['stepForm'].elements['{$fields.textFields}'].focus();
+						
+						return false;
+					}else{
+						document.getElementById('{$fields.textFields}').innerHTML = '';
+					}
+				{/if}
+			{elseif $fields.chooseForm eq 'other'} //地区、上传文件、日期
+				{if $fields.otherForm eq 'textArea'}
+					//地区
+					var selCountries_{$fields.textFields} = document.getElementById('selCountries_{$fields.textFields}_{$sn}').value;
+					var selProvinces_{$fields.textFields} = document.getElementById('selProvinces_{$fields.textFields}_{$sn}').value;
+					var selCities_{$fields.textFields} = document.getElementById('selCities_{$fields.textFields}_{$sn}').value;
+					var selDistricts_{$fields.textFields} = document.getElementById('selDistricts_{$fields.textFields}_{$sn}').value;
+					
+					var selD_{$fields.textFields} = document.getElementById('selDistricts_{$fields.textFields}_{$sn}').style.display;
+					
+					{if $fields.will_choose eq 1}
+						if(selCountries_{$fields.textFields} == 0){
+							document.getElementById('{$fields.textFields}').innerHTML = json_languages.Please_select+'{$fields.fieldsFormName}';
+							return false;	
+						}else{
+							document.getElementById('{$fields.textFields}').innerHTML = '';
+						}
+						
+						if(selProvinces_{$fields.textFields} == 0){
+							document.getElementById('{$fields.textFields}').innerHTML =  json_languages.Please_select+'{$fields.fieldsFormName}';
+							return false;
+						}else{
+							document.getElementById('{$fields.textFields}').innerHTML = '';
+						}
+						
+						if(selCities_{$fields.textFields} == 0){
+							document.getElementById('{$fields.textFields}').innerHTML =  json_languages.Please_select+'{$fields.fieldsFormName}';
+							return false;
+						}else{
+							document.getElementById('{$fields.textFields}').innerHTML = '';
+						}
+						
+						if(selD_{$fields.textFields} != 'none'){	
+							if(selDistricts_{$fields.textFields} == 0){
+								document.getElementById('{$fields.textFields}').innerHTML =  json_languages.Please_select+'{$fields.fieldsFormName}';
+								return false;	
+							}else{
+								document.getElementById('{$fields.textFields}').innerHTML = '';
+							}
+						}
+					{/if}
+				{elseif $fields.otherForm eq 'dateFile'} 	
+					//上传文件
+					var input_{$fields.textFields} = document.forms['stepForm'].elements['{$fields.textFields}'].value;
+					var text_{$fields.textFields} = document.forms['stepForm'].elements['text_{$fields.textFields}'].value;
+					
+					{if $fields.will_choose eq 1}
+						if(input_{$fields.textFields} == '' && text_{$fields.textFields} == ''){
+							document.getElementById('{$fields.textFields}').innerHTML = json_languages.Please_upload+'{$fields.fieldsFormName}'+json_languages.Photo;
+							return false;	
+						}else{
+							document.getElementById('{$fields.textFields}').innerHTML = '';
+						}
+					{/if}
+				{elseif $fields.otherForm eq 'dateTime'} 
+					//日期
+					{foreach from=$fields.dateTimeForm item=date key=dk}
+						var dateTime_{$fields.textFields} = document.getElementById('{$fields.textFields}_{$dk}').value;
+						{if $fields.will_choose eq 1}
+							if(dateTime_{$fields.textFields} == ''){
+								document.getElementById('{$fields.textFields}').innerHTML = json_languages.Please_input+'{$fields.fieldsFormName}';
+								return false;
+							}else{
+								document.getElementById('{$fields.textFields}').innerHTML = '';
+							}
+						{/if}	
+					{/foreach}
+				{/if}
+			{elseif $fields.chooseForm eq 'select'} 
+			 	var select_{$fields.textFields} = document.forms['stepForm'].elements['{$fields.textFields}'].value;
+				{if $fields.will_choose eq 1}
+					if(select_{$fields.textFields} == 0){
+						document.getElementById('{$fields.textFields}').innerHTML = json_languages.Please_select+'{$fields.fieldsFormName}';
+						document.forms['stepForm'].elements['{$fields.textFields}'].focus();
+						
+						return false;
+					}else{
+						document.getElementById('{$fields.textFields}').innerHTML = '';
+					}	
+				{/if}	
+			{/if}
+		{/foreach}
+	{/foreach}
+	{/if}
+}
+
+function $id(element) {
+  return document.getElementById(element);
+}
+
+function get_element(element, elementHTML, where, textCen, type){
+	if($id(element)){
+		
+		var where_type;
+		
+		if(type != 'checkbox'){
+			var element = $id(element).value;
+			where_type = (element == where);
+		}else{
+			where_type = ($id(element).checked == false);
+		}
+		
+		if(where_type){
+			if($id(elementHTML)){
+				if($id(elementHTML) && elementHTML != ''){
+					$id(elementHTML).innerHTML = textCen;
+				}
+			}
+			
+			return false;
+		}else{
+			if($id(elementHTML) && elementHTML != ''){
+				$id(elementHTML).innerHTML = '';
+			}
+			
+			return true;
+		}
+	}
+}
+
+function addBrandTable(obj)
+{  
+	var add_num = 1000;
+	var num = document.getElementById('numAdd').value;
+	if(num < add_num){
+		var src  = obj.parentNode.parentNode;
+		var idx  = rowindex(src);
+		var tbl  = document.getElementById('brand-table');
+		var row  = tbl.insertRow(idx + 1);
+		//var cell = row.insertCell(-1);
+		row.innerHTML = src.innerHTML.replace(/(.*)(addBrandTable)(.*)(\[)(\+)/i, "$1removeBrandTable$3$4-").replace('"expiredDate_permanent"','\"expiredDate_permanent'+num+'\"');
+		row.innerHTML = row.innerHTML.replace('"expiredDate_permanent"','\"expiredDate_permanent'+num+'\"');
+	  	
+		num++;
+		document.getElementById('numAdd').value = num;
+	}else{
+		alert(json_languages.add_limit + add_num +json_languages.add_ci);
+	}
+	
+	for(i=0;i<num;i++){
+		var expiredDate = document.getElementsByName("ec_expiredDateInput[]");
+		expiredDate[i].id = 'expiredDateInput_' + i;
+	}
+}
+
+function removeBrandTable(obj,b_fid)
+{
+	if(b_fid > 0){
+		if (confirm(merchants_step_remove)){
+		   location.href = 'merchants_steps.php?step={$step}&pid_key={$b_pidKey}&ec_shop_bid={$ec_shop_bid}&del_bFid=' + b_fid + '&brandView=brandView';
+	   }
+	}else{
+		var row = rowindex(obj.parentNode.parentNode);
+		var tbl = document.getElementById('brand-table');
+		
+		tbl.deleteRow(row);
+		
+		var num = document.getElementById('numAdd').value;
+		num--;
+		document.getElementById('numAdd').value = num;
+		
+		for(i=0;i<num;i++){
+			var radioCheckbox_val = document.getElementsByName("radioCheckbox_val[]");
+			radioCheckbox_val[i].value = i;
+		}
+	}
+}  
+
+//永久 清空开始时间和结束时间
+function get_authorizeCheckBox(f,id_start,id_end, start_date, end_date){
+	
+	if(id_start != '' || id_end != ''){
+		
+		if(id_start == ''){
+			id_start = 'n_s';
+		}
+		
+		if(id_end == ''){
+			id_end = 'n_e';
+		}
+		
+		var start_time = document.getElementById(id_start);
+		var end_time = document.getElementById(id_end);
+		
+		if(f.checked){
+			start_time.value = '';
+			end_time.value = '';
+		}else{
+			if(start_date != '' || end_date != ''){
+				start_time.value = start_date;
+				end_time.value = end_date;
+			}
+		}
+	}
+}
+
+function get_categoryId_permanent(f, permanent_date, dt_id){
+	var categoryId = document.getElementById('categoryId_date_' + dt_id);
+	if(f.checked){
+		categoryId.value = '';
+	}else{
+		if(permanent_date != ''){
+			categoryId.value = permanent_date;
+		}
+	}
+}
+
+function get_expiredDate_permanent(f, expiredDateInput, b_fid){
+	if(b_fid > 0){
+		var expiredDate = document.getElementById('expiredDateInput_' + b_fid);
+		if(f.checked){
+			$(f).parent().addClass("cart-checkbox-checked");
+			expiredDate.value = '';
+		}else{
+			$(f).parent().removeClass("cart-checkbox-checked");
+			if(expiredDateInput != ''){
+				expiredDate.value = expiredDateInput;
+			}
+		}
+	}else{
+		
+		var DateInput = document.getElementsByName("ec_expiredDateInput[]");
+		var permanent = document.getElementsByName("ec_expiredDate_permanent[]");
+		for(i=0; i<permanent.length; i++){
+			if(permanent[i].checked){
+				if(DateInput[i].value != ''){
+					DateInput[i].value = '';
+				}
+			}
+		}
+	}
+}
+
+function get_brandEndTime_permanent(f, brandEndTime){
+	var ec_brandEndTime = document.getElementById('ec_brandEndTime');
+	if(f.checked){
+		$(f).parent().addClass("cart-checkbox-checked");
+		ec_brandEndTime.value = '';
+	}else{
+		$(f).parent().removeClass("cart-checkbox-checked");
+		if(brandEndTime != ''){
+			ec_brandEndTime.value = brandEndTime;
+		}
+	}
+}
+
+function get_deleteBrand(bid){
+	if (confirm(merchants_step_remove)){
+		location.href = 'merchants_steps.php?step={$step}&pid_key={$b_pidKey}&ec_shop_bid=' + bid + '&del=deleteBrand';
+	}
+}
+</script>
+</html>

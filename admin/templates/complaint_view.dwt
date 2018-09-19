@@ -1,0 +1,330 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$lang.goods_alt} - {$ur_here}</div>
+            <div class="content">
+            <div class="flexilist">
+            	<div class="stepflex">
+                	<dl class="first cur">
+                    	<dt class="pointer">1</dt>
+                        <dd class="s-text">{$lang.new_complain}</dd>
+                    </dl>
+                    <dl class="{if $complaint_info.complaint_state gt 0} cur{/if}">
+                    	<dt class="pointer">2</dt>
+                        <dd class="s-text">{$lang.complaint_state.1}</dd>
+                    </dl>
+                    <dl class="{if $complaint_info.complaint_state gt 1} cur{/if}">
+                    	<dt class="pointer">3</dt>
+                        <dd class="s-text">{$lang.complaint_state.2}</dd>
+                    </dl>
+                    <dl class="{if $complaint_info.complaint_state gt 2} cur{/if}">
+                    	<dt class="pointer">4</dt>
+                        <dd class="s-text">{$lang.complaint_state.3}</dd>
+                    </dl>
+                    <dl class="last {if $complaint_info.complaint_state gt 3} cur{/if}">
+                    	<dt class="pointer">5</dt>
+                        <dd class="s-text">{$lang.complaint_state.4}</dd>
+                    </dl>
+                </div>
+                <div class="mian-info order_info">
+                    <div class="common-content">
+                    <form method="post" action="complaint.php" name="theForm" enctype="multipart/form-data" id="">
+                        <div class="step">
+                        	<div class="step_title"><i class="ui-step"></i><h3>{$lang.order_info}</h3></div>
+                            <div class="section section5">
+                            	<dl>
+                                	<dt>{$lang.goods_steps_name}：</dt>
+                                    <dd>{$complaint_info.shop_name}</dd>
+                                </dl>
+                                <dl>
+                                	<dt>{$lang.order_status}：</dt>
+                                    <dd>{$order_info.status}</dd>
+                                </dl>
+                                <dl>
+                                	<dt>{$lang.order_sn}：</dt>
+                                    <dd><a href="order.php?act=info&order_id={$complaint_info.order_id}" class="ml0">{$complaint_info.order_sn}</a></dd>
+                                </dl>
+                                <dl>
+                                	<dt>{$lang.add_time_order}：</dt>
+                                    <dd>{$order_info.formated_add_time}</dd>
+                                </dl>
+                                <dl>
+                                	<dt>{$lang.total_order}：</dt>
+                                    <dd>{$order_info.formated_total_fee}</dd>
+                                </dl>
+                            </div>
+                        </div>
+                        <div class="step">
+                        	<div class="step_title"><i class="ui-step"></i><h3>{$lang.complaint_goods}</h3></div>
+                            <div class="step_info">
+                            	<div class="order_goods_fr">
+                                	<table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th width="60%"><p class="pl20">{$lang.goods_name}</p></th>
+                                                <th width="20%">{$lang.goods_count}</th>
+                                                <th width="20%">{$lang.goods_price}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {foreach from=$order_info.order_goods item=goods}
+                                            <tr>
+                                                <td>
+                                                	<div class="order_goods_div">
+                                                		<div class="img"><a href="../{$goods.url}" target="_blank"><img width="72" src="{$goods.goods_thumb}"></a></div>
+                                                        <div class="name ml10"><a href="../{$goods.url}" target="_blank">{$goods.goods_name}</a>{if $goods.trade_id > 0}--<a target="_blank" href="../user.php?act=trade&tradeId={$goods.trade_id}&snapshot=true">交易快照</a>{/if}</div>
+                                                    </div>
+                                                </td>
+                                                <td>{$goods.goods_number}</td>
+                                                <td>{$goods.goods_price}</td>
+                                            </tr>
+                                            {/foreach}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step">
+                        	<div class="step_title"><i class="ui-step"></i><h3>{$lang.complaint_info}</h3></div>
+                            <div class="step_content">
+                            	<div class="item">
+                                    <div class="label">{$lang.complaint_state_title}：</div>
+                                    <div class="label_value">{$lang.complaint_state.$complaint_info.complaint_state}</div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.complain_title}：</div>
+                                    <div class="label_value">{$complaint_info.title_name}</div>
+                                </div>
+                               <div class="item">
+                                    <div class="label">{$lang.complain_user}：</div>
+                                    <div class="label_value">{$complaint_info.user_name}</div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.complaint_content}：</div>
+                                    <div class="label_value">{$complaint_info.complaint_content}</div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.complain_img}：</div>
+                                    <div class="label_value">
+                                        {foreach from=$complaint_info.img_list item=img}
+                                        <span class="show">
+                                            <a target="_blank" href="{$img.img_file}" class="nyroModal"><i class="icon icon-picture" data-tooltipimg="{$img.img_file}" ectype="tooltip" title="tooltip"></i></a>
+                                        </span>
+                                        {/foreach}
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.add_time}：</div>
+                                    <div class="label_value">{$complaint_info.add_time}</div>
+                                </div>
+                                {if $complaint_info.complaint_state gt 0}
+                                <div class="item">
+                                    <div class="label">{$lang.complaint_handle_time}：</div>
+                                    <div class="label_value">{$complaint_info.complaint_handle_time}</div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.handle_user}：</div>
+                                    <div class="label_value">{$complaint_info.handle_user}</div>
+                                </div>
+                                {/if}
+                                
+                                <!--申诉开始-->
+                                {if $complaint_info.complaint_state gt 1}
+								{if $complaint_info.ru_id neq 0}
+                                <div class="lie">
+                                    <div class="step_title mb20">
+                                    	<i class="ui-step"></i>
+                                        <h3>{$lang.appeal_info}</h3>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.complain_img}：</div>
+                                        <div class="label_value">
+                                            {foreach from=$complaint_info.appeal_img item=img}
+                                            <span class="show">
+                                                <a target="_blank" href="{$img.img_file}" class="nyroModal"><i class="icon icon-picture" data-tooltipimg="{$img.img_file}" ectype="tooltip" title="tooltip"></i></a>
+                                            </span>
+                                            {/foreach}
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.appeal_time}：</div>
+                                        <div class="label_value">
+                                            {$complaint_info.appeal_time}
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.appeal_content}：</div>
+                                        <div class="label_value">
+                                            {$complaint_info.appeal_messg}
+                                        </div>
+                                    </div>
+                                </div> 
+								{/if}
+                                <div class="lie">  
+                                    <!--对话开始-->
+                                    <div class="step_title mb20">
+                                    	<i class="ui-step"></i>
+                                        <h3>{$lang.talk_info}</h3>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.talk_record}：</div>
+                                        <div class="label_value">
+                                            <div class="talk_list ps-scrollbar-visible" ectype="talk_list">
+                                                <div class="talk_list_info">
+                                                {include file="library/talk_list.lbi"}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {if $complaint_info.complaint_state neq 4}
+                                    <div class="item">
+                                        <div class="label">{$lang.talk_release}：</div>
+                                        <div class="label_value info_btn mt0">
+                                            <textarea class="textarea" name="talk_content"></textarea>
+                                            <a href="javascript:;" class="button" ectype="talk_release" data-type="0">{$lang.talk_release}</a>
+                                            <a href="javascript:;" class="button" ectype="talk_release" data-type="1">{$lang.talk_refresh}</a>
+                                        </div>
+                                    </div>
+                                    {/if}
+                               </div>     
+                               {/if}
+                               
+                               {if $complaint_info.complaint_state eq 4}
+                               <div class="item">
+                                    <div class="label">{$lang.end_handle_messg}：</div>
+                                    <div class="label_value info_btn mt0">
+                                       {$complaint_info.end_handle_messg}
+                                    </div>
+                                </div>
+                               <div class="item">
+                                    <div class="label">{$lang.end_handle_time}：</div>
+                                    <div class="label_value info_btn mt0">
+                                       {$complaint_info.end_handle_time}
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.handle_user}：</div>
+                                    <div class="label_value info_btn mt0">
+                                       {$complaint_info.end_handle_user}
+                                    </div>
+                                </div>
+                               {/if}
+                               <div class="item hide" id="end_handle_messg">
+                                    <div class="label">{$lang.require_field}&nbsp;{$lang.end_handle_messg}：</div>
+                                    <div class="label_value">
+                                        <textarea class="textarea" name="end_handle_messg"></textarea>
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="label_value info_btn mt0">
+                                        {if $complaint_info.complaint_state neq 4}
+                                        <input type="hidden" name="complaint_state" class="button" value="{$complaint_info.complaint_state}"/>
+                                        <input type="hidden" name="act" class="button" value="handle" />
+                                        <input type="hidden" name="complaint_id" class="button" value="{$complaint_info.complaint_id}"/>
+                                        <div id="handle">
+                                        {if $complaint_info.complaint_state eq 0}
+                                        <input type="submit" name="abopt_comp" class="button" value="{$lang.complain_adopt}" />
+                                        {/if}
+                                        {if $complaint_info.complaint_state neq 2 || $complaint_info.ru_id eq 0}
+                                        <a href="javascript:;" class="button" ectype="close_comp">{$lang.close_complain}</a>
+                                        {/if}
+                                        </div>
+                                        <div class="hide" id="handle_submit">
+                                            <input type="submit" name="close_comp" id="submitBtn" class="button" value="{$lang.submitBtn}" />
+                                            <input type="button" class="button" ectype="cancle" value="{$lang.cancel}" />
+                                        </div>
+                                        {/if}
+                                        <a href="{$action_link.href}" class="button">{$lang.back}</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {include file ='library/pagefooter.lbi'}
+    <script type="text/javascript" src="js/jquery.purebox.js"></script>
+    <script type="text/javascript">
+		//表单验证
+		$(function(){
+			$("*[ectype='close_comp']").click(function(){
+				$("#end_handle_messg").show();
+				$("#handle_submit").show();
+				$("#handle").hide();
+			})
+			$("*[ectype='cancle']").click(function(){
+				$("#end_handle_messg").hide();
+				$("#handle_submit").hide();
+				$("#handle").show();
+			})
+			$("#submitBtn").click(function(){
+                var _this = $("textarea[name='end_handle_messg']");
+				var end_handle_messg = _this.val();
+                                
+				if(!end_handle_messg){
+					var error = '<label for="end_handle_messg" class="error"><i class="icon icon-exclamation-sign"></i>'+opinion_null+'</label>';
+					_this.parents('.label_value').find(".form_prompt").html(error);
+					_this.addClass('error');
+					return false;
+				}else{
+					$('#report_form').submit();
+				}
+			});
+		});
+        
+		//发布谈话
+        $(document).on('click','*[ectype="talk_release"]',function(){
+		   var _this = $(this);
+		   var type = _this.data('type');
+		   var talk_content = $("textarea[name='talk_content']").val();
+		   var complaint_id = $("input[name='complaint_id']").val();
+		   var talk_id = _this.data('id');
+		   var back = true;
+			if(type == 0 && talk_content == ''){
+				back = false;
+			}
+			if(back){
+				Ajax.call('complaint.php', "act=talk_release&talk_content=" +  talk_content + "&complaint_id=" + complaint_id + "&type=" + type + "&talk_id=" + talk_id, function(data){
+					$("[ectype='talk_list'] .talk_list_info").html(data.content);
+					var height = $("*[ectype='talk_list'] .talk_list_info").height();
+					$("[ectype='talk_list']").scrollTop(height);
+					$("textarea[name='talk_content']").val('');
+				}, 'POST', 'JSON');
+			}
+			else{
+				alert(conversation_null);
+			}
+                
+        })
+        {if $complaint_info.complaint_state eq 2  || $complaint_info.complaint_state eq 3}
+        startCheckStalk();
+        {/if}
+        //检查谈话
+        function startCheckStalk()
+        {
+          window.setInterval("Checktalk()", 3000);
+        }
+        function Checktalk(){
+
+            var complaint_id = $("input[name='complaint_id']").val();
+
+            Ajax.call('complaint.php', "act=talk_release&complaint_id=" +  complaint_id + "&type=1", function(data){
+                $("[ectype='talk_list'] .talk_list_info").html(data.content);
+                var height = $("*[ectype='talk_list'] .talk_list_info").height();
+                $("[ectype='talk_list']").scrollTop(height);
+            }, 'POST', 'JSON');
+        }
+		var height = $("*[ectype='talk_list'] .talk_list_info").height();
+        $("[ectype='talk_list']").scrollTop(height);
+		$("[ectype='talk_list']").perfectScrollbar("destroy");
+		$("[ectype='talk_list']").perfectScrollbar();
+    </script>
+</body>
+</html>

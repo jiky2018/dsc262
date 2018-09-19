@@ -1,0 +1,99 @@
+
+<div id="dialogTxt">
+	<div class="flexilist">
+        <div class="common-content">
+            <div class="mian-info">
+                <form action="ecjia_push_event.php" method="post" name="theForm" enctype="multipart/form-data" id="push_event_dialog_form" >
+                    <div class="switch_info" id="conent_area">
+                        <div class="item">
+                            <div class="label">{$lang.require_field}客户端应用：</div>
+                            <div class="label_value">
+                                <div id="mobile_signup_reward_div" class="imitate_select select_w145">
+                                    <div class="cite">{if $event_info.app_name}{$event_info.app_name}{else}{$lang.please_select}{/if}</div>
+                                    <ul class="ps-container" style="display: none;">
+                                        {$app_select}
+                                    </ul>
+                                    <input name="app_id" type="hidden" value="{$event_info.app_id|escape}" id="app_id">
+                                </div>
+                                <div class="form_prompt"></div>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="label">{$lang.require_field}消息模板：</div>
+                            <div class="label_value">
+                                <div id="mobile_signup_reward_div" class="imitate_select select_w145">
+                                    <div class="cite">{if $event_info.template_subject}{$event_info.template_subject}{else}{$lang.please_select}{/if}</div>
+                                    <ul class="ps-container" style="display: none;">
+                                        {$template_select}
+                                    </ul>
+                                    <input name="template_id" type="hidden" value="{$event_info.template_id|escape}" id="template_id">
+                                </div>
+                                <div class="form_prompt"></div>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="label">是否显示：</div>
+                            <div class="label_value">
+                                <div class="checkbox_items">
+                                    <div class="checkbox_item">
+                                        <input type="radio" class="ui-radio" name="status" id="sex_0" value="1" {if $event_info.is_open eq 1} checked="true" {/if}  />
+                                        <label for="sex_0" class="ui-radio-label">{$lang.yes}</label>
+                                    </div>
+                                    <div class="checkbox_item">
+                                        <input type="radio" class="ui-radio" name="status" id="sex_1" value="0" {if $event_info.is_open eq 0} checked="true" {/if}  />
+                                        <label for="sex_1" class="ui-radio-label">{$lang.no}</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="label">&nbsp;</div>
+                            <div class="label_value info_btn">
+                                <a href="javascript:;" class="button" id="submit_btn">{$lang.button_submit}</a>
+                                <input type="hidden" name="act" value="{$form_action}" />
+                                <input type="hidden" name="event_id" value="{$event_id}" />
+                                <input type="hidden" name="event_code" value="{$event_code}" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        $("#submit_btn").click(function(){
+            if($("#push_event_dialog_form").valid()){
+                $("#push_event_dialog_form").submit();
+            }
+        });
+
+        $('#push_event_dialog_form').validate({
+            errorPlacement:function(error, element){
+                var error_div = element.parents('div.label_value').find('div.form_prompt');
+                element.parents('div.label_value').find(".notic").hide();
+                error_div.append(error);
+            },
+            rules:{
+                app_id:{
+                    required : true
+                },
+                template_id:{
+                    required : true
+                }
+            },
+            messages:{
+                app_id:{
+                     required : '<i class="icon icon-exclamation-sign"></i>'+'客户端应用不可为空'
+                },
+                template_id:{
+                     required : '<i class="icon icon-exclamation-sign"></i>'+'消息模板不可为空'
+                }
+            }           
+        });
+    })
+</script>
+
+
+

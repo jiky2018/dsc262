@@ -1,0 +1,214 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+		{include file ='library/seller_menu_left.lbi'}
+		<div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+				{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="ecsc-form-goods">
+                    <form name="theForm" action="#" method="post" id="user_form">
+                    <div class="wrapper-list border1">
+                    	<dl>
+                        	<dt>{$lang.require_field}&nbsp;{$lang.user_name}：</dt>
+                            <dd>
+                                <input type="text" name="user_name" maxlength="20" value="{$user.user_name|escape}" size="34" class="text"{if $action eq "modif"} readonly="readonly"{/if}/>
+                                <div class="form_prompt"></div>
+							</dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.require_field}&nbsp;{$lang.email}：</dt>
+                            <dd>
+                                <input type="text" name="email" value="{$user.email|escape}" size="34" class="text"/>
+                                <div class="form_prompt"></div>
+							</dd>
+                        </dl>
+                        {if $action eq "add"}
+                        <dl>
+                        	<dt>{$lang.require_field}&nbsp;{$lang.password}：</dt>
+                            <dd>
+                                <input type="password"   style="display:none"/>
+                                <input type="password" name="password" maxlength="32" size="34" class="text" id="password"/>
+                                <div class="form_prompt"></div>
+							</dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.require_field}&nbsp;{$lang.pwd_confirm}：</dt>
+                            <dd>
+                                <input type="password"   style="display:none"/>
+							<input type="password" name="pwd_confirm" maxlength="32" size="34" class="text"/>
+							<div class="form_prompt"></div>
+							</dd>
+                        </dl>
+                        {/if}
+                        {if $action neq "add"}
+                        <dl>
+                        	<dt>{$lang.new_password}：</dt>
+                            <dd>
+                                <input type="password" style="display:none"/>
+                                <input type="password" name="new_password" maxlength="32" size="34" class="text ignore" id="new_password"/>
+                                <div class="form_prompt"></div>
+							</dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.pwd_confirm}：</dt>
+                            <dd>
+                                <input type="password" style="display:none"/>
+                                <input type="password" name="pwd_confirm" value="" size="34" class="text ignore"/>
+                                <div class="form_prompt"></div>
+							</dd>
+                        </dl>
+                        {if $user.agency_name}
+                        <dl>
+                        	<dt>{$lang.agency}：</dt>
+                            <dd>{$user.agency_name}</dd>
+                        </dl>
+                        {/if}
+                        {/if}
+                        {if $select_role}
+                        <dl>
+                        	<dt>{$lang.select_role}：</dt>
+                            <dd>
+                                <select name="select_role" class="select">
+                                    <option value="">{$lang.select_please}</option>
+                                    {foreach from=$select_role item=list}
+                                    <option value="{$list.role_id}" {if $list.role_id eq $user.role_id} selected="selected" {/if} >{$list.role_name}</option>
+                                    {/foreach}
+                                </select>
+                            </dd>
+                        </dl>
+                        {/if}
+                        
+                        <dl class="button_info">
+                        	<dt>&nbsp;</dt>
+                            <dd>
+                            	<input type="submit" value="{$lang.button_submit}" class="sc-btn sc-blueBg-btn btn35" id="submitBtn" />
+								<input type="reset" value="{$lang.button_reset}" class="sc-btn btn35 sc-blue-btn" />
+								<input type="hidden" name="act" value="{$form_act}" />
+								<input type="hidden" name="token" value="{$token}" />
+								<input type="hidden" name="id" value="{$user.user_id}" />
+                            </dd>
+                        </dl>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript">
+var action = "{$action}";
+$(function(){
+	$("#submitBtn").click(function(){
+		if($("#user_form").valid()){
+			$("#user_form").submit();
+		}
+	});
+	
+	jQuery.validator.addMethod("pwd_confirm", function(value, element) {      
+		return this.optional(element) || /^[\u0391-\uFFE5\w]+$/.test(value);       
+	}, "只能包括中文字、英文字母、数字和下划线");  
+	
+	//添加表单验证js
+	if(action == 'add'){
+		$('#user_form').validate({
+			errorPlacement:function(error, element){
+				var error_div = element.parents('dl').find('div.form_prompt');
+				//element.parents('dl').find(".notic").hide();
+				error_div.append(error);
+			},
+			ignore:".ignore",
+			rules : {
+				user_name : {
+					required : true
+				},
+				email : {
+					required : true,
+					email : true
+				},
+				password : {
+					required : true,
+					minlength:6
+				},
+				pwd_confirm : {
+					required : true,
+					equalTo:"#password"
+				}
+			},
+			messages : {
+				user_name : {
+					required : '<i class="icon icon-exclamation-sign"></i>'+user_name_empty
+				},
+				email : {
+					required : '<i class="icon icon-exclamation-sign"></i>'+email_empty,
+					email : '<i class="icon icon-exclamation-sign"></i>'+email_error
+				},
+				password : {
+					required : '<i class="icon icon-exclamation-sign"></i>密码不能为空',
+					minlength : '<i class="icon icon-exclamation-sign"></i>密码长度不能小于六位'
+				},
+				pwd_confirm : {
+					required : '<i class="icon icon-exclamation-sign"></i>确认密码不能为空',
+					equalTo:'<i class="icon icon-exclamation-sign"></i>'+password_error
+				}
+			}
+		});
+	}
+	
+	//修改验证表单js
+	if(action == 'edit' || action == 'modif'){
+		$('#user_form').validate({
+			errorPlacement:function(error, element){
+				var error_div = element.parents('dl').find('div.form_prompt');
+				//element.parents('dl').find(".notic").hide();
+				error_div.append(error);
+			},
+			ignore:".ignore",
+			rules : {
+				user_name : {
+					required : true
+				},
+				email : {
+					required : true,
+					email : true
+				},
+				new_password : {
+					required : true,
+					minlength:6
+				},
+				pwd_confirm : {
+					required : true,
+					equalTo:"#new_password"
+				}
+				
+			},
+			messages : {
+				user_name : {
+					required : '<i class="icon icon-exclamation-sign"></i>'+user_name_empty
+				},
+				email : {
+					required : '<i class="icon icon-exclamation-sign"></i>'+email_empty,
+					email : '<i class="icon icon-exclamation-sign"></i>'+email_error
+				},
+				new_password : {
+					required : '<i class="icon icon-exclamation-sign"></i>新密码不能为空',
+					minlength : '<i class="icon icon-exclamation-sign"></i>密码长度不能小于六位'
+				},
+				pwd_confirm : {
+					required : '<i class="icon icon-exclamation-sign"></i>确认密码不能为空',
+					equalTo:'<i class="icon icon-exclamation-sign"></i>'+password_error
+				}
+				
+			}
+		});
+	}
+});
+</script>
+</body>
+</html>

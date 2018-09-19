@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$lang.11_system} - {$ur_here}</div>
+            <div class="content">
+            <div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.info.0}</li>
+                    <li>{$lang.operation_prompt_content_common}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="mian-info">
+                    <form  method="post" action="region_area.php" name="theForm" enctype="multipart/form-data"  id="region_form">
+                        <div class="switch_info user_basic" style="display:block;">
+                            <div class="item">
+                                <div class="label">{$lang.require_field}&nbsp;{$lang.region_name}：</div>
+                                <div class="label_value">
+                                    <input type="text" name='ra_name' value='{$region_info.ra_name|escape:html}' class="text" autocomplete="off"/>
+                                    <div class="form_prompt"></div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.ra_sort}：</div>
+                                <div class="label_value">
+                                    <input type="text" name='ra_sort' value='{$region_info.ra_sort|default:1}' class="text" autocomplete="off"/>
+                                    <div class="form_prompt"></div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.choose_area}：</div>
+                                <div class="label_value">
+                                    <div class="checkbox_items">
+                                        {foreach from=$province_list item=province}
+                                        <div class="checkbox_item">
+                                            <input type="checkbox"  value="{$province.region_id}" name="area_list[]" class="ui-checkbox" {if $province.disabled eq 1}disabled="disabled"{/if} {if $province.checked eq 1}checked="checked"{/if}  id="checked_{$province.region_id}">
+                                            <label for="checked_{$province.region_id}" class="ui-label">{$province.region_name}</label>
+                                        </div>
+                                        {/foreach}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">&nbsp;</div>
+                                <div class="label_value info_btn">
+                                    <input type="submit" value="{$lang.button_submit}" class="button"  id="submitBtn"/>
+                                    <input type="hidden" name="act" value="{$form_action}" />
+                                    <input type="hidden" name="id" value="{$region_info.ra_id}" />
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+	$(function(){
+		$("#submitBtn").click(function(){
+			if($("#region_form").valid()){
+				$("#region_form").submit();
+			}
+		});
+		$('#region_form').validate({
+			errorPlacement:function(error, element){
+				var error_div = element.parents('div.label_value').find('div.form_prompt');
+				element.parents('div.label_value').find(".notic").hide();
+				error_div.append(error);
+			},
+			rules : {
+				ra_name : {
+					 required : true
+				}
+			},
+			messages : {
+				ra_name : {
+					required : '<i class="icon icon-exclamation-sign"></i>{$lang.region_name}'
+				}
+			}
+		});
+	});
+    </script>
+</body>
+</html>

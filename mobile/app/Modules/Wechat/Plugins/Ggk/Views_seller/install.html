@@ -1,0 +1,192 @@
+
+<style>
+/*.dates_box {width: 300px;}*/
+.dates_box_top {height: 32px;}
+.dates_bottom {height: auto;}
+.dates_hms {width: auto;}
+.dates_btn {width: auto;}
+.dates_mm_list span {width: auto;}
+#xv_Ipt_year,#xv_Ipt_month {background: none; color: #fff;padding: 0;}
+</style>
+
+<div class="wrapper-right of">
+	<div class="tabmenu">
+        <ul class="tab ">
+            <li role="presentation" class="active"><a href="#home" role="tab" data-toggle="tab">功能扩展 - {$config['name']}</a></li>
+        </ul>
+    </div>
+    <div class="wrapper-list mt20">
+    	<form action="{url('extend_edit', array('ks'=>$config['command']))}" method="post" class="form-horizontal" role="form" onsubmit="if($('.prize_list tr').length > 7 ){alert('奖项不能超过6项');return false;}">
+		<div class="account-setting ecsc-form-goods">
+            <dl>
+                <dt>功能名称：</dt>
+                <dd class="txtline">
+                    <span>{$config['name']}</span>
+                </dd>
+            </dl>
+            <dl>
+                <dt>关键词：</dt>
+                <dd class="txtline">
+                    <span>{$config['command']}</span>
+                </dd>
+            </dl>
+            <dl>
+                <dt>扩展词：</dt>
+                <dd>
+                    <input type="text" name="data[keywords]" class="text" value="{$config['keywords']}" />
+                    <div class="form_prompt"></div>
+                    <div class="notic"> 多个变形词，请用英文“,”隔开</div>
+                </dd>
+            </dl>
+            <dl>
+                <dt>参与人数：</dt>
+                <dd>
+                    <input type="text" name="cfg_value[people_num]" value="{if $config['config']['people_num']}{$config['config']['people_num']}{else}0{/if}" class="form-control text" readonly />
+                    <div class="form_prompt"></div>
+                    <div class="notic">统计所有参与过此活动的微信用户数量（包含未中奖和已中奖用户）</div>
+                </dd>
+            </dl>
+            <dl>
+                <dt>起止时间：</dt>
+                <dd>
+                    <div class="text_time" id="text_time1">
+                    <input type="text" name="cfg_value[starttime]" class="text" id="promote_start_date" value="{$config['config']['starttime']}" />
+                    </div>
+                    <span class="bolang">~&nbsp;&nbsp;</span>
+                    <div class="text_time" id="text_time2">
+                    <input type="text" name="cfg_value[endtime]" class="text" id="promote_end_date" value="{$config['config']['endtime']}" />
+                    </div>
+                </dd>
+            </dl>
+            <dl>
+                <dt>抽奖次数：</dt>
+                <dd>
+                    <input type="text" name="cfg_value[prize_num]" class="text" value="{$config['config']['prize_num']}" />
+                    <div class="form_prompt"></div>
+                    <div class="notic">即起止时间段内，用户总共可抽奖的次数</div>
+                </dd>
+            </dl>
+            <dl>
+                <dt>奖品列表：</dt>
+                <dd>
+                    <table class="table ectouch-table prize_list" style="width:80%;">
+                    <tr>
+                        <th class="text-center" width="10%"><a href="javascript:;" class="glyphicon glyphicon-plus" onClick="addprize(this)"></a></th>
+                        <th class="text-center" width="20%">奖项</th>
+                        <th class="text-center" width="20%">奖品</th>
+                        <th class="text-center" width="20%">数量</th>
+                        <th class="text-center" width="20%">概率(总数为100%)</th>
+                    </tr>
+                    {foreach $config['config']['prize'] as $v}
+                    <tr>
+                        <td class="text-center"><a href="javascript:;" class="glyphicon glyphicon-minus" onClick="delprize(this)"></a></td>
+                        <td class="text-center"><input type="text" name="cfg_value[prize_level][]" class="form-control" placeholder="例如：一等奖" value="{$v['prize_level']}"></td>
+                        <td class="text-center"><input type="text" name="cfg_value[prize_name][]" class="form-control" placeholder="例如：法拉利跑车" value="{$v['prize_name']}"></td>
+                        <td class="text-center"><input type="text" name="cfg_value[prize_count][]" class="form-control" placeholder="例如：3" value="{$v['prize_count']}"></td>
+                        <td class="text-center">
+                            <div class="input-group">
+                                <input type="text" name="cfg_value[prize_prob][]"  class="form-control" placeholder="例如：1%" value="{$v['prize_prob']}">
+                                <span class="input-group-addon">%</span>
+                            </div>
+                        </td>
+                   </tr>
+                   {/foreach}
+                    </table>
+                    <div class="form_prompt"></div>
+                    <div class="notic">注意：建议最多添加6项，概率总和小于100%</div>
+                </dd>
+            </dl>
+            <dl>
+                <dt>活动规则：</dt>
+                <dd>
+                <textarea name="cfg_value[description]" class="textarea" rows="5">{$config['config']['description']}</textarea>
+                </dd>
+            </dl>
+            <dl>
+                <dt>素材信息：</dt>
+                <dd>
+                    <input type="text" name="cfg_value[media_id]" class="form-control text" style="width: auto;" value="{$config['config']['media_id']}" readonly />
+                    <div class="form_prompt"></div>
+                    <div class="notic">对应素材管理中的素材id，请注意不要删除</div>
+                </dd>
+            </dl>
+            <dl>
+                <dt>&nbsp;</dt>
+                <dd>
+                    <input type="hidden" name="data[command]" value="{$config['command']}" />
+                    <input type="hidden" name="data[name]" value="{$config['name']}" />
+                    <input type="hidden" name="data[author]" value="{$config['author']}">
+                    <input type="hidden" name="data[website]" value="{$config['website']}">
+                    <input type="hidden" name="cfg_value[haslist]" value="1">
+                    <input type="hidden" name="handler" value="{$config['handler']}">
+                    <input type="submit" name="submit" class="sc-btn sc-blueBg-btn btn35" value="确认" />
+                    <input type="reset" name="reset" class="sc-btn sc-blue-btn btn35" value="重置" />
+                </dd>
+            </dl>
+        </div>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    //添加奖项
+    var num = $('.prize_list tr').length > 0 ? $('.prize_list tr').length : 1;
+    function addprize(obj){
+        switch(num)
+        {
+            case 1:
+              prize_level = "一等奖";
+              break;
+            case 2:
+              prize_level = "二等奖";
+              break;
+            case 3:
+              prize_level = "三等奖";
+              break;
+            case 4:
+              prize_level = "四等奖";
+              break;
+            case 5:
+              prize_level = "五等奖";
+              break;
+            case 6:
+              prize_level = "六等奖";
+              break;
+            default:
+              prize_level = "";
+        }
+
+    	var html = '<tr><td class="text-center"><a href="javascript:;" class="glyphicon glyphicon-minus" onClick="delprize(this)"></a></td><td class="text-center"><input type="text" name="cfg_value[prize_level][]" class="form-control" placeholder="例如：一等奖" value="'+prize_level+'"></td><td class="text-center"><input type="text" name="cfg_value[prize_name][]" class="form-control" placeholder="例如：法拉利跑车"></td><td class="text-center"><input type="text" name="cfg_value[prize_count][]" class="form-control" placeholder="例如：3"></td><td class="text-center"><div class="input-group"><input type="text" name="cfg_value[prize_prob][]"  class="form-control" placeholder="例如：1"><span class="input-group-addon">%</span></div></td></tr>';
+        if(num <= 6){
+            $(obj).parent().parent().parent().append(html);
+        }else{
+            layer.msg('奖项不能超过6项');
+            return false;
+        }
+        num++;
+    }
+    //删除奖项
+    function delprize(obj){
+        $(obj).parent().parent().remove();
+    }
+
+    // 大商创PC日历插件
+	var opts1 = {
+		'targetId':'promote_start_date',
+		'triggerId':['promote_start_date'],
+		'alignId':'text_time1',
+		'format':'-',
+		'hms':'off'
+	},opts2 = {
+		'targetId':'promote_end_date',
+		'triggerId':['promote_end_date'],
+		'alignId':'text_time2',
+		'format':'-',
+		'hms':'off'
+	}
+
+	xvDate(opts1);
+	xvDate(opts2);
+
+</script>

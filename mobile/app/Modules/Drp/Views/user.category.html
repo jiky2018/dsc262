@@ -1,0 +1,202 @@
+{include file="page_header"}
+<div class="con">
+    <div class="category-top blur-div">
+        <aside>
+            <div class="menu-left" id="sidebar" style="margin-bottom: 0;top:0">
+                <div class="swiper-scroll">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <ul>
+                                {foreach $category as $key=>$val}
+                                <li data="{url('drp/user/drpchildcategory', array('id'=>$val['id']))}" data-id="{$val.id}">{sub_str($val['name'], 4,'')}</li>
+                                {/foreach}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        <section class="menu-right padding-all" style="margin-top:0rem;">
+            <!--<ul class="mune-no-img"></ul>-->
+            <ul class="child_category category-more-select"></ul>
+            <script id="category" type="text/html">
+            <%each category as value%>
+                    <%if value.cat_id%>
+                    <section class="more-select-list">
+                          <div class="select-three  category-all">
+                                <div class="ect-select fl onclk-n-dis">
+                                    <%if type == 1%>
+                                    <label class="dis-box j-select-more-all">
+                                        <i class="select-btn active-i"></i>
+                                        <span class="box-flex">
+                                            <h5><%value.name%></h5>
+                                        </span>
+                                    </label>
+                                    <%/if%>
+                                    <%if type == 2%><a href="<%value.url%>"><h5><%value.name%></h5></a><%/if%>
+
+                                </div>
+                          </div>
+                          <nav class="select-com  category-cont">
+                        <!--<ul class="mune-no-img">-->
+                            <ul>
+                            <%each value.cat_id as cat%>
+                                <li class="w-3  p-r">
+                                    <%if type == 1%>
+                                    <div class="ect-select fr">
+                                        <label class="dis-box <%if cat.is_drp == 1%>active<%/if%>" cat-id="<%cat.id%>">
+                                            <i class="select-btn"></i>
+                                        </label>
+                                    </div>
+                                    <%/if%>
+                                   <%if type == 2%><a href="<%cat.url%>"></a><%/if%>
+                                   <div class="j-category-img"><img src="<%cat.cat_img%>" alt="<%cat.name%>" /></div><span><%cat.name%></span>
+                                </li>
+                            <%/each%>
+                            </ul>
+                         </nav>
+                    <%else%>
+                    <li class="w-3">
+                    <!--<a href="<%value.url%>"></a>-->
+                    <div class="j-category-img"><img src="<%value.cat_img%>" alt="<%value.name%>" /></div><span><%value.name%></span></li>
+                    <%/if%>
+                </section>
+                 <%/each%>
+            </script>
+
+        </section>
+    </div>
+    <div class="goods-scoll-bg"></div>
+    <!--快捷导航-->
+    {include file="no_search_nav"}
+           <li>
+                <a href="{url('drp/user/index')}">
+                         <i class="iconfont icon-fenxiao"></i>
+                         <p>{$custom}中心</p>
+                </a>
+           </li>
+    {include file="float_nav_footer"}
+</div>
+<script type="text/javascript">
+$(function(){
+    function categorySelect(){
+        /*代言商品选择*/
+        $(".j-select-more-all").click(function () {
+            var cat_id= '';
+            var add = '1';
+            var del = '2';
+            category_all = $(this).parents(".category-all").find(".ect-select label");//父级
+            category_cont = $(this).parents(".category-all").siblings(".category-cont").find(".ect-select label");//子级
+            category_cont.each(function () {
+                cat_id += $(this).attr("cat-id") + ',';
+            });
+            cat_id = cat_id.slice(0, -1);
+            if(!category_all.hasClass("active")){
+                category_all.addClass("active");
+                category_cont.addClass("active");
+                $.ajax({
+                    type: "post",
+                    url: "{url('drp/user/ajaxeditcategory')}",
+                    data: {cat_id: cat_id,type:add},
+                    dataType: "json",
+                    success: function (data) {
+
+                    }
+                });
+            }else{
+                category_all.removeClass("active");
+                category_cont.removeClass("active");
+                $.ajax({
+                    type: "post",
+                    url: "{url('drp/user/ajaxeditcategory')}",
+                    data: {cat_id: cat_id,type:del},
+                    dataType: "json",
+                    success: function (data) {
+
+                    }
+                });
+            }
+
+        });
+
+        $(".j-category-img").click(function () {
+            var cat_id= '';
+            category_img = $(this).siblings(".ect-select").find("label"); //选中分类
+            category_cont = $(".category-cont").find(".ect-select label");//子级
+            category_all = $(".category-all").find(".ect-select label");//父级
+            cat_id = category_img.attr("cat-id");
+            $.ajax({
+                type: "post",
+                url: "{url('drp/user/ajaxeditcategory')}",
+                data: {cat_id: cat_id},
+                dataType: "json",
+                success: function (data) {
+                    if (category_img.hasClass("active")) {
+                        category_img.removeClass("active");
+                    } else {
+                        category_img.addClass("active");
+                    }
+                    category_cont.each(function(){
+                        if(!$(this).hasClass("active")){
+                            category_all.removeClass("active");
+                            return false;
+                        }else{
+                            category_all.addClass("active");
+                        }
+                    });
+                        return false;
+                }
+
+            });
+        });
+    }
+
+    var cat_id = 0;
+    ajaxAction($("#sidebar li:first"), $("#sidebar li:first").attr("data"), $("#sidebar li:first").attr("data-id"));
+    $("#sidebar li").click(function(){
+        var li = $(this);
+        var url = $(this).attr("data");
+        var id = $(this).attr("data-id");
+        ajaxAction(li, url, id);
+    });
+    function ajaxAction(obj, url, id){
+        if(cat_id != id){
+            $.ajax({
+                type: 'get',
+                url: url,
+                data: '',
+                cache: true,
+                async: false,
+                dataType: 'json',
+                beforeSend: function(){
+                    $(".loading").show();
+                },
+                success: function(result){
+                    if(typeof(result.code) == 'undefined'){
+                        $(".child_category").animate({
+                            scrollTop: 0
+                        }, 0);
+                        template.config('openTag', '<%');
+                        template.config('closeTag', '%>');
+                        var html = template('category', result);
+                        $(".child_category").html(html);
+                        //$(".child_category ul").html(result);
+                        obj.addClass("active").siblings("li").removeClass("active");
+                    }
+                    else{
+                        d_messages(result.message);
+                    }
+
+                    categorySelect();
+                },
+                complete: function(){
+                    $(".loading").hide();
+                }
+            });
+            cat_id = id;
+        }
+    }
+})
+</script>
+    </body>
+</html>

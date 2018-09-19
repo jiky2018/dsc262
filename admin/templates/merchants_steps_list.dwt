@@ -1,0 +1,140 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.seller} - {$ur_here}</div>
+        <div class="content">
+        	{include file ='library/seller_step_tab.lbi'}		
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.list.0}</li>
+                    <li>{$lang.operation_prompt_content.list.1}</li>
+                    <li>{$lang.operation_prompt_content.list.2}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<div class="common-head">
+                	<div class="fl">
+                        <a href="merchants_steps.php?act=add"><div class="fbutton"><div class="add" title="{$lang.02_merchants_add}"><span><i class="icon icon-plus"></i>{$lang.steps_process_title}</span></div></div></a>
+                    </div>
+                   	<div class="refresh">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+                    <div class="search">
+                    	<form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+                    	<div class="input">
+                        	<input type="text" name="keywords" class="text nofocus" placeholder="{$lang.steps_process_title}" autocomplete="off" />
+                            <input type="submit" class="btn" name="secrch_btn" ectype="secrch_btn" value="" />
+                        </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="common-content">
+				<form method="POST" action="" name="listForm" onsubmit="return confirm_bath()">
+                	<div class="list-div" id="listDiv">
+						{/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                	<th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars"></label></div></th>
+                                    <th width="5%"><div class="tDiv">{$lang.record_id}</div></th>
+                                    <th width="25%"><div class="tDiv">{$lang.steps_process_title}</div></th>
+                                    <th width="25%"><div class="tDiv">{$lang.steps_process}</div></th>
+                                    <th width="13%"><div class="tDiv">{$lang.steps_sort}</div></th>
+                                    <th width="13%"><div class="tDiv">{$lang.is_show}</div></th>
+                                    <th width="15%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+								{foreach from=$process_list item=process}
+                            	<tr>
+                                	<td class="sign"><div class="tDiv"><input type="checkbox" name="checkboxes[]" class="checkbox" value="{$process.id}" id="checkbox_{$process.id}" /><label for="checkbox_{$process.id}" class="checkbox_stars"></label></div></td>
+                                    <td><div class="tDiv">{$process.id}</div></td>
+                                	<td><div class="tDiv">{$process.process_title}</div></td>
+                                    <td>
+                                        <div class="tDiv">
+                                            {if $process.process_steps eq 1}
+                                            {$lang.rz_notis}
+                                            {elseif $process.process_steps eq 2}
+                                            {$lang.company_info_auth}
+                                            {elseif $process.process_steps eq 3}
+                                            {$lang.shop_info_auth}
+                                            {else}
+                                            {$lang.steps_process_not}
+                                            {/if}
+                                        </div>
+                                    </td>
+                                    <td><div class="tDiv"><input name="sort_order" class="text w40" value="{$process.steps_sort}" onkeyup="listTable.editInput(this, 'edit_sort_order',{$process.id} )" type="text"></div></td>
+                                    <td>
+									{if $process.id eq 1 || $process.id eq 5 || $process.id eq 7 || $process.id eq 9 || $process.id eq 4}
+                                    	<div class="tDiv"><img src="images/yes.png" class="pl3" /></div>
+									{else}
+                                    	<div class="tDiv">
+                                        	<div class="switch {if $process.is_show}active{/if}" onclick="listTable.switchBt(this, 'toggle_steps_show', {$process.id})" title="{$lang.yes}">
+                                            	<div class="circle"></div>
+                                            </div>
+                                            <input type="hidden" value="1" name="">
+                                        </div>
+									{/if}
+                                    </td>
+                                    <td class="handle">
+                                        <div class="tDiv a2">
+										    <a href="merchants_steps.php?act=title_list&id={$process.id}" class="btn_see" title="{$lang.view_order}"><i class="sc_icon sc_icon_see"></i>{$lang.view}</a>
+										    <a href="merchants_steps.php?act=edit&id={$process.id}"  class="btn_see" title="{$lang.edit}"><i class="icon icon-edit"></i>{$lang.edit}</a>
+                                        </div>
+                                    </td>
+                                </tr>
+								{foreachelse}
+								<tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+								{/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="10">
+                                        <div class="tDiv">
+                                            <div class="tfoot_btninfo">
+                                                <input type="hidden" name="act" value="batch_remove" />
+                                                <input type="submit" value="{$lang.drop}" name="remove" ectype="btnSubmit" class="btn btn_disabled" disabled="">
+                                            </div>
+                                            <div class="list-page">
+                                                {include file="library/page.lbi"}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+						{if $full_page}
+                    </div>
+				</form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {include file ='library/pagefooter.lbi'}
+    
+    <script type="text/javascript">
+	//列表导航栏设置下路选项
+	$(".ps-container").perfectScrollbar();
+		
+	//分页传值
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+
+	function confirm_bath(){
+		cfm = '{$lang.list_still_accounts}' + '{$lang.remove_confirm_process}';
+		return confirm(cfm);
+	}
+    </script>
+</body>
+</html>
+{/if}

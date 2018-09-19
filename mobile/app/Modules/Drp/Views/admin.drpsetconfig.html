@@ -1,0 +1,125 @@
+{include file="admin_pageheader"}
+
+<div class="wrapper">
+    <div class="title">分成比例设置</div>
+    <div class="content_tips">
+        <div class="tabs_info">
+          <ul>
+              <li><a href="{url('config')}">基本设置</a></li>
+              <li class="curr"><a href="{url('drp_set_config')}">比例设置</a></li>
+              <li><a href="{url('drp_set_qrcode')}">名片二维码设置</a></li>
+          </ul>
+        </div>
+        <div class="explanation" id="explanation">
+            <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4><span id="explanationZoom" title="收起提示"></span></div>
+            <ul>
+                <li>微分销默认开启，如需关闭请点击禁用按钮，再次使用点启用即可 </li>
+                <li>微分销分成总比例默认是用的具体某个商品的商品信息里面设置的比例。</li>
+                <li>微分销默认三级，如需改变每级的比例请在下方修改，三级百分比相加需小于等于100%。</li>
+                <li>分销的订单在用户付款后必须大于等于7天才可以进行佣金分成。具体可操作的时间可在下方修改。</li>
+            </ul>
+        </div>
+        <div class="flexilist">
+            <div class="main-info">
+            <form action="{url('drpsetconfig')}" method="post" class="form-horizontal" role="form" >
+            <div class="switch_info">
+                <div class="item">
+                    <div class="label-t">是否开启微分销：</div>
+                    <div class="label_value">
+                        <div class="checkbox_items">
+                            <div class="checkbox_item">
+                                <input type="radio" name="status" class="ui-radio event_zhuangtai" id="value_118_0" value="1" {if $drp_a_config.on == 1}checked{/if}>
+                                <label for="value_118_0" class="ui-radio-label {if $drp_a_config.on == 1}active{/if}">启用</label>
+                            </div>
+                            <div class="checkbox_item">
+                                <input type="radio" name="status" class="ui-radio event_zhuangtai" id="value_118_1" value="0" {if $drp_a_config.on == 0}checked{/if}>
+                                <label for="value_118_1" class="ui-radio-label {if $drp_a_config.on == 0}active{/if}">禁用</label>
+                            </div>
+                        </div>
+                        <div class="notic">注意：如果关闭则不会计算分销佣金</div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="label-t">订单佣金可分成时间：</div>
+                    <div class="label_value w100">
+                        <div class="input-group">
+                            <input type="number" name="data[day]" class="form-control" value="{$drp_a_config.config.day}">
+                            <span class="input-group-addon">天</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="label-t">分销等级比例设置：</div>
+                    <div class="label_value">
+                        <table class="table ectouch-table prize_list">
+                            <tr>
+                                <th class="text-center" width="20%">分销级别\分销等级</th>
+                                {foreach $user_credit as $val}
+                                <th class="text-center" width="20%">{$val.credit_name}</th>
+                                {/foreach}
+                            </tr>
+                           {foreach $drp_a_config.item as $k => $v}
+                             <tr>
+                                <td class="text-center">{$k+1}级</td>
+                                <td class="text-center"><div class="w150"><input type="text" name="cfg_value[credit_t][]" class="form-control" placeholder="例如：10" value="{$v['credit_t']}" ></div></td>
+                                <td class="text-center"><div class="w150"><input type="text" name="cfg_value[credit_y][]" class="form-control" placeholder="例如：30" value="{$v['credit_y']}" ></div></td>
+                                <td class="text-center"><div class="w150"><input type="text" name="cfg_value[credit_j][]"  class="form-control" placeholder="例如：60" value="{$v['credit_j']}" ></div></td>
+                            </tr>
+                            {/foreach}
+                        </table>
+                    <div class="notic">注意：最高分销商级别(金牌)三级分成比例佣金不得大于100% 即：一级金牌分销商 + 二级金牌分销商 + 三级金牌分销商 <= 100%</div>
+                </div>
+                <div class="item">
+                    <div class="label-t">&nbsp;</div>
+                    <div class="label_value info_btn">
+                        <input type="hidden" name="data[expire]" value="{$drp_a_config.config.day}" />
+                        <input type="hidden" name="data[expire_unit]" value="day" />
+                        <input type="submit" name="submit" class="button btn-danger bg-red" value="确认" />
+                        <input type="reset" name="reset" class="button button_reset" value="重置" />
+                    </div>
+                </div>
+            </div>
+            </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    //修改佣金可提现时间
+    $('input[name="data[day]"]').blur(function(){
+        var day_val = $(this).val();
+        if (day_val < 7) {
+            layer.msg('请输入大于等于7的数值');
+            $(this).val(7);
+            return false;
+        }
+    });
+
+</script>
+<script>
+    $("#explanationZoom").on("click",function(){
+        var explanation = $(this).parents(".explanation");
+        var width = $(".content_tips").width();
+        if($(this).hasClass("shopUp")){
+            $(this).removeClass("shopUp");
+            $(this).attr("title","收起提示");
+            explanation.find(".ex_tit").css("margin-bottom",10);
+            explanation.animate({
+                width:width-20
+            },300,function(){
+                $(".explanation").find("ul").show();
+            });
+        }else{
+            $(this).addClass("shopUp");
+            $(this).attr("title","提示相关设置操作时应注意的要点");
+            explanation.find(".ex_tit").css("margin-bottom",0);
+            explanation.animate({
+                width:"118"
+            },300);
+            explanation.find("ul").hide();
+        }
+    });
+</script>
+
+{include file="admin/footer"}

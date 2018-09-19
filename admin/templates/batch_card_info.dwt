@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content_common}</li>
+                    <li>{$lang.operation_prompt_content.batch_confirm.0}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+                        <form method="post" action="virtual_card.php" name="theForm" enctype="multipart/form-data" id="batch_card_info_form">
+                            <div class="switch_info">
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}&nbsp;{$lang.separator}：</div>
+                                    <div class="label_value">
+										<input type="text" name="separator" maxlength="60" size="6" value="," class="text" />
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item mb0">
+                                    <div class="label">{$lang.uploadfile}：</div>
+                                    <div class="label_value">
+                                        <div class="type-file-box">
+                                            <input type="button" name="button" id="button" class="type-file-button" value="">
+                                            <input type="file" class="type-file-file" id="uploadfile" name="uploadfile" size="30" data-state="csvfile" hidefocus="true" value="">
+                                            <input type="text" name="textfile" class="type-file-text" id="textfield" readonly>
+                                        </div>
+                                        <div class="form_prompt"></div>
+                                        <div class="notic bf100">{$lang.notice_file}</div>
+                                    </div>
+                                </div>								
+                                <div class="item">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="label_value">
+										<a href="../data/virtual_goods_list.csv" class="blue">{$lang.download_file}</a>
+                                    </div>
+                                </div>							
+                                <div class="item">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="label_value info_btn">
+										<input type="submit" class="button" value="{$lang.button_submit}" id="submitBtn" />
+										<input type="reset" class="button button_reset" value="{$lang.button_reset}" />
+										<input type="hidden" name="act" value="batch_confirm" />
+										<input type="hidden" name="goods_id" value="{$goods_id}" />
+                                    </div>
+                                </div>								
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+    </div>
+    {include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+	$(function(){
+		//表单验证
+		$("#submitBtn").click(function(){
+			if($("#batch_card_info_form").valid()){
+				$("#batch_card_info_form").submit();
+			}
+		});
+		
+		$('#batch_card_info_form').validate({
+			errorPlacement:function(error, element){
+				var error_div = element.parents('div.label_value').find('div.form_prompt');
+				element.parents('div.label_value').find(".notic").hide();
+				error_div.append(error);
+			},
+			rules:{
+				separator :{
+					required : true
+				}
+			},
+			messages:{
+				separator:{
+					 required : '<i class="icon icon-exclamation-sign"></i>{$lang.separator_null}'
+				}
+			}			
+		});
+	});	
+	</script>
+</body>
+</html>

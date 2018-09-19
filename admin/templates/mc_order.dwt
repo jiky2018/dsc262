@@ -1,0 +1,199 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.order_word} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content_common}</li>
+                    <li>{$lang.operation_prompt_content.mc_order.0}</li>
+                    <li>{$lang.operation_prompt_content.mc_order.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+						<form action="mc_order.php" method="post" enctype="multipart/form-data" name="theForm" id="mc_order_form">
+                            <div class="switch_info">
+                                <div class="items">
+                                    <div class="item">
+                                        <div class="label">{$lang.reminder}：</div>
+                                        <div class="label_value">{$lang.notice_order_num}</div>
+                                    </div>
+                                    <div class="item mb0">
+                                        <div class="label">{$lang.require_field}{$lang.batch_import_user}[<span class="red">{$lang.register_over}</span>]：</div>
+                                        <div class="label_value">
+                                        	<div class="type-file-box">
+                                                <input type="button" name="button" id="button" class="type-file-button" value="">
+                                                <input type="file" class="type-file-file" id="upfile" name="upfile" size="30" data-state="txtfile" hidefocus="true" value="">
+                                                <input type="text" name="textfile" class="type-file-text"  id="textfield" readonly>
+                                            </div>
+											<div class="fl red bf100">{$lang.notice_mc_order}</div>
+                                            <div class="form_prompt"></div>
+										</div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">&nbsp;</div>
+                                        <div class="label_value">
+                                            <a href="../mc_upfile/order_list.zip" target="_blank" class="mr10">1、{$lang.download_example}</a>
+                                            <a href="../mc_upfile/order_list.html" target="_blank" class="mr10">2、{$lang.online_view}</a>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.comment_goods_id}</div>
+                                        <div class="label_value">
+<textarea class="textarea" name="comment_id" id="comment_id" onclick="get_comment(this);" style="height:150px; float:none;">3-12
+4-11
+5-16
+6-14</textarea>
+                                        <br/><span class="red">{$lang.format_goods_id}</span>
+                                        <br/><span class="red">{$lang.format_goods_operation}</span>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.require_field}{$lang.goods_buy_number}：</div>
+                                        <div class="label_value">
+											<input name="goods_number" type="text" class="text w120" id="goods_number" value="1" size="10" autocomplete="off" />
+                                        	<div class="form_prompt"></div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.require_field}{$lang.random_order_number}：</div>
+                                        <div class="label_value">
+											<input name="comment_num" type="text" class="text w120" id="comment_num" size="10" value="1" maxlength="4" autocomplete="off" />        
+											<div class="notic">{$lang.tishi}</div>
+                                        	<div class="form_prompt"></div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.add_time_slot}：</div>
+                                        <div class="label_value text_time">
+                                            <input type="text" name="start_time" value="" id="start_time" class="text mr0" readonly />
+                                            <span class="bolang">&nbsp;&nbsp;~&nbsp;&nbsp;</span>
+                                            <input type="text" name="end_time" value="" id="end_time" class="text" readonly />    
+                                            <div class="notic">{$lang.add_time_slot_desc}</div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                    <div class="label">{$lang.label_order_status}</div>
+                                        <div class="label_value">
+                                            <div class="checkbox_items">
+                                                {foreach from=$os_list item=os key=key}
+                                                <div class="checkbox_item">
+                                                    <input type="radio" name="order_status" value="{$key}" class="ui-radio" id="order_status_0{$key}" {if $key eq 0}checked{/if}/>
+                                                    <label for="order_status_0{$key}" class="ui-radio-label">{$os}</label>
+                                                </div>
+                                                {/foreach}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.label_shipping_status}</div>
+                                        <div class="label_value">
+                                            <div class="checkbox_items">
+                                                {foreach from=$ss_list item=ss key=key}
+                                                <div class="checkbox_item">
+                                                    <input type="radio" name="shipping_status" value="{$key}" class="ui-radio" id="shipping_status_0{$key}" {if $key eq 0}checked{/if}/>
+                                                    <label for="shipping_status_0{$key}" class="ui-radio-label">{$ss}</label>
+                                                </div>
+                                                {/foreach}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.pay_status}：</div>
+                                        <div class="label_value">
+                                            <div class="checkbox_items">
+                                                {foreach from=$ps_list item=ps key=key}
+                                                <div class="checkbox_item">
+                                                    <input type="radio" name="pay_status" value="{$key}" class="ui-radio" id="pay_status_0{$key}" {if $key eq 0}checked{/if}/>
+                                                    <label for="pay_status_0{$key}" class="ui-radio-label">{$ps}</label>
+                                                </div>
+                                                {/foreach}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">&nbsp;</div>
+                                        <div class="label_value info_btn">
+											<input type="submit" value="{$lang.batch_add_order}" class="button" id="submitBtn" />
+											<!--<input type="reset" value="{$lang.button_reset}" class="button fl button_reset" />-->
+											<input type="hidden" name="act" value="mc_add" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="switch_info" style="display:none;">{$act_desc}</div>
+                            <div class="switch_info" style="display:none;">{$act_promise}</div>
+                            <div class="switch_info" style="display:none;">{$act_ensure}</div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+ {include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+		//表单验证
+		$(function(){
+			$("#submitBtn").click(function(){
+				if($("#mc_order_form").valid()){
+					$("#mc_order_form").submit();
+				}
+			});
+			
+			$('#mc_order_form').validate({
+				errorPlacement:function(error, element){
+					var error_div = element.parents('div.label_value').find('div.form_prompt');
+					element.parents('div.label_value').find(".notic").hide();
+					error_div.append(error);
+				},
+				rules : {
+					textfile : {
+						required : true
+					},
+					goods_number : {
+						required : true,
+						digits : true
+					},
+					comment_num : {
+						required : true,
+						digits:true
+					}
+				},
+				messages : {
+					textfile : {
+						required : '<i class="icon icon-exclamation-sign"></i>' + file_not_null
+					},
+					goods_number : {
+						required : '<i class="icon icon-exclamation-sign"></i>' + mc_order_notic_one,
+						digits : '<i class="icon icon-exclamation-sign"></i>' + mc_order_notic_two
+					},
+					comment_num : {
+						required : '<i class="icon icon-exclamation-sign"></i>' + mc_order_notic_three,
+						digits : '<i class="icon icon-exclamation-sign"></i>' + mc_order_notic_four
+					}
+				}
+			});
+		});
+        //时间选择
+    var opts1 = {
+        'targetId':'start_time',//时间写入对象的id
+        'triggerId':['start_time'],//触发事件的对象id
+        'alignId':'start_time',//日历对齐对象
+        'format':'-'//时间格式 默认'YYYY-MM-DD HH:MM:SS'
+    },opts2 = {
+        'targetId':'end_time',
+        'triggerId':['end_time'],
+        'alignId':'end_time',
+        'format':'-'
+    }
+    xvDate(opts1);
+    xvDate(opts2);
+    </script>
+</body>
+</html>

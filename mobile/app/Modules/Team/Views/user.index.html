@@ -1,0 +1,133 @@
+{include file="page_header"}
+<div class="con">
+		<div class="goods-info user-order of-hidden ect-tab ts-3" style="padding-top:0">
+			<nav class=" tab-title b-color-f of-hidden">
+				<ul class="dis-box">
+					<li class="box-flex {if $type == 1}active{/if}" style="display:none"><a href="{:url('user/my_team',array('type'=>'1'))}">全部团</a></li>
+					<li class="box-flex {if $type == 2}active{/if}"><a type="2" >正在拼团</a></li>
+					<li class="box-flex {if $type == 3}active{/if}"><a type="3" >成功团</a></li>
+					<li class="box-flex {if $type == 4}active{/if}"><a type="4" >失败团</a></li>
+				</ul>
+			</nav>
+			<div id="j-tab-con" class="tab-con">
+				<div class="swiper-wrapper">
+					<section class="swiper-slide team-goods" >
+						<script id="j-product" type="text/html">
+						<%if totalPage > 0 %>
+						<%each list as vo%>
+						<section class="flow-checkout-pro m-top08">
+							<div class="m-top1px of-hidden padding-all b-color-f position-rel">
+								<div class="product-one-list-1 of-hidden dis-box">
+										<div class="product-div" style="width:8rem">
+												<a class="product-div-link" href="<%vo.url%>"></a>
+												<img class="product-list-img bd" src="<%vo.goods_thumb%>">
+										</div>
+										<div class="position-rel box-flex">
+											<div class="t-list-right-box">
+											<a class="product-div-link" href="<%vo.url%>"></a>
+											<h4 class="f-05 col-5 twolist-hidden" style="line-height:inherit;"><%vo.goods_name%></h4>
+											<p class="f-03 col-9">已有<%vo.limit_num%>人参团</p>
+											<span class="color-red f-07">￥<%vo.team_price%> 元</span>
+											</div>
+										</div>
+
+								</div>
+								<!--成功时显示-->
+								<%if vo.status ==1%>
+								<div class="team-ts-img position-abo"><img src="{elixir('img/s-bg.png')}"></div>
+								<%/if%>
+								<!--失败显示-->
+								<%if vo.status == 2%>
+								<div class="team-ts-img position-abo"><img src="{elixir('img/sb-bg.png')}"></div>
+								<%/if%>
+							</div>
+							<footer class="padding-all b-color-f  of-hidden dis-box m-top1px">
+								<h4 class="box-flex"></h4>
+								<p class="ect-button-more">
+									<a href="<%vo.order_url%>" class="btn-opacity b-s">查看订单</a>
+
+									<a href="<%vo.team_url%>" class="btn-opacity b-s">拼团进度</a>
+
+								</p>
+							</footer>
+						</section>
+						<%/each%>
+						<%else%>
+						<div class="no-div-message">
+							<i class="iconfont icon-biaoqingleiben"></i>
+							<p>亲，此处没有内容～！</p>
+						</div>
+						<%/if%>
+						</script>
+					</section>
+				</div>
+			</div>
+		</div>
+		<div class="goods-scoll-bg"></div>
+	</div>
+		<!--快捷导航-->
+    <nav class="commom-nav dis-box ts-5">
+        <div class="left-icon"><div class="nav-icon"><i class="iconfont icon-jiantou1"></i>快速导航</div></div>
+        <div class="right-cont box-flex">
+            <ul class="nav-cont">
+                <li>
+                      <a href="{url('/')}">
+                        <i class="iconfont icon-home"></i>
+                        <p>首页</p>
+                      </a>
+                </li>
+                <li>
+                     <a href="{url('category/index/index')}">
+                         <i class="iconfont icon-caidan"></i>
+                         <p>分类</p>
+                     </a>
+                </li>
+                <li>
+                     <a href="{url('user/index/index')}">
+                         <i class="iconfont icon-gouwuche"></i>
+                         <p>购物车</p>
+                      </a>
+                </li>
+                <li>
+                    <a href="{url('user/index/index')}">
+                         <i class="iconfont icon-geren"></i>
+                         <p>个人中心</p>
+                    </a>
+                </li>
+                 <li>
+                    <a href="{url('team/index/index')}">
+                         <i class="iconfont icon-wodetuandui"></i>
+                         <p>拼团频道</p>
+                    </a>
+                </li>
+                <li>
+                    <a href="{url('team/index/userranking')}">
+                         <i class="iconfont icon-paixing"></i>
+                         <p>排行</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="common-show"></div>
+    <!--回到顶部-->
+     <div class="filter-top filter-top-index" id="scrollUp">
+        <i class="iconfont icon-jiantou"></i>
+        <span>顶部</span>
+    </div>
+	<script>
+		/*我的拼团*/
+		/*var url = "{url('team/user/index', array('type'=>$type, 'page'=>$page,))}";
+		$('.team-goods').infinite({url: url, template:'j-product', params: 'type={$type}'});*/
+
+		var infinite = $('.team-goods').infinite({url: "{url('team/user/index',array('page'=>$page))}", template: 'j-product', params: 'type={$type}'});
+	        $(".dis-box a").click(function () {
+	            var type = $(this).attr('type');
+
+	            infinite.onload('type=' + type);
+	            $(this).parent().addClass("active").siblings().removeClass("active");
+	        })
+	</script>
+</body>
+
+</html>

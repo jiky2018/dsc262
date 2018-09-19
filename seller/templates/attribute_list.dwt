@@ -1,0 +1,165 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+            	{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="search-form">
+                  <form action="" name="searchForm">
+                    <div id="goods_type" class="imitate_select select_w260">
+                        <div class="cite">{$lang.all_goods_type}</div>
+                        <ul style="display:none;" >
+                            <li><a href="javascript:;" data-value="" class="ftx-01">{$lang.all_goods_type}</a></li>
+                            {foreach from=$goods_type_list item=list key=key}
+                            <li><a href="javascript:;" data-value="{$key}" class="ftx-01">{$list}</a></li>
+                            {/foreach}
+                        </ul>
+                        <input name="goods_id" type="hidden" value="" id="goods_type_val">
+                    </div>
+                  </form>
+                </div>
+                <form method="post" action="attribute.php?act=batch" name="listForm">
+                <div class="list-div" id="listDiv">
+                {/if}
+                <table class="ecsc-default-table ">
+                    <thead>
+                        <tr>
+                          <th width="8%">
+                            <div class="first_all">
+                                <input onclick='listTable.selectAll(this, "checkboxes[]")' id="all" type="checkbox" class="ui-checkbox"/>
+                                <label for="all" class="ui-label"><a href="javascript:listTable.sort('attr_id'); ">{$lang.record_id}</a></label>
+                                {$sort_attr_id}
+                            </div>
+                          </th>
+                          <th width="14%"><a href="javascript:listTable.sort('attr_name'); ">{$lang.attr_name}</a>{$sort_attr_name}</th>
+                          <th width="14%"><a href="javascript:listTable.sort('cat_id'); ">{$lang.cat_id}</a>{$sort_cat_id}</th>
+                          <th width="14%"><a href="javascript:listTable.sort('attr_input_type');">{$lang.attr_input_type}</a></th>
+                          <th width="32%">{$lang.attr_values}</th>
+                          <th width="8%"><a href="javascript:listTable.sort('sort_order'); ">{$lang.sort_order}</a>{$sort_sort_order}</th>
+                          {if $attr_set_up eq 1}
+                          <th width="10%">{$lang.handler}</th>
+                          {/if}
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {foreach from=$attr_list item=attr}
+                    <tr class="bd-line">
+                      <td class="first_td_checkbox">
+                      <div class="first_all">
+                          <input value="{$attr.attr_id}" id="attr_{$attr.attr_id}" name="checkboxes[]" type="checkbox" class="ui-checkbox">
+                          <label for="attr_{$attr.attr_id}" class="ui-label">{$attr.attr_id}</label>
+                      </div>
+                      </td>
+                      <td class="first-cell">
+                      {if $attr_set_up eq 1}
+                        <span onclick="listTable.edit(this, 'edit_attr_name', {$attr.attr_id})">{$attr.attr_name}</span>
+                      {else}
+                        {$attr.attr_name}
+                      {/if}  
+                      </td>
+                      <td><span>{$attr.cat_name}</span></td>
+                      <td><span>{$attr.attr_input_type_desc}</span></td>
+                      <td><span>{$attr.attr_values}</span></td>
+                      <td>
+                      {if $attr_set_up eq 1}
+                      <span onclick="listTable.edit(this, 'edit_sort_order', {$attr.attr_id})">{$attr.sort_order}</span>
+                      {else}
+                      {$attr.sort_order}
+                      {/if}
+                      </td>
+                      {if $attr_set_up eq 1}
+                      <td class="ecsc-table-handle tr">
+                        <span><a href="?act=edit&amp;attr_id={$attr.attr_id}" title="{$lang.edit}" class="btn-green"><i class="icon icon-edit"></i><p>{$lang.edit}</p></a></span>
+                        <span><a href="javascript:;" onclick="removeRow({$attr.attr_id})" title="{$lang.remove}" class="btn-red"><i class="icon icon-trash"></i><p>{$lang.drop}</p></a></span>
+                      </td>
+                      {/if}
+                    </tr>
+                    {foreachelse}
+                    <tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+                    {/foreach}
+                    </tbody>
+                    <tfoot>
+                      	<tr>
+                        	<td colspan="20" class="td_border">
+                            	{if $attr_set_up eq 1}
+                                <div class="shenhe">
+                                	<input type="submit" id="btnSubmit" name="btnSubmit" value="{$lang.drop}" class="sc-btn btn_disabled" disabled="true" />
+                                </div>
+                                {/if}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="20">{include file="page.dwt"}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+                {if $full_page}
+                </div>
+              </form>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+
+<script type="text/javascript">
+<!--
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+
+  {literal}
+  onload = function()
+  {
+      // 开始检查订单
+      startCheckOrder();
+  }
+$.divselect("#goods_type","#goods_type_val",function(obj){
+    var val = obj.attr("data-value");
+    searchAttr(val);
+});
+  /**
+   * 查询商品属性
+   */
+  function searchAttr(goodsType)
+  {
+    listTable.filter.goods_type = goodsType;
+    listTable.filter.page = 1;
+    listTable.loadList();
+  }
+
+  function removeRow(attr_id)
+  {
+    Ajax.call('attribute.php?act=get_attr_num&attr_id=' + attr_id, '', removeRowResponse, 'GET', 'JSON');
+  }
+
+  function removeRowResponse(result)
+  {
+    if (result.message.length > 0)
+    {
+      alert(result.message);
+    }
+
+    if (result.error == 0)
+    {
+      listTable.remove(result.content.attr_id, result.content.drop_confirm);
+    }
+  }
+
+  {/literal}
+//-->
+</script>
+</body>
+</html>
+{/if}

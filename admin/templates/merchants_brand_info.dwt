@@ -1,0 +1,220 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$lang.goods_alt} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content_common}</li>
+                    <li>{$lang.operation_prompt_content.info.0}</li>
+                    <li>{$lang.operation_prompt_content.info.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+                        <form action="merchants_brand.php" method="post" name="theForm" enctype="multipart/form-data" id="mbrand_form">
+                            <div class="switch_info">
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}{$lang.brand_name_cn}：</div>
+                                    <div class="label_value">
+										<input type="text" name="mer_brand_name" maxlength="60" value="{$brand.brand_name}" class="text" autocomplete="off" />
+                                    	<div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.brand_name_en}：</div>
+                                    <div class="label_value">
+										<input type="text" name="brank_letter" maxlength="60" value="{$brand.bank_name_letter}" class="text" autocomplete="off" />
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.site_url}：</div>
+                                    <div class="label_value">
+										<input type="text" name="site_url" maxlength="60" size="40" value="{$brand.site_url}" class="text" autocomplete="off" />
+                                    </div>
+                                </div>								
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}{$lang.brand_logo}：</div>
+                                    <div class="label_value">
+                                    	<div class="type-file-box">
+                                            <input type="button" name="button" id="button" class="type-file-button" value="">
+                                            <input type="file" class="type-file-file" id="logo" name="brand_logo" size="30" data-state="imgfile" hidefocus="true" value="">
+                                            {if $brand.brand_logo neq ""}
+                                            <span class="show">
+                                            	<a href="../{$brand.brand_logo}" target="_blank" class="nyroModal"><i class="icon icon-picture" data-tooltipimg="../{$brand.brand_logo}" ectype="tooltip" title="tooltip"></i></a>
+                                            </span>
+                                            {/if}
+                                        	<input type="text" name="textfile" class="type-file-text" {if $brand.brand_logo neq ""}value="../{$brand.brand_logo}"{/if} id="textfield" readonly>
+                                        </div>
+                                        <div class="form_prompt"></div>
+										<div class="notic" id="warn_brandlogo">
+										{if $brand.brand_logo eq ''}
+										{$lang.up_brandlogo}
+										{else}
+										{$lang.warn_brandlogo}
+										{/if}
+                                        </div>										
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.brand_desc}：</div>
+                                    <div class="label_value">
+										<textarea name="brand_desc" cols="60" rows="4" class="textarea">{$brand.brand_desc}</textarea>
+                                    </div>
+                                </div>								
+                                <div class="item">
+                                    <div class="label">{$lang.sort_order}：</div>
+                                    <div class="label_value">
+										<input type="text" name="sort_order" maxlength="40" size="15" value="{$brand.sort_order}" class="text text_5" autocomplete="off" />
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.is_show}：</div>
+                                    <div class="label_value">
+                                        <div class="checkbox_items">
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="is_show" id="is_show_1" value="1" {if $brand.is_show eq 1} checked="true" {/if}  />
+                                                <label for="is_show_1" class="ui-radio-label">{$lang.yes}</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="is_show" id="is_show_0" value="0" {if $brand.is_show eq 0} checked="true" {/if}  />
+                                                <label for="is_show_0" class="ui-radio-label">{$lang.no}</label>
+                                            </div>
+                                        </div>
+										<div class="notic">{$lang.visibility_notes}</div>
+                                    </div>
+                                </div>
+								{if $brand_list}
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}{$lang.associated_platform_brands}：</div>
+                                    <div class="label_value">
+										{if $priv_ru}
+                                        <div class="search_select">
+                                            <div class="brandSelect">
+                                                <div class="selection">
+                                                    <input type="text" name="brand_name" id="brand_name" class="text w120 valid" value="{if $link_brand}{$link_brand.brand_name}{else}{$lang.select_barnd}{/if}" autocomplete="off" readonly data-filter="brand_name" />
+                                                    <input type="hidden" name="link_brand" id="brand_id" value="{$link_brand.brand_id|default:0}" data-filter="brand_id" />
+                                                </div>
+                                                <div class="brand-select-container" style="display:none;">
+                                                    {include file="library/filter_brand.lbi"}
+                                                </div>
+                                            </div>                            
+                                        </div>										
+										{else}
+										<span class="lh red">{$link_brand.brand_name}</span>
+										{/if}
+                                        <div class="form_prompt"></div>									
+                                    </div>
+                                </div>	
+								{/if}
+								{if $priv_ru}
+                                <div class="item">
+                                    <div class="label">{$lang.adopt_brand}：</div>
+                                    <div class="label_value">
+                                        <div class="checkbox_items">
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="audit_status" id="audit_status_0" value="0" {if $brand.audit_status eq 0} checked="true" {/if}  />
+                                                <label for="audit_status_0" class="ui-radio-label">{$lang.not_audited}</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="audit_status" id="audit_status_1" value="1" {if $brand.audit_status eq 1} checked="true" {/if}  />
+                                                <label for="audit_status_1" class="ui-radio-label">{$lang.have_audited}</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="audit_status" id="audit_status_2" value="2" {if $brand.audit_status eq 2} checked="true" {/if}  />
+                                                <label for="audit_status_2" class="ui-radio-label">{$lang.audited_not_adopt}</label>
+                                            </div>											
+                                        </div>
+                                    </div>
+                                </div>
+								{/if}
+                                <div class="item hide">
+                                    <div class="label">{$lang.setup_main_brand}：</div>
+                                    <div class="label_value">
+										{if $major_brand && $major_brand neq $brand.brand_id}
+										<span class="lh red">{$lang.store_main_brand}</span>
+										{else}
+                                        <div class="checkbox_items">
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="major_business" id="major_business_0" value="0" {if $brand.major_business eq 0} checked="true" {/if}  />
+                                                <label for="major_business_0" class="ui-radio-label">{$lang.yes}</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="major_business" id="major_business_1" value="1" {if $brand.major_business eq 1} checked="true" {/if}  />
+                                                <label for="major_business_1" class="ui-radio-label">{$lang.no}</label>
+                                            </div>
+                                        </div>
+										{/if}		
+                                    </div>
+                                </div>							
+                                <div class="item">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="label_value info_btn">
+										<input type="submit" class="button" value="{$lang.button_submit}" id="submitBtn" />
+										<input type="reset" class="button button_reset" value="{$lang.button_reset}" />
+										<input type="hidden" name="ubrand" value="{$ubrand}" />
+                                        <input type="hidden" name="ru_id" value="{$brand.user_id|default:0}" />
+										<input type="hidden" name="act" value="{$form_action}" />
+										<input type="hidden" name="old_brandname" value="{$brand.brand_name}" />
+										<input type="hidden" name="id" value="{$brand.brand_id}" />
+										<input type="hidden" name="old_brandlogo" value="{$brand.brand_logo}">
+                                    </div>
+                                </div>								
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+    </div>
+ 	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+	$(function(){
+		$('.nyroModal').nyroModal();
+		
+		//表单验证
+		$("#submitBtn").click(function(){
+			if($("#mbrand_form").valid()){
+				$("#mbrand_form").submit();
+			}
+		});
+	
+		$('#mbrand_form').validate({
+			errorPlacement:function(error, element){
+				var error_div = element.parents('div.label_value').find('div.form_prompt');
+				element.parents('div.label_value').find(".notic").hide();
+				error_div.append(error);
+			},
+			rules:{
+				mer_brand_name :{
+					required : true
+				},
+				link_brand:{
+					min : 1
+				},
+				textfile:{
+					required : true
+				}
+			},
+			messages:{
+				mer_brand_name:{
+					required : '<i class="icon icon-exclamation-sign"></i>'+brand_zh_name_null
+				},
+				link_brand:{
+					min : '<i class="icon icon-exclamation-sign"></i>'+guanlian_brand_null
+				},
+				textfile:{
+					required : '<i class="icon icon-exclamation-sign"></i>'+brand_logo_null
+				}
+			}			
+		});
+	});	
+	</script>
+</body>
+</html>

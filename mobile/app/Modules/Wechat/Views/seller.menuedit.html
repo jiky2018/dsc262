@@ -1,0 +1,146 @@
+{include file="seller_pageheader"}
+
+{include file="seller_nave_header"}
+
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file="seller_menu_left"}
+
+		<div class="ecsc-layout-right">
+			<div class="main-content" id="mainContent">
+			{include file="seller_nave_header_title"}
+				<div class="wrapper-right of" style="background:#fff">
+					<div class="tabmenu">
+                        <ul class="tab">
+                            <li role="presentation" class="active"><a href="#home" role="tab" data-toggle="tab">{if $info['id']}{$lang['menu_edit']}{else}{$lang['menu_add']}{/if} </a></li>
+                        </ul>
+                    </div>
+                    <div class="explanation" id="explanation">
+                        <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4></div>
+                        <ul>
+                            <li>微信自定义菜单最多可添加3个一级菜单、5个二级菜单。</li>
+                            <li>微信自定义菜单分为关键词click，网址view两种类型。click是响应关键词指令，view则是直接跳转URL地址（填写绝对路径）。</li>
+                            <li>每次修改自定义菜单后，由于微信客户端缓存，需要24小时左右微信客户端才会显示生效。测试时可以尝试重新关注微信公众号，或者清除微信缓存。</li>
+                        </ul>
+                    </div>
+					<form action="{url('menu_edit')}" method="post" class="form-horizontal" role="form" onsubmit="return false;">
+				    <div class="wrapper-list mt20" >
+				    	<div class="account-setting clearfix ecsc-form-goods">
+                            <dl>
+                                <dt>{$lang['menu_parent']}：</dt>
+                                <dd>
+                                    <select name="data[pid]" class="input-sm select">
+						              	<option value="0">{$lang['menu_select']}</option>
+						              	{foreach $top_menu as $m}
+						              		<option value="{$m['id']}" {if $info['pid'] == $m['id']}selected{/if}>{$m['name']}</option>
+						              	{/foreach}
+					                </select>
+                                </dd>
+                            </dl>
+                            <dl>
+                                <dt>{$lang['menu_name']}：</dt>
+                                <dd>
+                                    <input type="text" name="data[name]" class="text" value="{$info['name']}" />
+                                </dd>
+                            </dl>
+                            <dl>
+                                <dt>{$lang['menu_type']}：</dt>
+                                <dd>
+                                    <div class="checkbox_items">
+			                            <div class="checkbox_item">
+						                    <input type="radio" name="data[type]" class="ui-radio evnet_shop_closed clicktype" id="value_116_0" value="click" {if $info['type'] == 'click'}checked{/if} >
+						                    <label for="value_116_0" class="ui-radio-label {if $info['type'] == 'click'}active{/if}">{$lang['menu_click']}</label>
+						                </div>
+						                <div class="checkbox_item">
+						                    <input type="radio" name="data[type]" class="ui-radio evnet_shop_closed clicktype" id="value_116_1" value="view" {if $info['type'] == 'view'}checked{/if}>
+						                    <label for="value_116_1" class="ui-radio-label {if $info['type'] == 'view'}active{/if}">{$lang['menu_view']}</label>
+						                </div>
+		                            </div>
+                                </dd>
+                            </dl>
+                            <dl id="click" class="item {if $info['type'] == 'view'}hidden{/if}">
+                                <dt>{$lang['menu_keyword']}：</dt>
+                                <dd>
+							        <input type="text" name="data[key]" class="text" value="{$info['key']}" />
+                                </dd>
+                            </dl>
+                            <dl id="view" class="item {if $info['type'] == 'click'}hidden{/if}">
+                                <dt>{$lang['menu_url']}：</dt>
+                                <dd>
+							        <input type="text" name="data[url]" class="text" value="{$info['url']}" />
+                                </dd>
+                            </dl>
+                            <dl>
+                                <dt>{$lang['menu_show']}：</dt>
+                                <dd>
+	                                <div class="checkbox_items">
+			                            <div class="checkbox_item">
+						                    <input type="radio" name="data[status]" class="ui-radio evnet_show" id="value_117_0" value="1" {if $info['status'] == 1}checked{/if}>
+						                    <label for="value_117_0" class="ui-radio-label {if $info['status'] == 1}active{/if}">{$lang['yes']}</label>
+						                </div>
+						                <div class="checkbox_item">
+						                    <input type="radio" name="data[status]" class="ui-radio evnet_show" id="value_117_1" value="0" {if $info['status'] == 0}checked{/if}>
+						                    <label for="value_117_1" class="ui-radio-label {if $info['status'] == 0}active{/if}">{$lang['no']}</label>
+						                </div>
+		                            </div>
+                                </dd>
+                            </dl>
+                            <dl>
+                                <dt>{$lang['sort_order']}：</dt>
+                                <dd>
+	                                <div class="checkbox_items">
+			                            <input type="text" name="data[sort]" class="text" value="{$info['sort']}" />
+		                            </div>
+                                </dd>
+                            </dl>
+                            <dl>
+                                <dt>&nbsp;</dt>
+                                <dd>
+	                                <input type="hidden" name="id" value="{$info['id']}" />
+									<input type="submit" value="{$lang['button_submit']}" class="sc-btn sc-blueBg-btn btn35" />
+						            <input type="reset" value="{$lang['button_reset']}" class="sc-btn sc-blue-btn btn35" />
+                                </dd>
+                            </dl>
+					    </div>
+				    </form>
+				</div>
+			</div>
+		</div>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+$(function(){
+	$(".clicktype").click(function(){
+		// var val = $(this).find("input[type=radio]").val();
+		var val = $(this).val();
+
+		if('click' == val && $("#click").hasClass("hidden")){
+			$("#view").hide().addClass("hidden");
+			$("#click").show().removeClass("hidden");
+		}
+		else if('view' == val && $("#view").hasClass("hidden")){
+			$("#click").hide().addClass("hidden");
+			$("#view").show().removeClass("hidden");
+		}
+	});
+	$(".form-horizontal").submit(function(){
+	    var ajax_data = $(this).serialize();
+	    $.post("{url('menu_edit')}", ajax_data, function(data){
+	        if(data.status > 0){
+	        	layer.msg(data.msg);
+	            window.parent.location = "{url('menu_list')}";
+			}
+	        else{
+	            layer.msg(data.msg);
+	            return false;
+		    }
+	    }, 'json');
+	});
+})
+</script>
+
+{include file="seller_pagefooter"}
+</body>
+</html>

@@ -1,0 +1,134 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+{include file ='library/seller_html_head.lbi'}
+</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+				{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                {/if}
+                <div class="ecsc-form-goods">
+                <form method="post" action="merchants_account.php" enctype="multipart/form-data" name="listForm" id="submitForm">
+                <div class="wrapper-list">
+                	<dl>
+                    	<dt>{$lang.label_topup}：</dt>
+                        <dd id="seller_money" class="txtline red">{$seller_shopinfo.seller_money}</dd>
+                    </dl>
+                    <dl>
+                    	<dt>{$lang.require_field}&nbsp;{$lang.label_topup_account}：</dt>
+                        <dd>
+                        	<input name="topup_account" type="text" id="topup_account" class="text">
+                            <div class="form_prompt"></div>
+                            <div class="notic">您当前会员余额：<em id="user_money" class="red">{$user_money}</em></div>
+                        </dd>
+                    </dl>
+                    <dl>
+                    	<dt>{$lang.label_topup_desc}：</dt>
+                        <dd>
+                        	<textarea name="topup_note" cols="50" rows="10" class="textarea"></textarea>
+                            <div class="notic">{$lang.label_topup_instructions}</div>
+                        </dd>
+                    </dl>
+                    <dl>
+                    	<dt>{$lang.require_field}&nbsp;支付方式：</dt>
+                        <dd>
+                        	<!--{foreach from=$pay item=pay name=payName}-->
+                            {if $pay.pay_code neq 'onlinepay' && $pay.pay_code neq 'chunsejinrong'}
+                            <span data-id="{$pay.pay_id}" data-code="{$pay.pay_code}" class="sub_pay sub_border {if $smarty.foreach.payName.index eq 0}sub_border2{/if}" >{$pay.pay_name}</span>
+                            { /if}
+                            <!--{/foreach}-->
+                        </dd>
+                    </dl>
+                    <dl id="transfer" style="display:none;">
+                    	<dt>{$lang.require_field}&nbsp;{$lang.transfer_certificate}：</dt>
+                        <dd><input name="certificate_img" type="file" id="certificate_img" class="fl ignore" /><div class="form_prompt"></div></dd>
+                    </dl>
+                    <dl class="button_info">
+                    	<dt>&nbsp;</dt>
+                        <dd>
+                        	<input name="query" type="submit" class="sc-btn sc-blueBg-btn btn35" id="query" value="{$lang.button_submit}" />
+                            <input name="reset" type="reset" class="sc-btn btn35 sc-blue-btn" value="{$lang.button_reset}" />
+                            <input type="hidden" name="pay_id" id="pay_id" value="0">
+                            <input type="hidden" name="act" value="{$form_act}"/>
+                            <input type="hidden" name="submit_act" value="1"/>
+                        </dd>
+                    </dl>
+                </div>
+                </form>
+                </div>
+                {if $full_page}
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+$(function(){
+    var pay_id = $(".sub_border2").data("id");
+	$("#pay_id").val(pay_id);
+    $(".sub_pay").click(function(){
+		var pay_id = $(this).data('id');
+         var pay_code = $(this).data('code');
+         $("#pay_id").val(pay_id);
+        $(this).addClass("sub_border2").siblings().removeClass('sub_border2');
+		
+		if(pay_code == 'bank'){
+			$("#transfer").show();
+			$("#certificate_img").removeClass('ignore');
+		}else{
+			$("#transfer").hide();
+			$("#certificate_img").addClass('ignore');
+		}
+    });
+	
+	//表单验证
+	$("#query").click(function(){
+		if($("#submitForm").valid()){
+			//防止表单重复提交
+			if(checkSubmit() == true){
+				$(this).parents("form").submit();
+			}else{
+				return false;
+			}
+        }
+    });
+	
+	$('#submitForm').validate({
+        errorPlacement:function(error, element){
+            var error_div = element.parents('dl').find('div.form_prompt');
+           // element.parents('dd').find(".notic").hide();
+            error_div.append(error);
+        },
+		ignore:'.ignore',
+        rules : {
+            topup_account : {
+                required : true,
+				min : 1
+            },
+			certificate_img :{
+				required : true,
+			}
+        },
+        messages : {
+            topup_account : {
+                required : '<i class="icon icon-exclamation-sign"></i>'+topup_account_not_null,
+				min:'<i class="icon icon-exclamation-sign"></i>'+number_is_0
+            },
+			certificate_img :{
+				required : '<i class="icon icon-exclamation-sign"></i>'+topup_account_is_seller_money,
+			}
+        }
+    });
+});
+</script>
+{include file ='library/seller_footer.lbi'}
+</body>
+</html>
+{/if}

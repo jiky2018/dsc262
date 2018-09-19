@@ -1,0 +1,146 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+    <div class="warpper">
+        <div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>事件列表 - {$ur_here}</div>
+        <div class="content">
+            <div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content_common}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+                        <form action="ecjia_push_event.php" method="post" name="theForm" enctype="multipart/form-data" id="mobile_activity_form" >
+                            <div class="switch_info" id="conent_area">
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}消息事件名称：</div>
+                                    <div class="label_value">
+                                        <input type="text" name="event_name" class="text" value="{$event_info.event_name}" autocomplete="off" /><div class="notic m20">{$lang.ad_name_notic2}</div>
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}消息事件Code：</div>
+                                    <div class="label_value">
+                                    <input type="hidden" name="event_code_input" id="event_code_input"value="{$event_info.event_code}"/>
+                                    {if $form_action eq 'insert'}
+                                        <input type="text" name="event_code" id="event_code" class="text" value="{$event_info.event_code}" autocomplete="off" /><div class="notic m20">{$lang.ad_name_notic2}</div>
+                                        <div class="form_prompt"></div>
+                                    {else}{$event_info.event_code}{/if}
+                                    </div>
+                                </div>
+                                {if $form_action eq 'insert'}
+                                <div class="item">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="label_value info_btn">
+                                        <a href="javascript:;" class="button" id="submitBtn">{$lang.button_submit}</a>
+                                        <input type="hidden" name="act" value="{$form_action}" />
+                                    </div>
+                                </div>
+                                {/if}
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {if $form_action eq 'update'}
+                {if $form_action eq 'update'}
+                    {foreach from=$event_list item=event_list}
+                    <div class="step w190 fl h80 ml20" style="width: 190px; margin-top: 20px;">
+                        <div class="step_title" style="border: 0px;">
+                            <span>{$event_list.app_name}</span>
+                            <span>{$event_list.template_subject}</span>
+                            <a href="ecjia_push_event.php?act=delete&event_id={$event_list.event_id}" onclick="javascrip:confirm('确定要删除吗')" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>
+                            <a href="javascript:;" title="编辑" class="btn_edit" ectype="edit_update" event_id="{$event_list.event_id}"><i class="icon icon-edit"></i>{$lang.edit}</a>
+                        </div>
+                    </div>
+                    {/foreach}
+                {/if}
+                <div class="step w190 fl h80 ml20" style="width: 190px; margin-top: 20px;">
+                    <div class="step_title" style="border: 0px;">
+                        <h3>绑定客户端应用</h3><span class="stop stop_jia" ectype="add_insert" event_id="" title="绑定客户端"></span>
+                    </div>
+                </div>
+            {/if}
+        </div>
+    </div>
+
+    {include file ='library/pagefooter.lbi'}
+    {insert_scripts files="jquery.purebox.js"}
+    
+    <script type="text/javascript">
+
+        $(function(){
+            $("#submitBtn").click(function(){
+                if($("#mobile_activity_form").valid()){
+                    $("#mobile_activity_form").submit();
+                }
+            });
+
+            $('#mobile_activity_form').validate({
+                errorPlacement:function(error, element){
+                    var error_div = element.parents('div.label_value').find('div.form_prompt');
+                    element.parents('div.label_value').find(".notic").hide();
+                    error_div.append(error);
+                },
+                rules:{
+                    event_name :{
+                        required : true
+                    },
+                    event_code :{
+                        required : true
+                    }
+                },
+                messages:{
+                    event_name:{
+                         required : '<i class="icon icon-exclamation-sign"></i>'+'消息事件名称不可为空'
+                    },
+                    event_code:{
+                         required : '<i class="icon icon-exclamation-sign"></i>'+'消息事件Code不可为空'
+                    }
+                }           
+            });
+
+            //商品详情手机端上传图片或上传文字
+            $("[ectype='add_insert'],[ectype='edit_update']").on("click",function(){
+                var ectype = $(this).attr("ectype");
+                var event_id = $(this).attr("event_id");
+                var event_code = $("#event_code_input").val();
+                
+                var content = "";
+                var title = "";
+                if(ectype == "add_insert"){
+                    title = '添加新应用';
+                    log_type = 'dialog_insert';
+                }else if(ectype == "edit_update"){
+                    title = '编辑客户端';
+                    log_type = 'dialog_update';
+                }
+                $.jqueryAjax('ecjia_push_event.php', 'act=push_event_dialog&log_type='+log_type+'&event_id='+event_id+'&event_code='+event_code, function(data){
+                    content = data.content;
+                    pb({
+                        id:"goodsMobile",
+                        title:title,
+                        width:600,
+                        content:content,
+                        ok_title:"{$lang.button_submit_alt}",
+                        cl_title:"{$lang.cancel}",
+                        drag:false,
+                        foot:false,
+                        cl_cBtn:true,
+                        onOk:function(){
+                        }
+                    });
+                });
+                $(".albumContent").perfectScrollbar("destroy");
+                $(".albumContent").perfectScrollbar();
+            });
+        })
+    </script>     
+</body>
+</html>

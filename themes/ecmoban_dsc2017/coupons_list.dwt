@@ -1,0 +1,133 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<!-- #BeginLibraryItem "/library/js_languages_new.lbi" --><!-- #EndLibraryItem -->
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/css/other/coupons.css" />
+</head>
+
+<body>
+<!-- #BeginLibraryItem "/library/page_header_coupons.lbi" --><!-- #EndLibraryItem -->
+<div id="content" class="quan_content">
+    <div class="quan-main mt20">
+        <div class="w1200 w">
+            <div class="quan-filter mb30">
+                <div class="f-sort">
+                    <a href="coupons.php?act=coupons_list" {if empty($smarty.get.field)}class="selted"{/if} data-param="st" data-id="0">{$lang.default}</a>
+                    <a href="coupons.php?act=coupons_list&field=cou_end_time" {if $smarty.get.field==cou_end_time}class="selted"{/if}>{$lang.Will_expire}</a>
+                    <a href="coupons.php?act=coupons_list&field=cou_money"  {if $smarty.get.field==cou_money}class="selted"{/if}>{$lang.max_Face}</a>
+                </div>
+                <div class="f-types">
+                    <a href="javascript:void(0);" {if empty($smarty.get.type) || $smarty.get.type==undefined}class="selted"{/if} data-id="3,4"><i></i>{$lang.type_all}</a>
+                    <a href="javascript:void(0);" {if $smarty.get.type==all}class="selted"{/if} data="all"><i></i>{$lang.vouchers_all}</a>
+                    <a href="javascript:void(0);" {if $smarty.get.type==member}class="selted"{/if} data="member"><i></i>{$lang.vouchers_user}</a>
+                    <a href="javascript:void(0);" {if $smarty.get.type==shipping}class="selted"{/if} data="shipping"><i></i>{$lang.vouchers_shipping}</a>
+                </div>
+            </div>
+            <div class="quan-list">
+                    {foreach from=$cou_data item=vo}
+                    <div class="quan-item quan-d-item quan-item-acoupon{if $vo.cou_surplus eq 0} quan-gray-item{/if}">
+                        <div class="q-type">
+                            <div class="q-price">
+                                {if $vo.cou_type eq 5}
+                                <i class="icon-my"></i>
+                                {else}
+                                <em>￥</em>
+                                <strong class="num">{$vo.cou_money}</strong>
+                                {/if}
+                                
+                                <div class="txt" style="float: none;"><div class="typ-txt">{$vo.cou_type_name}</div></div>
+                                <div class="txt">
+                                    <div class="limit"><span class="ftx-06">{if $vo.cou_man gt 0}{$lang.full}{$vo.cou_man}{$lang.available_full}{else}{$lang.unlimited}{/if}</span></div>
+                                </div>
+                            </div>
+                            <div class="q-range">
+                                <div class="range-item"><p title="{if $vo.cou_goods}<p>{$lang.permissions_buy}</p>{else}<p>{$lang.category}</p>{/if}">
+                                    {$vo.cou_title}
+                                </p></div>
+                                <div class="range-item">{$vo.store_name}</div>
+                                <div class="range-item">{$vo.cou_start_time_format}-{$vo.cou_end_time_format}</div>
+                            </div>
+                        </div>
+                        {if $smarty.session.user_id && $vo.cou_is_receive}
+                        {if $vo.is_use eq 0}
+                        {if $vo.cou_surplus eq 0}
+                        <div class="q-opbtns"><a href="javascript:;" class="" cou_id="{$vo.cou_id}"><b class="semi-circle"></b>{$lang.Take_up}</a></div>
+                        {else}
+                        <div class="q-opbtns"><a href="search.php?cou_id={$vo.cou_id}" target="_blank"><b class="semi-circle"></b>{$lang.Immediate_use}</a></div>
+                        <div class="q-state"><div class="btn-state btn-geted">{$lang.receive_hove}</div></div>
+                        {/if}
+
+                        {else}
+                        {if $vo.cou_surplus eq 0}
+                        <div class="q-opbtns"><a href="javascript:;" class="" cou_id="{$vo.cou_id}"><b class="semi-circle"></b>{$lang.Take_up}</a></div>
+                        {else}
+                        <div class="q-opbtns"><a href="javascript:;" class="q-btn get-coupon" cou_id="{$vo.cou_id}"><b class="semi-circle"></b>{$lang.receive_now}</a></div>
+                        {/if}
+                        {/if}
+                        {else}
+                        {if $vo.cou_surplus eq 0}
+                        <div class="q-opbtns"><a href="javascript:;" class="" cou_id="{$vo.cou_id}"><b class="semi-circle"></b>{$lang.Take_up}</a></div>
+                        {else}
+                        <div class="q-opbtns"><a href="javascript:;" class="q-btn get-coupon" cou_id="{$vo.cou_id}"><b class="semi-circle"></b>{$lang.receive_now}</a></div>
+                        {/if}
+                        {/if}
+                    </div>
+
+                    {/foreach}
+
+
+                </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(".f-types a,.f-service a").click(function(){
+            if($(this).hasClass("selted")){
+                $(this).removeClass("selted");
+            }else{
+                $(this).addClass("selted");
+            }
+        });
+    </script>
+
+    {if $page_total>1}
+    <div class="pages" id="pager">
+        <ul>
+            <li class="item prev"><a href="coupons.php?{$page_url}&p={$prev_page}"><i class="iconfont icon-left"></i></a></li>
+            {foreach from=$page_total2 item=vo}
+            <li class="item {if $page==$vo }cur{/if}"><a href=coupons.php?{$page_url}&p={$vo}>{$vo}</a></li>
+            {/foreach}
+            <li class="item next"><a href="coupons.php?{$page_url}&p={$next_page}"><i class="iconfont icon-right"></i></a></li>
+        </ul>
+    </div>
+    {/if}
+    <input name="script_name" value="{$script_name}" type="hidden" />
+    <input name="cur_url" value="{$cur_url}" type="hidden" />
+</div>
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/dsc-common.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.purebox.js"></script>
+<!--@author-bylu 搜索过滤 start-->
+<script type="text/javascript">
+	$('.f-types a').on('click',function(){
+		var index=location.href.indexOf('&type');
+		if(index == -1)
+			var url = location.href;
+		else
+			var url = location.href.substr(0,index);
+
+		location.href=url+'&type='+$(this).attr('data')
+
+	});
+</script>
+<!--@author-bylu end-->
+</body>
+</html>

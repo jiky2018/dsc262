@@ -1,0 +1,169 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$lang.promotion} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content_common}</li>
+                    <li>{$lang.operation_prompt_content.info.0}</li>
+                    <li>{$lang.operation_prompt_content.info.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+						<form action="seckill.php?act={$form_act}" id="myForm" method="post" name="theForm" enctype="multipart/form-data">
+                            <div class="switch_info">
+                                 <div class="items">
+                                    <div class="item">
+                                        <div class="label">{$lang.require_field}{$lang.acti_title}：</div>
+                                        <div class="label_value">
+                                        	<input type="text" name="acti_title" id="acti_title" class="text" value="{$sec.acti_title}" autocomplete="off" />
+											<div class="notic"></div>
+                                            <div class="form_prompt"></div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.require_field}{$lang.start_end_time}：</div>
+                                        <div class="label_value text_time">
+                                        	<input type="text" name="begin_time" value="{$sec.begin_time}" id="start_time" class="text mr0" autocomplete="off" readonly />
+                                            <span class="bolang">&nbsp;&nbsp;~&nbsp;&nbsp;</span>
+                                        	<input type="text" name="acti_time" value="{$sec.acti_time}" id="end_time" class="text" autocomplete="off" readonly />
+											<div class="form_prompt"></div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.is_putaway}：</div>
+                                        <div class="label_value">
+											<div class="checkbox_items">
+												<div class="checkbox_item"> 
+													<input name="is_putaway" type="radio" class="ui-radio" value="0" id="is_putaway_0"{if $sec.is_putaway eq 0}checked="checked"{/if} />
+													<label for="is_putaway_0" class="ui-radio-label">{$lang.not_on_sale}</label>
+												</div>
+												<div class="checkbox_item"> 
+													<input name="is_putaway" type="radio" class="ui-radio" value="1" id="is_putaway_1" {if $sec.is_putaway || $sec.is_putaway eq ''}checked="checked"{/if} />
+													<label for="is_putaway_1" class="ui-radio-label">{$lang.on_sale}</label>
+												</div>
+											</div>
+                                        </div>
+                                    </div>
+                                    {if $form_act eq 'update' && $sec.ru_id neq 0}
+                                    <div class="item">
+                                        <div class="label">{$lang.adopt_status}：</div>
+                                        <div class="label_value">
+											<div class="checkbox_items" ectype="general_audit_status">
+												<div class="checkbox_item"> 
+													<input name="review_status" type="radio" class="ui-radio" value="1" id="review_status_1" {if $sec.review_status eq 1}checked="checked"{/if} />
+													<label for="review_status_1" class="ui-radio-label">{$lang.not_audited}</label>
+												</div>
+												<div class="checkbox_item"> 
+													<input name="review_status" type="radio" class="ui-radio" value="2" id="review_status_2" {if $sec.review_status eq 2}checked="checked"{/if} />
+													<label for="review_status_2" class="ui-radio-label">{$lang.audited_not_adopt}</label>
+												</div>
+                                                <div class="checkbox_item"> 
+													<input name="review_status" type="radio" class="ui-radio" value="3" id="review_status_3" {if $sec.review_status eq 3}checked="checked"{/if} />
+													<label for="review_status_3" class="ui-radio-label">{$lang.audited_yes_adopt}</label>
+												</div>
+											</div>
+                                        </div>
+                                    </div>
+                                    {/if}                                    
+                                    <div class="item">
+                                        <div class="label">&nbsp;</div>
+                                        <div class="label_value info_btn">
+											<input type="submit" value="{$lang.button_submit}" class="button" id="submitBtn" />
+											<input type="hidden" name="act" value="{$form_act}" />
+											<input type="hidden" name="sec_id" value="{$sec.sec_id}" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+	$(function(){
+		//表单验证
+		$("#submitBtn").click(function(){
+			if($("#myForm").valid()){
+				$("#myForm").submit();
+			}
+		});
+	
+		$('#myForm').validate({
+			errorPlacement:function(error, element){
+				var error_div = element.parents('div.label_value').find('div.form_prompt');
+				element.parents('div.label_value').find(".notic").hide();
+				error_div.append(error);
+			},
+			rules:{
+				acti_title :{
+					required : true
+				},
+				begin_time :{
+					required : true
+				},
+				acti_time :{
+					required : true,
+					compareDate:"#start_time"
+				}
+			},
+			messages:{
+				acti_title:{
+					 required : '<i class="icon icon-exclamation-sign"></i>'+acti_title_not_null
+				},
+				begin_time :{
+					required : '<i class="icon icon-exclamation-sign"></i>'+start_data_notnull
+				},
+				acti_time :{
+					required : '<i class="icon icon-exclamation-sign"></i>'+end_data_notnull,
+					compareDate:'<i class="icon icon-exclamation-sign"></i>'+data_invalid_gt
+				}
+			},
+			onfocusout:function(element,event){
+				//实时去除结束时间是否大于开始时间验证
+				var name = $(element).attr("name");
+				if(name == "acti_time"){
+					var endDate = $(element).val();
+					var startDate = $(element).siblings("input[name='begin_time']").val();
+					
+					var date1 = new Date(Date.parse(startDate.replace(/-/g, "/")));
+					var date2 = new Date(Date.parse(endDate.replace(/-/g, "/")));
+					if(date1 > date2){
+						$(element).removeClass("error");
+						$(element).siblings(".form_prompt").html("");
+					}
+				}
+			}
+		});
+	});
+
+	//时间选择
+	var opts1 = {
+		'targetId':'start_time',
+		'triggerId':['start_time'],
+		'alignId':'start_time',
+		'hms':'off',
+		'format':'-'
+	}
+	var opts2 = {
+		'targetId':'end_time',
+		'triggerId':['end_time'],
+		'alignId':'end_time',
+		'hms':'off',
+		'format':'-'
+	}
+	xvDate(opts1);
+	xvDate(opts2);
+    </script>
+</body>
+</html>

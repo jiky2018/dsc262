@@ -1,0 +1,196 @@
+{include file="page_header"}
+
+<body>
+<div class="con mb-7">
+
+    <!--{foreach $test as $v}-->
+         <!--{$v}-->
+    <!--{/foreach}-->
+        <section class="search box banner-search who-search ts-3">
+            <div class="text-all position-rel dis-box j-text-all">
+                <div class="search-logo wholesale-logo-search">
+                    <div class="box-flex">
+                        <i class="iconfont icon-caidan j-wholesale-cate"></i>
+                    </div>
+                </div>
+
+                <div class="box-flex input-text   wholesale-input-text">
+                    <form name="search" action="{url('search')}" method="post">
+                    <div class="j-input-text nav-soso"><i class="iconfont icon-sousuo"></i><input class="j-input-text" type="text" name="keywords"  placeholder="批发搜索"></div>
+                    </form>
+                </div>
+            </div>
+        </section>
+  
+    <section class="index-who-box">   
+        {if $banners} 
+        <div class="index-banner swiper-container box position-rel banner-first">
+            <div class="swiper-wrapper">
+             {foreach $banners as $banner}
+            <div class="swiper-slide">
+                <img src="{$banner}" />
+            </div>
+            {/foreach}
+            </div>
+            <!-- 分页器 -->
+            <div class="swiper-pagination banner-first-pagination" style="bottom:0"></div>
+        </div>
+        {/if}
+         <!--分类列表-->
+        <div class="who-cate-section">
+            <div class="wholesale-cate-list j-city-right">
+                    <div class="select-two who-select-two j-get-city-one">
+                    {foreach $wholesale_cat as $cat}
+                        {if $cat.cat_id}
+                        <a class="select-title padding-all p-r j-menu-select">
+                            <label class="fl"> <i class="iconfont icon-{$cat.style_icon}  who-icon"></i>{$cat.name}</label>
+                            <span class="fr t-jiantou j-t-jiantou" id="j-t-jiantou"><i class="iconfont icon-jiantou tf-180 ts-2"></i></span>          
+                        </a>
+                        {else}
+                        <a class="select-title padding-all p-r" href="{$cat.url}">
+                            <label class="fl"> <i class="iconfont icon-{$cat.style_icon}  who-icon"></i>{$cat.name}</label>       
+                        </a>
+                        {/if}
+                        <ul class="padding-all j-sub-menu">
+                             {foreach $cat.cat_id as $c}
+                                <a class="ect-select" href="{$cat.url}">
+                                        <label class="ts-1">{$c.name}</label>
+                                </a>
+                            {/foreach}
+                        </ul>
+                    {/foreach}    
+                    </div>
+               <div class="cate-who-close"><p class="f-03 col-7 text-center">关闭分类</p></div>
+            </div>
+        </div>
+    </section>
+    <!--限时采购-->
+    <div class="box padding-all b-color-f m-top08">
+        <h3 class="recom-title">限时采购</h3>
+    </div>
+    <section class="padding-all goods-shop no-shopping-title b-color-f">
+        <div class="goods-shop-pic of-hidden">
+
+            <div class="g-s-p-con product-one-list who-product-one-list of-hidden  j-g-s-p-con swiper-container-horizontal" style="cursor: -webkit-grab;">
+                <div class="swiper-wrapper">
+                    {foreach $wholesale_limit as $v}
+                    <li class="swiper-slide swiper-slide-active">
+                        <div class="product-div">
+                            <a class="product-div-link" href="{$v.url}"></a>
+                            <img class="product-list-img" src="{$v.goods_thumb}">
+                            <div class="product-text m-top06 index-product-text">
+                                <h4>{$v.goods_name}</h4>
+                                {if $v.goods_price eq 0}
+                                <p><span class="p-price "><em class=" t-first">{$v.volume_price}</em><em class="f-01 col-9">/{$v.goods_unit}</em></span></p>
+                                <div class="dis-box f-01 col-9"><span class="box-flex">起批量:<em class="color-red">{$v.volume_number}{$v.goods_unit}</em></span></div>
+                                {/if}
+                                {if $v.small_time > 86400}
+                                <div class="dis-box f-01 col-9"><span class="box-flex">剩余时间:200天</span></div>
+                                {else}
+                                <div class="dis-box f-01 col-9"><span class="box-flex">剩余时间:200天</span></div>
+                                {/if}
+                            </div>
+                        </div>
+                    </li>
+                    {/foreach}
+                </div>
+            </div>
+        </div>
+    </section>
+    {foreach $get_wholesale_cat as $v}
+    {if $v.count_goods neq 0}
+    <section class="who_list m-top08">
+        <a href="{$v.cat_url}">
+            <div class="box padding-all b-color-f">
+                <h3 class="recom-title">
+                    {$v.cat_name}
+                    <span class="t-jiantou t-remark fr">更多批发<i class="iconfont icon-more"></i></span>
+                </h3>
+            </div>
+        </a>
+        <div class="product-list j-product-list product-list-medium" data="1">
+            <ul>
+                {foreach $v.goods as $vgoods}
+                <li>
+                    <div class="product-div">
+                        <a class="product-div-link" href="{$vgoods.url}"></a>
+                        <img class="product-list-img" src="{$vgoods.goods_thumb}" />
+                        <div class="product-text index-product-text">
+                            <h4>{$vgoods.goods_name}</h4>
+                            {if $vgoods.goods_price eq 0}
+                            <p><span class="p-price"><em class=" t-first ">{$vgoods.volume_price}</em><em class="f-02 col-7">/{$goods.goods_unit}</em></span></p>
+                            {else}
+                            <p><span class="p-price"><em class=" t-first ">{$vgoods.goods_price}</em><em class="f-02 col-7">/{$goods.goods_unit}</em></span></p>
+                            {/if}
+                            <div class="dis-box f-02 col-9">
+                                {if $vgoods.goods_price eq 0}
+                                <span class="box-flex">起批量:<em class="color-red">{$vgoods.volume_number}</em></span>
+                                {else}
+                                <span class="box-flex">起批量:<em class="color-red">{$vgoods.moq}</em></span>
+                                {/if}
+                                <span class="box-flex text-right">成交量:{$vgoods.goods_sale|default=0}</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </li>
+                {/foreach}
+            </ul>
+        </div>
+    </section>
+    {/if}
+    {/foreach}
+
+</div>
+{include file="purchase_menu"}
+<!--快捷导航-->
+{include file="no_search_nav"}
+    <li>
+        <a href="{url('purchase/index/index')}">
+            <i class="iconfont icon-btn_pljj"></i>
+            <p>批发首页</p>
+        </a>
+    </li>
+{include file="float_nav_footer"}
+<script type="text/javascript ">
+    $(function($) {
+        var who_search =$(".who-search").outerHeight();
+        $(".index-who-box").css("margin-top", who_search);
+        $(".wholesale-cate-list").css("top",who_search)
+        var wholesale_cate_list = $(".wholesale-cate-list").outerHeight(true);
+        $(".wholesale-cate-box").css("height", wholesale_cate_list);
+        $(".j-wholesale-cate").click(function(){
+            $(".wholesale-cate-list").toggleClass("active")
+        })
+        $(".cate-who-close").click(function(){
+            $(".wholesale-cate-list").removeClass("active")
+        })
+        $(".mask-filter-div,.wholesale-cate-list li").click(function(){
+            $(".wholesale-cate-list").removeClass("active")
+            $(".mask-filter-div").removeClass("show")
+        })
+        var mySwiper = new Swiper('.banner-first', {
+            pagination: '.banner-first-pagination',
+        });
+        // 搜索
+        $('input[name=keywords]').siblings('i').click(function () {
+            let keywords = $(this).next('input').val();
+            if (keywords == '') {
+                d_messages('请输入关键字');
+                return false;
+            }
+            //
+            $('form[name=search]').submit();
+        });
+    });
+    /*商品滚动*/
+    var swiper = new Swiper('.j-g-s-p-con', {
+        scrollbarHide: true,
+        slidesPerView: 'auto',
+        centeredSlides: false,
+        grabCursor: true
+    });
+</script>
+</body>
+
+</html>

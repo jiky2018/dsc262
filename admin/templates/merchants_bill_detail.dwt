@@ -1,0 +1,201 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back"></a>{$lang.seller} - {$ur_here}</div>
+        <div class="content">
+        	{include file="library/commission_tab.lbi"}
+            <div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.detail.0}</li>
+                    <li>{$lang.operation_prompt_content.detail.1}</li>
+                    <li class="red">{$lang.operation_prompt_content.detail.2}</li>
+                    <li class="red">{$lang.operation_prompt_content.detail.3}</li>
+                    <li class="red">{$lang.operation_prompt_content.detail.4}</li>
+                   	<li class="red">{$lang.operation_prompt_content.detail.5}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<div class="common-head">
+                	{if $bill}
+                	<div class="fl ml0">
+                    	<span class="mr10">{$lang.bill_commission_model}：<em class="org">{if $filter.commission_model eq 1}{$lang.cata_commission_rate}{else}{$lang.shop_commission_rate}{/if}</em></span>
+                    	<span class="mr10">{$lang.bill_number}：<em class="org">{$bill.bill_sn}</em></span>
+                        <span>{$lang.bill_time}：<em class="org">{$bill.format_start_time} ～ {$bill.format_end_time}</em></span>
+                    </div>
+                    {/if}
+                	<div class="search mr0">
+                        <input type="text" name="keywords" value="{$filter.keywords}" class="text nofocus w180" placeholder="{$lang.order_sn}" autocomplete="off">
+                        <input type="submit" value="{$lang.search_word}" class="btn btn30 blue_btn_2" />
+                    </div>
+                </div>
+                
+                <div class="common-content">
+                	<div class="list-div"  id="listDiv" >
+						{/if}
+						<form method="post" action="" name="listForm" onsubmit="return confirm('{$lang.batch_confirm_settlement}');">
+                    	<table cellpadding="1" cellspacing="1">
+                        	<thead>
+                            	<tr>
+                                	<th width="3%" class="sign">
+                                        <div class="tDiv">
+                                        	<input type="checkbox" name="all_list" class="checkbox" id="all_list" />
+                                        	<label for="all_list" class="checkbox_stars"></label>
+                                        </div>
+                                    </th>
+                                    <th><div class="tDiv">{$lang.order_sn}</div></th>
+                                    <th><div class="tDiv">{$lang.total_fee}</div></th>
+                                    <th><div class="tDiv">{$lang.effective_settlement_amount}</div></th>
+                                    <th><div class="tDiv">{$lang.freight_money}</div></th>
+                                    <th><div class="tDiv">{$lang.back_money}</div></th>
+                                    {if $is_dir}
+                                    <th><div class="tDiv">{$lang.drp_money}</div></th>
+                                    {/if}
+                                    {if $filter.commission_model neq 1}
+                                    <th><div class="tDiv">{$lang.proportion}</div></th>
+                                    {/if}
+                                    <th><div class="tDiv">{$lang.receive_commissions}</div></th>
+                                    {if $filter.commission_model neq 1}
+                                    <th><div class="tDiv">{$lang.proportions}</div></th>
+                                    {/if}
+                                    <th><div class="tDiv">{$lang.period_checkout}</div></th>
+                                    <th><div class="tDiv tc">{$lang.all_status}</div></th>
+                                    <th width="12%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+								{foreach from=$bill_list item=bill name=noorder}
+								<tr>
+                                    <td class="sign">
+                                        <div class="tDiv">
+                                            <input type="checkbox" name="checkboxes[]" value="{$bill.id}" class="checkbox" id="checkbox_{$bill.id}" />
+                                            <label for="checkbox_{$bill.id}" class="checkbox_stars"></label>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="tDiv">
+                                        	<p>{$bill.order_sn}</p>
+                                            {if $bill.is_settlement}<p class="red">【{if $bill.chargeoff_before eq 1}{$lang.chargeoff_front}：{elseif $bill.chargeoff_before eq 2}{$lang.chargeoff_after}：{/if}{$lang.manual_settlement}】</p>{/if}
+                                        </div>
+                                    </td>
+                                    <td><div class="tDiv">{$bill.format_order_amount}<br/><em class="org2">({$lang.freight_charges})</em></div></td>
+                                    <td>
+                                        <div class="tDiv">
+                                            {if $bill.goods_rate && $bill.should_amount > 0}
+                                            	{if $bill.commission_total_fee neq 0}
+                                                <p class="red">{$bill.format_commission_total_fee}【{$lang.edit_order}】</p>
+                                                {/if}
+                                                <p class="red">{$bill.goods_rate.format_total_fee}【{$lang.goods_alt}】</p>
+                                                <p><em class="org2">({$lang.freight_charges_not})</em></p>
+                                            {else}
+                                                {$bill.format_commission_total_fee}<br/>
+                                                <em class="org2">({$lang.freight_charges_not})</em>
+                                            {/if}
+                                        </div>
+                                    </td>
+                                    <td><div class="tDiv">{$bill.format_shipping_fee}</div></td>
+                                    <td><div class="tDiv">{$bill.format_return_amount}</div></td>
+                                    {if $is_dir}
+                                    <td><div class="tDiv">{$bill.format_drp_money}</div></td>
+                                    {/if}
+                                    {if $filter.commission_model neq 1}
+                                    <td>
+                                    	<div class="tDiv">
+                                        	{if $bill.is_goods_rate eq 1}<em class="red">【{$lang.goods_alt}】</em>{else}{$bill.gain_proportion}%{/if}
+                                        </div>
+                                    </td>
+                                    {/if}
+                                    <td>
+                                    	<div class="tDiv">
+                                            {if $bill.goods_rate && $bill.gain_commission > 0}
+                                            	<p class="red"> + {$bill.gain_commission}【{$lang.edit_order}】</p>
+                                                <p class="red"> + {$bill.goods_rate.gain_commission}【{$lang.goods_alt}】</p>
+                                            {/if}
+                                            <p>
+                                                {if $bill.goods_rate && $bill.gain_commission > 0}={/if}{$bill.format_gain_commission}
+                                                <br/>
+                                                <em class="org2">({$lang.freight_charges_not})</em>
+                                            </p>
+                                        </div>
+                                    </td>
+                                    {if $filter.commission_model neq 1}
+                                    <td>
+                                    	<div class="tDiv">
+                                        	<p>
+                                        	{if $bill.is_goods_rate eq 1}
+                                            	<em class="red">【{$lang.goods_alt}】</em>
+                                            {else}
+                                        		{$bill.should_proportion}%
+                                            {/if}
+                                            </p>
+                                        </div>
+                                    </td>
+                                    {/if}
+                                    <td>
+                                    	<div class="tDiv">
+                                            {if $bill.goods_rate && $bill.should_amount > 0}
+                                                <p class="red"> + {$bill.should_amount}【{$lang.edit_order}】</p>
+                                                <p class="red"> + {$bill.goods_rate.should_amount}【{$lang.goods_alt}】</p>
+                                            {/if}
+                                            <p>
+                                                {if $bill.goods_rate && $bill.should_amount > 0}={/if}{$bill.format_should_amount}
+                                                <br/>
+                                                <em class="org2">({$lang.freight_charges})</em>
+                                            </p>
+                                        </div>
+                                    </td>
+                                    <td>
+                                    	<div class="tDiv tc">
+                                        	{$lang.os[$bill.order_status]}<br />{$lang.ps[$bill.pay_status]}<br />{$lang.ss[$bill.shipping_status]}
+                                        </div>
+                                    </td>
+                                    <td class="handle">
+                                        <div class="tDiv a2">
+                                            <a href="merchants_commission.php?act=bill_goods&order_id={$bill.order_id}&seller_id={$filter.seller_id}&commission_model={$filter.commission_model}" class="btn_see"><i class="sc_icon sc_icon_see"></i>{$lang.order_detailed}</a>	
+                                        </div>
+                                    </td>
+								</tr>
+								{foreachelse}
+								<tr><td class="no-records" colspan="16">{$lang.no_records}</td></tr>
+								{/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="16">
+                                        <div class="tDiv">
+                                            <div class="tfoot_btninfo">
+                                                &nbsp;
+                                            </div>
+                                            <div class="list-page">
+                                                {include file="library/page.lbi"}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+						</form>
+						{if $full_page}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+	//分页传值
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+	listTable.query = "bill_detail_query";
+
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+    </script>
+</body>
+</html>
+{/if}

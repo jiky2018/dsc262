@@ -1,0 +1,140 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$lang.08_members} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content_common}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+                        <form action="user_rank.php" method="post" name="theForm" id="user_rank_form"> 
+                        	<div class="switch_info">
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}&nbsp;{$lang.rank_name}：</div>
+                                    <div class="label_value">
+                                        <input type="text" name="rank_name" value="{$rank.rank_name}" class="text" id="rank_name" autocomplete="off" />
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}&nbsp;{$lang.integral_min}：</div>
+                                    <div class="label_value">
+                                        <div class="lie">
+                                            <input type="text" name="min_points" value="{$rank.min_points}" class="text text_2" {if $rank.special_rank}disabled{/if} id="min_points" autocomplete="off" />
+                                            <div class="label_label">{$lang.require_field}&nbsp;{$lang.integral_max}：</div>
+                                            <input type="text" name="max_points" value="{$rank.max_points}" class="text text_2" {if $rank.special_rank}disabled{/if} id="max_points" autocomplete="off" />
+                                            <div class="form_prompt"></div>
+                                        </div>
+                                        <div class="lie mt15">
+                                            <input type="checkbox" class="ui-checkbox" value='1' name="show_price" {if $rank.show_price eq 1}checked{/if}  id="checkbox_001"/>
+                                            <label for="checkbox_001" class="ui-label">{$lang.show_price}</label>
+                                        </div>
+                                        <div class="lie mt5">
+                                            <input type="checkbox" class="ui-checkbox" value='1' name="special_rank" {if $rank.special_rank eq 1}checked{/if}  id="checkbox_002" />
+                                            <label for="checkbox_002" class="ui-label">{$lang.special_rank}<em class="require-field">{$lang.notice_special}</em></label>
+                                        </div>
+                                    </div>
+                                </div>
+                               <div class="item">
+                                    <div class="label">{$lang.require_field}&nbsp;{$lang.discount}：</div>
+                                    <div class="label_value">
+                                        <input type="text" name="discount" value="{$rank.discount}" class="text" id="discount" autocomplete="off" />
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="label_value info_btn">
+                                        <a href="javascript:;" class="button" id="submitBtn">{$lang.button_submit}</a>
+                                        <input type="hidden" name="act" value="{$form_action}" />
+                                        <input type="hidden" name="id" value="{$rank.rank_id}" />
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+    </div>
+ {include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+		//列表导航栏设置下路选项
+    	$(".ps-container").perfectScrollbar();
+
+		$("#checkbox_002").click(function(){
+			if($("#checkbox_002").is(":checked")==true){
+				$("#min_points").attr("disabled","disabled");
+				$("#max_points").attr("disabled","disabled");
+			}else{
+				$("#min_points").removeAttr("disabled");
+				$("#max_points").removeAttr("disabled");
+			}
+		})
+
+		$(function(){
+			$("#submitBtn").click(function(){
+				var minval = Number($.trim($("#min_points").val()));
+				var maxval = Number($.trim($("#max_points").val()));
+				
+				if($("#user_rank_form").valid()){
+					if(minval > maxval){
+						alert(integral_max_small);
+					}else{
+						$("#user_rank_form").submit();
+					}
+				}
+			});
+		
+			$('#user_rank_form').validate({
+				errorPlacement:function(error, element){
+					var error_div = element.parents('div.label_value').find('div.form_prompt');
+					element.parents('div.label_value').find(".notic").hide();
+					error_div.append(error);
+				},
+				rules : {
+					rank_name : {
+						required : true
+					},
+					discount : {
+						required : true,
+						min : 0,
+						max : 100
+					},
+					min_points : {
+						digits : true
+					},
+					max_points : {
+						digits : true
+					}
+						
+				},
+				messages : {
+					rank_name : {
+						required : '<i class="icon icon-exclamation-sign"></i>'+rank_name_empty
+					},
+					discount : {
+						required : '<i class="icon icon-exclamation-sign"></i>'+discount_invalid,
+						min : '<i class="icon icon-exclamation-sign"></i>'+discount_invalid,
+						max : '<i class="icon icon-exclamation-sign"></i>'+discount_invalid
+					},
+					min_points : {
+						digits : '<i class="icon icon-exclamation-sign"></i>'+integral_min_invalid
+					},
+					max_points : {
+						digits : '<i class="icon icon-exclamation-sign"></i>'+integral_max_invalid
+					}
+				}
+			});
+		});
+	</script>     
+</body>
+</html>

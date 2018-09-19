@@ -1,0 +1,322 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.seller} - {$ur_here}</div>
+        <div class="content">
+        	{include file ='library/seller_tab.lbi'}
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.list.0}</li>
+                    <li>{$lang.operation_prompt_content.list.1}</li>
+                    <li>{$lang.operation_prompt_content.list.2}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<div class="common-head">
+                    <div class="search">
+                    	<form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+                        <div class="input">
+                            <input type="text" name="user_name" class="text nofocus" placeholder="{$lang.user_name}" autocomplete="off" />
+                            <input type="submit" value="" class="not_btn" />
+                        </div>
+                        </form>
+                    </div>
+					<div class="fl">
+						<a href="{$action_link.href}"><div class="fbutton"><div class="add" title="{$action_link.text}"><span><i class="icon icon-plus"></i>{$action_link.text}</span></div></div></a>
+                        <a href="{$action_link2.href}"><div class="fbutton"><div class="add" title="{$action_link.text}"><span><i class="icon icon-plus"></i>{$action_link2.text}</span></div></div></a>
+						<a href="javascript:noCheck(1)"><div class="fbutton"><div class="add" title="{$action_link.text}"><span><i class="icon icon-search"></i>{$lang.settled_unchecked}({$shop_account|default:0})</span></div></div></a>
+						<a href="javascript:noCheck(2)"><div class="fbutton"><div class="add" title="{$action_link.text}"><span><i class="icon icon-search"></i>{$lang.store_info_unchecked}({$shopinfo_account|default:0})</span></div></div></a>
+					</div>
+                </div>
+                <div class="common-content">
+                	<div class="list-div" id="listDiv">
+						{/if}
+						<form method="POST" action="" name="listForm" onsubmit="return confirm_bath()">
+						<input type="hidden" name="shop_num" value="{$shop_num}" />
+                    	<table cellpadding="1" cellspacing="1">
+                        	<thead>
+                            	<tr>
+                                    <th width="3%"><div class="tDiv">{$lang.record_id}</div></th>
+									<th width="10%"><div class="tDiv">【{$lang.user_id}】{$lang.steps_user_name}</div></th>
+                                    <th width="12%"><div class="tDiv">{$lang.steps_shop_name}</div></th>
+                                    <th width="8%"><div class="tDiv">{$lang.company_type}</div></th>
+                                    <th width="5%"><div class="tDiv">{$lang.seller_rank}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.steps_main_categories}</div></th>
+                                    <th width="8%"><div class="tDiv">{$lang.audit_status}</div></th>
+                                    <th width="5%"><div class="tDiv">{$lang.sort_order}</div></th>
+                                    <th width="5%"><div class="tDiv">{$lang.is_street}</div></th>
+									<th width="5%"><div class="tDiv">{$lang.im_service}</div></th>
+                                    <th width="5%"><div class="tDiv">{$lang.merchants_info}</div></th>
+									<th width="14%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+							    {foreach from=$users_list item=users}
+								
+								<tr>
+                                    <td><div class="tDiv">{$users.shop_id}</div></td>
+                                    <td><div class="tDiv">【{$users.user_id}】{$users.user_name}</div></td>
+                                    <td class="red"><div class="tDiv">{$users.rz_shopName}{if $users.self_run}（{$lang.self_run}）{/if}</div></td>
+                                    <td><div class="tDiv">{if $users.company_type}{$users.company_type}{else}（{$lang.kong}）{/if}</div></td>
+                                    <td>
+                                        <div class="tDiv">{if $users.grade_img}<img src="../{$users.grade_img}" width="20" height="20">{else}{$lang.wu}{/if}
+                                        </div>
+                                    </td>
+                                    
+                                    <td><div class="tDiv">{$users.cat_name}</div></td>
+                                    <td>
+                                    	<div class="tDiv">
+                                        {if $users.steps_audit eq 1}
+                                            <span class="blue">
+                                            {if $users.merchants_audit eq 0}
+                                            {$lang.not_audited}
+                                            {elseif $users.merchants_audit eq 1}
+                                            {$lang.audited_yes_adopt}
+                                            {elseif $users.merchants_audit eq 2}
+                                            {$lang.audited_not_adopt}
+                                            {/if}
+                                            </span>
+                                        {else}
+                                            <span class="org">{$lang.not_yet_info}</span>
+                                        {/if}
+                                        </div> 
+                                    </td>
+                                    <td>
+									<div class="tDiv"><input type="text" name="sort_order" class="text w40" value="{$users.sort_order}" onkeyup="listTable.editInput(this, 'edit_sort_order', {$users.shop_id})"/></div>
+									</td>
+                                    <td>
+                                        <div class="tDiv">
+                                            <div class="switch mauto {if $users.is_street}active{/if}" onclick="listTable.switchBt(this, 'toggle_is_street', {$users.shop_id})" title="{$lang.yes}">
+                                                <div class="circle"></div>
+                                            </div>
+                                            <input type="hidden" value="" name="is_street">
+                                        </div>
+                                    </td>  
+                                    <td>
+                                        <div class="tDiv">
+                                            <div class="switch mauto {if $users.is_IM}active{/if}" onclick="listTable.switchBt(this, 'toggle_is_IM', {$users.shop_id})" title="{$lang.yes}">
+                                                <div class="circle"></div>
+                                            </div>
+                                            <input type="hidden" value="" name="is_IM">
+                                        </div>
+                                    </td> 
+                                    <td>
+                                        <div class="tDiv">
+                                            {$users.review_status}
+                                        </div>
+                                    </td> 
+                                    <td class="handle">
+                                        <div class="tDiv handle_tDiv ht_tdiv_w120">
+											<p>
+                                            	<a href="merchants_users_list.php?act=seller_shopinfo&id={$users.user_id}" title="{$lang.17_merchants}" class="btn_region"><i class="icon icon-cog"></i>{$lang.17_merchants}</a>
+                                            	<a href="merchants_users_list.php?act=edit_shop&id={$users.user_id}" title="{$lang.edit}" class="btn_edit"><i class="icon icon-edit"></i>{$lang.settled_info}</a>
+                                            </p>
+                                            <p>
+                                            	<a href="merchants_users_list.php?act=copy_shop&id={$users.user_id}" title="{$lang.copy}" class="btn_edit"><i class="icon icon-copy"></i>{$lang.copy}</a>
+                                            	<a href="javascript:confirm_redirect('{$lang.remove_confirm_user}', 'merchants_users_list.php?act=remove&id={$users.user_id}')" title="{$lang.remove}" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>	
+                                            </p>
+                                        </div>
+                                    </td>
+								</tr>
+								{foreachelse}
+								<tr><td class="no-records" colspan="13">{$lang.no_records}</td></tr>
+								{/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="13">
+                                    	<div class="list-page">
+                                            {include file="library/page.lbi"}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </form>
+                    {if $full_page}
+                    </div>
+                </div>
+            </div>
+            <div class="gj_search">
+                <div class="search-gao-list" id="searchBarOpen">
+                    <i class="icon icon-zoom-in"></i>{$lang.advanced_search}
+                </div>
+                <div class="search-gao-bar">
+                    <div class="handle-btn" id="searchBarClose"><i class="icon icon-zoom-out"></i>{$lang.pack_up}</div>
+                    <div class="title"><h3>{$lang.advanced_search}</h3></div>
+                    <form method="get" name="formSearch_senior" action="javascript:searchUser()">
+                        <div class="searchContent">
+                            <div class="layout-box">
+                                <dl>
+                                    <dt>{$lang.user_name}</dt>
+                                    <dd><input type="text" value="" name="user_name" class="s-input-txt" autocomplete="off" /></dd>
+                                </dl>
+                                <dl>
+                                    <dt>{$lang.steps_shop_name}</dt>
+                                    <dd>
+                                        <div id="shop_name_select" class="select_w145 imitate_select">
+                                            <div class="cite">{$lang.please_select}</div>
+                                            <ul>
+                                               <li><a href="javascript:;" data-value="0">{$lang.select_please}</a></li>
+                                               <li><a href="javascript:;" data-value="1">{$lang.s_shop_name}</a></li>
+                                               <li><a href="javascript:;" data-value="2">{$lang.s_qw_shop_name}</a></li>
+                                               <li><a href="javascript:;" data-value="3">{$lang.s_brand_type}</a></li>
+                                            </ul>
+                                            <input name="store_search" type="hidden" value="0" id="shop_name_val">
+                                        </div>
+                                    </dd>
+                                </dl>
+                                <dl style="display:none" id="merchant_box">
+                                    <dd>
+                                        <div class="select_w145 imitate_select">
+                                            <div class="cite">{$lang.please_select}</div>
+                                            <ul>
+                                               <li><a href="javascript:;" data-value="0">{$lang.please_select}</a></li>
+                                               {foreach from=$store_list item=store}
+                                               <li><a href="javascript:;" data-value="{$store.ru_id}">{$store.store_name}</a></li>
+                                               {/foreach}
+                                            </ul>
+                                            <input name="merchant_id" type="hidden" value="0" >
+                                        </div>
+                                    </dd>
+                                </dl>
+                                
+                                <dl id="store_keyword" style="display:none" >
+                                    <dd><input type="text" value="" name="store_keyword" class="s-input-txt" autocomplete="off" /></dd>
+                                </dl>
+                                <dl style="display:none" id="store_type">
+                                    <dd>
+                                        <div class="select_w145 imitate_select">
+                                            <div class="cite">{$lang.please_select}</div>
+                                            <ul>
+                                               <li><a href="javascript:;" data-value="0">{$lang.steps_shop_type}</a></li>
+                                               <li><a href="javascript:;" data-value="{$lang.flagship_store}">{$lang.flagship_store}</a></li>
+                                               <li><a href="javascript:;" data-value="{$lang.exclusive_shop}">{$lang.exclusive_shop}</a></li>
+                                               <li><a href="javascript:;" data-value="{$lang.franchised_store}">{$lang.franchised_store}</a></li>
+                                               <li><a href="javascript:;" data-value="{$lang.shop_store}">{$lang.shop_store}</a></li>
+                                            </ul>
+                                            <input name="store_type" type="hidden" value="0" >
+                                        </div>
+                                    </dd>
+                                </dl>
+                                <dl>
+                                	<dt>{$lang.audit_status}</dt>
+                                    <dd>
+                                        <div id="check_type" class="select_w145 imitate_select">
+                                            <div class="cite">{$lang.please_select}</div>
+                                            <ul>
+                                               <li><a href="javascript:;" data-value="0">{$lang.select_please}</a></li>
+                                               <li><a href="javascript:;" data-value="1">{$lang.not_audited}</a></li>
+                                               <li><a href="javascript:;" data-value="2">{$lang.have_audited}</a></li>
+                                               <li><a href="javascript:;" data-value="3">{$lang.audited_not_adopt}</a></li>
+                                            </ul>
+                                            <input name="check" type="hidden" value="0" >
+                                        </div>
+                                    </dd>
+                                </dl>
+								<dl>
+                                	<dt>{$lang.store_audit_status}</dt>
+                                    <dd>
+                                        <div id="check_type" class="select_w145 imitate_select">
+                                            <div class="cite">{$lang.please_select}</div>
+                                            <ul>
+                                               <li><a href="javascript:;" data-value="0">{$lang.select_please}</a></li>
+                                               <li><a href="javascript:;" data-value="1">{$lang.not_audited}</a></li>
+                                               <li><a href="javascript:;" data-value="3">{$lang.have_audited}</a></li>
+                                               <li><a href="javascript:;" data-value="2">{$lang.audited_not_adopt}</a></li>
+                                            </ul>
+                                            <input name="shopinfo_check" type="hidden" value="0" >
+                                        </div>
+                                    </dd>
+                                </dl>
+                                <dl class="bot_btn">
+                                    <dd>
+                                       <input type="submit" class="btn red_btn" name="tj_search" value="{$lang.button_inquire}" /><input type="reset" class="btn btn_reset" name="reset" value="{$lang.button_reset_alt}" />
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript"> 
+        //分页传值
+        listTable.recordCount = {$record_count|default:0};
+        listTable.pageCount = {$page_count|default:1};
+    
+        {foreach from=$filter item=item key=key}
+        listTable.filter.{$key} = '{$item}';
+        {/foreach}
+		
+        $.gjSearch("-240px");  //高级搜索
+    
+        $.divselect("#shop_name_select","#shop_name_val",function(obj){
+            var val = obj.attr("data-value");
+            get_store_search(val);
+        });
+        function get_store_search(val){
+            if(val == 1){
+                $("#merchant_box").css("display",'');
+                $("#store_keyword").css("display",'none');
+                $("#store_type").css("display",'none')
+            }else if(val == 2){
+                $("#merchant_box").css("display",'none');
+                $("#store_keyword").css("display",'');
+                $("#store_type").css("display",'none')
+            }else if(val == 3){
+                $("#merchant_box").css("display",'none');
+                $("#store_keyword").css("display",'');
+                $("#store_type").css("display",'')
+            }else{
+                $("#merchant_box").css("display",'none');
+                $("#store_keyword").css("display",'none');
+                $("#store_type").css("display",'none')
+            }
+        }
+        
+        $(function(){
+            $('.nyroModal').nyroModal();
+        })
+        
+        /**
+         * 搜索用户
+         */
+        function searchUser()
+        {
+            var frm = $("form[name='formSearch_senior']");
+            listTable.filter['store_search'] = Utils.trim(frm.find("input[name='store_search']").val());
+            listTable.filter['merchant_id'] = Utils.trim(frm.find("input[name='merchant_id']").val());
+            listTable.filter['store_keyword'] = Utils.trim(frm.find("input[name='store_keyword']").val());
+            listTable.filter['store_type'] = Utils.trim(frm.find("input[name='store_type']").val());
+			listTable.filter['check'] = Utils.trim(frm.find("input[name='check']").val());
+			listTable.filter['shopinfo_check'] = Utils.trim(frm.find("input[name='shopinfo_check']").val());
+            listTable.filter['user_name'] = Utils.trim(($("form[name='searchForm']").find("input[name='user_name']").val() != '') ? $("form[name='searchForm']").find("input[name='user_name']").val() :  frm.find("input[name='user_name']").val());
+            listTable.filter['page'] = 1;
+            listTable.loadList();
+        }
+		
+		/**
+		*未审核状态
+		*/
+		function noCheck(type){
+			if(type == 1){
+				listTable.filter['check'] = 1;
+				listTable.filter['shopinfo_check'] = 0;	
+			}else if(type == 2){
+				listTable.filter['shopinfo_check'] = 1;	
+				listTable.filter['check'] = 0;				
+			}
+			listTable.loadList();
+		}
+    </script>
+</body>
+</html>
+{/if}

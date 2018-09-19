@@ -1,0 +1,117 @@
+{include file="page_header"}
+		<div class="con">
+			<div class="cont-pb">
+				<div class="goods-info of-hidden ect-tab b-color-f j-goods-info j-ect-tab ts-3" style="padding-top:0">
+					<div class="hd j-tab-title tab-title b-color-f of-hidden">
+						<ul class="dis-box">
+							<li class="box-flex {if $type =='limit_num'}active{/if}"><a type="limit_num">热门</li>
+							<li class="box-flex {if $type =='is_new'}active{/if}"><a type="is_new">新品</li>
+							<li class="box-flex {if $type =='is_hot'}active{/if}"><a type="is_hot">优选</li>
+						</ul>
+					</div>
+					<div id="j-tab-con" class="b-color-f m-top1px tab-con ">
+						<div class="swiper-wrapper">
+							<section class="swiper-slide">
+
+								<ul class="user-ranking-box team-goods">
+									<script id="j-product" type="text/html">
+										<%if totalPage > 0 %>
+	                        			<%each list as goods%>
+										<li class="dis-box flow-checkout-list-box b-color-f padding-all position-rel">
+											<a class="product-div-link" href="<%goods.url%>"></a>
+											<div class="flow-checkout-list-left">
+												<div class="flow-checkout-list-left-img position-rel">
+													<img class="img" src="<%goods.goods_thumb%>" />
+													<!--排行榜图-->
+													<%if goods.key%>
+													<!-- <img class="user-rank-list position-abo" src="images/icon/rank-1.png" /> -->
+													<img class="user-rank-list position-abo" src="{elixir('img/rank-<%goods.key%>.png')}" />
+													<%/if%>
+												</div>
+											</div>
+											<div class="box-flex">
+												<h4 class="f-06 col-3 onelist-hidden"><%goods.goods_name%></h4>
+												<p class="col-7 f-03 m-top02"><%goods.limit_num%>人参团</p>
+												<div class="dis-box m-top12">
+													<div class="box-flex m-top08 color-red"><%goods.team_price%></div>
+													<div class="box-flex">
+														<div class="dis-box user-ranking-btn f-05">
+															<div class="box-flex"><span class="color-red sum-btn num-btn"><%goods.team_num%>人团</span></div>
+															<div class="box-flex"><span class="b-tag color-whie cont-btn">去开团</span></div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</li>
+									 	<%/each%>
+										<% else %>
+					                    <div class="no-div-message">
+					                        <i class="iconfont icon-biaoqingleiben"></i>
+					                        <p>亲，此处没有内容～！</p>
+					                    </div>
+					                    <% /if %>
+                        			</script>
+								</ul>
+							</section>
+
+
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+		<!--footer-nav-->
+		<footer class="footer-nav dis-box">
+				<a href="{url('/')}" class="box-flex nav-list">
+					<i class="nav-box i-home"></i><span>首页</span>
+				</a>
+				<a href="{url('category/index/index')}" class="box-flex nav-list">
+					<i class="nav-box i-cate"></i><span>分类</span>
+				</a>
+				<a href="{url('team/index/index')}" class="box-flex nav-list">
+					<i class="nav-box i-pintuan"></i><span>拼团频道</span>
+				</a>
+				<a href="{url('team/index/userranking')}" class="box-flex nav-list active">
+					<i class="nav-box i-ranking"></i><span>排行</span>
+				</a>
+				<!--<a href="{url('cart/index/index')}" class="box-flex position-rel nav-list">
+					<i class="nav-box i-flow"></i><span>购物车</span>
+					<!-- <em class="position-abo ect-num-tag">10</em> 
+				</a>-->
+				<a href="{url('user/index/index')}" class="box-flex nav-list">
+					<i class="nav-box i-user"></i><span>用户中心</span>
+				</a>
+			</footer>		
+		<script>
+			/*切换*/
+			var tabsSwiper = new Swiper('#j-tab-con', {
+				speed: 100,
+				noSwiping: true,
+				autoHeight: true,
+				onSlideChangeStart: function() {
+					$(".j-tab-title .active").removeClass('active')
+					$(".j-tab-title li").eq(tabsSwiper.activeIndex).addClass('active')
+				}
+			})
+			/*店铺信息商品滚动*/
+			var swiper = new Swiper('.j-g-s-p-con', {
+				scrollbarHide: true,
+				slidesPerView: 'auto',
+				centeredSlides: false,
+				grabCursor: true
+			});
+
+
+			/*拼团排行*/
+	        var infinite = $('.team-goods').infinite({url: "{url('team/index/userranking',array('page'=>$page))}", template: 'j-product', params: 'type={$type}'});
+	        $(".j-tab-title a").click(function () {
+	            var type = $(this).attr('type');
+
+	            infinite.onload('type=' + type);
+	            $(this).parent().addClass("active").siblings().removeClass("active");
+	        })
+		</script>
+	</body>
+
+</html>

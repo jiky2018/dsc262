@@ -1,0 +1,225 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+<style>
+.history-record-box{overflow:hidden;border:1px solid #ccc;height:600px;}
+.history-record-box li{float:left;width:50%;    box-sizing: border-box;height:100%;position:relative;}
+/*.history-record-box li:last-child{border-left:1px solid #eee;}*/
+/*.history-record-box li{text-align: center;}*/
+.history-record-list-height{height:600px;overflow-y:scroll;}
+.history-record-list{overflow: hidden;border-bottom:1px solid #eee;padding:10px;}
+.history-record-list .left{float:left;width:25%;}
+.history-record-list .left img{width:100%;}
+.history-record-list .right{float:left;width:82%;}
+.history-record-list .right h4{font-size:12px;text-align: left}
+.history-record-cont{position:absolute;bottom:0;width:100%;}
+.history-record-cont .batch-operation{padding:10px;}
+.history-record-cont .batch-operation .sc-btn{height:28px;line-height: 28px;}
+.history-record-cont-box{overflow:hidden;padding:0 10px;}
+.history-record-cont-box .left,.history-record-cont-box .right{float: left;box-sizing: border-box;text-align: left}
+.history-record-cont-box .left{width:14%;}
+.history-record-cont-box .right{width:86%;}
+.history-record-cont-box .right em{font-size:14px;display: block;color: #777}
+.history-record-cont-p{font-size:14px;text-align: left;margin-top:10px;}
+
+.history-record-list.tDiv .left{width:60px;margin-right:10px}
+.activity .mr10{margin-right:8px !important;}
+.time {height: 20px;position: relative;width: 80%; margin: 0 auto;border-bottom: 1px solid #ccc;margin-bottom: 15px;text-align: center;}
+.time span {position: absolute;top: 6px; padding: 0 20px; margin-left: -90px; background: #fff;font-size: 16px;}
+.history-record-cont-box p,history-record-cont-box div{line-height:26px}
+.pagination{padding:0;}
+.pagination li {width: 24px;height: 24px;margin-left:10px;color: #7d7d7d;display: block;}
+</style>
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+     <div class="site wrapper">
+         {include file ='library/seller_menu_left.lbi'}
+         <!--客服管理-s-->
+           <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+				<div class="ecsc-path"><span>权限 - - 客服管理</span></div>
+				<div class="tabmenu">
+					<ul class="tab" id="dialog_list_ul">
+							<li class="active"><a href="javascript:;">今天</a></li>
+							<li><a href="javascript:;">最近一周</a></li>
+							<li><a href="javascript:;">最近一月</a></li>
+							<li><a href="javascript:;">全部</a></li>
+					</ul>
+				</div>
+				<ul class="history-record-box">
+					<li>
+					<div class="history-record-list-height" id='dialog_list'>
+					    {/if}
+					    {if $message_page neq 1}
+					    {foreach from=$dialog_list item=list}
+						<div class="history-record-list tDiv" cid='{$list.customer_id}' mid='{$list.id}'>
+							<div class="left"><img src="{$list.goods_thumb}"></div>
+							<p><em>{$list.user_name}</em></p>
+							<div class="right">
+								<h4>{$list.goods_name}</h4>
+							</div>
+							<p class="activity">
+                                <span class="mr10">开始时间：{$list.start_time}</span>
+                                <span class="mr10">结束时间：{$list.end_time}</span>
+                            </p>
+						</div>
+						{foreachelse}
+						<p>没有任何记录</p>
+						{/foreach}
+						{/if}
+						{if $full_page}
+					</div>
+					</li>
+					<li>
+					<div class="history-record-list-height" style="height:540px;" id="message_list">
+					    {/if}
+					    {if $message_page eq 1}
+					    <div class="time"><span>{$message_list[0].add_time}</span></div>
+					    {foreach from=$message_list item=mli}
+                            <div class="history-record-cont-box">
+                                <p {if $mli.user_type eq 1}class="green"{elseif $mli.user_type eq 2}class="blue"{/if}>{if $mli.user_type eq 1}{$dialog.nick_name}{elseif $mli.user_type eq 2}{$dialog.user_name}{/if}<span> {$mli.add_time}</span></p>
+                                <div>{$mli.message}</div>
+                                <!--<div class="left"><img src=""></div>
+                                <div class="right">
+                                    <em>{if $mli.user_type eq 1}{$dialog.nick_name}{elseif $mli.user_type eq 2}{$dialog.user_name}{/if}</em>
+                                    <p class="history-record-cont-p">{$mli.message}</p>
+                                </div>-->
+                            </div>
+						{/foreach}
+						{/if}
+						{if $full_page}
+					</div>
+					<footer>
+						<table class="ecsc-default-table history-record-cont">
+                            <tfoot>
+                                <tr>
+                                    <th class="batch-operation" colspan="20">
+                                        <div class="screeItme">
+				                            <form action="" method="post" id="selectForm" name="selectForm">
+				                                <strong class="fl lh mr10"> <a href="javascript:void(0);" class="sc-btn sc-org-btn j-generate-word" data-type="not_on_sale"><i class="icon-arrow-down"></i>导出</a>
+				                                </strong>
+				                                <div class="text_time mr10" id="text_time1">
+				                                    <input name="start_date" id="start_date" value="2017-04-07" class="text" readonly="readonly">
+				                                </div>
+				                                <div class="search-info" style="padding: 0">
+								                    <div class="search-form">
+								                        <input type="text" name="keyword" class="text w70" name="keywords" value="" placeholder="搜索">
+								                        <input type="button" class="submit j-keywords" value="搜索">
+								                        </div>
+								                    </div>
+								                    <div class="pagination">
+                                                        <ul>
+                                                            <li>
+                                                                <a class="prev" title='上一页'>01</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="next" title='下一页'>0</a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+								                </div>
+				                            </form>
+				                        </div>
+                                    </th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        </footer>
+					</li>
+				</ul>
+            </div>
+          </div>
+           <!--客服管理-e-->
+      </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script language="JavaScript">
+    var service_id = {$id};
+    var customer_id ;
+    var page=1;
+    var count;  //总数
+    var dialog_id ;
+
+
+	//日期选择插件调用start sunle
+	var opts1 = {
+		'targetId':'start_date',//时间写入对象的id
+		'triggerId':['start_date'],//触发事件的对象id
+		'alignId':'text_time1',//日历对齐对象
+		'format':'-',//时间格式 默认'YYYY-MM-DD HH:MM:SS'
+		'hms':'off'
+	}
+	xvDate(opts1);
+	$(document).on('click', '#dates_table td', function(){
+	    //日期查询消息记录
+	    var start_time = $('#start_date').val();
+	    if(dialog_id == undefined || dialog_id == '' || customer_id == undefined || customer_id == '' || start_time == '') return;
+
+	    Ajax.call('privilege_kefu.php?is_ajax=1&act=get_message_by_date', 'id=' + dialog_id + '&customer_id=' + customer_id + '&service_id=' + service_id + '&start_time=' + start_time, messageResponse, "POST", "JSON");
+
+	});
+	//日期选择插件调用end sunle
+
+
+	//会话记录
+	$('#dialog_list_ul li').click(function(){
+        Ajax.call('privilege_kefu.php?is_ajax=1&act=dialog_list_ajax', 'id=' + service_id + '&val=' + $(this).index(), dialogResponse, "POST", "JSON");
+
+    });
+    function dialogResponse(result){
+        $('#dialog_list').html(result.content);
+    }
+
+    //关键词查找
+    $('.j-keywords').click(function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        var keyword =  $(this).siblings('[name=keyword]').val();
+	    if(dialog_id == undefined || dialog_id == '' || customer_id == undefined || customer_id == '') return;
+
+        Ajax.call('privilege_kefu.php?is_ajax=1&act=message_list_ajax', 'id=' + dialog_id + '&customer_id=' + customer_id + '&service_id=' + service_id + '&keyword=' + keyword, messageResponse, "POST", "JSON");
+
+    });
+
+    //end
+    //导出word
+    $('.j-generate-word').click(function(){
+        if(dialog_id == undefined || dialog_id == '' || !confirm('确认导出聊天记录？'))return;
+        window.location.href='privilege_kefu.php?is_ajax=1&act=generage_word' + '&id=' + dialog_id + '&customer_id=' + customer_id + '&service_id=' + service_id;
+    });
+
+    //end
+    /** 分页 */
+    $('.pagination li').click(function(){
+    	if(dialog_id == undefined || dialog_id == '' || customer_id == undefined || customer_id == '') return;
+
+        if($(this).attr('class') == 'prev'){
+            page -= 1 ;
+        }else if($(this).attr('class') == 'next'){
+            page += 1 ;
+        }
+        if(page < 1) page = 1;
+        if(page > count) page = count;
+
+        Ajax.call('privilege_kefu.php?is_ajax=1&act=message_list_ajax', 'id=' + dialog_id + '&customer_id=' + customer_id + '&service_id=' + service_id + '&page=' + page, messageResponse, "POST", "JSON");
+    });
+    //消息列表
+    $('#dialog_list').on('click', 'div.tDiv', function(){
+        customer_id = $(this).attr('cid');
+        dialog_id = $(this).attr('mid');
+        page = 1;
+        Ajax.call('privilege_kefu.php?is_ajax=1&act=message_list_ajax', 'id=' + dialog_id + '&customer_id=' + customer_id + '&service_id=' + service_id + '&page=' + page, messageResponse, "POST", "JSON");
+    });
+
+    function messageResponse(result){
+        $('#message_list').html(result.content);
+        count = result.message;
+        if(page > count) page = count;
+    }
+</script>
+</body>
+</html>
+{/if}
+

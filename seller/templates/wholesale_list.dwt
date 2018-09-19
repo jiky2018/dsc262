@@ -1,0 +1,160 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-
+<html xmlns="http:
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="search-info">
+                    <div class="search-form">
+                        <form action="javascript:searchActivity()" name="searchForm">
+                        	<div id="status" class="imitate_select select_w145">
+                                <div class="cite">{$lang.adopt_status}</div>
+                                <ul>
+                                    <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.adopt_status}</a></li>
+                                    <li><a href="javascript:;" data-value="1" class="ftx-01">{$lang.not_audited}</a></li>
+                                    <li><a href="javascript:;" data-value="2" class="ftx-01">{$lang.audited_not_adopt}</a></li>
+                                    <li><a href="javascript:;" data-value="3" class="ftx-01">{$lang.audited_yes_adopt}</a></li>
+                                </ul>
+                                <input name="review_status" type="hidden" value="0"/>
+                            </div>
+                            <div class="search-key">
+                                <input type="text" name="keyword" size="30" class="text text_2" placeholder="{$lang.goods_name}"/>
+                                <input type="submit" value="{$lang.button_search}" class="submit" />
+                            </div>
+                        </form>
+                    </div>
+				</div>
+                <form method="post" action="wholesale.php" name="listForm" onsubmit="return confirm(batch_drop_confirm);">
+                <div class="list-div" id="listDiv">
+                {/if}
+                <table class="ecsc-default-table">
+                <thead>
+                <tr>
+                <th width="10%">
+                    <div class="first_all">
+                        <input onclick='listTable.selectAll(this, "checkboxes")' type="checkbox" id="all" class="ui-checkbox" /><label for="all" class="ui-label"><a href="javascript:listTable.sort('act_id');">{$lang.record_id}</a></label><div class="img">{$sort_act_id}</div>
+                    </div>
+                </th>
+                <th width="20%" class="tl"><a href="javascript:listTable.sort('goods_name'); ">{$lang.goods_name}</a><div class="img">{$sort_goods_name}</div></th>
+                <th width="30%">最小起订量</th>
+                <th width="10%"><a href="javascript:listTable.sort('enabled'); ">{$lang.enabled}</a><div class="img">{$sort_enabled}</div></th>
+                <th width="10%">{$lang.adopt_status}</th>
+                <th width="20%">{$lang.handler}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {foreach from=$wholesale_list item=wholesale}
+                <tr>
+                <td><div class="first_all"><input value="{$wholesale.act_id}" name="checkboxes[]" type="checkbox" id="checkbox_{$wholesale.act_id}" class="ui-checkbox"><label class="ui-label" for="checkbox_{$wholesale.act_id}">{$wholesale.act_id}</label></div></td>
+                <td class="tl"><span class="activity_name w410">{$wholesale.goods_name|escape:html}</span></td>
+                <td>{$wholesale.moq}</td>
+                <td>
+					<div class="switch {if $wholesale.enabled}active{/if}" title="{if $wholesale.enabled}是{else}否{/if}" onclick="listTable.switchBt(this, 'toggle_enabled', {$wholesale.act_id})">
+						<div class="circle"></div>
+					</div>
+					<input type="hidden" value="0" name="">				
+				</td>
+                <td class="audit_status">
+                    {if $wholesale.review_status eq 1}
+                    <font class="org2">{$lang.not_audited}</font>
+                    {elseif $wholesale.review_status eq 2}
+                    <font class="red">{$lang.audited_not_adopt}</font>
+                    <i class="tip yellow" title="{$wholesale.review_content}">{$lang.prompt}</i>
+                    {elseif $wholesale.review_status eq 3}
+                    <font class="green">{$lang.audited_yes_adopt}</font>
+                    {/if}
+                </td>
+                <td class="ecsc-table-handle tr">
+                	<span><a href="wholesale.php?act=edit&amp;id={$wholesale.act_id}" title="{$lang.edit}" class="btn-green"><i class="icon icon-edit"></i><p>{$lang.edit}</p></a></span>
+                	<span><a href="javascript:;" onclick="listTable.remove({$wholesale.act_id},'{$lang.drop_confirm}')" title="{$lang.drop}" class="btn-red"><i class="icon icon-trash"></i><p>{$lang.drop}</p></a></span>
+                </td>
+                </tr>
+                {foreachelse}
+                <tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+                {/foreach}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="10" class="td_border">
+                            <div class="shenhe">
+                                <input type="submit" name="drop" id="btnSubmit" value="{$lang.drop}" class="sc-btn btn_disabled" disabled="true" />
+                                <input type="hidden" name="act" value="batch" />
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="20">
+                            {include file="page.dwt"}
+                        </td>
+                    </tr>
+                </tfoot>
+                </table>
+                {if $full_page}
+                </div>
+              	</form>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript">
+<!--
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+
+  {literal}
+  onload = function()
+  {
+    startCheckOrder();
+  }
+  
+  {if $priv_ru eq 1}
+  function get_store_search(val){
+    if(val == 1){
+      document.forms['searchForm'].elements['merchant_id'].style.display = '';
+      document.forms['searchForm'].elements['store_keyword'].style.display = 'none';
+      document.forms['searchForm'].elements['store_type'].style.display = 'none';
+    }else if(val == 2){
+      document.forms['searchForm'].elements['merchant_id'].style.display = 'none';
+      document.forms['searchForm'].elements['store_keyword'].style.display = '';
+      document.forms['searchForm'].elements['store_type'].style.display = 'none';
+    }else if(val == 3){
+      document.forms['searchForm'].elements['merchant_id'].style.display = 'none';
+      document.forms['searchForm'].elements['store_keyword'].style.display = '';
+      document.forms['searchForm'].elements['store_type'].style.display = '';
+    }else{
+      document.forms['searchForm'].elements['merchant_id'].style.display = 'none';
+      document.forms['searchForm'].elements['store_keyword'].style.display = 'none';
+      document.forms['searchForm'].elements['store_type'].style.display = 'none';
+    }
+  }
+  {/if}
+
+  
+  function searchActivity()
+  {
+	  
+    listTable.filter['keyword'] = Utils.trim(document.forms['searchForm'].elements['keyword'].value);
+	listTable.filter['review_status'] = Utils.trim(document.forms['searchForm'].elements['review_status'].value);
+    listTable.filter['page'] = 1;
+    listTable.loadList("wholesale_list");
+  }
+  {/literal}
+
+
+</script>
+</body>
+</html>
+{/if}

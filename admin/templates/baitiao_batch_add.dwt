@@ -1,0 +1,157 @@
+
+<!doctype html>
+
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+    <div class="warpper">
+        <div class="title"><a href="user_baitiao_log.php?act=list" class="s-back">{$lang.back}</a>{$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>    
+                    <li>{$lang.operation_prompt_content.0}</li>
+                    <li>{$lang.operation_prompt_content.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    {if $full_page}       
+                    {if $full_page eq 1} 
+                    <div class="mian-info">
+                        <div class="switch_info">
+                            <form action="baitiao_batch.php?act=baitiao_add" method="post" enctype="multipart/form-data" name="theForm" id="baitiao_batch" >
+                                <div class="item">
+                                    <div class="label">{$lang.text_enco}：</div>
+                                    <div class="label_value">
+                                        <div id="file_code" class="imitate_select select_w320">
+                                            <div class="cite"></div>
+                                            <ul>
+                                                {foreach from=$lang_list item=item key=k}
+                                                <li><a href="javascript:;" data-value="{$k}" class="ftx-01">{$item}</a></li>
+                                                {/foreach}
+                                            </ul>
+                                            <input name="charset" type="hidden" value="UTF8" id="file_code_val">
+                                        </div>
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.csv_file}</div>
+                                    <div class="label_value">
+                                        <div class="type-file-box">
+                                            <input type="button" name="button" id="button" class="type-file-button" value="" />
+                                            <input type="file" class="type-file-file" id="file" name="file" size="30" hidefocus="true" data-state="csvfile" value="" />
+                                            <input type="text" name="textfile" class="type-file-text" id="textfield" autocomplete="off" readonly />
+                                        </div>
+                                        <div class="form_prompt"></div>
+                                        <div class="notic bf100 ml0">{$lang.notice_file}</div>
+                                        <div class="fl bf100">
+                                            <a href="baitiao_batch.php?act=download&charset=zh_cn" class="mr30">1、{$lang.download_file_zh_cn} </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="label_value info_btn mt10">
+                                        <a href="javascript:;" class="button" id="submitBtn">{$lang.button_submit}</a>
+                                    </div>
+                                </div> 
+                            </form>
+                        </div>
+                    </div>
+                    {/if}
+                    {/if}
+                    <div class="list-div mt20" id="listDiv">
+                        <table cellpadding="0" cellspacing="0" border="0" id="listTable">
+                            <thead>
+                                <tr>
+                                    <th width="18%" class="tc"><div class="tDiv">{$lang.upload_baitiao[user_name]}</div></th>
+                                    <th width="18%" class="tc"><div class="tDiv">{$lang.upload_baitiao[amount]}</div></th>
+                                    <th width="18%" class="tc"><div class="tDiv">{$lang.upload_baitiao[repay_term]}</div></th>
+                                    <th width="28%" class="tc"><div class="tDiv">{$lang.upload_baitiao[over_repay_trem]}</div></th>
+                                    <th width="18%" class="tc"><div class="tDiv">{$lang.upload_baitiao[status]}</div></th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+    		</div>
+		</div>
+        {if $full_page}
+    </div>
+    {include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+        $(function(){
+			//表单验证
+            $("#submitBtn").click(function(){
+				if($("#baitiao_batch").valid()){
+					 $("#baitiao_batch").submit();
+				}
+            });
+
+            $('#baitiao_batch').validate({
+                errorPlacement:function(error, element){
+					var error_div = element.parents('div.label_value').find('div.form_prompt');
+					element.parents('div.label_value').find(".notic").hide();
+					error_div.append(error);
+				},
+				rules:{
+					file:{
+						required : true
+					}
+				},
+				messages:{
+					file:{
+						required : '<i class="icon icon-exclamation-sign"></i>' + file_not_null
+					}
+				}
+            });
+        
+			//start函数
+			start({$page});
+		});
+		
+		function start(page)
+		{
+			{if $smarty.get.act != 'add'}
+			Ajax.call('baitiao_batch.php?act=ajax_insert', 'page=' + page, start_response, 'POST', 'JSON');
+			{/if}
+		}
+
+		/**
+		 * 处理反馈信息
+		 * @param: result
+		 * @return
+		 */
+		function start_response(result)
+		{
+			if(result.list.user_name){
+				var tbl = document.getElementById("listTable"); //获取表格对象
+				var row = tbl.insertRow(-1);
+				cell = row.insertCell(0);
+				cell.align = "center";
+				cell.innerHTML = result.list.user_name ;
+				cell = row.insertCell(1);
+				cell.align = "center";
+				cell.innerHTML = "<font class='red'>" + result.list.amount + "</font>";
+				cell = row.insertCell(2);
+				cell.align = "center";
+				cell.innerHTML = result.list.repay_term;
+				cell = row.insertCell(3);
+				cell.align = "center";
+				cell.innerHTML = result.list.over_repay_trem;
+				cell = row.insertCell(4);
+				cell.align = "center";
+				cell.innerHTML = result.status_lang;
+				
+				if(result.is_stop == 1){
+					start(result.page);
+				}
+			}
+		}
+    </script>     
+</body>
+</html>
+{/if}

@@ -1,0 +1,102 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back"></a>{$lang.seller} - {$lang.store_template_gl}</div>
+        <div class="content">
+			{include file ='library/seller_manage_tab.lbi'}
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.list.0}</li>
+                    <li>{$lang.operation_prompt_content.list.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                	<div class="mian-info">
+                        <div class="template-list template-ksh-list mt10">
+                        	<ul>
+								{foreach from=$available_templates item=template name=template}
+                            	<li {if $default_tem eq $template.code}class="curr"{/if}>
+                                	<div class="tit">{$template.name}-<a href="{if $template.author_uri}{$template.author_uri}{else}#{/if}" target="_blank"/>{$template.author}</a></div>
+                                    <div class="span">{$template.desc}</div>
+                                    <div class="img">
+                                    	{if $template.screenshot}<img width="263" height="338" src="{$template.screenshot}" data-src-wide="{$template.template}" border="0" id="{$template.code}" class="pic"/>{/if}
+                                    </div>
+                                    <div class="info">
+                                        <p><a href="{$template.template}" class="nyroModal" target="_blank">{$lang.view_big_img}</a></p>
+                                        <p class="mt5">
+                                            <a href="../merchants_store.php?merchant_id={$ru_id}&tem={$template.code}" class="ml10" target="_blank" >{$lang.preview_template}</a>
+                                            <a href="visual_editing.php?act=template_information&tem={$template.code}&merchant_id={$ru_id}" class="ml10">{$lang.edit_template_info}</a>
+                                            <a href="javascript:removeTemplate('{$template.code}','{$ru_id}')" class="ml10">{$lang.remove_template}</a>
+                                        </p>
+                                    </div>
+									{if $default_tem eq $template.code}
+                                    <i class="ing"></i>
+									{/if}
+                                </li>								
+								{/foreach}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+ 	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+		// 点击查看图片
+		$(function(){
+			//$(".nyroModal").nyroModal();
+		});
+    </script>	
+	<script type="text/javascript">
+	<!--
+	{literal}
+	function removeTemplate(code,ru_id){
+		if(code){
+			if(confirm("{$lang.removeTemplate}")){
+				Ajax.call('visual_editing.php', "act=removeTemplate&code=" + code + "&ru_id=" + ru_id, removeTemplateResponse, 'POST', 'JSON');
+			}
+		}else{
+			alert('{$lang.selectRemoveTemplate}');
+		}
+	}
+	
+	function removeTemplateResponse(data){
+		if(data.error == 0){
+			location.href = data.url;
+		}else{
+			alert(data.content);
+		}
+	}
+	
+	//查看模板演示大图
+	function maxImg(){
+		var carrousel = $(".carrousel");
+		var width = $(window).width();
+		var height = $(window).height();
+		
+		$(".portrait").click(function(e){
+			var parent = $(this).parents('.templates_content');
+			var src = parent.find(".pic").attr("data-src-wide");
+			carrousel.find("img").attr("src",src);
+			carrousel.fadeIn(200);
+		});
+		
+		carrousel.find(".carr_close").click(function(e){
+			carrousel.find("img").attr("src",'');
+			carrousel.fadeOut(200);
+		});
+		
+		$(".carrousel .wrapper").css({'width':(width*0.6),'height':(height*0.8)});
+	}
+	maxImg();
+	//-->
+	{/literal}
+	</script>
+</body>
+</html>

@@ -1,0 +1,223 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$lang.seller} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content_common}</li>
+                    <li>{$lang.operation_prompt_content.info.0}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-head">
+					<div class="fl">
+                    	<a href="{$action_link.href}"><div class="fbutton"><div class="add" title="{$action_link.text}"><span><i class="icon icon-plus"></i>{$action_link.text}</span></div></div></a>
+					</div>
+                </div>
+                <div class="common-content">
+                    <div class="mian-info">
+                        <form method="post" action="entry_criteria.php" name="theForm" id="entry_criteria_form" enctype="multipart/form-data">
+                            <div class="switch_info">
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}{$lang.criteria_name}：</div>
+                                    <div class="label_value">
+										<input type='text' name='criteria_name' maxlength="30" value="{if $act eq 'insert'}请填写{else}{$entry_criteria.criteria_name|escape}{/if}" size='20' class="text" />    
+										<div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                {if $entry_criteria.parent_id > 0 || $act eq 'insert'}
+                                <div class="item">
+									<div class="label">{$lang.parent}：</div>
+									<div id="parent_id" class="imitate_select select_w320">
+									  <div class="cite">{if $entry_criteria.criteria_name}{$entry_criteria.criteria_name}{else}{$lang.select_please}{/if}</div>
+									  <ul>
+                                      <li><a href="javascript:;" data-value="0" class="ftx-01">{if $entry_criteria.criteria_name}{$entry_criteria.criteria_name}{else}{$lang.select_please}{/if}</a></li>
+									  {foreach from=$criteria item=criteria}
+										 <li><a href="javascript:;" data-value="{$criteria.id}" class="ftx-01">{$criteria.criteria_name}</a></li>
+									  {/foreach}
+									  </ul>
+                                      <input name="parent_id" type="hidden" value="{$entry_criteria.parent_id}" id="parent_id_val">
+									</div>
+                                </div>
+								<div id="child_entry" {if $entry_criteria.parent_id == ''}style="display:none;"{/if} >
+                                    <div class="item">
+                                        <div class="label"><em class="require-field">{$lang.require_field}</em>{$lang.type}：</div>
+                                        <div id="type" class="imitate_select select_w320">
+                                            <div class="cite">{$lang.select_please}</div>
+                                            <ul>
+                                            <li><a href="javascript:;" data-value="" class="ftx-01">{$lang.select_please}</a></li>
+                                            <li><a href="javascript:;" data-value="text" class="ftx-01">{$lang.text}</a></li>
+                                            <li><a href="javascript:;" data-value="select" class="ftx-01">{$lang.select}</a></li>
+                                            <li><a href="javascript:;" data-value="textarea" class="ftx-01">{$lang.textarea}</a></li>
+                                            <li><a href="javascript:;" data-value="file" class="ftx-01">{$lang.file}</a></li>
+                                            <li><a href="javascript:;" data-value="charge" class="ftx-01">{$lang.charge}</a></li>
+                                            </ul>
+                                            <input name="type" type="hidden" value="{$entry_criteria.type}" id="type_val">
+                                        </div>
+                                    </div>
+                                    <div id="data_type" {if $entry_criteria.type neq 'text'}style="display:none;"{/if} >
+                                    <div class="item">
+                                        <div class="label">{$lang.data_type}：</div>
+                                        <div class="imitate_select select_w320">
+                                            <div class="cite">{$lang.select_please}</div>
+                                            <ul>
+                                                <li><a href="javascript:;" data-value="" class="ftx-01">{$lang.select_please}</a></li>
+                                                <li><a href="javascript:;" data-value="1" class="ftx-01">{$lang.data_type_mobile}</a></li>
+                                                <li><a href="javascript:;" data-value="2" class="ftx-01">{$lang.data_type_email}</a></li>
+                                            </ul>
+                                            <input name="data_type" type="hidden" value="{$entry_criteria.data_type}">
+                                        </div>
+                                    </div>
+                                    <div id='charge' {if $entry_criteria.type neq 'charge'}style="display:none;"{/if}>
+                                        <div class="item">
+                                            <div class="label">{$lang.charge}：</div>
+                                            <div class="label_value">
+                                                <input type='text' name='charge' value="{if $entry_criteria.charge}{$entry_criteria.charge|escape}{else}0.00{/if}" class="text" />    
+                                            </div>
+                                        </div>
+                                        <div class="item">
+                                            <div class="label">{$lang.is_cumulative}：</div>
+                                            <div class="label_value">
+                                                <div class="tDiv">
+                                                    <div class="switch switch_2 {if $entry_criteria.is_cumulative}active{/if}" title="{$lang.yes}">
+                                                        <div class="circle"></div>
+                                                    </div>
+                                                    <input type="hidden" value="{$entry_criteria.is_cumulative}" name="is_cumulative">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+									<div class="item" {if $entry_criteria.type eq 'charge'}style="display:none;"{/if} id="is_mandatory">
+										<div class="label">{$lang.is_mandatory}：</div>
+										<div class="label_value">
+											<div class="tDiv">
+												<div class="switch switch_2 {if $entry_criteria.is_mandatory}active{/if}" title="{$lang.yes}">
+													<div class="circle"></div>
+												</div>
+												<input type="hidden" value="{$entry_criteria.is_mandatory}" name="is_mandatory">
+											</div>
+										</div>
+									</div>
+								</div>
+                                <div class="item" {if $entry_criteria.type neq 'select' }style="display:none;"{/if} id="option_value" >
+                                    <div class="label">{$lang.option_value }：</div>
+                                    <div class="label_value relative">
+									{if $entry_criteria.option_value}
+                                    	<span class="ipt_text">
+										{foreach from=$entry_criteria.option_value item =option_value name=value}
+											{if $smarty.foreach.value.iteration eq 1}
+												<div class="ipt-icon"><i class="sc_icon sc_icon_jia2"></i></div>
+                                                <div class="item-item bf100">
+                                                    <input type="text" name="option_value[]" value="{$option_value}" class="text w150" autocomplete="off">
+                                                    <a href="javascript:;" class="trash" style="display:none;"><i class="icon icon-trash"></i></a>
+                                                </div>
+											{else}
+                                            	<div class="item-item bf100">
+                                                    <input type="text" name="option_value[]" value="{$option_value}" class="text w150" autocomplete="off">
+                                                    <a href="javascript:;" class="trash"><i class="icon icon-trash"></i></a>
+                                                </div>
+											{/if}
+										{/foreach}
+                                        </span>
+									{else}
+										<span class="ipt_text">
+                                        	<div class="ipt-icon"><i class="sc_icon sc_icon_jia2"></i></div>
+                                            <div class="item-item bf100">
+                                                <input type="text" name="option_value[]" class="text w150" autocomplete="off">
+                                                <a href="javascript:;" class="trash" style="display:none;"><i class="icon icon-trash"></i></a>
+                                            </div>
+                                        </span>
+									{/if}
+									</div>
+                                </div>
+                                {/if}
+                                <div class="item">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="label_value info_btn">
+									    <input type="submit" class="button" name="sub" value="{$lang.button_submit}" id="submitBtn" />
+									    <input type="reset" class="button button_reset" value="{$lang.button_reset}" />
+									    <input type="hidden" name="id" value="{$entry_criteria.id}"/>
+									    <input type="hidden" name="act" value="{$act}"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+        $.divselect("#parent_id","#parent_id_val",function(){
+            if($("#parent_id_val").val() > 0){
+                $("#child_entry").show();
+            }else{
+                $("#child_entry").hide();
+            }
+        });
+        $.divselect("#type","#type_val",function(){
+            var type = $("#type_val").val();
+            if(type == 'select'){
+                $("#option_value").show();
+            }else{
+                $("#option_value").hide();
+            }
+            if(type == 'charge'){
+                $("#is_mandatory").hide();
+                $("#charge").show();
+            }else{
+                $("#is_mandatory").show();
+                $("#charge").hide();
+            }
+            if(type == 'text'){
+                $("#data_type").show();
+            }else{
+                $("#data_type").hide();
+            }
+        });
+        
+        $(".ipt-icon").click(function(){
+            var div = $(this).next().clone();
+            div.find(".trash").show();
+            $(this).parent().append(div);
+        });
+        
+        $(document).on("click",".trash",function(){
+            $(this).parents(".item-item").remove();	
+        });
+        
+        $(function(){
+            //表单验证
+            $("#submitBtn").click(function(){
+                if($("#entry_criteria_form").valid()){
+                    $("#entry_criteria_form").submit();
+                }
+            });
+        
+            $('#entry_criteria_form').validate({
+                errorPlacement:function(error, element){
+                    var error_div = element.parents('div.label_value').find('div.form_prompt');
+                    element.parents('div.label_value').find(".notic").hide();
+                    error_div.append(error);
+                },
+                rules:{
+                    criteria_name :{
+                        required : true
+                    }
+                },
+                messages:{
+                    criteria_name:{
+                         required : '<i class="icon icon-exclamation-sign"></i>'+ criteria_name_null
+                    }
+                }			
+            });
+        });
+    </script>   
+</body>
+</html>

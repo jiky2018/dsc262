@@ -1,0 +1,121 @@
+{include file="page_header"}
+		<div class="mb-1">
+
+			<section class="goods-evaluation">
+				<div class="user-center-1 user-register-1 of-hidden">
+					<section class="product-sequence dis-box">
+						<a class="box-flex active a-change fl-click" category="2">全部</a>
+						<a class="box-flex fl-click" category="0">未分成</a>
+						<a class="box-flex fl-click" category="1">已分成</a>
+					</section>
+				</div>
+			</section>
+			<div id="j-tab-con" class="tab-con">
+				<div class="swiper-wrapper">
+					<section class="j-money-divided">
+					<script id="j-product" type="text/html">
+					<%if totalPage > 0%>
+					<%each orders as orderss%>
+					<%if orderss.goods_count > 1%>
+					<a href="<%orderss.url%>">
+					<section class="flow-checkout-pro m-top08">
+						<header class="b-color-f dis-box padding-all">
+							<span class=" box-flex">买家：<%orderss.user_name%></span>
+							<em class="j-goods-coupon t-first f-06"><%if orderss.is_separate == 1%>已分成<%else%>未分成<%/if%></em>
+						</header>
+						<div class="f-c-p-orderid padding-all m-top1px b-color-f">
+							<a class="product-div-link" href="<%orderss.url%>">	</a>
+							<h4 class="t-remark2"><label class="t-remark">订单号：</label><%orderss.order_sn%><span class="t-jiantou"></span></h4>
+							<p class="t-remark3 m-top04"><%orderss.order_time%></p>
+						</div>
+						<div class="padding-all b-color-f dis-box text-all-select">
+
+							<ul class="flow-checkout-smallpic box-flex">
+								<%each orderss.goods as list key%>
+								<%if key <3%>
+								<li><a href="<%list.url%>"><img class="product-list-img" src="<%list.goods_thumb%>" /></a></li>
+								<%/if%>
+								<%/each%>
+							</ul>
+							<a href="<%orderss.url%>">
+							<span class="t-jiantou"><span class="f-c-a-count">共 <%orderss.goods_count%> 件商品</span><i class="iconfont icon-jiantou tf-180"></i></span>
+							</a>
+						</div>
+						<footer class="padding-all b-color-f m-top1px of-hidden">
+							<h4 class="t-remark2 fr"><label class="t-remark">佣金比例：</label><span class="t-first"><%orderss.this_good_per%></span> <label class="t-remark">获得佣金：</label><span class="t-first"><%#orderss.total_orders_drpmoney%></span></h4>
+						</footer>
+					</section>
+					</a>
+					<%else%>
+					<section class="flow-checkout-pro-1 m-top08">
+						<a href="<%orderss.url%>">
+						<header class="b-color-f dis-box padding-all">
+							<span class=" box-flex">买家：<%orderss.user_name%></span>
+							<em class="j-goods-coupon t-first f-06"><%if orderss.is_separate == 1%>已分成<%else%>未分成<%/if%></em>
+						</header>
+						<div class="f-c-p-orderid padding-all m-top1px b-color-f">
+							<h4 class="t-remark2"><label class="t-remark">订单号：</label><%orderss.order_sn%></h4>
+							<p class="t-remark3 m-top04"><%orderss.order_time%></p>
+						</div>
+
+						<section class="product-list j-product-list product-list-small" data="2">
+							<ul>
+								<%each orderss.goods as list%>
+								<li>
+									<div class="product-div b-color-f ">
+										<a class="product-div-link" href="<%list.url%>"></a>
+										<img class="product-list-img" src="<%list.goods_thumb%>">
+										<div class="product-text">
+											<h4><%list.goods_name%></h4>
+											<p><span class="f-06 t-first "><%#list.goods_price%></span></p>
+											<p><span class="fr f-07 d-n col-9 mar-r">×<%list.goods_number%></span></p>
+
+										</div>
+									</div>
+								</li>
+								<%/each%>
+							</ul>
+						</section>
+						<footer class="padding-all b-color-f  of-hidden">
+							<h4 class="t-remark2 fr"><label class="t-remark">佣金比例：</label><span class="t-first"><%orderss.this_good_per%></span> <label class="t-remark">获得佣金：</label><span class="t-first"><%#orderss.total_orders_drpmoney%></span></h4>
+						</footer>
+						</a>
+					</section>
+					<%/if%>
+					<%/each%>
+					<%else%>
+					<div class="no-div-message">
+						<i class="iconfont icon-biaoqingleiben"></i>
+						<p>亲，此处没有内容～！</p>
+					</div>
+					<%/if%>
+					</script>
+					</section>
+				</div>
+			</div>
+			<input type="hidden" value="" name="status">
+		</div>
+    <!--快捷导航-->
+   {include file="no_search_nav"}
+                <li>
+                     <a href="{url('drp/user/index')}">
+                         <i class="iconfont icon-fenxiao"></i>
+                         <p>{$custom}中心</p>
+                     </a>
+                </li>
+    {include file="float_nav_footer"}
+<script>
+
+	var url = ROOT_URL + 'index.php?m=drp&c=user&a=order';
+	var infinite = $('.j-money-divided').infinite({url: url,template: 'j-product'});
+
+	$(".product-sequence a").click(function (){
+		var status = $(this).attr('category');
+		infinite.onload('status='+status);
+		$(this).addClass("active").siblings().removeClass("active");
+	})
+
+
+</script>
+
+{include file="page_footer"}

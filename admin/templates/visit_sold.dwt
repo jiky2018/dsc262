@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">统计 - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.list.0}</li>
+                    <li>{$lang.operation_prompt_content.list.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<!--商品分类列表-->
+                <div class="common-head">
+                    {if $action_link}
+                    <div class="fl">
+                    	<a href="{$action_link.href}"><div class="fbutton"><div class="csv" title="{$action_link.text}"><span><i class="icon icon-download-alt"></i>{$action_link.text}</span></div></div></a>
+                    </div>
+                    {/if}
+                    <div class="fr">
+                    <form name="TimeInterval" action="visit_sold.php?act=list" method="post" style="margin:0px">
+                        <div class="search mt0">
+                            <div class="categorySelect fl mr10">
+                                <div class="selection">
+                                    <input type="text" name="category_name" id="category_name" class="text w260 mr0 valid" value="{if $cat_val}{$cat_val}{else}{$lang.select_cat}{/if}" autocomplete="off" readonly data-filter="cat_name" />
+                                    <input type="hidden" name="cat_id" id="cat_id" value="0" data-filter="cat_id" />
+                                </div>
+                                <div class="select-container" style="width:290px; display:none;">
+                                    {include file="library/filter_category.lbi"}
+                                </div>
+                            </div>
+                            <div class="step_value fl mb0">
+                                <div class="selection">
+                                    <input type="text" name="brand_name" id="brand_name" class="text w140 valid" data-filter="brand_name" ectype="require" autocomplete="off" value="{if $brand_name}{$brand_name}{else}{$lang.please_select}{/if}" readonly />
+                                    <input type="hidden" name="brand_id" id="brand_id" value="{$goods.brand_id}" data-filter="brand_id" />
+                                    <div class="form_prompt"></div>
+                                </div>    
+                                <div class="brand-select-container" style="display:none;">
+                                    <div class="brand-top">
+                                        <div class="letter">
+                                            <ul>
+                                                <li><a href="javascript:void(0);" data-letter="">{$lang.all_brand}</a></li>
+                                                {foreach from=$letter item=letter}
+                                                <li><a href="javascript:void(0);" data-letter="{$letter}">{$letter}</a></li>
+                                                {/foreach}
+                                                <li><a href="javascript:void(0);" data-letter="QT">{$lang.other}</a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="b_search">
+                                            <input name="search_brand_keyword" id="search_brand_keyword" ectype="require" type="text" class="b_text" autocomplete="off" placeholder="{$lang.brand_keyword}">
+                                            <a href="javascript:void(0);" class="btn-mini"><i class="icon icon-search"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="brand-list">
+                                        {include file='library/search_brand_list.lbi'}
+                                    </div>
+                                    <div class="brand-not" style="display:none;">{$lang.brand_not}</div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="order_type" value="{$order_type}" />
+                            <div class="input">
+                                <input type="text" name="show_num" class="text nofocus" placeholder="{$lang.show_num}" value="" autocomplete="off" /><input type="submit"name="submit" value="" class="not_btn" />
+                            </div>
+                        </div>
+                    </form>
+                    </div>
+                </div>
+                
+                <div class="common-content">
+                    <form method="post" action="agency.php" name="listForm" >
+                	<div class="list-div" id="listDiv">
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                            <thead>
+                                <tr>
+                                    <th width="10%"><div class="tDiv pl40">{$lang.order_by}</div></th>
+                                    <th width="30%"><div class="tDiv">{$lang.goods_name}</div></th>
+                                    <th width="15%"><div class="tDiv">{$lang.goods_steps_name}</div></th>
+                                    <th width="15%"><div class="tDiv">{$lang.fav_exponential}</div></th>
+                                    <th width="15%"><div class="tDiv">{$lang.buy_times}</div></th>
+                                    <th width="15%"><div class="tDiv">{$lang.visit_buy}</div></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {foreach from=$click_sold_info key=key item=list}
+                            	<tr>
+                                    <td><div class="tDiv pl40">{$key}</div></td>
+                                    <td><div class="tDiv"><a href="../goods.php?id={$list.goods_id}" target="_blank">{$list.goods_name}</a></div></td>
+                                    <td><div class="tDiv">{if $list.ru_name}<font class="red">{$list.ru_name}</font>{else}<font class="blue3">{$lang.self}</font>{/if}</div></td>
+                                    <td><div class="tDiv">{$list.click_count}</div></td>
+                                    <td><div class="tDiv">{$list.sold_times}</div></td>
+                                    <td><div class="tDiv">{$list.scale}</div></td>
+                                </tr>
+                                {foreachelse}
+                                <tr><td class="no-records" colspan="12">{$lang.no_records}</td></tr>
+                                {/foreach}
+                            </tbody>
+                        </table>
+                    </div>
+                    </form>
+                </div>
+            </div>
+	   </div>
+	</div>
+    {include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+
+    $(".ps-container").perfectScrollbar();
+    </script>     
+</body>
+</html>

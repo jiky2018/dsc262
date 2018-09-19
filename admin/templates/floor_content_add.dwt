@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="set_floor_brand.php?act=list&filename=index" class="s-back">{$lang.back}</a>{$lang.12_template} - {$lang.03_template_setup} - {$lang.floor_brand_add}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.info.0}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <form enctype="multipart/form-data" action="set_floor_brand.php" method="post" name="theForm" >
+                    	<div class="step" ectype="filter" data-filter="get_content">
+                            <div class="step_content">
+                                <div class="goods_search_div">
+                                    <div class="search_select">
+                                        <div class="categorySelect">
+                                            <div class="selection">
+                                                <input type="text" name="category_name" id="category_name" class="text w250 valid" value="{$lang.select_cat}" autocomplete="off" readonly data-filter="cat_name" />
+                                                <input type="hidden" name="category_id" id="category_id" value="0" data-filter="cat_id" />
+                                            </div>
+                                            <div class="select-container" style="display:none;">
+                                                {include file="library/filter_category.lbi"}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="search_select">
+                                        <div class="brandSelect">
+                                            <div class="selection">
+                                                <input type="text" name="brand_name" id="brand_name" class="text w120 valid" {$lang.select_barnd} autocomplete="off" readonly data-filter="brand_name" />
+                                                <input type="hidden" name="brand_id" id="brand_id" value="0" data-filter="brand_id" />
+                                            </div>
+                                            <div class="brand-select-container" style="display:none;">
+                                                {include file="library/filter_brand.lbi"}
+                                            </div>
+                                        </div>                            
+                                    </div>
+                                    <input type="text" name="keyword" class="text w150" value="" placeholder={$lang.input_keywords} data-filter="keyword" autocomplete="off" />
+                                    <a href="javascript:void(0);" class="btn btn30" ectype="search"><i class="icon icon-search"></i>{$lang.search_word}</a>
+                                </div>
+								<div class="clear"></div>
+                                <div class="move_div">
+                                    <div class="move_left" style="width:38%">
+                                        <h4>{$lang.optional_brand}</h4>
+                                        <div class="move_info">
+                                            <div class="move_list" id="source_select">
+                                                {include file="library/move_left.lbi"}
+                                            </div>
+                                        </div>
+                                        <div class="move_handle">
+                                            <a href="javascript:void(0);" class="btn btn25 moveAll" ectype="moveAll">{$lang.check_all}</a>
+                                            <a href="javascript:void(0);" class="btn btn25 red_btn" ectype="sub" data-operation="add_floor_content">{$lang.button_submit_alt}</a>
+                                        </div>
+                                    </div>
+                                    <div class="move_middle" style="width:20%; margin:30px 20px 0">
+                                        <div class="item">
+                                            <div class="label tc">{$lang.set_floor}</div>
+                                            <div class="label_value">
+                                                <div id="format" class="imitate_select select_w220 fn" style=" margin:0 auto;">
+                                                    <div class="cite">{$lang.please_select}</div>
+                                                    <ul style="max-height:220px;">
+                                                        <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.please_select}</a></li>
+                                                        {foreach from=$template item=list key=key}
+                                                        <li><a href="javascript:;" data-value="{$list.filename}|{$list.id}|{$list.region}" class="ftx-01">{$list.region}|{$list.cat_name}</a></li>
+                                                    	{if $cat_id eq $list.id}
+														<script type="text/javascript">
+                                                            $(function(){
+                                                                $("#format").find(".cite").html('{$list.region}|{$list.cat_name}');
+                                                                $("#format").find("input[name='group2']").val('{$list.filename}|{$list.id}|{$list.region}');
+                                                            });
+                                                        </script>
+                                                        {/if}
+                                                        {/foreach}
+                                                    </ul>
+                                                    <input name="group2" type="hidden" value="" id="format_val">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="move_right" style="width:38%">
+                                        <h4>{$lang.selected_brand}</h4>
+                                        <div class="move_info">
+                                            <div class="move_list">
+                                                <ul>
+                                                    {foreach from=$floor_content item=content}
+                                                    <li data-value="{$content.fb_id}" data-text="[{$content.id_name}]{$content.brand_name}"><i class="sc_icon sc_icon_no"></i><a href="javascript:void(0);">[{$content.id_name}]{$content.brand_name}</a></li>
+                                                    {/foreach}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="move_handle">
+                                            <a href="javascript:void(0);" class="btn btn25 moveAll" ectype="moveAll">{$lang.check_all}</a>
+                                            <a href="javascript:void(0);" class="btn btn25 btn_red" ectype="sub" data-operation="drop_floor_content">移除关联</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <input name="goods_id" value="0" type="hidden">
+                    </form>
+                </div>
+            </div>
+        </div>
+	</div>                
+	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+	$(function(){
+		$(".step[ectype=filter]").find(".move_right .move_list").perfectScrollbar('destroy');
+		$(".step[ectype=filter]").find(".move_right .move_list").perfectScrollbar();
+	});
+	</script>
+</body>
+</html>

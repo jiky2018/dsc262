@@ -1,0 +1,118 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$lang.01_region_store_manage}-{$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>操作提示</li>
+                    <li>操作提示</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+                        <form method="post" action="region_store.php" name="theForm">
+                            <div class="switch_info">
+                                <div class="item">
+                                    <div class="label">{$lang.rs_name}：</div>
+                                    <div class="label_value">
+                                        <input type="text" name="rs_name" class="text" autocomplete="off" value="{$region_store.rs_name}" />
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.designated_city}：</div>
+                                    <div class="label_value">
+                                        <div class="level_linkage">
+                                            <div id="dlcountry" class="ui-dropdown smartdropdown alien">
+                                                <input type="hidden" value="1" name="country" id="selcountry">
+                                                <div class="txt">{$lang.country}</div>
+                                                <i class="down u-dropdown-icon"></i>
+                                                <div class="options clearfix" style="max-height:300px;">
+                                                    {foreach from=$country_all item=list}
+                                                    <span class="liv" data-text="{$list.region_name}" data-type="1"  data-value="{$list.region_id}">{$list.region_name}</span>
+                                                    {/foreach}
+                                                </div>
+                                            </div>
+                                            <div id="dlProvinces" class="ui-dropdown smartdropdown alien">
+                                                <input type="hidden" value="{$region_store.region_level.1}" name="province" id="selProvinces">
+                                                <div class="txt">{$lang.province_alt}</div>
+                                                <i class="down u-dropdown-icon"></i>
+                                                <div class="options clearfix" style="max-height:300px;">
+                                                    {foreach from=$province_all item=list}
+                                                    <span class="liv" data-text="{$list.region_name}" data-type="2"  data-value="{$list.region_id}">{$list.region_name}</span>
+                                                    {/foreach}
+                                                </div>
+                                            </div>
+                                            <div id="dlCity" class="ui-dropdown smartdropdown alien">
+                                                <input type="hidden" value="{$region_store.region_level.2}" name="city" id="selCities">
+                                                <div class="txt">{$lang.city}</div>
+                                                <i class="down u-dropdown-icon"></i>
+                                                <div class="options clearfix" style="max-height:300px;">
+                                                    {foreach from=$city_all item=list}
+                                                    <span class="liv" data-text="{$list.region_name}" data-type="3"  data-value="{$list.region_id}">{$list.region_name}</span>
+                                                     {/foreach}
+                                                </div>
+                                            </div>
+                                        </div>                                        
+                                    </div>
+                                </div> 
+                                <div class="item">
+                                    <div class="label">{$lang.binding_admin}：</div>
+                                    <div class="label_value">
+                                      	<div class="imitate_select select_w170">
+                                            <div class="cite">{$lang.please_select}</div>
+                                            <ul style="display: none;" data-role="region_admin">
+												{foreach from=$region_admin item=item}
+                                                <li><a href="javascript:;" data-value="{$item.user_id}" class="ftx-01">{$item.user_name}</a></li>
+												{/foreach}
+                                            </ul>
+                                            <input name="user_id" type="hidden" value="{$region_store.user_id}">
+                                        </div>
+										<input type="button" class="button fl mr10" value="{$lang.refresh}" data-role="admin_update">
+										<input type="button" class="button fl mr10" value="{$lang.admin_add}" data-role="admin_add">
+                                    </div>
+                                </div>                               
+                                
+                                <div class="item">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="label_value info_btn">
+                                        <a href="javascript:;" class="button" id="submitBtn">{$lang.button_submit}</a>
+                                        <input type="hidden" name="act" value="{$form_action}" />
+                                        <input type="hidden" name="rs_id" value="{$region_store.rs_id}" />
+                                    </div>
+                                </div>                                  
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+    </div>
+	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript" src="js/region.js"></script>
+	<script type="text/javascript">
+	$(document).on('click', "#submitBtn", function(){
+		$("form[name='theForm']").submit();
+	})
+    
+    $.levelLink();//地区三级联动
+	
+	//添加管理员
+	$(document).on('click', "input[data-role='admin_add']", function(){
+		window.open("privilege.php?act=list");
+	})
+	
+	//刷新管理员
+	$(document).on('click', "input[data-role='admin_update']", function(){
+		$.jqueryAjax('region_store.php', 'act=admin_update', function(data){
+			$("[data-role='region_admin']").html(data.content);
+		})
+	})
+	</script>
+</body>
+</html>

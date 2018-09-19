@@ -1,0 +1,83 @@
+<div class="gallery_album" data-act="{if $action}{$action}{else}changedgoods{/if}" data-goods='1' data-inid="goods_list" data-url='{if $action}{$url}{else}get_ajax_content.php{/if}' data-where="cat_id={$filter.cat_id}&sort_order={$filter.sort_order}&keyword={$filter.keyword}&type=1&PromotionType={$PromotionType}">
+	<ul class="ga-goods-ul" id="goods_list">
+		{foreach from=$goods_list item=goods name=gl}
+		<li class="{if $goods.is_selected eq 1}on{/if}">
+			<div class="img"><img src="{$goods.goods_thumb}"></div>
+			<div class="name">{$goods.goods_name}</div>
+			<div class="price">
+				{if $PromotionType eq 'exchange'}
+					{$goods.exchange_integral}
+				{else}
+					{if $goods.promote_price != ''}
+						{$goods.promote_price}
+					{else}
+						{$goods.shop_price}
+					{/if}
+				{/if}
+			</div>
+			<div class="choose">
+				<a href="javascript:void(0);" {if $goods.is_selected eq 1}class="on"{/if} onclick="selected_goods(this,'{$goods.goods_id}')"><i class="iconfont {if $goods.is_selected eq 1}icon-gou{else}icon-dsc-plus{/if}"></i>{if $goods.is_selected eq 1}已选择{else}选择{/if}</a>
+				{if $PromotionType}
+				<div class="checkbox_item"> 
+					<input name="recommend" type="radio" class="ui-radio" value="{$goods.goods_id}" id="recommend{$goods.goods_id}"{if $goods.goods_id eq $recommend} checked="checked"{/if}>
+					<label for="recommend{$goods.goods_id}" class="ui-radio-label-shou"><i class="iconfont icon-thumb"></i>主推</label>
+				</div>
+				{/if}
+			</div>
+		</li>
+		{foreachelse}
+		<li class="notic">该分类下没有商品</li>
+		{/foreach}
+	</ul>
+	<div class="clear"></div>
+	{if $filter.page_count gt 1}
+	<div class="pagination mt10" >
+		<ul>
+			<li>{if $filter.page neq 1}<a class="demo" href="javascript:;" onclick="sec_gallery_album_list(this,'1')"><span>首页</span></a>{else}<span>首页</span>{/if}</li>
+			<li>{if $filter.page neq 1}<a class="demo" href="javascript:;" onclick="sec_gallery_album_list(this,'{$filter.page}','prev')" ><span>上一页</span></a>{else}<span>上一页</span>{/if}</li>
+			{foreach from=$filter.page_arr item=arr}
+			<li>{if $filter.page eq $arr}<span class="currentpage">{$arr}</span>{else}<a class="demo" href="javascript:;" onclick="sec_gallery_album_list(this,'{$arr}')" ><span>{$arr}</span></a>{/if}</li>
+			{/foreach}
+			<li>{if $filter.page neq $filter.page_count}<a class="demo" href="javascript:;" onclick="sec_gallery_album_list(this,'{$filter.page}','next')" ><span>下一页</span></a>{else}<span>下一页</span>{/if}</li>
+			<li>{if $filter.page neq $filter.page_count}<a class="demo" href="javascript:;" onclick="sec_gallery_album_list(this,'{$filter.page_count}')"><span>末页</span></a>{else}<span>末页</span>{/if}</li>
+		</ul>
+	</div>
+	{/if}
+</div>
+<script type="text/javascript">
+function sec_gallery_album_list(obj,page,type) {
+        var _this = $(obj).parents('.gallery_album');
+        var where = '';
+        var inid = _this.data("inid");
+        var act = _this.data("act");
+        var actionUrl = _this.data("url");
+        var datawhere = _this.data("where");
+        var url = 'seckill.php';
+        var is_goods = _this.data("goods");
+        page = parseInt(page);
+        if(page){
+            //下一页
+            if(type == 'next'){
+                page = page+1;
+            }
+            //上一页
+            else if(type == 'prev'){
+                page = page-1;
+            }
+            where = "&page="+page;
+        }
+        if(datawhere){
+            where += "&" + datawhere;
+        }
+        if(is_goods == 1){
+            var goods_ids = $(obj).parents(".modal-body").find("input[name='goods_ids']").val();
+            where += "&goods_ids=" + goods_ids;
+        }
+        $.jqueryAjax(url, 'act='+act + where, function(data){
+                $("[ectype='"+inid+"']").html(data.content);
+                $("[ectype='"+inid+"']").perfectScrollbar("destroy");
+                $("[ectype='"+inid+"']").perfectScrollbar();
+        });
+};
+</script>
+

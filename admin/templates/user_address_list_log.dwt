@@ -1,0 +1,160 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.08_members} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.list.0}</li>
+                    <li>{$lang.operation_prompt_content.list.1}</li>
+                    <li>{$lang.operation_prompt_content.list.2}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<div class="common-head">
+                   	<div class="refresh ml0">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+                    <div class="search">
+                    	<form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+                        <div class="input">
+                            <input type="text" name="user_name" class="text nofocus " placeholder="{$lang.user_name}" autocomplete="off" />
+                            <input type="submit" class="btn" name="secrch_btn" ectype="secrch_btn" value="" />
+                        </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="common-content">
+                    <form method="POST" action="" name="listForm" onsubmit="return confirm_bath()">
+                	<div class="list-div"  id="listDiv">
+                        {/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                    <th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars"></label></div></th>
+                                    <th width="5%"><div class="tDiv">{$lang.record_id}</div></th>
+                                    <th width="8%"><div class="tDiv">{$lang.user_name}</div></th>
+                                    <th width="12%"><div class="tDiv">{$lang.shipping_area_list}</div></th>
+                                    <th width="8%"><div class="tDiv">{$lang.consignee_name}</div></th>
+                                    <th width="15%"><div class="tDiv">{$lang.address_detail}</div></th>
+                                    <th width="8%"><div class="tDiv">{$lang.telephone}</div></th>
+                                    <th width="8%"><div class="tDiv">{$lang.phone}</div></th>
+                                    <th width="12%"><div class="tDiv">{$lang.email}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.uers_updata_time}</div></th>
+                                    <th width="11%"><div class="tDiv">{$lang.handler}</div></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {foreach from=$address_list item=address}
+                            	<tr>
+                                    <td class="sign"><div class="tDiv"><input type="checkbox" name="checkboxes[]" class="checkbox" value="{$address.address_id}" id="checkbox_{$address.address_id}" /><label for="checkbox_{$address.address_id}" class="checkbox_stars"></label></div></td>
+                                    <td><div class="tDiv">{$address.address_id}</div></td>
+                                    <td><div class="tDiv">{$address.user_name|escape}</div></td>
+                                    <td><div class="tDiv">{$address.region|escape}</div></td>
+                                    <td><div class="tDiv">{$address.consignee|escape}</div></td>
+                                    <td><div class="tDiv">{$address.address|escape}</div></td>
+                                    <td><div class="tDiv">{$address.tel|escape}</div></td>
+                                    <td><div class="tDiv">{$address.mobile|escape}</div></td>
+                                    <td><div class="tDiv">{$address.email|escape}</div></td>
+                                    <td><div class="tDiv">{$address.userUp_time|escape}</div></td>
+                                    <td class="handle">
+                                        <div class="tDiv a2">
+                                            <a href="user_address_log.php?act=edit&address_id={$address.address_id}&user_id={$address.user_id}" title="{$lang.edit}" class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>
+                                            <a href="javascript:confirm_redirect('{$lang.remove_confirm_address}', 'user_address_log.php?act=remove&id={$address.address_id}')" title="{$lang.remove}" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {foreachelse}
+								<tr><td class="no-records" colspan="11">{$lang.no_records}</td></tr>
+								{/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="12">
+                                        <div class="tDiv">
+                                            <div class="tfoot_btninfo">
+                                                <input type="hidden" name="act" value="batch_remove" />
+                                                <input type="submit" value="{$lang.drop}" name="remove" ectype="btnSubmit" class="btn btn_disabled" disabled="">
+                                            </div>
+                                            <div class="list-page">
+                                                {include file="library/page.lbi"}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        {if $full_page}
+                    </div>
+                    </form>
+                </div>
+            </div>
+            <div class="gj_search">
+                <div class="search-gao-list" id="searchBarOpen">
+                    <i class="icon icon-zoom-in"></i>{$lang.advanced_search}
+                </div>
+                <div class="search-gao-bar">
+                    <div class="handle-btn" id="searchBarClose"><i class="icon icon-zoom-out"></i>{$lang.pack_up}</div>
+                    <div class="title"><h3>{$lang.advanced_search}</h3></div>
+                    <form method="get" name="formSearch_senior" action="javascript:searchAddress()">
+                        <div class="searchContent">
+                            <div class="layout-box">
+                                <dl>
+                                    <dt>{$lang.user_name}</dt>
+                                    <dd><input type="text" value="" name="user_name"  class="s-input-txt" autocomplete="off" /></dd>
+                                </dl>
+                                <dl>
+                                    <dt>{$lang.consignee_name}</dt>
+                                    <dd><input type="text" value="" name="consignee"  class="s-input-txt" autocomplete="off" /></dd>
+                                </dl>
+                                <dl>
+                                    <dt>{$lang.phone}</dt>
+                                    <dd><input type="text" value="" name="mobile"  class="s-input-txt" autocomplete="off" /></dd>
+                                </dl>
+                            </div>
+                        </div>
+                        <div class="bot_btn">
+                            <input type="submit" class="btn red_btn" name="tj_search" value="{$lang.button_inquire}" /><input type="reset" class="btn btn_reset" name="reset" value="{$lang.button_reset_alt}" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+ 	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+    listTable.recordCount = {$record_count|default:0};
+    listTable.pageCount = {$page_count|default:1};
+
+    {foreach from=$filter item=item key=key}
+    listTable.filter.{$key} = '{$item}';
+    {/foreach}
+    function confirm_bath()
+    {
+        cfm = '{$lang.list_remove_confirm}';
+        return confirm(cfm);
+    }
+
+    /**
+    * 搜索用户
+    */
+	function searchAddress()
+	{
+		var frm = $("form[name='formSearch_senior']");
+	   listTable.filter['consignee'] = Utils.trim(frm.find("input[name='consignee']").val());
+	   listTable.filter['user_name'] = Utils.trim(($("form[name='searchForm']").find("input[name='user_name']").val() != '') ? $("form[name='searchForm']").find("input[name='user_name']").val() :  frm.find("input[name='user_name']").val());
+	   listTable.filter['mobile'] = Utils.trim(frm.find("input[name='mobile']").val());
+	   listTable.filter['page'] = 1;
+	   listTable.loadList();
+	}
+	$.gjSearch("-240px");  //高级搜索
+    </script>
+</body>
+</html>
+{/if}

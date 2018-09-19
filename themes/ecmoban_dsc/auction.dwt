@@ -1,0 +1,502 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable --> 
+<link rel="shortcut icon" href="favicon.ico" />
+<link rel="icon" href="animated_favicon.gif" type="image/gif" />
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/base.css" />
+<link href="{$ecs_css_path}" rel="stylesheet" type="text/css" />
+<link href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/select.css" rel="stylesheet" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS|{$page_title}" href="{$feed_url}" />
+<link rel="stylesheet" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/purebox.css">
+{* 包含脚本文件 *}
+{insert_scripts files='jquery-1.9.1.min.js,jquery.json.js,transport_jquery.js'}
+{insert_scripts files='common.js,global.js,utils.js,compare.js,jd_choose.js'}
+
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/sc_common.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.tabso_yeso.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.yomi.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/rotate3di.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/scroll_city.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/magiczoomplus.js"></script>
+
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/goods.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/floor.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/notLogin.js"></script>
+
+     <!-- #BeginLibraryItem "/library/js_languages.lbi" --><!-- #EndLibraryItem -->
+</head>
+
+<body class="shared-goods auction-goods">
+    <!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
+    <div class="ecsc-breadcrumb w1200">
+        <!-- #BeginLibraryItem "/library/ur_here.lbi" --><!-- #EndLibraryItem -->
+    </div>
+    <div id="p-box">
+        <div class="w1200">
+            <div class="details_main">
+                <div class="product-intro">
+                    <!-- #BeginLibraryItem "/library/active_gallery.lbi" --><!-- #EndLibraryItem -->  
+                    <div class="m-item-inner">
+                        <div class="itemInfo">
+                            <div class="name">
+                                <h1>{$auction.goods_name|escape:html}</h1>
+                            </div>
+                            <div class="summary">
+                                <div class="summary-list" style="{if $auction.status_no gt 1} text-align:left;{/if}">
+                                    <div class="summary-items summary-items-left border-dashed-right">
+                                        <div class="item"><span class="label">{$lang.current_price}：</span><div class="p-price"><em>{$lang.money_symbol}</em><span id="currentPrice" data-price="{$auction.current_price}">{$auction.current_price}</span></div></div>
+                                        <div class="item"><span class="label">{$lang.shop_price}：</span><div class="s_price original-price"><em>{$lang.money_symbol}</em>{$goods.shop_price}</div></div>
+                                        <div class="item"><span class="label">{$lang.au_start_price_two}：</span><div class="s-price">{$auction.formated_start_price}</div></div>
+                                        <!-- {if $auction.deposit gt 0} -->
+                                        <div class="item"><span class="label">{$lang.au_deposit_two}：</span><div class="s-price">{$auction.formated_deposit}</div></div>
+                                        <!-- {/if} --> 
+                                        
+                                        <!-- {if $auction.status_no eq 0} 未开始 -->
+                                            <div class="item">
+                                                <span class="label">{$lang.end_time}：</span>
+                                                <span class="days" style=" float:left;">{$lang.au_pre_start}</span>
+                                            </div>
+                                        <!-- {elseif $auction.status_no eq 1} 进行中 -->
+                                            <div class="item">
+                                                <span class="label">{$lang.residual_time}：</span>
+                                                <div class="time" data-time="{$auction.end_time}">
+                                                    <span class="days">00</span><i>:</i><span class="hours">19</span><i>:</i><span class="minutes">01</span><i>:</i><span class="seconds">40</span>
+                                                </div>
+                                            </div>
+                                        <!-- {else} 已结束 -->
+                                            <div class="item">
+                                                <span class="label">{$lang.end_time}：</span>
+                                                <span class="days" style=" float:left;">{$auction.bid_time}</span>
+                                            </div>
+                                        <!-- {/if} -->
+                                    </div>
+                                    <div class="summary-items">
+                                        <div class="item">
+                                            <span class="label">{$lang.au_amplitude}：</span>
+                                            <div class="item-name">{$auction.formated_amplitude}</div>
+                                        </div>
+                                        <!-- {if $auction.end_price gt 0} -->
+                                        <div class="item">
+                                            <span class="label">{$lang.au_end_price_two}：</span>
+                                            <div class="item-name">{$auction.formated_end_price}</div>
+                                        </div>
+                                        <!-- {/if} --> 
+                                        <div class="item">
+                                            <span class="label">{$lang.au_mechanism}：</span>
+                                            <div class="item-name">{$goods.rz_shopName}</div>
+                                        </div>
+                                        <div class="item">
+                                            <span class="label">{$lang.con_cus_service}：</span>
+                                            <!--start 在线客服 bylu-->
+                                            {if $shop_information.is_IM eq 1 || $shop_information.is_dsc}
+                                            <a id="IM" onclick="openWin(this)" href="javascript:;" goods_id="{$goods.goods_id}" class="seller-btn"><i class="icon"></i><div class="item-name item-kefu"></div></a>
+                                            {else}
+                                            {if $basic_info.kf_type eq 1}
+                                            <a href="http://www.taobao.com/webww/ww.php?ver=3&touid={$basic_info.kf_ww}&siteid=cntaobao&status=1&charset=utf-8" class="seller-btn" target="_blank"><i class="icon"></i><div class="item-name item-kefu"></div></a>
+                                            {else}
+                                            <a href="http://wpa.qq.com/msgrd?v=3&uin={$basic_info.kf_qq}&site=qq&menu=yes" class="seller-btn" target="_blank"><i class="icon"></i><div class="item-name item-kefu"></div></a>
+                                            {/if}
+                                            {/if}
+                                            <!--end 在线客服 bylu-->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clear"></div>
+                            <form action="auction.php" method="post" name="formBid" id="formBid" onsubmit="return auction_view(this)">
+                            	<!-- {if $auction.status_no eq 0} 未进行 -->
+                                <div class="auction_btn">
+                                    <a href="#none" class="bidBtn bidEnd pt0">{$lang.not_start}</a>
+                                </div>
+                                <!-- {elseif $auction.status_no eq 1} 进行中 -->
+                                <div class="choose p-choose-wrap mt20">
+                                    <div class="fp-l">{$lang.min_fare}：<em>¥<span id="priceLowerOffset">{$auction.amplitude}</span></em></div>
+                                    <div class="fp-c">
+                                        <input type="hidden" name="max-price" id="maxPrice" value="5000000" />
+                                        <a href="javascript:decre();" class="btn-reduce"></a><input type="text" name="buy-price" class="text" value="{$auction.current_price_int}" id="buyPrice" /><a href="javascript:incre();" class="btn-add"></a>
+                                    </div>
+                                    <!-- <div class="fp-r">{$lang.max_fare}<em>{$lang.money_symbol}{$snatch_goods.end_price}</em></div> -->
+                                </div>
+                                <div class="auction_btn pt15">
+                                    <input name="act" type="hidden" value="bid" />
+                                    <input name="id" type="hidden" value="{$auction.act_id}" />
+                                    <input type="submit" value="{$lang.au_i_want_bid}" class="bidBtn mt0" />
+                                </div>
+                                <!-- {else} -->
+                                    <!-- {if $auction.is_winner} -->
+                                    <div class="choose p-choose-wrap mt20">
+                                        <div class="me_grab">{$lang.au_is_winner}</div>
+                                        <div class="me_bid">
+                                            <span>{$lang.nin_want_bid}：</span>
+                                            <div class="p-price">{$auction.last_bid.bid_price}</div>
+                                        </div>
+                                        <div class="bid-btn">
+                                            <!-- {if $auction.is_winner} -->
+                                            <input name="buy" type="submit" class="mebuy" value="{$lang.button_buy}" />
+                                            <input name="act" type="hidden" value="buy" />
+                                            <input name="id" type="hidden" value="{$auction.act_id}" />
+                                            <!-- {/if} -->
+                                        </div>
+                                    </div>
+                                    <!-- {else} -->
+                                    <div class="auction_btn">
+                                        <a href="#none" class="bidBtn bidEnd mt0">{$lang.has_ended}</a>
+                                    </div>
+                                    <!-- {/if} -->
+                                <!-- {/if} -->
+                        	</form>
+                        </div>
+                    </div>    
+                </div>
+                <div class="flowPath clearfix">
+                    <div class="mt"><span class="process-steps-title">{$lang.bidding_process}</span></div>
+                    <div class="mc ui-accordion">
+                        <div class="ui-accordion-main">
+                            <ul>
+                                <li class="item"><span class="item01"></span><div class="status">{$lang.process_step_one}</div></li>
+                                <li class="itemIcon"><span class="item-icon"></span></li>
+                                <li class="item"><span class="item02"></span><div class="status">{$lang.process_step_two}</div></li>
+                                <li class="itemIcon"><span class="item-icon"></span></li>
+                                <li class="item"><span class="item03"></span><div class="status">{$lang.process_step_three}</div></li>
+                                <li class="itemIcon"><span class="item-icon"></span></li>
+                                <li class="item"><span class="item04"></span><div class="status">{$lang.process_step_four}</div></li>
+                                <li class="itemIcon"><span class="item-icon"></span></li>
+                                <li class="item"><span class="item05"></span><div class="status">{$lang.process_step_five}</div></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="details-sidebar">
+                <ul class="details-tabs">
+                    <li class="bid"><i class="icon bid-icon"></i>{$lang.bid_record}</li>
+                    <!-- {if $auction.user_id neq 0} -->
+                    <li class="b-seller on"><i class="icon seller-icon"></i>{$lang.store_shop}</li>
+                    <!-- {/if} -->
+                </ul>
+                <div class="details-items">
+                    <div class="records-list" style="display:none;">
+                        <div class="mt">
+                            <span class="name" id="bidCount">{$lang.bid_record}(<em class="num">{$auction_count}</em>)</span>
+                        </div>
+                        <div class="records">
+                            <dl>
+                                <dt><span class="wd1">{$lang.au_bid_status}</span><span class="wd2">{$lang.auction_desc}</span><span class="wd3">{$lang.time}</span></dt>
+                                <!-- {foreach from=$auction_log item=log name=fe_bid_log} -->
+                                <dd>
+                                    {if $smarty.foreach.fe_bid_log.first}
+                                    <span class="wd1"><i>{$lang.au_bid_ok}</i></span>
+                                    {else}
+                                    <span class="wd1 out"><i>{$lang.out}</i></span>
+                                    {/if}
+                                    <span class="wd2"><i class="phone">{$log.user_name}</i><i class="price">{$log.formated_bid_price}</i></span>
+                                    <span class="wd3">{$log.bid_time}</span>
+                                </dd>
+                                <!--{/foreach}-->
+                            </dl>
+                            <div class="more ac">
+                                <a href="#price_list_count">{$lang.see_more} ></a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- {if $auction.user_id neq 0} -->
+                    <div class="seller-pop">
+                        <div class="seller-logo"><a href="{$goods.store_url}" target="_blank"><img src="{$goods.shopinfo.brand_thumb}" height="45"/></a></div>
+                        <div class="seller-infor"><a href="{$goods.store_url}" target="_blank" class="name">{$goods.rz_shopName}</a><i class="icon arrow-show-more"></i></div>
+                        <dl class="seller-zf">
+                            <dt>{$lang.store_total}：</dt>
+                            <dd>
+                                <span class="heart-white">
+                                    <span class="heart-red h10" style="width:{$merch_cmt.cmt.all_zconments.allReview}%;" title="{$lang.comprehensive}({$merch_cmt.cmt.all_zconments.allReview}%)"> </span>
+                                </span>
+                                <em class="evaluate-grade"><strong title="10"><a target="_blank" href="javascript:;">{$merch_cmt.cmt.all_zconments.score}</a></strong> {$lang.branch}</em>
+                            </dd>
+                        </dl>
+                        <div class="seller-pop-box">
+                            <dl class="pop-score-detail">
+                                <dt class="score-title">
+                                    <span class="col1">{$lang.score_detail}</span>
+                                    <span class="col2">{$lang.industry_compare}</span>
+                                </dt>
+                                <dd class="score-infor">
+                                    <div class="score-part">
+                                        <span class="score-desc">{$lang.goods}<em title="4.83" class="number">{$merch_cmt.cmt.commentRank.zconments.score}</em></span>
+                                        <span class="score-change"><em class="score-percent">{$merch_cmt.cmt.commentRank.zconments.goodReview}%</em></span>
+                                    </div>
+                                    <div class="score-part">
+                                        <span class="score-desc">{$lang.service}<em title="4.83" class="number">{$merch_cmt.cmt.commentServer.zconments.score}</em></span>
+                                        <span class="score-change"><em class="score-percent">{$merch_cmt.cmt.commentServer.zconments.goodReview}%</em></span>
+                                    </div>
+                                    <div class="score-part">
+                                        <span class="score-desc">{$lang.prescription}<em title="4.83" class="number">{$merch_cmt.cmt.commentDelivery.zconments.score}</em></span>
+                                        <span class="score-change"><em class="score-percent">{$merch_cmt.cmt.commentDelivery.zconments.goodReview}%</em></span>
+                                    </div>
+                                </dd>
+                            </dl>
+                        </div>
+                        <div class="seller-address">
+                            <div class="item">
+                                <span class="label">{$lang.company}：</span>
+                                <span class="text">
+                                	{if $shop_info.companyName}
+                                        {$shop_info.companyName}
+                                    {else}
+                                    {$basic_info.shop_name}
+                                    {/if}
+                                </span>
+                            </div>
+                            <div class="item">
+                                <span class="label">{$lang.seat_of}：</span>
+                                <span class="text">
+                                {if $adress.province && $adress.city}
+                                    {$adress.province}&nbsp;{$adress.city}
+                                {else}
+                                    {$basic_info.province}&nbsp;{$basic_info.city}
+                                {/if}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="seller-kefu">
+                            <!--start 在线客服 bylu-->
+                            {if $shop_information.is_IM eq 1 || $shop_information.is_dsc}
+                            <a id="IM" onclick="openWin(this)" href="javascript:;" goods_id="{$goods.goods_id}" class="seller-btn"><i class="icon"></i>{$lang.online_service}</a>
+                            {else}
+                            {if $basic_info.kf_type eq 1}
+                            <a href="http://www.taobao.com/webww/ww.php?ver=3&touid={$basic_info.kf_ww}&siteid=cntaobao&status=1&charset=utf-8" class="seller-btn" target="_blank"><i class="icon"></i>{$lang.con_cus_service}</a>
+                            {else}
+                            <a href="http://wpa.qq.com/msgrd?v=3&uin={$basic_info.kf_qq}&site=qq&menu=yes" class="seller-btn" target="_blank"><i class="icon"></i>{$lang.con_cus_service}</a>
+                            {/if}
+                            {/if}
+                            <!--end 在线客服 bylu-->
+                        </div>
+                        <div class="pop-shop-enter">
+                            <a href="{$goods.store_url}" class="btn-gray btn-shop-access">{$lang.enter_the_shop}</a>
+                            <a href="javascript:;" onClick="get_collect_store(2, {$goods.user_id})" class="btn-gray btn-shop-followey">{$lang.follow_store}</a>
+                        </div>
+                    </div>
+                    <!-- {/if} -->
+                </div>
+                    
+            </div>
+            <div class="details-content">
+            	<div class="product_detail desc">
+                    <div class="goods-detail-title goods-detail-mt">
+                        <ul class="tabs">
+                            <li class="tab_item first current">{$lang.au_introduce}</li>
+                            <li class="tab_item">{$lang.bid_record}</li>
+                            <li class="tab_item">{$lang.service_guarantee}</li>
+                            <li class="tab_item">{$lang.au_raiders}</li>
+                        </ul>
+                    </div>
+                    <div class="mainbox floors">
+                        <div class="fment">
+                            <div class="product_detail_mt">
+                                <h3>{$lang.au_introduce}</h3>
+                            </div>
+                            <div class="product_detail_mc">
+                                {$auction.act_desc}
+                            </div>
+                        </div>
+                        <div class="fment" id="price_list_count">
+                            <div class="product_detail_mt">
+                                <h3>{$lang.bid_record}<em class="num">({$auction_count})</em></h3> 
+                            </div>
+                            <div class="product_detail_mc">
+                                <div class="bid-record">
+                                    <div class="b-title">
+                                        <div class="th td1">{$lang.au_bid_status}</div>
+                                        <div class="th td2">{$lang.au_ren}</div>
+                                        <div class="th td3">{$lang.price}</div>
+                                        <div class="th td4">{$lang.time}</div>
+                                    </div>
+    
+                                    <div class="b-content">
+                                        <!--{foreach from=$auction_log item=item name='foo'}-->
+                                        <div class="item">
+                                            {if $smarty.foreach.foo.index == 0}
+                                            <div class="td td1"><i>{$lang.au_bid_ok}</i></div>
+                                            {else}
+                                            <div class="td td1"><i class="out">{$lang.out}</i></div>
+                                            {/if}
+                                            <div class="td td2">{$item.user_name}</div>
+                                            <div class="td td3 price">{$item.bid_price}</div>
+                                            <div class="td td4">{$item.bid_time}</div>
+                                        </div>
+                                        <!-- {/foreach} -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fment">
+                            <div class="product_detail_mt">
+                                <h3>{$lang.service_guarantee}</h3>
+                            </div>
+                            <div class="product_detail_mc">
+                                {$auction.act_promise}
+                            </div>
+                        </div>
+                        <div class="fment">
+                            <div class="product_detail_mt">
+                                <h3>{$lang.au_raiders}</h3>
+                            </div>
+                            <div class="product_detail_mc">
+                                {$auction.act_ensure}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="remd_lot">
+                    <div class="mt">{$lang.rec_au}</div>
+                    <div class="mc">
+                        <ul>
+                        <!--{foreach from=$hot_goods item=goods}-->
+                            <li>
+                                <div class="p-img">
+                                    <a href="{$goods.url}" target="_blank"><img src="{$goods.thumb}" width="204" height="204"/></a>
+                                </div>
+                                <div class="p-name"><a href="{$goods.url}" target="_blank">{$goods.short_style_name}</a></div>
+                                <div class="p-info">
+                                    <div class="p-left"><span>{$lang.current_price}：</span><div class="p-price"><em>{$lang.money_symbol}</em>{$goods.auction.start_price}</div></div>
+                                    <div class="p-right">
+                                        <span>{$lang.bid_number}：</span><span>{$goods.count}</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <!--{/foreach}-->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+     <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.purebox.js"></script>
+    <script type="text/javascript" src="js/ecsc-increase.js"></script>
+    
+    <script type="text/javascript">
+        $(".details-sidebar").slide({titCell:".details-tabs li",mainCell:".details-items",trigger:"click"});
+        $(".spec-list").slide({mainCell:".spec-items ul",effect:"left",trigger:"click",pnLoop:false,autoPage:true,scroll:1,vis:5});
+		$(".product_detail").jfloor(33,150);
+        $(".time").each(function(){
+            $(this).yomi();
+        });
+        //  by kong  start
+        function auction_view(){
+            var user_id = Number({$user_id});
+            //判断登录
+            if(user_id > 0){
+                var buyPrice=$("#buyPrice").val();//写入价格
+                var current_price = {$auction.current_price|default:0};//当前价格
+                var amplitude = {$auction.amplitude|default:0};//加价幅度
+                var all_price=amplitude+current_price;
+                var is_winner = "{$auction.is_winner|default:0}";
+                var deposit={$auction.deposit|default:0};
+                var user_money = {$user.user_money|default:0};
+
+                if({$auction.end_price})
+                {
+                    var end_price = "{$auction.end_price}";
+                }
+                else
+                {
+                    var end_price = 0;
+                }
+                
+                //判断出价
+                if(is_winner > 0){
+                    return true;
+                }else{
+                    if(buyPrice<all_price){
+                        var message = "{$lang.au_your_lowest_price_wen}" + all_price + "!";
+                        var divId = 'auction_price';
+                        dialogPrompt(divId,message);
+                        return false;
+                    }else{
+                        {foreach from=$auction_log item=item name='foo'}
+                            if({$smarty.foreach.foo.index} == 0){
+                                var top_user_id = {$item.user_id};
+                                if(end_price > 0)
+                                {
+                                    if(top_user_id == user_id && buyPrice < end_price){
+                                        var message = "{$lang.au_bid_repeat_user}";
+                                        var divId = 'auction_price';
+                                        dialogPrompt(divId,message);
+                                        return false;
+                                    }
+                                }
+                                else
+                                {
+                                    if(top_user_id == user_id){
+                                        var message = "{$lang.au_bid_repeat_user}";
+                                        var divId = 'auction_price';
+                                        dialogPrompt(divId,message);
+                                        return false;
+                                    }
+                                }
+                                
+                            }
+                        {/foreach}
+                           //判断保证金
+                            if(deposit > 0){
+                                //判断可用资金
+                                if(user_money < deposit){
+                                    var message = "{$lang.au_user_money_short}";
+                                    var divId = 'auction_price';
+                                    dialogPrompt(divId,message);
+                                    return false;
+                                }
+                            }
+                    }
+                }
+               
+                return true;
+            }else{
+                var back_url = "auction.php?act=view&id=" + {$auction.act_id};
+                $.notLogin("get_ajax_content.php?act=get_login_dialog",back_url);
+				return false;
+            }
+        }
+        //by kong end
+    </script>
+
+    <!--@author-bylu start (拍卖活动)-->
+    <script type="text/javascript">
+        function openWin(obj) {
+            var where_goods = "";
+			if($(obj).attr('goods_id')){
+				where_goods = '&goods_id=' + $(obj).attr('goods_id');
+			}
+			
+			var where_seller = "";
+			if($(obj).attr('ru_id')){
+				where_seller = '&ru_id=' + $(obj).attr('ru_id');
+			}
+	
+			if($(obj).attr('IM_type') != 'dsc'){
+				var where = where_goods + where_seller;
+			}else{
+				var where = '';
+			}
+			var url='online.php?act=service' + where                   //转向网页的地址;
+            var name='webcall';                         //网页名称，可为空;
+            var iWidth=700;                          //弹出窗口的宽度;
+            var iHeight=500;                         //弹出窗口的高度;
+            //获得窗口的垂直位置
+            var iTop = (window.screen.availHeight - 30 - iHeight) / 2;
+            //获得窗口的水平位置
+            var iLeft = (window.screen.availWidth - 10 - iWidth) / 2;
+            window.open(url, name, 'height=' + iHeight + ',,innerHeight=' + iHeight + ',width=' + iWidth + ',innerWidth=' + iWidth + ',top=' + iTop + ',left=' + iLeft + ',status=no,toolbar=no,menubar=no,location=no,resizable=no,scrollbars=0,titlebar=no');
+        }
+    </script>
+    <!--@author-bylu end-->
+</body>
+</html>

@@ -1,0 +1,108 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <form method="post" action="" name="listForm" onsubmit="return confirm(batch_drop_confirm);">
+                <div class="list-div" id="listDiv">
+                {/if}
+                  <table class="ecsc-default-table mt20">	
+                    <thead>
+                    <tr>
+                      <th width="6%">{$lang.record_id}</th>
+                      <th>订单编号</th>
+                      <th>订单总金额</th>
+                      <th>运费金额</th>
+                      <th>退单金额</th>
+                      {if $is_dir}
+                      <th>分销金额</th>
+                      {/if}
+                      {if $filter.commission_model neq 1}
+                      <th>收取比例</th>
+                      {/if}
+                      <th>收取佣金</th>
+                      {if $filter.commission_model neq 1}
+                      <th>应结比例</th>
+                      {/if}
+                      <th>本期应结</th>
+                      <th>订单状态</th>
+                      <th>{$lang.handler}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {foreach from=$order_list item=order name=noorder}
+                    <tr>
+                      <td class="first_td_checkbox">
+                        <div class="first_all">
+                            {$order.order_id}
+                        </div>
+                      </td>
+                      <td>{$order.order_sn}</td>
+                      <td>{$order.format_order_amount}<br/><em class="org2">(含运费)</em></td>
+                      <td>{$order.format_shipping_fee}</td>
+                      <td>{$order.format_return_amount}</td>
+                      {if $is_dir}
+                      <td>{$bill.format_drp_money}</td>
+                      {/if}
+                      {if $filter.commission_model neq 1}
+                      <td>{$order.gain_proportion}%</td>
+                      {/if}
+                      <td>
+                      	{if $order.chargeoff_status neq 0 && $order.model eq 0}
+                            <em class="red">佣金比例：{$order.gain_proportion}%</em>
+                            <br/>
+                        {/if}
+                        {$order.format_gain_commission}<br/><em class="org2">(不含运费)</em>
+                      </td>
+                      {if $filter.commission_model neq 1}
+                      <td>{$order.should_proportion}%</td>
+                      {/if}
+                      <td>
+                      	{if $order.chargeoff_status neq 0 && $order.model eq 0}
+                            <em class="red">佣金比例：{$bill.should_proportion}%</em>
+                            <br/>
+                        {/if}
+                        {$order.format_should_amount}<br/><em class="org2">(含运费)</em>
+                      </td>
+                      <td>
+                      	{$lang.os[$order.order_status]}<br />{$lang.ps[$order.pay_status]}<br />{$lang.ss[$order.shipping_status]}
+                      </td>
+                      <td class="ecsc-table-handle tr">
+                      	<span><a href="merchants_commission.php?act=bill_goods&order_id={$order.order_id}&type=1&seller_id={$filter.seller_id}&commission_model={$filter.commission_model}" class="btn-orange"><i class="sc_icon_see"></i><p>订单明细</p></a></span>
+                      </td>
+                    </tr>
+                    {foreachelse}
+                    <tr><td class="no-records" colspan="20">{$lang.no_records}</td></tr>
+                    {/foreach}
+                    </tbody>
+                  </table>
+                  {include file="page.dwt"}
+                {if $full_page}
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript">
+	listTable.recordCount = {$record_count};
+	listTable.pageCount = {$page_count};
+	listTable.query = "bill_notake_order_query";
+	
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+</script>
+</body>
+</html>
+{/if}

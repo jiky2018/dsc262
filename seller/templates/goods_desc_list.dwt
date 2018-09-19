@@ -1,0 +1,90 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="clear"></div>
+                <div class="explanation" id="explanation">
+                    <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4></div>
+                    <ul>
+                        <li>选择需要统一修改的商品详情的商品分类。</li>
+                        <li>请合理编辑商品详情，以便让用户清晰了解该商品。</li>
+                        <li>批量修改商品描述时，此商品必须是没有设置商品描述信息，否则会以本商品描述信息为准</li>
+                    </ul>
+                </div>
+                <div class="clear"></div>
+				<div class="flexilist pt10">
+					<div class="common-content">
+						<div class="list-div" id="listDiv">
+                        {/if}
+							<table class="ecsc-default-table">
+								<thead>
+									<tr>
+										<th width="10%">{$lang.record_id}</th>
+										<th width="50%">{$lang.goods_desc_name}</th>
+                                        <th width="20%">{$lang.audit_status}</th>
+										<th width="20%">{$lang.handler}</th>
+									</tr>
+								</thead>
+								<tbody>
+									{foreach from=$desc_list item=list}
+									<tr>
+										<td>{$list.id}</td>
+										<td>{$list.desc_name}</td>
+                                        <td>
+                                            {if $list.review_status eq 1}
+                                            <font class="org2">{$lang.not_audited}</font>
+                                            {elseif $list.review_status eq 2}
+                                            <font class="red">{$lang.audited_not_adopt}</font><br/>
+                                            <i class="tip yellow" title="{$list.review_content}" data-toggle="tooltip">{$lang.prompt}</i>
+                                            {elseif $list.review_status eq 3}
+                                            <font class="blue">{$lang.audited_yes_adopt}</font>
+                                            {/if}									
+                                        </td>
+										<td class="ecsc-table-handle">
+                                            <span><a href="goods.php?act=edit_link_desc&id={$list.id}" class="btn-green"><i class="icon icon-edit"></i><p>{$lang.modify}</p></a></span>
+                                            <span class="mr0"><a href="javascript:get_del_desc({$list.id});" class="btn-red"><i class="icon icon-trash"></i><p>{$lang.drop}</p></a></span>
+										</td>
+									</tr>
+									{/foreach}
+								</tbody>
+							</table>
+                            {include file="page.dwt"}
+                        	{if $full_page}    
+						</div>
+					</div>
+				</div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+{literal}
+<script language="JavaScript">
+listTable.recordCount = {$record_count|default:0};
+listTable.pageCount = {$page_count|default:1};
+listTable.query = 'desc_query';
+
+{foreach from=$filter item=item key=key}
+listTable.filter.{$key} = '{$item}';
+{/foreach}
+
+function get_del_desc(id){
+	if (confirm('确实删除这条信息吗')){
+		location.href = 'goods.php?act=del_link_desc&id=' + id;
+	}
+}
+</script>
+{/literal}
+</body>
+</html>
+{/if}

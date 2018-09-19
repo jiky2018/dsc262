@@ -1,0 +1,255 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<div class="gift_gard_list">
+    <h3 class="title">
+      <span>{$lang.goods_list}</span>
+      <div class="fr">{$lang.Credit_Card_Number}：<i>{$gift_sn}</i><a href="gift_gard.php?act=exit_gift">{$lang.Exit_gift_card}</a></div>
+    </h3>
+	<div class="gift_list_form">
+        <form name="compareForm" method="post">
+        <!--{if $goods_list}-->
+        <ul class="relative-list">
+        <!--{foreach name=goods_list from=$goods_list item=goods}-->
+            <li>
+                <div class="recommend-item-pic"><a href="goods.php?id={$goods.goods_id}"><img src="{$goods.goods_thumb}" alt="" class="goodsimg" width="220" height="220" /></a></div>
+                <div class="recommend-item-info">
+                    <p><span class="price">{$goods.shop_price}</span></p>
+                    <p><a href="goods.php?id={$goods.goods_id}" title="{$goods.goods_name}" class="item-title">{$goods.goods_name}</a></p>
+                	<p><a href="javascript:void(0);" onclick="openLayer('test3','test_con3', {$goods.goods_id})" class="btn_th">{$lang.Take_delivery_goods}</a></p>
+            	</div>
+            </li>
+        <!--{/foreach}-->
+        </ul>
+        <!--{else if} -->
+        <p class="nolist">{$lang.gift_gard_null}</p>
+        <!--{/if}-->    
+        </form>
+    </div>
+</div>
+<input name="Input"  id="test3" type="hidden" />
+<div id="test_con3" style="display:none; width:720px;">
+<div id="tab3" style="width:720px;height:auto;background:#FFFFFF;">
+<div id="tabtop-R3">
+	<span class="title">{$lang.input_th_info}</span>
+    <strong onclick="closeLayer()" class="close"></strong>
+</div>
+<div id="tabcontent3" class="mod-main" style="padding:20px">
+<form action="gift_gard.php" method="post" name="theForm" id="theForm" onsubmit="return checkConsignee(this)">
+    <div class="input_container">
+        <label for="desc_address_{$sn}"><span class="spark">*</span>{$lang.Recipient_name}：</label>
+        <input name="consignee" type="text" class="inputBg" id="consignee_{$sn}" value="" style="width:306px;" />
+        <span class="ftx-01 hide consignee_error">{$lang.Consignee_info_null}</span>
+    </div>
+    <div class="input_container input_address_select">
+   	  <label for="selCountries_{$sn}"><span class="spark">*</span>{$lang.receipt_address}：</label>
+      <select name="country" class="bf-select" id="selCountries_{$sn}" onchange="region.changed(this, 1, 'selProvinces_{$sn}')" style="width:78px; padding-left:5px; padding-right:5px; border:1px solid #ccc;">
+        <option value="0">{$lang.please_select}</option>
+        <!-- {foreach from=$country_list item=country} -->
+        <option value="{$country.region_id}" {if $consignee.country eq $country.region_id}selected{/if}>{$country.region_name}</option>
+        <!-- {/foreach} -->
+      </select>
+      <select name="province" class="bf-select" id="selProvinces_{$sn}" onchange="region.changed(this, 2, 'selCities_{$sn}')" style="width:78px; padding-left:5px; padding-right:5px; border:1px solid #ccc;">
+        <option value="0">请选择</option>
+        <!-- {foreach from=$province_list.$sn item=province} -->
+        <option value="{$province.region_id}" {if $consignee.province eq $province.region_id}selected{/if}>{$province.region_name}</option>
+        <!-- {/foreach} -->
+      </select>
+      <select name="city" class="bf-select" id="selCities_{$sn}" onchange="region.changed(this, 3, 'selDistricts_{$sn}')" style="width:88px; padding-left:5px; padding-right:5px; border:1px solid #ccc;">
+        <option value="0">请选择</option>
+        <!-- {foreach from=$city_list.$sn item=city} -->
+        <option value="{$city.region_id}" {if $consignee.city eq $city.region_id}selected{/if}>{$city.region_name}</option>
+        <!-- {/foreach} -->
+      </select>
+      <select name="district" class="bf-select" id="selDistricts_{$sn}" onchange="region.changed(this, 4, 'selStreets_{$sn}')" {if !$district_list.$sn}style="display:none; width:98px; padding-left:5px; padding-right:5px; border:1px solid #ccc;"{/if}>
+        <option value="0">请选择</option>
+        <!-- {foreach from=$district_list.$sn item=district} -->
+        <option value="{$district.region_id}" {if $consignee.district eq $district.region_id}selected{/if}>{$district.region_name}</option>
+        <!-- {/foreach} -->
+      </select>
+      <select name="street" class="bf-select" id="selStreets_{$sn}" {if !$street_list.$sn}style="display:none; width:auto; padding-left:5px; padding-right:5px; border:1px solid #ccc;"{/if}>
+        <option value="0">请选择</option>
+        <!-- {foreach from=$street_list.$sn item=street} -->
+        <option value="{$street.region_id}" {if $consignee.street eq $street.region_id}selected{/if}>{$street.region_name}</option>
+        <!-- {/foreach} -->
+      </select>
+      
+      <span class="ftx-01 hide area_error">{$lang.Please_select_area}</span>
+    </div>
+    <div class="input_container">
+    	<label for="recipient_street"><span class="spark">*</span>{$lang.Detailed_address}：</label>
+        <input name="address" type="text" class="inputBg" size="30"  id="desc_address_{$sn}" value="" style="width:306px;"/>
+        <span class="ftx-01 hide address_error">{$lang.Detailed_address_null}</span>
+    </div>
+    <div class="input_container">
+    	<label for="recipient_hp"><span class="spark">*</span>{$lang.Contact_number}：</label>
+        <input name="mobile" type="text" class="inputBg"  id="mobile_{$sn}" value="" style="width:306px;" />
+        <span class="ftx-01 hide phone_error">{$lang.Contact_number_null}</span>
+    </div>
+    <div class="input_container">
+    	<label for="recipient_hp">{$lang.shipping_time}：</label>
+        <input name="shipping_time" type="text" class="inputBg"  id="shipping_time" value="" style="width:306px;" />
+    </div>
+    <div class="act">
+        <input type="submit" name="Submit" class="formbutton" value="{$lang.Confirmation_delivery}" />
+      	<input type="hidden" name="act" value="check_take" />
+    </div>
+</form>
+</div>
+</div>
+</div>
+
+<script type="text/javascript">
+//弹出层
+function openLayer(objId,conId, goods_id){
+var arrayPageSize   = getPageSize();//调用getPageSize()函数
+var arrayPageScroll = getPageScroll();//调用getPageScroll()函数
+
+if (!document.getElementById("popupAddr")){
+//创建弹出内容层
+var popupDiv = document.createElement("div");
+//给这个元素设置属性与样式
+popupDiv.setAttribute("id","popupAddr")
+popupDiv.style.position = "absolute";
+popupDiv.style.border = "1px solid #ccc";
+popupDiv.style.background = "#fff";
+popupDiv.style.zIndex = 10000002;
+popupDiv.style.width = 720+'px';
+//创建弹出背景层
+var bodyBack = document.createElement("div");
+bodyBack.setAttribute("id","bodybg")
+bodyBack.style.position = "absolute";
+bodyBack.style.width = "100%";
+bodyBack.style.height = (arrayPageSize[1] + 35 + 'px');
+bodyBack.style.zIndex = 1000001;
+bodyBack.style.top = 0;
+bodyBack.style.left = 0;
+bodyBack.style.filter = "alpha(opacity=50)";
+bodyBack.style.opacity = 0.5;
+bodyBack.style.background = "#000";
+//实现弹出(插入到目标元素之后)
+var mybody = document.getElementById(objId);
+insertAfter(popupDiv,mybody);//执行函数insertAfter()
+insertAfter(bodyBack,mybody);//执行函数insertAfter()
+}
+//显示背景层
+document.getElementById("bodybg").style.display = "";
+//显示内容层
+var popObj=document.getElementById("popupAddr");
+popObj.innerHTML = document.getElementById(conId).innerHTML;
+popObj.style.display = "";
+//让弹出层在页面中垂直左右居中(统一)
+// popObj.style.width  = "600px";
+// popObj.style.height = "400px";
+// popObj.style.top  = arrayPageScroll[1] + (arrayPageSize[3] - 35 - 400) / 2 + 'px';
+// popObj.style.left = (arrayPageSize[0] - 20 - 600) / 2 + 'px';
+//让弹出层在页面中垂直左右居中(个性)
+var arrayConSize=getConSize(conId);
+popObj.style.top  = arrayPageScroll[1] + (arrayPageSize[3] - arrayConSize[1]) / 2-50 + 'px';
+popObj.style.left = (arrayPageSize[0] - arrayConSize[0]) / 2 -30 + 'px';
+
+
+$("#popupAddr").find(".act").addClass("aaa").append('<input name="goods_id" id="goods_val_id" type="hidden" value="'+goods_id+'" />');
+}
+//获取内容层内容原始尺寸
+function getConSize(conId){
+var conObj=document.getElementById(conId);
+conObj.style.position = "absolute";
+conObj.style.left=-1000+"px";
+conObj.style.display="";
+var arrayConSize=[conObj.offsetWidth,conObj.offsetHeight];
+conObj.style.display="none";
+return arrayConSize;
+}
+function insertAfter(newElement,targetElement){//插入
+var parent = targetElement.parentNode;
+if(parent.lastChild == targetElement){
+parent.appendChild(newElement);
+}
+else{
+parent.insertBefore(newElement,targetElement.nextSibling);
+}
+}
+//获取滚动条的高度
+function getPageScroll(){
+var yScroll;
+if (self.pageYOffset) {
+yScroll = self.pageYOffset;
+} else if (document.documentElement  &&  document.documentElement.scrollTop){
+yScroll = document.documentElement.scrollTop;
+} else if (document.body) {
+yScroll = document.body.scrollTop;
+}
+arrayPageScroll = new Array('',yScroll);
+return arrayPageScroll;
+}
+//获取页面实际大小
+function getPageSize(){
+var xScroll,yScroll;
+if (window.innerHeight  &&  window.scrollMaxY){
+xScroll = document.body.scrollWidth;
+yScroll = window.innerHeight + window.scrollMaxY;
+} else if (document.body.scrollHeight > document.body.offsetHeight){
+sScroll = document.body.scrollWidth;
+yScroll = document.body.scrollHeight;
+} else {
+xScroll = document.body.offsetWidth;
+yScroll = document.body.offsetHeight;
+}
+var windowWidth,windowHeight;
+//var pageHeight,pageWidth;
+if (self.innerHeight) {
+windowWidth = self.innerWidth;
+windowHeight = self.innerHeight;
+} else if (document.documentElement  &&  document.documentElement.clientHeight) {
+windowWidth = document.documentElement.clientWidth;
+windowHeight = document.documentElement.clientHeight;
+} else if (document.body) {
+windowWidth = document.body.clientWidth;
+windowHeight = document.body.clientHeight;
+}
+var pageWidth,pageHeight
+if(yScroll < windowHeight){
+pageHeight = windowHeight;
+} else {
+pageHeight = yScroll;
+}
+if(xScroll < windowWidth) {
+pageWidth = windowWidth;
+} else {
+pageWidth = xScroll;
+}
+arrayPageSize = new Array(pageWidth,pageHeight,windowWidth,windowHeight)
+return arrayPageSize;
+}
+//关闭弹出层
+function closeLayer(){
+document.getElementById("popupAddr").style.display = "none";
+document.getElementById("bodybg").style.display = "none";
+return false;
+}
+</script>
+<script type="text/javascript">
+//对“拖动点”定义：onMousedown="StartDrag(this)" onMouseup="StopDrag(this)" onMousemove="Drag(this)"即可
+var move=false,oldcolor,_X,_Y;
+function StartDrag(obj){  //定义准备拖拽的函数
+obj.setCapture(); //对当前对象的鼠标动作进行跟踪
+oldcolor=obj.style.backgroundColor;
+obj.style.background="#999";
+move=true;
+//获取鼠标相对内容层坐标
+var parentwin=document.getElementById("popupAddr");
+_X=parentwin.offsetLeft-event.clientX
+_Y=parentwin.offsetTop-event.clientY
+}
+function Drag(obj){        //定义拖拽函数
+if(move){
+var parentwin=document.getElementById("popupAddr");
+parentwin.style.left=event.clientX+_X;
+parentwin.style.top=event.clientY+_Y;
+}
+}
+function StopDrag(obj){   //定义停止拖拽函数
+obj.style.background=oldcolor;
+obj.releaseCapture(); //停止对当前对象的鼠标跟踪
+move=false;
+}
+</script>

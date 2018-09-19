@@ -1,0 +1,207 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.goods_psi} - {$ur_here}</div>
+        <div class="content">
+			{include file='library/psi_goods_tab.lbi'}
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit">
+					<i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span>
+				</div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.list.0}</li>
+                    <li>{$lang.operation_prompt_content.list.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<div class="common-head">
+                   	{if $action_link}
+                    <div class="fl hide">
+                        <a href="{$action_link.href}"><div class="fbutton"><div class="add" title="{$action_link.text}"><span><i class="icon icon-plus"></i>{$action_link.text}</span></div></div></a>
+                    </div>
+                    {/if}
+                    <div class="refresh{if !$action_link} ml0{/if}">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+                    <div class="search">
+                    	<form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+                        {include file ='library/search_store.lbi'}
+                        <div class="input">
+                            <input type="text" name="keyword" class="text nofocus" placeholder="{$lang.keyword}" autocomplete="off" />
+                            <input type="submit" class="btn" name="secrch_btn" ectype="secrch_btn" value="" />
+                        </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="common-content">
+                	<div class="list-div" id="listDiv">
+                        {/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                    <th width="5%"><div class="tDiv">{$lang.record_id}</div></th>
+                                    <th width="25%"><div class="tDiv">{$lang.goods_name}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.goods_steps_name}</div></th>
+									<th width="5%"><div class="tDiv">{$lang.goods_mode}</div></th>
+									<th width="5%"><div class="tDiv">{$lang.is_set_attr}</div></th>
+                                    <th width="5%"><div class="tDiv">{$lang.set_security_stock}</div></th>
+                                    <th width="5%"><div class="tDiv">{$lang.stock_total}</div></th>
+                                    <th width="10%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {foreach from=$goods_list item=goods}
+                            	<tr>
+                                    <td><div class="tDiv">{$goods.goods_id}</div></td>
+                                    <td>
+										<div class="tDiv goods_list_info">
+											<div class="img"><a href="../goods.php?id={$goods.goods_id}" target="_blank" title="{$goods.goods_name|escape:html}"><img src="{$goods.goods_thumb}" width="68" height="68" /></a></div>
+											<div class="desc">
+												<div class="name">
+													<span title="{$goods.goods_name|escape:html}" class="span">{$goods.goods_name|escape:html}</span>
+												</div>
+                                            </div>
+										</div>
+									</td>
+                                    <td><div class="tDiv">{if $goods.user_name}<font class="red">{$goods.user_name}</font>{else}<font class="blue">{$lang.self}</font>{/if}</div></td>
+									<td><div class="tDiv">{if $goods.model_inventory eq 2}{$lang.region_mode}{elseif $goods.model_inventory eq 1}{$lang.warehouse_mode}{else}{$lang.ordinary_mode}{/if}</div></td>
+									<td><div class="tDiv">{if $goods.goods_type}<span class="red">{$lang.yes}</span>{else}{$lang.no}{/if}</div></td>
+                                    <td>
+										<div class="tDiv">
+											<a href="javascript:;" ectype="add_sku" data-goodsid="{$goods.goods_id}" data-userid="{$goods.user_id}" data-type="safe"><i class="icon icon-edit font16"></i></a>						
+										</div>
+									</td>
+                                    <td><div class="tDiv">{$goods.total_number}</div></td>
+                                    <td class="handle">
+                                        <div class="tDiv a2">
+											<a href="javascript:;" ectype="add_sku" data-goodsid="{$goods.goods_id}" data-userid="{$goods.user_id}" data-type="in" title="{$lang.01_psi_purchase}" class="btn_see"><i class="icon icon-plus-sign-alt"></i>{$lang.01_psi_purchase}</a>
+                                            <a href="goods_psi.php?act=psi_log&goods_id={$goods.goods_id}" title="{$lang.stock_journal}" class="btn_see"><i class="sc_icon sc_icon_see"></i>{$lang.stock_journal}</a>
+                                        </div>
+                                    </td>
+                                </tr>
+								{foreachelse}
+								<tr><td class="no-records"  colspan="12">{$lang.no_records}</td></tr>
+								{/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="12">
+                                        <div class="list-page">
+                                            {include file="library/page.lbi"}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        {if $full_page}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+ 	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+	listTable.query = 'inventory_query';
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+	
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+	
+	//SKU/库存 start
+	$(document).on("click","a[ectype='add_sku']",function(){
+		var goods_id = $(this).data('goodsid');
+		var user_id = $(this).data('userid');
+		var type = $(this).data('type');
+		switch(type){
+			case 'safe' : 
+				var title = '{$lang.set_security_stock}'; 
+				var foot = false; 
+				break;
+			case 'in' : 
+				var title = '{$lang.01_psi_purchase}'; 
+				var foot = true; 
+				break;
+			default : 
+				var title = '{$lang.set_security_stock}'; 
+				var foot = false;
+		}
+		
+		$.jqueryAjax('goods_psi.php', 'act=add_sku' + '&goods_id=' + goods_id + '&user_id=' + user_id + '&type=' + type, function(data){
+			var content = data.content;
+			pb({
+				id:"categroy_dialog",
+				title:title,
+				width:863,
+				content:content,
+				ok_title:"{$lang.button_submit_alt}",
+				cl_title:"{$lang.cancel}",
+				drag:true,
+				foot:foot,
+				onOk:function(){
+					save_inventory();
+				}
+			});
+		});
+	});	
+	
+	//入库操作
+	function save_inventory(){
+		var goods_id = $("#categroy_dialog").find("input[name='goods_id']").val();
+		var goods_type = $("#categroy_dialog").find("input[name='goods_type']").val();
+		var goods_model = $("#categroy_dialog").find("input[name='model_attr']").val();
+		var suppliers_id = $("#categroy_dialog").find("input[name='suppliers_id']").val();
+		var remark = $("#categroy_dialog").find("input[name='remark']").val();
+		//初始化表单数据
+		var form_data = {'act':'save_inventory', 'goods_id':goods_id, 'goods_type':goods_type, 'goods_model':goods_model, 'suppliers_id':suppliers_id, 'remark':remark};
+		//商品模式
+		if(goods_model == 2){
+			var area_id = $("#categroy_dialog").find("input[name='area_name']").val();
+			form_data.area_id = area_id;
+		}else if(goods_model == 1){
+			var warehouse_id = $("#categroy_dialog").find("input[name='warehouse_name']").val();
+			form_data.warehouse_id = warehouse_id;
+		}else{}
+		//判断货品
+		if(goods_type > 0){
+			//货品批次号
+			$("#categroy_dialog").find("input[ectype='product_batch_number']").each(function(){
+				var name = $(this).attr('name');
+				var value = $(this).val();
+				form_data[name] = value;
+			})		
+			//货品数量
+			$("#categroy_dialog").find("input[ectype='product_number']").each(function(){
+				var name = $(this).attr('name');
+				var value = $(this).val();
+				form_data[name] = value;
+			})
+
+		}else{
+			//商品批次号
+			var goods_batch_number = $("#categroy_dialog").find("input[ectype='goods_batch_number']").val();
+			form_data.goods_batch_number = goods_batch_number;
+			//商品数量
+			var goods_number = $("#categroy_dialog").find("input[ectype='goods_number']").val();
+			form_data.goods_number = goods_number;
+		}
+		
+		$.ajax({
+			url:'goods_psi.php',
+			type:'post',
+			data:form_data,
+			dataType:'json',
+			success:function(data){
+				location.reload();
+			}
+		})
+	}
+	</script>
+</body>
+</html>
+{/if}

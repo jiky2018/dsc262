@@ -1,0 +1,120 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="search-info">
+                    <div class="search-form">
+                      <form action="javascript:search_brand()" name="searchForm">
+                        <div class="search-key">
+                            <input type="text" name="brand_name" size="15" class="text text_2" placeholder="{$lang.keyword}"/>
+                            <input type="submit" value="{$lang.button_search}" class="submit" />
+                        </div>
+                      </form>
+                    </div>  
+				</div>
+				<form method="post" action="" name="listForm">
+				<!-- start brand list -->
+				<div class="list-div" id="listDiv">
+				{/if}				
+                <table class="ecsc-default-table">
+                    <thead>
+                        <tr>
+                          <th width="6%"><a href="javascript:listTable.sort('bid');">{$lang.record_id}</a></th>
+                          <th width="11%" class="tl">{$lang.brand_name_cn}</th>
+                          <th width="10%" class="tl">{$lang.brand_name_en}</th>
+                          <th width="10%" class="tl">{$lang.associated_platform_brands}</th>
+                          <th width="6%"  class="tl">{$lang.brand_image}</th>
+                          <th width="25%" class="tl">{$lang.brand_desc}</th>
+                          <th width="6%"><a href="javascript:listTable.sort('sort_order'); ">{$lang.sort_order}</a></th>
+                          <th width="6%">{$lang.is_show}</th>
+                          <th width="10%">{$lang.adopt_status}</th>
+                          <th width="10%">{$lang.handler}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {foreach from=$brand_list item=brand}
+                        <tr class="bd-line">
+                          <td>{$brand.brand_id}</td>
+                          <td class="tl"><span onclick="javascript:listTable.edit(this, 'edit_brand_name', {$brand.brand_id})">{$brand.brand_name|escape:html}</span>{if $brand.major_business}<font class="red hide">{$lang.main_brand}</font>{/if}</td>
+                          <td class="tl"><span onclick="javascript:listTable.edit(this, 'edit_brand_letter', {$brand.brand_id})">{$brand.brand_letter|escape:html}</span></td>
+                          <td class="tl">{$brand.link_brand.brand_name}</td>
+                          <td class="tl">
+                              {if $brand.brand_logo}
+                              <div class="tDiv">
+                                  <span class="show">
+                                      <a href="{if $brand.brand_logo}../{$brand.brand_logo}{else}images/default/brand_logo_default.jpg{/if}" class="nyroModal"><i class="icon icon-picture" onmouseover="toolTip('<img src={if $brand.brand_logo}../{$brand.brand_logo}{else}images/default/brand_logo_default.jpg{/if}>')" onmouseout="toolTip()"></i></a>
+                                  </span>                                    
+                              </div>
+                              {/if}
+                          </td>
+                          <td class="tl">{$brand.brand_desc|truncate:36}</td>
+                          <td>
+                          <span onclick="javascript:listTable.edit(this, 'edit_sort_order', {$brand.brand_id})">{$brand.sort_order}</span>
+                          </td>
+                          <td>
+                            <div class="switch {if $brand.is_show}active{/if}" title="{if $brand.is_show}是{else}否{/if}" onclick="listTable.switchBt(this, 'toggle_show', {$brand.brand_id})">
+								<div class="circle"></div>
+							</div>
+							<input type="hidden" value="0" name="">       
+						  </td>
+                          <td>{if $brand.audit_status eq 1}<font class="blue">已审核</font>{elseif $brand.audit_status eq 2}<font class="red">审核未通过</font>{else}<font class="org">未审核</font>{/if}</td>
+                          <td class="ecsc-table-handle tr">
+                            <span><a href="merchants_brand.php?act=edit&id={$brand.brand_id}" title="{$lang.edit}" class="btn-green"><i class="icon icon-edit"></i><p>{$lang.edit}</p></a></span>
+                            <span><a href="javascript:;" onclick="listTable.remove({$brand.brand_id}, '{$lang.drop_confirm}')" title="{$lang.drop}" class="btn-red"><i class="icon icon-trash"></i><p>{$lang.drop}</p></a></span>
+                          </td>
+                        </tr>
+                    {foreachelse}
+                        <tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+                    {/foreach}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="20">
+                            {include file="page.dwt"}
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+				{if $full_page}
+				</div>
+				</form>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript" src="../js/jquery.picTip.js"></script>
+<script type="text/javascript">
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+	
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+
+	{literal}
+	function search_brand()
+	{
+		listTable.filter['brand_name'] = Utils.trim(document.forms['searchForm'].elements['brand_name'].value);
+		listTable.filter['page'] = 1;
+		
+		listTable.loadList();
+	}
+	{/literal}
+	$(function(){
+		$('.nyroModal').nyroModal();
+	})
+</script>
+</body>
+</html>
+{/if}

@@ -1,0 +1,173 @@
+<!doctype html>
+<html>
+{include file='pageheader.dwt'}
+<div class="content">
+	<div class="title">{$page_title}</div>
+    <div class="explanation" id="explanation">
+        <i class="sc_icon"></i>
+        <ul>
+            <li>标识“*”的选项为必填项，其余为选填项。</li>
+            <li>请按提示文字填写职员信息，以免账号不可使用。</li>
+            <li>请合理分配门店权限，获取相应权限后，该职员只能在权限内操作。</li>
+        </ul>
+    </div>
+    <div class="mian-info">
+        <form method="post" action="store_assistant.php" name="theForm" id="store_assistant" enctype="multipart/form-data">
+        	<div class="item">
+            	<div class="label">{$lang.require_field}{$lang.store_user}：</div>
+                <div class="value">
+                	<input type="text" name="store_user" maxlength="60" size="30" value='{$store_user.stores_user}' class="text" />
+                    <div class="form_prompt"></div>
+                    <p class="notic">3-15位字符，可由中文、英文、数字及“_”、“-”组成</p>
+                </div>
+            </div>
+            {if $act eq 'insert'}
+            <div class="item">
+            	<div class="label">{$lang.require_field}{$lang.password}：</div>
+                <div class="value">
+                    <input type="password" style="display:none"/>
+                	<input type="password" name="password" id="password" maxlength="60" size="30" class="text" />
+                    <div class="form_prompt"></div>
+                    <p class="notic">6-20位字符，可由英文、数字及标点符号组成</p>
+                </div>
+            </div>
+            <div class="item">
+            	<div class="label">{$lang.require_field}{$lang.confirm_pwd}：</div>
+                <div class="value">
+                    <input type="password" style="display:none"/>
+                	<input type="password" name="confirm_pwd" maxlength="60" size="30" class="text" />
+                    <div class="form_prompt"></div>
+                    <p class="notic">两次输入的密码必须一致</p>
+                </div>
+            </div>
+            {else}
+            <div class="item">
+            	<div class="label">{$lang.newpassword}：</div>
+                <div class="value">
+                    <input type="password" style="display:none"/>
+                	<input type="password" name="newpassword" maxlength="60" size="30" class="text" />
+                </div>
+            </div>
+            <div class="item">
+            	<div class="label">{$lang.confirm_pwd}：</div>
+                <div class="value">
+                    <input type="password" style="display:none"/>
+                	<input type="password" name="confirm_pwd" maxlength="60" size="30" class="text" />
+                </div>
+            </div>
+            {/if}
+            <div class="item">
+            	<div class="label">{$lang.require_field}{$lang.email}：</div>
+                <div class="value">
+                	<input type="text" name="email" maxlength="60" size="30" value="{$store_user.email}" class="text" />
+                    <div class="form_prompt"></div>
+                    <p class="notic">请输入常用的邮箱，将用来找回密码、接受订单通知等</p>
+                </div>
+            </div>
+            <div class="item">
+            	<div class="label">{$lang.require_field}{$lang.tel}：</div>
+                <div class="value">
+                	<input type="text" name="tel" maxlength="60" size="30"  value="{$store_user.tel}" class="text" />
+                    <div class="form_prompt"></div>
+                    <p class="notic">请输入常用的11位手机号码</p>
+                </div>
+            </div>
+            <div class="item">
+            	<div class="label">{$lang.store_action}：</div>
+                <div class="value">
+                	<div class="checkbox_items">
+                	{foreach from=$store_action item=action key=key}
+                        <div class="checkbox_item">
+                            <input type="checkbox" name="store_action[]" class="ui-checkbox" id="checkbox_{$key}" value="{$action.action_code}" {if $action.is_check}checked="checked"{/if}/>
+                            <label for="checkbox_{$key}" class="ui-label">{$action.action_name}</label>
+                        </div>
+                    {foreachelse}
+                        <div class="checkbox_item">后台没有设置权限</div>
+                    {/foreach}
+                    </div>
+                    <p class="notic">设置该职员在门店中的权限</p>
+                </div>
+            </div>
+            <div class="item">
+            	<div class="label">&nbsp;</div>
+                <div class="value item_btn">
+                	<!--<input type="submit" class="btn blue_btn btn35 w100" id="submitBtn" value="{$lang.button_submit}" />-->
+                	<input type="button" class="btn blue_btn btn35 w100" id="submitBtn" value="{$lang.button_submit}"/>
+                    <input type="hidden" name='act' value="{$act}" />
+                    <input type="hidden" name='id' value="{$store_user.id}" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+	//表单验证
+	$(function(){
+		$("#submitBtn").click(function(){
+			if($("#store_assistant").valid()){
+				//$("#store_assistant").submit();
+				send_form_data("form[name=theForm]");
+			}
+		});
+		
+		jQuery.validator.addMethod("isMobile", function(value, element) {
+			var length = value.length;
+			var mobile = /^(13[0-9]{9})|(18[0-9]{9})|(14[0-9]{9})|(17[0-9]{9})|(15[0-9]{9})$/;
+			return this.optional(element) || (length == 11 && mobile.test(value));
+		}, "请正确填写您的手机号码");
+		
+		$('#store_assistant').validate({
+			errorPlacement: function(error, element){
+				var error_div = element.parent('div.value').children('div.form_prompt');
+				error_div.append(error);
+			},
+			rules : {
+				store_user : {
+					required : true
+				},
+				email : {
+					required : true,
+					email : true
+				},
+				tel : {
+					required : true,
+					minlength : 11,
+					isMobile : true
+				},
+				{if $act eq 'insert'}
+				password : {
+					required : true,
+					minlength:6
+				},
+				confirm_pwd : {
+					required : true,
+					equalTo:"#password"
+				}
+				{/if}
+			},
+			messages : {
+				store_user : {
+					required : '<i class="icon icon-exclamation-sign"></i>登陆名不能为空'
+				},
+				email : {
+					required : '<i class="icon icon-exclamation-sign"></i>email不能为空',
+					email : '<i class="icon icon-exclamation-sign"></i>email格式不正确'
+				},
+				tel : {
+					required : '<i class="icon icon-exclamation-sign"></i>请输入手机号',
+					minlength : '<i class="icon icon-exclamation-sign"></i>确认手机不能小于11个字符',
+					isMobile : '<i class="icon icon-exclamation-sign"></i>请正确填写您的手机号码'
+				},
+				password : {
+					required : '<i class="icon icon-exclamation-sign"></i>密码不能为空',
+					minlength : '<i class="icon icon-exclamation-sign"></i>密码不能少于6位'
+				},
+				confirm_pwd : {
+					required : '<i class="icon icon-exclamation-sign"></i>确认密码不能为空',
+					equalTo:'<i class="icon icon-exclamation-sign"></i>两次输入密码不匹配'
+				}
+			}
+		});
+	});
+</script>
+{include file='pagefooter.dwt'}

@@ -1,0 +1,131 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.supply_and_demand} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit">
+					<i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span>				
+				</div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.list.0}</li>
+                    <li>{$lang.operation_prompt_content.list.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<div class="common-head">
+                   	{if $action_link}
+                    <div class="fl">
+                        <a href="{$action_link.href}"><div class="fbutton"><div class="add" title="{$action_link.text}"><span><i class="icon icon-plus"></i>{$action_link.text}</span></div></div></a>
+                    </div>
+                    {/if}
+                    <div class="refresh{if !$action_link} ml0{/if}">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+                    <div class="search">
+                    	<form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+                        <div class="input">
+                            <input type="text" name="keyword" class="text nofocus" placeholder="{$lang.keyword}" autocomplete="off" />
+                            <input type="submit" class="btn" name="secrch_btn" ectype="secrch_btn" value="" />
+                        </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="common-content">
+					<form method="post" action="wholesale_purchase.php" name="listForm" onsubmit="return confirm(batch_drop_confirm);">
+						<div class="list-div" id="listDiv">
+							{/if}
+							<table cellpadding="0" cellspacing="0" border="0">
+								<thead>
+									<tr>
+										<th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars"></label></div></th>
+										<th width="5%"><div class="tDiv"><a href="javascript:listTable.sort('purchase_id'); ">{$lang.record_id}</a></div></th>
+										<th width="32%"><div class="tDiv">{$lang.purchase_single_title}</div></th>
+										<th width="10%"><div class="tDiv">{$lang.purchase_product_type}</div></th>
+										<th width="10%"><div class="tDiv">{$lang.user_account}</div></th>
+										<th width="10%"><div class="tDiv"><a href="javascript:listTable.sort('add_time'); ">{$lang.add_time}</a></div></th>
+										<th width="10%"><div class="tDiv"><a href="javascript:listTable.sort('end_time'); ">{$lang.end_time}</a></div></th>
+										<th width="10%"><div class="tDiv">{$lang.is_shelves}</div></th>
+										<th width="10%" class="handle">{$lang.handler}</th>
+									</tr>
+								</thead>
+								<tbody>
+									{foreach from=$purchase_list item=list}
+									<tr>
+										<td class="sign">
+											<div class="tDiv">
+												<input type="checkbox" name="checkboxes[]" value="{$list.purchase_id}" class="checkbox" id="checkbox_{$list.purchase_id}" />
+												<label for="checkbox_{$list.purchase_id}" class="checkbox_stars"></label>
+											</div>
+										</td>
+										<td><div class="tDiv">{$list.purchase_id}</div></td>
+										<td><div class="tDiv">{$list.subject|escape:html}</div></td>
+										<td><div class="tDiv">{$lang.purchase_type.$list.type}</div></td>
+										<td><div class="tDiv">{if $list.user_name}<font class="red">{$list.user_name}</font>{else}<font class="blue">{$lang.anonymous}</font>{/if}</div></td>
+										<td><div class="tDiv">{$list.add_time}</div></td>
+										<td><div class="tDiv">{$list.end_time}</div></td>
+										<td>
+											<div class="tDiv">
+												<div class="switch {if $list.review_status}active{/if}" title="{if $list.review_status}{$lang.yes}{else}{$lang.no}{/if}" onclick="listTable.switchBt(this, 'toggle_review_status', {$list.purchase_id})">
+													<div class="circle"></div>
+												</div>
+												<input type="hidden" value="0" name="">
+											</div>									
+										</td>									
+										<td class="handle">
+											<div class="tDiv a2">
+												<a href="wholesale_purchase.php?act=edit&purchase_id={$list.purchase_id}" title="{$lang.view}" class="btn_edit"><i class="sc_icon sc_icon_see"></i>{$lang.view}</a>
+												<a href="javascript:;" onclick="listTable.remove({$list.purchase_id}, '{$lang.drop_confirm}')" title="{$lang.remove}" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>
+											</div>
+										</td>
+									</tr>
+									{foreachelse}
+										<tr><td class="no-records" colspan="12">{$lang.no_records}</td></tr>
+									{/foreach}
+								</tbody>
+								<tfoot>
+									<tr>
+										<td colspan="12">                                         
+											<div class="tDiv">
+												<div class="tfoot_btninfo">
+													<div class="shenhe">
+														<input type="submit" name="drop" id="btnSubmit" value="{$lang.drop}" class="btn btn_disabled" disabled="true" ectype="btnSubmit" />
+														<input type="hidden" name="act" value="batch" />											  
+													</div>										
+												</div>
+												<div class="list-page">
+													{include file="library/page.lbi"}
+												</div>
+											</div>
+										</td>
+									</tr>
+								</tfoot>
+							</table>
+							{if $full_page}
+						</div>
+					</form>
+                </div>
+            </div>
+        </div>
+    </div>
+ 	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+	
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+	
+	$(function(){
+		//点击查看图片
+		$('.nyroModal').nyroModal();
+	});
+    </script>
+</body>
+</html>
+{/if}

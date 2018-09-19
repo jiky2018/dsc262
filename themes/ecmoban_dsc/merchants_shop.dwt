@@ -1,0 +1,200 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<link rel="icon" href="animated_favicon.gif" type="image/gif" />
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/base.css" />
+<link href="{$ecs_css_path}" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/quickLinks.css" />
+<link rel="alternate" type="application/rss+xml" title="RSS|{$page_title}" href="{$feed_url}" />
+<link rel="stylesheet" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/purebox.css">
+{* 包含脚本文件 *}
+{insert_scripts files='jquery-1.9.1.min.js,jquery.json.js,transport_jquery.js,cart_common.js,cart_quick_links.js'}
+{insert_scripts files='common.js,global.js,compare.js,parabola.js'}
+
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/sc_common.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.tabso_yeso.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/rotate3di.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/scroll_city.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/notLogin.js"></script>
+<!-- #BeginLibraryItem "/library/js_languages.lbi" --><!-- #EndLibraryItem -->
+</head>
+
+<body>
+<!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
+<div id="content" class="w1200">
+    {if $shop_info}
+    <div class="shopCon">
+        <div class="shopBox">
+            <div class="shopHeader">
+                <a href="{$shop_info.store_url}" class="shopHeader-logo" target="_blank"><img src="{$basic_info.logo_thumb}" width="80" height="80" /></a>
+                <div class="shopHeader-info">
+                    <a href="{$shop_info.store_url}" target="_blank" class="sHi-title">{$shop_info.shop_name}</a>
+                    <p class="dp">{$lang.Main_brand}：<span>
+                    {foreach from=$brand_list item=brand name=nobrand}
+                            {if !$smarty.foreach.nobrand.last}
+                                {$brand.brand_name},
+                            {else}
+                                {$brand.brand_name}
+                            {/if}
+                        {/foreach}
+                    </span></p>
+                    <p>{$lang.seat_of}：{$address}</p>
+                </div>
+                <div class="shopHeader-dsr">
+                    <dl>
+                        <dt class="label">{$lang.score_detail}</dt>
+                        <dd>{$lang.goods}<em class="ftx-08">{$merch_cmt.cmt.commentRank.zconments.score}</em></dd>
+                        <dd>{$lang.service}<em class="ftx-08">{$merch_cmt.cmt.commentServer.zconments.score}</em></dd>
+                        <dd>{$lang.Invalid}<em class="ftx-08">{$merch_cmt.cmt.commentDelivery.zconments.score}</em></dd>
+                    </dl>
+                    <dl>
+                        <dt class="label">{$lang.Compared_industry}</dt>
+                        <dd>{$lang.goods}<em class="ftx-01">{$merch_cmt.cmt.commentRank.zconments.goodReview}%</em></dd>
+                        <dd>{$lang.service}<em class="ftx-01">{$merch_cmt.cmt.commentServer.zconments.goodReview}%</em></dd>
+                        <dd>{$lang.Invalid}<em class="ftx-01">{$merch_cmt.cmt.commentDelivery.zconments.goodReview}%</em></dd>
+                    </dl>
+                </div>
+                <div class="shopHeader-enter">
+                    <a href="{$shop_info.store_url}" target="_blank" class="sHe-shop mt25">{$lang.enter_the_shop}<i>>></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {/if}
+    <div id="filter">
+        <div class="component-filter-sort mt0 w1200">
+            <div class="filter-sortbar">
+                <div class="button-strip">
+                    <a href="merchants_store_shop.php?id={$merchant_id}&price_min={$price_min}&price_max={$price_max}&page={$pager.page}&sort=goods_id&order=<!-- {if $pager.sort == 'goods_id' && $pager.order == 'DESC'} -->ASC<!-- {else} -->DESC<!-- {/if} -->#goods_list" class="button-strip-item {if $pager.sort == 'goods_id'}current{/if}">{$lang.default}<i class="icon <!-- {if $pager.sort == 'goods_id' && $pager.order == 'DESC'} -->icon-down<!-- {else} -->icon-up<!-- {/if} -->"></i></a>
+                    <a href="merchants_store_shop.php?id={$merchant_id}&price_min={$price_min}&price_max={$price_max}&page={$pager.page}&sort=last_update&order=<!-- {if $pager.sort == 'last_update' && $pager.order == 'DESC'} -->ASC<!-- {else} -->DESC<!-- {/if} -->#goods_list" class="button-strip-item {if $pager.sort == 'last_update'}current{/if}">{$lang.add_time}<i class="icon <!-- {if $pager.sort == 'last_update' && $pager.order == 'DESC'} -->icon-down<!-- {else} -->icon-up<!-- {/if} -->"></i></a>
+                    <a href="merchants_store_shop.php?id={$merchant_id}&price_min={$price_min}&price_max={$price_max}&page={$pager.page}&sort=shop_price&order=<!-- {if $pager.sort == 'shop_price' && $pager.order == 'ASC'} -->DESC<!-- {else} -->ASC<!-- {/if} -->#goods_list" class="button-strip-item {if $pager.sort == 'shop_price'}current{/if}">{$lang.price}<i class="icon {if $pager.sort == 'shop_price' && $pager.order == 'ASC'}icon-up{else}icon-down{/if}"></i></a>
+                </div>
+                <div class="crumbTitle">{$lang.total}<span>{$count}</span>{$lang.Relevant_goods}</div>
+            </div>
+        </div>
+    </div>
+    <div class="goods-list seller_goods_list mt20 clearfix">
+        <ul class="gl-warp">
+            {foreach from=$goods_list item=goods}
+            <li class="gl-item">
+                <div class="gl-i-wrap">
+                    <div class="p-img">
+                        <a href="{$goods.goods_url}" target="_blank"><img src="{$goods.goods_thumb}" width="206" height="206"/></a>
+                    </div>
+                    
+                    <div class="sider">
+                        <ul>
+                            <!-- {foreach from=$goods.pictures name=picture item=picture}-->           
+                            <li <!--{if $smarty.foreach.picture.index eq 0}--> class="curr"<!--{/if}-->><img src="{if $picture.thumb_url}{$picture.thumb_url}{else}{$picture.img_url}{/if}" width="26" height="26" /></li>
+                            <!--{/foreach}-->
+                        </ul>
+                    </div>
+                    
+                    <div class="p-price">
+                        <strong>
+                        {if $goods.promote_price neq ''}
+                            {$goods.promote_price}
+                        {else}
+                            {$goods.shop_price}
+                        {/if}
+                        </strong>
+                    </div>
+                    <div class="p-num">{$lang.sales_volume}：{$goods.sales_volume}</div>
+                    <div class="p-name"><a href="{$goods.goods_url}" target="_blank">{$goods.goods_name}</a></div>
+                    <div class="p-commit">
+                        <div class="p-commit-left">
+                            <div class="p-eva">{$lang.existing}<em>{$goods.cmt_count} +</em>{$lang.comments_rank}</div>
+                            <div class="p-store"><a href="{$goods.shop_url}" target="_blank" class="p-brand" title="{$goods.shop_name}"><i class="icon"></i>{$goods.shop_name}</a></div>
+                        </div>
+                        <div class="p-commit-right">
+                            {if $goods.prod eq 1}
+                                {if $goods.goods_number > 0}
+                                    <a onClick="javascript:addToCart({$goods.goods_id},0,event,this,'flyItem');" class="addcart" rev="{$goods.goods_thumb}" data-dialog="addCart_dialog" data-id="" data-divid="addCartLog" data-url="" data-title="{$lang.select_attr}">
+                                       <i></i>
+                                       {$lang.btn_buy}
+                                    </a>
+                                {else}
+                                    <a href="javascript:;" class="addcartWu">
+                                        <i></i>
+                                        {$lang.No_goods}
+                                    </a>
+                                {/if}
+                            {else}
+                            <a onClick="javascript:addToCart({$goods.goods_id},0,event,this,'flyItem');" class="addcart" rev="{$goods.goods_thumb}">
+                                <i></i>
+                                购买
+                            </a>
+                            {/if}
+                        </div>
+                    </div>
+                    <div class="p-operation">
+                       <!-- <a href="javascript:;" id="compareLink"><input id="{$goods.goods_id}" type="checkbox" onClick="Compare.add(this, {$goods.goods_id},'{$goods.goods_name|escape:"html"}','{$goods.type}', '{$goods.goods_thumb}', '{$goods.shop_price}', '{$goods.market_price}')"/><label for="{$goods.goods_id}">对比</label></a>-->
+                        <a href="javascript:collect({$goods.goods_id});" class="choose-btn-coll {if $goods.is_collect}selected{/if}"><b></b>{$lang.btn_collect}</a>
+                        <!--start 在线客服 bylu-->
+                        {if $goods.is_IM eq 1 || $goods.is_dsc}
+                        <a id="IM" onclick="openWin(this)" href="javascript:;" goods_id="{$goods.goods_id}"  class="seller-btn custom"><i class="icon"></i>{$lang.service}</a>
+                        {else}
+                        {if $goods.kf_type eq 1}
+                        <a href="http://www.taobao.com/webww/ww.php?ver=3&touid={$goods.kf_ww}&siteid=cntaobao&status=1&charset=utf-8" class="seller-btn custom" target="_blank"><i class="icon"></i>{$lang.service}</a>
+                        {else}
+                        <a href="http://wpa.qq.com/msgrd?v=3&uin={$goods.kf_qq}&site=qq&menu=yes" class="seller-btn custom" target="_blank"><i class="icon"></i>{$lang.service}</a>
+                        {/if}
+                        {/if}
+                        <!--end 在线客服 bylu-->
+                    </div>
+                </div>
+            </li>
+            {/foreach}
+        </ul>
+    </div>
+    <div id="flyItem" class="fly_item"><img src="" width="40" height="40"></div>
+    <input type="hidden" value="{$region_id}" id="region_id" name="region_id">
+    <input type="hidden" value="{$area_id}" id="area_id" name="area_id">
+    <div class="w1200 pagePtb">
+        <!-- #BeginLibraryItem "/library/pages.lbi" --> <!-- #EndLibraryItem -->
+    </div>
+    {if $store_best_list}
+    <div class="guess-love goods-list-love w1200 search_shop_list">
+        <div class="ec-title"><h3>{$lang.Recommendation}</h3></div>
+        <div class="goods-list">
+            <ul class="gl-warp">
+                {foreach from=$store_best_list item=goods}
+                <li class="gl-item">
+                    <div class="gl-i-wrap">
+                        <div class="p-img">
+                            <a href="{$goods.goods_url}" target="_blank"><img src="{$goods.goods_thumb}" width="208" height="208"></a>
+                        </div>
+                        <div class="p-name"><a href="{$goods.goods_url}" target="_blank">{$goods.goods_name}</a></div>
+                        <div class="p-price">
+                        {if $goods.promote_price neq ''}
+                            {$goods.promote_price}
+                        {else}
+                            {$goods.shop_price}
+                        {/if}
+                        </div>
+                        <div class="p-num">{$lang.sale_amount}：{$goods.sales_volume}</div>
+                        <div class="p-commit"><span class="p-nice"><i class="icon"></i><span class="nice-stars ftx-04">{$goods.cmt_count}</span></span></div>
+                    </div>
+                </li>
+                {/foreach}
+            </ul>
+        </div>
+    </div>
+    {/if}
+</div>
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+{* DSC 提醒您：动态载入user_menu_position.lbi，显示首页分类小广告 *}{insert name='user_menu_position'} 
+<input name="script_name" value="{$script_name}" type="hidden" />
+<input name="merchant_id" value="{$merchant_id}" type="hidden" />
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.purebox.js"></script>
+</body>
+</html>

@@ -1,0 +1,143 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+				{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="search-info">
+                    <div class="search-form">
+                        <form action="javascript:searchOrder()" name="searchForm">
+                            <div class="imitate_select select_w120">
+                                <div class="cite">{$lang.conf_pay|escape}</div>
+                                <ul>
+                                    <li><a href="javascript:;" data-value="-1" class="ftx-01">请选择..</a></li>
+                                    <li><a href="javascript:;" data-value="2" class="ftx-01">{$lang.pay_status.0}</a></li>
+                                    <li><a href="javascript:;" data-value="1" class="ftx-01">{$lang.pay_status.1}</a></li>
+                                </ul>
+                                <input name="pay_starts" type="hidden" value="-1">
+                            </div>
+                            <div class="search-key">
+                                <input name="apply_sn" type="text" id="apply_sn" size="15" class="text text_2 mr10" placeholder="{$lang.apply_sn}">
+                                <input type="submit" value="{$lang.button_search}" class="submit" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                {/if}
+                <div class="list-div" id="listDiv">
+                    <table class="ecsc-default-table">
+                    	<thead>
+                        <tr>
+                            <th>{$lang.apply_sn}</th>
+                            <th>{$lang.temp_name}</th>
+                            <th>{$lang.total_amount}</th>
+                            <th>{$lang.pay_fee}</th>
+                            <th>{$lang.pay_name}</th>
+                            <th>{$lang.apply_time}</th>
+                            <th>{$lang.apply_status_tr}</th>
+                            <th width="10%">{$lang.handler}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {foreach from=$available_templates item=list}
+                        <tr class="bd-line">
+                            <td align="center" class="first-cell">
+                                {$list.apply_sn|escape:html}
+                            </td>
+                            <td align="center">{$list.name}</td>
+                            <td align="center">{$list.total_amount}</td>
+                            <td align="center">{$list.pay_fee}</td>
+                            <td align="center">{$list.pay_name}</td>
+                            <td align="center">
+                                <p>{$lang.add_time}：{$list.add_time}</p>
+                                {if $list.pay_time neq 0}<p>{$lang.pay_time}：{$list.pay_time}</p>{/if}
+                            </td>
+                            <td align="center">{$lang.apply_status.$list.apply_status},{$lang.pay_status.$list.pay_status}</td>
+                            <td class="ecsc-table-handle tr">
+                                <span><a href="../merchants_store.php?preview=1&temp_code={$list.temp_code}" target="_blank" title="预览" class="btn-green"><i class="sc_icon_see"></i><p>预览</p></a></span>
+                                {if $list.pay_status eq 0}
+                                <span><a href="visual_editing.php?act=temp_pay&apply_id={$list.apply_id}" class="btn-green"><i class="icon icon-edit"></i><p>去支付</p></a></span>
+                                <span><a href="javascript:" title="{$lang.icon_edit}" ectype="temp_edit" data-id="{$list.apply_id}" data-code="{$list.temp_code}" class="btn-green"><i class="icon icon-edit"></i><p>{$lang.edit}</p></a></span>
+                                <span><a onclick="listTable.remove('{$list.apply_id}', '确定删除吗？删除后数据无法找回！','remove')" href="javascript:;" class="btn-red"><i class="icon-trash"></i><p>{$lang.drop}</p></a></span>
+                                {/if}
+                            </td>
+                        </tr>
+                        {foreachelse}
+                        <tr><td class="no-records" colspan="10">{$lang.no_article}</td></tr>
+                        {/foreach}
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                        	<td colspan="10">
+                            	{include file="page.dwt"}
+                            </td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                {if $full_page}
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+{insert_scripts files="jquery.purebox.js"}
+<script type="text/javascript" language="JavaScript">
+    listTable.recordCount = {$record_count};
+    listTable.pageCount = {$page_count};
+    listTable.query = 'apply_query';
+    {foreach from=$filter item=item key=key}
+    listTable.filter.{$key} = '{$item}';
+    {/foreach}
+    onload = function()
+    {
+    // 开始检查订单
+    startCheckOrder();
+    }
+    
+     /**
+     * 搜索订单
+     */
+    function searchOrder()
+    {
+        listTable.filter['apply_sn'] = Utils.trim(document.forms['searchForm'].elements['apply_sn'].value);
+        listTable.filter['pay_starts'] = document.forms['searchForm'].elements['pay_starts'].value;
+        listTable.filter['page'] = 1;
+        listTable.loadList();
+    }
+    
+     /**
+     * 编辑订单
+     */
+    $(document).on("click", "a[ectype='temp_edit']", function () {
+        var type = 1;
+        var code = $(this).data('code');
+        var apply_id = $(this).data('id');
+        Ajax.call('visual_editing.php', "act=release&type="+type+"&suffix=" + code + "&apply_id=" + apply_id, function(data){
+             pb({
+				id: "template_mall_dialog",
+				title: "模板信息",
+				width: 945,
+				content: data.content,
+				ok_title: "确定",
+				drag: true,
+				foot: true,
+				cl_cBtn: false,
+				onOk: function () {
+                                    $("#template_mall_form").submit();
+				}
+			});
+        }, 'POST', 'JSON');
+    })
+</script>
+</body>
+</html>
+{/if}

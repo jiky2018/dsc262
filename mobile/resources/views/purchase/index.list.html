@@ -1,0 +1,123 @@
+{include file="page_header"}
+
+<body>
+<div class="con mb-7">
+    <div class="shopping-menu who-shopping-menu j-shopping-menu">
+            <div class="dis-box b-color-f">
+                <nav style="cursor: grab;" class="shopping-list-nav box-flex swiper-container-horizontal">
+                    <ul class="swiper-wrapper">
+                        <li class="div0 swiper-slide swiper-slide-active" category="0">全部</li>
+                        {foreach $wholesale_cat as $v}
+                        <!--  -->
+                        <li class="div{$v.id} swiper-slide  {if 0}active{/if} swiper-slide-active" category="{$v.id}">{$v.name}</li>
+                        {/foreach}
+                    </ul>
+                </nav>
+            </div>
+    </div>
+    <section class="who_list">
+        <div class="product-list j-product-list product-list-medium">
+            <ul class="goods-list">
+                <script id="j-goods-list" type="text/html">
+                <%if list != ''%>
+                <%each list as goods%>
+                <li>
+                    <div class="product-div">
+                        <a class="product-div-link" href="<%#goods.goods_url%>"></a>
+                        <img class="product-list-img" src="<%#goods.goods_thumb%>" />
+                        <div class="product-text index-product-text">
+                            <h4><%#goods.goods_name%></h4>
+                            <%if goods.price_model == 0%>
+                            <p><span class="p-price"><em class=" t-first "><%#goods.goods_price%></em><em class="f-02 col-7">/件</em></span></p>
+                            <%else%>
+                            <p><span class="p-price"><em class=" t-first "><%#goods.volume_price%></em><em class="f-02 col-7">/件</em></span></p>
+                            <%/if%>
+                            <div class="dis-box f-02 col-9">
+                                <%if goods.price_model == 0%>
+                                <span class="box-flex">起批量:<em class="color-red"><%#goods.moq%></em></span>
+                                <%else%>
+                                <span class="box-flex">起批量:<em class="color-red"><%#goods.volume_number%></em></span>
+                                <%/if%>
+                                <span class="box-flex text-right">成交量:<%if goods.goods_sale > 0%><%#goods.goods_sale%><%else%>0<%/if%></span>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <%/each%>
+                <%else%>
+                <%if totalPage == 0%>
+                    <div class="no-div-message">
+                        <i class="iconfont icon-biaoqingleiben"></i>
+                        <p>亲，此处没有内容～！</p>
+                    </div>
+                <%/if%>
+                <%/if%>
+                </script>
+            </ul>
+        </div>
+    </section>
+</div>
+{include file="purchase_menu"}
+<!--快捷导航-->
+{include file="no_search_nav"}
+    <li>
+        <a href="{url('purchase/index/index')}">
+            <i class="iconfont icon-btn_pljj"></i>
+            <p>批发首页</p>
+        </a>
+    </li>
+{include file="float_nav_footer"}
+</body>
+<script>
+var who_shopping_menu =$(".who-shopping-menu").outerHeight();
+        $(".who_list").css("margin-top", who_shopping_menu);
+    //店铺街分类
+    var page = $("input[name=page]").val(),
+            maxpage = $("input[name=maxpage]").val(),
+            url = '{url(goodslist)}',
+            cat_id = "{$cat_id}";
+    $(".div" + cat_id).addClass("active");
+
+    var infinite = $('.goods-list').infinite({
+        url: url,
+        params: 'id='+cat_id,
+        template: 'j-goods-list'
+    });
+    var swiper = new Swiper('.j-g-s-p-con', {
+        scrollbarHide: true,
+        slidesPerView: 'auto',
+        centeredSlides: false,
+        grabCursor: true
+    });
+
+    var swiper_nav = new Swiper('.shopping-list-nav', {
+        scrollbarHide: true,
+        slidesPerView: 'auto',
+        centeredSlides: false,
+        grabCursor: true
+    });
+
+    click_index =$(".div" + cat_id).index();
+        swiper_nav.slideTo(click_index, 1000, false); //切换到第一个slide，速度为1秒
+    $('.shopping-list-nav li').on('click', function(e) {
+        var category = $(this).attr('category');
+        var index = $(".shopping-list-nav li").index(this);
+        $(this).siblings().removeClass("active");
+        $('.shopping-abs .swiper-slide a').removeClass("active");
+
+        $(".div" + category).addClass("active");
+
+        swiper_nav.slideTo(index, 1000, false); //切换到第一个slide，速度为1秒
+
+        infinite.onload('id=' + category);
+        var swiper = new Swiper('.j-g-s-p-con', {
+            scrollbarHide: true,
+            slidesPerView: 'auto',
+            centeredSlides: false,
+            grabCursor: true
+
+        });
+    });
+</script>
+
+</html>

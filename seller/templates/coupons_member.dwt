@@ -1,0 +1,274 @@
+{if $cou_act == 'edit'}
+<tr>
+    <td class="label">{$lang.require_field}&nbsp;{$lang.coupons_name}：</td>
+    <td><input type='text' name='cou_name' maxlength="30" value="{$cou.cou_name}" size='20' class="text" /></td>
+</tr>
+<tr>
+    <td class="label">{$lang.require_field}&nbsp;优惠券标题：</td>
+    <td><input type='text' name='cou_title' value="{$cou.cou_title}" maxlength="50" value="" size='20' class="text" /></td>
+</tr>
+<tr>
+    <td class="label">{$lang.require_field}&nbsp;{$lang.coupons_number}：</td>
+    <td><input type='text' name='cou_total' maxlength="30" value="{$cou.cou_total}" size='20' class="text" /></td>
+</tr>
+<tr>
+    <td class="label">{$lang.require_field}&nbsp;{$lang.coupons_money}：</td>
+    <td>
+        <div class="coup_volume">
+            <div class="p">
+                <input type='text' name='cou_money' value="{$cou.cou_money}" class="text text_5 mr10" />
+                <span>{$lang.yuan}</span>
+            </div>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td class="label">{$lang.require_field}&nbsp;{$lang.coupons_man}：</td>
+    <td>
+        <div class="coup_volume">
+            <div class="p">
+                <span>{$lang.full_shopping}</span>
+                <input type='text' name='cou_man' value="{$cou.cou_man}" class="text text_5 mr10" />
+                <span>{$lang.yuan}</span>
+            </div>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td class="label">{$lang.require_field}&nbsp;{$lang.each_purchase}：</td>
+    <td class="lh"><input type="text" name="cou_user_num" value="{$cou.cou_user_num}" value="1" > 张</td>
+</tr>
+<tr>
+    <td class="label">{$lang.require_field}&nbsp;{$lang.use_goods}：</td>
+    <td class="lh">{$lang.buy_goods_deduction}</td>
+</tr>
+<tr>
+    <td class="label"></td>
+    <td>
+        <div class="checkbox_items">
+            <label><input type="radio" class="checkbox" name="buyableCouponGoods" value="1" {if $cou.cou_goods eq 0}checked="checked"{/if} />{$lang.goods_all}</label>
+            <label><input type="radio" class="checkbox" name="buyableCouponGoods" value="2" {if $cou.cou_goods neq 0}checked="checked"{/if} />{$lang.goods_appoint}</label>
+        </div>
+        <div id="range-div"></div>
+    </td>
+</tr>
+<!--@author-bylu start-->
+<tr>
+    <td class="label">{$lang.label_act_type}</td>
+    <td>
+        <select name="act_type" style="display: none;" id="act_type" onchange="changeType(this.value)" class="select">
+        </select>
+
+        <p class="fl bf100">
+            <label class="blue_label ml0" id="NoticeActType">{$lang.notice_act_type}</label>
+        </p>
+        <div id="gift-div" style="width:60%;display: none;">
+            <table id="gift-table">
+                {if $cou.goods_name}
+                <tr align="center" class="no-line"><td><strong>{$lang.js_languages.gift}</strong></td><td><strong>{$lang.js_languages.price}</strong></td></tr>
+                {foreach from=$cou.goods_name item=goods key=key}
+                <tr class="no-line">
+                    <td><input type="checkbox" class="checkbox" name="cou_goods[]" id="cou_goods[{$key}]" value="{$goods.goods_id}" checked="checked" /><label for="cou_goods[{$key}]">{$goods.goods_name}</label></td>
+                </tr>
+                {/foreach}
+                {/if}
+            </table>
+        </div>
+    </td>
+</tr>
+
+<tr id="range_search" style="display:none;">
+    <td class="label">添加商品：</td>
+    <td>
+        <input name="keyword1" type="text" id="keyword1" class="text text_2 mr10 mb10" />
+        <input name="search1" type="button" id="search1" value="{$lang.button_search}" class="button fl mr10" onclick="searchItem1()" />
+        <select name="result1" id="result1" class="select select_4 mb10"></select>
+        <input name="add_gift" type="button" class="button" id="add_gift" onclick="addGift()" value="+" />
+    </td>
+</tr>
+<!--@author-bylu end-->
+
+<tr>
+    <td class="label">{$lang.require_field}&nbsp;{$lang.use_start_enddate}：</td>
+    <td>
+        <div class="text_time" id="text_time1">
+            <input name="cou_start_time" type="text" class="text" id="start_time" value="{$cou.cou_start_time}" readonly>
+        </div>
+        <span class="bolang">&nbsp;&nbsp;~&nbsp;&nbsp;</span>
+        <div class="text_time" id="text_time2">
+            <input name="cou_end_time" type="text" class="text" id="end_time" value="{$cou.cou_end_time}" readonly>
+        </div>
+    </td>
+</tr>
+
+
+<tr>
+    <td class="label">{$lang.require_field}&nbsp;{$lang.activity_rule}：</td>
+    <td class="lh">{$lang.coupons_type_04}</td>
+    <td class="lh"><input type="hidden" name='cou_type' value="4"/></td>
+</tr>
+<tr>
+    <td class="label">{$lang.come_user}：</td>
+    <td>
+        <div class="checkbox_items" style="position:relative;">
+            <label><input type="checkbox" class="checkbox" id="select_all" value="0" />{$lang.all_checkbox}</label>
+            {foreach from =$rank_list item=rank key=k}
+            <label><input type="checkbox" class="checkbox" name="cou_ok_user[]" value="{$rank.rank_id|default:0}" {if $rank.is_checked}checked="checked"{/if} />{$rank.rank_name}</label>
+            {/foreach}
+            <label class="blue_label" style="position: absolute;top: -1px;right: -300px;">允许参与的会员等级,一个不选表示没有任何会员能参与</label>
+        </div>
+        <div id="range-div"></div>
+    </td>
+</tr>
+<tr>
+    <td class="label">{$lang.coupons_intro}：</td>
+    <td>
+        <textarea name="cou_intro" rows="3" class="textarea">{$cou.cou_intro}</textarea>
+    </td>
+</tr>
+
+{else}
+
+<tr>
+    <td class="label">{$lang.require_field}&nbsp;{$lang.coupons_name}：</td>
+    <td><input type='text' name='cou_name' maxlength="30" placeholder="请输入优惠券名称" value="" size='20' class="text" />
+        <label class="blue_label">优惠券的名称</label>
+    </td>
+</tr>
+<tr>
+    <td class="label">{$lang.require_field}&nbsp;优惠券标题：</td>
+    <td><input type='text' name='cou_title' maxlength="50" placeholder="如:仅可购买手机类指定商品或全品类通用" size='20' class="text" />
+        <label class="blue_label">需与"可使用商品"设置的商品相对应,做到名副其实</label>
+    </td>
+</tr>
+<tr>
+    <td class="label">{$lang.require_field}&nbsp;{$lang.coupons_number}：</td>
+    <td><input type='text' name='cou_total' maxlength="30" value="" size='20' class="text text_5" />
+        <span>　张</span>
+        <label class="blue_label">优惠券总发行数量</label>
+    </td>
+</tr>
+<tr>
+    <td class="label">{$lang.require_field}&nbsp;{$lang.coupons_money}：</td>
+    <td>
+        <div class="coup_volume">
+            <div class="p">
+                <input type='text' name='cou_money' class="text text_5 mr10" />
+                <span>{$lang.yuan}</span>
+            </div>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td class="label">{$lang.require_field}&nbsp;{$lang.coupons_man}：</td>
+    <td>
+        <div class="coup_volume">
+            <div class="p">
+                <span>{$lang.full_shopping}</span>
+                <input type='text' name='cou_man' class="text text_5 mr10" />
+                <span>{$lang.yuan}</span>
+            </div>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td class="label">{$lang.require_field}&nbsp;{$lang.each_purchase}：</td>
+    <td class="lh"><input type="text" class="text_3" name="cou_user_num" value="1" >　张</td>
+</tr>
+<tr>
+    <td class="label">{$lang.require_field}&nbsp;{$lang.use_goods}：</td>
+    <td class="lh">{$lang.buy_goods_deduction}</td>
+</tr>
+<tr>
+    <td class="label"></td>
+    <td>
+        <div class="checkbox_items">
+            <label><input type="radio" class="checkbox" name="buyableCouponGoods" value="1" checked="checked" />{$lang.goods_all}</label>
+            <label><input type="radio" class="checkbox" name="buyableCouponGoods" value="2" />{$lang.goods_appoint}</label>
+        </div>
+        <div id="range-div"></div>
+    </td>
+</tr>
+<!--@author-bylu start-->
+<tr>
+    <td class="label">{$lang.label_act_type}</td>
+    <td>
+        <select name="act_type" style="display: none;" id="act_type" onchange="changeType(this.value)" class="select">
+        </select>
+
+        <p class="fl bf100">
+            <label class="blue_label ml0" id="NoticeActType">{$lang.notice_act_type}</label>
+        </p>
+        <div id="gift-div" style="width:60%">
+            <table id="gift-table">
+                {if $favourable.gift}
+                <tr align="center"><td><strong>{$lang.js_languages.gift}</strong></td><td><strong>{$lang.js_languages.price}</strong></td></tr>
+                {foreach from=$favourable.gift item=goods key=key}
+                <tr>
+                    <td>{if $favourable.userFav_type eq 0 || $priv_ru}<input type="checkbox" class="checkbox" name="gift_id[{$key}]" id="gift_id[{$key}]" value="{$goods.id}" checked="checked" />{/if}<label for="gift_id[{$key}]">{$goods.name}</label></td>
+                    <td align="right">
+                        {if $favourable.userFav_type eq 0 || $priv_ru}
+                        <input name="gift_price[{$key}]" type="text" value="{$goods.price}" size="10" style="text-align:center;" />
+                        <input name="gift_name[{$key}]" type="hidden" value="{$goods.name}" />
+                        {else}
+                        <div class="red_text">{$goods.price}</div>
+                        {/if}
+                    </td>
+                </tr>
+                {/foreach}
+                {/if}
+            </table>
+        </div>
+    </td>
+</tr>
+
+<tr id="range_search" style="display:none;">
+    <td class="label">添加商品：</td>
+    <td>
+        <input name="keyword1" type="text" id="keyword1" class="text text_2 mr10 mb10" />
+        <input name="search1" type="button" id="search1" value="{$lang.button_search}" class="button fl mr10" onclick="searchItem1()" />
+        <select name="result1" id="result1" class="select select_4 mb10"></select>
+        <input name="add_gift" type="button" class="button" id="add_gift" onclick="addGift()" value="+" />
+    </td>
+</tr>
+<!--@author-bylu end-->
+
+<tr>
+    <td class="label">{$lang.require_field}&nbsp;{$lang.use_start_enddate}：</td>
+    <td>
+        <div class="text_time" id="text_time1">
+            <input name="cou_start_time" type="text" class="text" id="start_time" value="" readonly>
+        </div>
+        <span class="bolang">&nbsp;&nbsp;~&nbsp;&nbsp;</span>
+        <div class="text_time" id="text_time2">
+            <input name="cou_end_time" type="text" class="text" id="end_time" value="" readonly>
+        </div>
+    </td>
+</tr>
+
+
+<tr>
+    <td class="label">{$lang.require_field}&nbsp;{$lang.activity_rule}：</td>
+    <td class="lh">{$lang.coupons_type_04}</td>
+    <td class="lh"><input type="hidden" name='cou_type' value="4"/></td>
+</tr>
+<tr>
+    <td class="label">{$lang.come_user}：</td>
+    <td>
+        <div class="checkbox_items" style="position: relative;">
+            <label><input type="checkbox" id="select_all" class="checkbox" value="0" />{$lang.all_checkbox}</label>
+            {foreach from =$rank_list item=rank key=k}
+            <label><input type="checkbox" class="checkbox" name="cou_ok_user[]" value="{$rank.rank_id|default:0}" {if $rank.is_checked}checked="checked"{/if} />{$rank.rank_name}</label>
+            {/foreach}
+            <label class="blue_label" style="position: absolute;top: -1px;right: -300px;">允许参与的会员等级,一个不选表示没有任何会员能参与</label>
+        </div>
+        <div id="range-div"></div>
+    </td>
+</tr>
+<tr>
+    <td class="label">{$lang.coupons_intro}：</td>
+    <td>
+        <textarea name="cou_intro" rows="3" class="textarea"></textarea>
+    </td>
+</tr>
+{/if}

@@ -1,0 +1,269 @@
+{include file="pageheader"}
+<style>
+#footer {position: static;bottom:0px;}
+</style>
+<div class="wrapper">
+	<div class="title">{$lang['wechat_menu']} - {$lang['sub_title']}</div>
+    <div class="content_tips">
+        <div class="tabs_info">
+            <ul>
+                <li role="presentation" class="curr"><a href="{url('subscribe_list')}">已关注</a></li>
+                <li role="presentation" ><a href="{url('share_count')}">分享统计</a></li>
+            </ul>
+        </div>
+        <div class="explanation" id="explanation">
+            <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4><span id="explanationZoom" title="收起提示"></span></div>
+            <ul>
+                <li>粉丝管理：显示已经关注微信公众号的用户信息，未关注的不显示。</li>
+                <li>1.搜索功能支持 通过用户昵称、城市、国家，省份搜索。</li>
+                <li>2.标签管理,一个公众号，最多可以创建100个标签。每个公众号可以为用户打上最多20个标签</li>
+                <li>3.发送客服消息，可以单独发送微信消息给微信用户（只有48小时内和公众号有过互动的粉丝才能接收到信息，否则会发送失败）应用场景 例如，通知用户中奖领取奖品等事宜。</li>
+                <li>★ 注意事项：在对用户进行发送消息，打标签等操作之前，请及时点击更新按钮，以便同步微信公众号平台的用户分组（标签）与数量。</li>
+            </ul>
+        </div>
+		<div class="flexilist subscribe_head">
+			<div class="common-head">
+                <div class="fl">
+                    <a href="{url('subscribe_update')}" ><div class="fbutton"><div class="csv" title="更新粉丝"><span><i class="fa fa-refresh"></i>更新粉丝</span></div></div></a>
+                </div>
+                <div class="search">
+                    <form action="{url('subscribe_search')}" name="searchForm" method="post" role="search">
+                    <div class="input">
+                        <input type="text" name="keywords" class="text nofocus" placeholder="{$lang['sub_search']}" autocomplete="off" style="width:280px;">
+                        <input type="hidden" value="{$group_id}" name="group_id">
+                        <input type="submit" value="" class="btn search_button">
+                    </div>
+                    </form>
+                </div>
+            </div>
+            <div class="fl tags_button">
+                <a href="{url('sys_tags')}" class=""><div class="fbutton update"><div class="" title="同步标签"><span><i class="fa fa-refresh"></i>同步标签</span></div></div></a>
+
+                <a href="{url('tags_edit')}" class="fancybox fancybox.iframe"><div class="fbutton add"><div class="" title="{$lang['tag_add']}"><span><i class="fa fa-plus"></i>{$lang['tag_add']}</span></div></div></a>
+            </div>
+			<div class="common-content">
+    			<div class="list-div">
+                <form action="{url('batch_tagging')}" method="post" class="form-inline" role="form">
+	    			<table cellspacing="0" cellpadding="0" border="0"  class="sub-list">
+	    				<thead>
+		    				<tr>
+		    					<th width="5%" class="sign"><div class="tDiv"><input type="checkbox" id="check_box" /></div></th>
+		    					<th width="5%"><div class="tDiv">{$lang['sub_headimg']}</div></th>
+		    					<th><div class="tDiv">{$lang['sub_nickname']}/地区</div></th>
+		    					<th width="15%"><div class="tDiv">{$lang['sub_time']}</div></th>
+								<th width="10%"><div class="tDiv">粉丝来源</div></th>
+		    					<th width="25%" class="handle text-center" >{$lang['handler']}</th>
+		    				</tr>
+	    				</thead>
+                        {if $list}
+	    				{foreach $list as $key=>$val}
+	    				<tr>
+	    					<td class="sign"><div class="tDiv"><input type="checkbox" name="id[]" value="{$val['openid']}" class="checks"></div></td>
+	    					<td><div class="user_img_box">{if $val['headimgurl']}<img src="{$val['headimgurl']}" width="70" alt="{$val['nickname']}" />{/if}</div></td>
+	    					<td>
+                                <div class="tDiv">
+                                    <span class="wei-nickname">{$val['nickname']} {if $val['remark']}(<a href="javascript:;" class="user_remark" uidAttr="{$val['uid']}" title="点击修改备注名">{$val['remark']}</a>){/if}</span><br>
+                                    <span class="wei-area" >
+                                    {foreach $val['taglist'] as $k=>$v}
+                                    <a href="javascript:;" class="user_tag" tagAttr="{$v['tag_id']}" openidAttr="{$val['openid']}" title="点击取消标签" >{$v['name']}</a>
+                                    {/foreach}
+                                    </span>
+                                    <br><span class="wei-area">{$val['province']} - {$val['city']}</span>
+                                </div>
+                            </td>
+	    					<td><div class="tDiv">{date('Y-m-d H:i:s', $val['subscribe_time'])}</div></td>
+							<td><div class="tDiv">{$val['from']}</div></td>
+	    					<td class="handle text-center">
+	    						<div class="tDiv a2">
+                                    {if $val['look_user_url']}
+                                    <a href="{$val['look_user_url']}" class="btn_see" title=""><i class="sc_icon sc_icon_see"></i>查看会员</a>
+                                    {/if}
+                                    <!-- <a href="{url('custom_message_list', array('uid'=>$val['uid']))}" class="btn_see" title="{$lang['custom_message_list']}"><i class="sc_icon sc_icon_see"></i>查看消息</a> -->
+                                    <a href="{url('send_custom_message', array('uid'=>$val['uid']))}" class="btn_region fancybox80 fancybox.iframe" title="{$lang['send_custom_message']}"><i class="fa fa-weixin" ></i>发送消息</a>
+	    					    </div>
+	    					</td>
+	    				</tr>
+	    				{/foreach}
+                      {else}
+                      <tbody>
+                             <tr><td class="no-records" colspan="6">没有找到任何记录</td></tr>
+                      </tbody>
+                      {/if}
+	    				<tfoot>
+                    	<tr>
+                            <td colspan="3">
+                                <div class="tDiv of">
+                                	<div class="tfoot_btninfo">
+                                    	<span class="fl" style="line-height:30px;margin-right:20px;">{$lang['tag_move']}</span>
+                                    	<select name="tag_id" style="padding:5px;height:30px;" class="imitate_select select_w120 fl">
+						    		  		{foreach $tag_list as $k=>$v}
+						    		  		<option value="{$v['tag_id']}">{$v['name']}</option>
+						    		  		{/foreach}
+						    		  	</select>
+						    		  	<input type="submit" class="btn button btn_disabled" value="{$lang['tag_join']}" disabled="disabled" ectype='btnSubmit' >
+                                    </div>
+                                </div>
+                            </td>
+                            <td colspan="3">
+                        	{include file="pageview"}
+                            </td>
+                        </tr>
+                        </tfoot>
+	    			</table>
+                </form>
+
+                <table cellspacing="0" cellpadding="0" border="0"  class="group-list">
+                    <thead>
+                        <tr>
+                            <th><div class="tDiv">{$lang['tag_title']}</div></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    {foreach $tag_list as $key=>$val}
+                    <tr>
+                        <td>
+                            <div class="handle">
+                                <div class="tDiv"><a class="btn_see" href="{url('subscribe_search', array('tag_id'=>$val['tag_id']))}">{$val['name']} </a><span class="badge">{$val['count']}</span></div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="handle">
+                                {if $val['tag_id'] != 0  && $val['tag_id'] != 1 && $val['tag_id'] != 2}
+                                <div class="tDiv a2">
+                                <a href="{url('tags_edit', array('id'=>$val['id']))}" class="btn_edit fancybox fancybox.iframe" ><i class="fa fa-edit"></i>{$lang['wechat_editor']}</a>
+                                <a class="btn_trash delete_tags" data-href="{url('tags_delete', array('id'=> $val['id']))}" href="javascript:;" class="btn_trash" ><i class="fa fa-trash-o"></i>{$lang['drop']}</a>
+
+                                </div>
+                                {/if}
+                            </div>
+                        </td>
+                    </tr>
+                    {/foreach}
+                </table>
+
+				</div>
+		    </div>
+
+		</div>
+		<script type="text/javascript">
+		$(function(){
+
+            //弹出框
+            $(".fancybox80").fancybox({
+              width   : '80%',
+              height    : '80%',
+              closeBtn  : true,
+              title       : ''
+            });
+
+            // 选择全中复选框
+			$('#check_box').bind('click', function(){
+				$('.checks').prop("checked", $(this).prop("checked"));
+			});
+
+            // 选择单个复选框
+            $("input[type='checkbox']").bind("click",function(){
+                var length = $("input[type='checkbox']:checked").length;
+                if(length > 0){
+                    if($("*[ectype='btnSubmit']").length > 0){
+                        $("*[ectype='btnSubmit']").removeClass("btn_disabled");
+                        $("*[ectype='btnSubmit']").attr("disabled",false);
+                    }
+                }else{
+                    if($("*[ectype='btnSubmit']").length > 0){
+                        $("*[ectype='btnSubmit']").addClass("btn_disabled");
+                        $("*[ectype='btnSubmit']").attr("disabled",true);
+                    }
+                }
+            });
+
+            // 删除标签
+            $(".delete_tags").click(function(){
+                var url = $(this).attr("data-href");
+                //询问框
+                layer.confirm('您确定要删除此标签吗？', {
+                    btn: ['确定','取消'] //按钮
+                }, function(){
+                    $.get(url, '', function(data){
+                        layer.msg(data.msg);
+                        if(data.error == 0 ){
+                            if(data.url){
+                                window.location.href = data.url;
+                            }
+                        }
+                        return false;
+                    }, 'json');
+                });
+            });
+
+            // 批量加入用户标签验证
+            $("input[ectype='btnSubmit']").bind("click",function(){
+                var item = $("select[name=tag_id]").val();
+                if(!item){
+                    layer.msg('请选择标签');
+                    return false;
+                };
+            });
+
+            // 移除用户标签
+            $('.user_tag').click(function(){
+                var tag_id = $(this).attr("tagAttr");
+                var open_id = $(this).attr("openidAttr");
+                $.post("{url('batch_un_tagging')}", {tagid: tag_id, openid: open_id}, function(data){
+                    if(data.status > 0){
+                        window.location.reload();
+                    }else{
+                        layer.msg(data.msg);
+                        return false;
+                    }
+                }, 'json');
+            });
+
+            // 搜索验证
+            $('.search_button').click(function(){
+                var search_keywords = $("input[name=keywords]").val();
+                if(!search_keywords){
+                    layer.msg('搜索关键字不能为空');
+                    return false;
+                }
+            });
+
+            // 修改用户备注
+            $('.user_remark').click(function(){
+                var uid = $(this).attr("uidAttr");
+                var remark = $(this).html();
+                layer.open({
+                    type: 1,
+                    closeBtn: false,
+                    shift: 7,
+                    shadeClose: true,
+                    title:"请输入备注名",
+                    content: "<div style='width:320px;padding:10px;' class='form-group has-feedback'><input id='remarkName' class='form-control' type='text' value='"+remark+"'/>" +
+                        "<button style='margin-top:10px;right:0;' type='button' class='button btn-danger bg-red' onclick='editRemark("+uid+")'>确定</button></div>"
+                });
+            });
+
+		});
+
+        function editRemark(uid){
+            var remark = $("#remarkName").val();
+            if(!remark){
+                layer.msg('备注名不能为空');
+                return false;
+            }
+            $.post("{url('edit_user_remark')}", {remark: remark, uid: uid}, function(data){
+                if(data.status > 0){
+                    window.location.reload();
+                }else{
+                    layer.msg(data.msg);
+                    return false;
+                }
+            }, 'json');
+            layer.closeAll();
+        }
+		</script>
+
+   </div>
+</div>
+
+{include file="pagefooter"}

@@ -1,0 +1,141 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+<div class="warpper">
+    <div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>短信管理 - {$ur_here}</div>
+        <div class="content">
+        <div class="explanation" id="explanation">
+            <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4><span id="explanationZoom" title="收起提示"></span></div>
+            <ul>
+                <li>设置阿里大鱼类型，个人或公司。</li>
+                <li>个人：限制变量字符串长度只能15个字符</li>
+                <li>企业：不受变量字符串长度限制</li>
+            </ul>
+        </div>
+        <div class="flexilist">
+
+            <div class="mian-info">
+                <form action="alidayu_configure.php" method="post" name="theForm" enctype="multipart/form-data"  id="agency_form">
+                    <div class="switch_info user_basic" style="display:block;">
+                        <div class="item">
+                            <div class="label">{$lang.require_field}&nbsp;{$lang.alidayu_type}：</div>
+                            <div class="label_value">
+                                <div class="checkbox_items">
+                                    <div class="checkbox_item">
+                                        <input type="radio" name="alayu_type" class="ui-radio alayu_type" id="pro_no" value="0" {if $alidayu_type eq 0}checked="checked"{/if}/>
+                                        <label for="pro_no" class="ui-radio-label">个人</label> 
+                                    </div>
+                                    <div class="checkbox_item mr15">
+                                        <input type="radio" name="alayu_type" class="ui-radio alayu_type" id="pro_yes" value="1" {if $alidayu_type eq 1}checked="checked"{/if}/>
+                                        <label for="pro_yes" class="ui-radio-label">公司</label> 
+                                    </div>
+                                </div>    
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="label">&nbsp;</div>
+                            <div class="label_value info_btn mt0">
+                                <input type="hidden" name="id" value="{$note.id}" />
+                                 <input type="hidden" name="act" value="{$form_act}" />
+                                <input type="submit" name="submit" id="submitBtn" class="button" value="{$lang.button_submit}" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/pagefooter.lbi'}
+{insert_scripts files="jquery.purebox.js"}
+<script type="text/javascript">
+$("input[name='signature']").change(function(){
+	var isval = $(this).val();
+	if(isval == 1){
+			$("#signature").show();
+	}else{
+			$("#signature").hide();
+	}
+});
+
+$(function(){
+	//表单验证
+	$("#submitBtn").click(function(){
+		if($("#agency_form").valid()){
+			$("#agency_form").submit();
+		}
+	});
+
+	$('#agency_form').validate({
+		errorPlacement:function(error, element){
+			var error_div = element.parents('div.label_value').find('div.form_prompt');
+			element.parents('div.label_value').find(".notic").hide();
+			error_div.append(error);
+		},
+		rules:{
+			temp_id:{
+				required:true
+			},
+			set_sign:{
+				required:true
+			},
+			temp_content:{
+				required:true
+			},
+			send_time:{
+				required:true
+			}
+		},
+		messages:{
+			temp_id:{
+				required:'<i class="icon icon-exclamation-sign"></i>模板ID不能为空'
+			},
+			set_sign:{
+				required:'<i class="icon icon-exclamation-sign"></i>短信签名不能为空'
+			},
+			temp_content:{
+				required:'<i class="icon icon-exclamation-sign"></i>模板内容不能为空'
+			},
+			send_time:{
+				required:'<i class="icon icon-exclamation-sign"></i>发送时机不能为空'
+			}
+		}
+	});
+});
+
+$.divselect("#send_time_box","#send_time",function(obj){
+	loadTemplate();
+});
+	
+function loadTemplate()
+{
+	var orgContent = '';
+	var curContent = $('#temp_content').val();
+	
+	if (orgContent != curContent && orgContent != '')
+	{
+		if (!confirm(save_confirm)){
+			return;
+		}
+	}
+	
+	var tpl = $('#send_time').val();
+
+	Ajax.call('alidayu_configure.php?is_ajax=1&act=loat_template', 'tpl=' + tpl, loadTemplateResponse, "GET", "JSON");
+	$.jqueryAjax('alidayu_configure.php', 'is_ajax=1&act=loat_template&tpl=' + tpl, loadTemplateResponse, "GET", "JSON");
+}
+
+/**
+ * 将模板的内容载入到文本框中
+ */
+function loadTemplateResponse(result, textResult)
+{
+	if (result.error == 0){
+		$("#temp_content").html(result.content);
+	}
+}
+</script>
+</body>
+</html>

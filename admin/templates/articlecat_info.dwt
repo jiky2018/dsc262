@@ -1,0 +1,150 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$lang.article}-{$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.2}</li>
+                    <li>{$lang.operation_prompt_content_common}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+                        <form method="post" action="articlecat.php" name="theForm" id="articlecat_form" >
+                            <div class="switch_info">
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}{$lang.cat_name}：</div>
+                                    <div class="label_value">
+                                        <input type="text" id="username" name="cat_name" class="text" value="{$cat.cat_name|escape}" id="cat_name" autocomplete="off" />
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.parent_cat}：</div>
+                                    <div class="label_value">
+                                        <div id="parent_cat" class="imitate_select select_w320">
+                                          <div class="cite">{if $cat_name}{$cat_name}{else}{$lang.cat_top}{/if}</div>
+                                          <ul>
+                                          	<li><a href="javascript:;" data-value="0" cat_type="0" class="ftx-01">{$lang.cat_top}</a></li>
+                                          	{$cat_select}
+                                          </ul>
+                                          <input name="parent_id" type="hidden" value="{$cat.parent_id|default:$cat_id}" id="parent_cat_val">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.sort_order}：</div>
+                                    <div class="label_value">
+                                        <input type="text" name="sort_order" class="text" autocomplete="off" {if $cat.sort_order}value='{$cat.sort_order}'{else} value="50"{/if} />
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.show_in_nav}：</div>
+                                    <div class="label_value">
+                                        <div class="checkbox_items">
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="show_in_nav" id="sex_1" value="1" {if $cat.show_in_nav neq 1} checked="true"{/if} />
+                                                <label for="sex_1" class="ui-radio-label">{$lang.yes}</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="show_in_nav" id="sex_2" value="0" {if $cat.show_in_nav neq 0} checked="true"{/if} checked/>
+                                                <label for="sex_2" class="ui-radio-label">{$lang.no}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.cat_keywords}：</div>
+                                    <div class="label_value">
+                                        <input type="text" name="keywords" class="text" value='{$cat.keywords|escape}' autocomplete="off" />
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.cat_desc}：</div>
+                                    <div class="label_value">
+                                        <textarea name="cat_desc" cols="60" rows="4" class="textarea">{$cat.cat_desc|escape}</textarea>
+                                    </div>
+                                </div>
+                                
+                                <div class="item">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="label_value info_btn">
+                                        <a href="javascript:;" class="button" id="submitBtn">{$lang.button_submit}</a>
+                                        <input type="hidden" name="act" value="{$form_action}" />
+                                        <input type="hidden" name="id" value="{$cat.cat_id}" />
+                                        <input type="hidden" name="old_catname" value="{$cat.cat_name}" />
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+    </div>
+ 	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+	//会员基本信息 div仿select 
+	$.divselect("#parent_cat","#parent_cat_val",function(obj){
+		var select = obj.parents("#parent_cat");
+		var val = obj.attr("cat_type");
+		catChanged(val);
+	});
+	
+	$(function(){
+		$("#submitBtn").click(function(){
+			if($("#articlecat_form").valid()){
+				$("#articlecat_form").submit();
+			}
+		});
+	
+		$('#articlecat_form').validate({
+			errorPlacement:function(error, element){
+				var error_div = element.parents('div.label_value').find('div.form_prompt');
+				element.parents('div.label_value').find(".notic").hide();
+				error_div.append(error);
+			},
+			rules : {
+				cat_name : {
+					required : true
+				}
+					
+			},
+			messages : {
+				cat_name : {
+					required : '<i class="icon icon-exclamation-sign"></i>'+no_catname
+				}
+			}
+		});
+	});
+	
+	/* 选取上级分类时判断选定的分类是不是底层分类 */
+	function catChanged(cat_type){
+		{if $cat_name}
+		var text = "{$cat_name}";
+		{else}
+		var text = "{$lang.cat_top}";
+		{/if}
+
+		if(cat_type == ''){
+			cat_type = 1;
+		}
+		
+		if (cat_type == 2 || cat_type == 3 || cat_type == 5){
+			alert(sys_hold);
+			$("#parent_cat_val").val(0);
+			$("#parent_cat .cite").html(text);
+			return false;
+		}
+		
+		return true;
+	}
+    </script>     
+</body>
+</html>

@@ -1,0 +1,56 @@
+{include file="page_header"}
+<div class="con b-color-f">
+    <div class="user-center user-register of-hidden">
+        <div class="hd j-tab-title">
+            <ul class="dis-box">
+                <li class="box-flex active">佣金转出</li>
+            </ul>
+        </div>
+    </div>
+    <form action="{url('transferred')}" method="post" onsubmit="return check()">
+        <div class="user-recharge b-color-f">
+
+            <section class="margin-lr">
+                <div class="text-all dis-box j-text-all">
+                    <div class="box-flex input-text">
+                        <input class="j-input-text" type="text"
+                               placeholder="本次最大转出额度 {$surplus_amount} 最小{$draw_money_format}"
+                               onkeyup="this.value=this.value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')"
+                               onafterpaste="this.value=this.value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')"
+                               name="amount">
+
+                        <input id="shop_money" type="hidden" name="shop_money" value="{$shop_money}"/>
+                        <input id="draw_money_value" type="hidden" name="draw_money_value" value="{$draw_money_value}"/>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="padding-all">
+            <button type="submit" class="btn-submit min-btn br-5">立即转入</button>
+            <script>
+                function check() {
+                    var amount = parseFloat($("input[name=amount]").val());
+                    var shop_money = parseFloat($("input[name=shop_money]").val());
+                    var draw_money_value = parseFloat($("input[name=draw_money_value]").val());
+                    if (amount >= draw_money_value) {
+                        if (amount > shop_money) {
+                            d_messages("您最多可以转出" + shop_money + "元佣金到余额");
+                            return false;
+                        }
+                    } else {
+                        d_messages("最少转出" + draw_money_value + "元");
+                        return false;
+                    }
+                }
+            </script>
+        </div>
+    </form>
+    <!--提现layer-->
+    <div class="mask-filter-div"></div>
+</div>
+<!--引用js-->
+
+</body>
+
+</html>

@@ -1,0 +1,170 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="javascript:;" ectype="goback" class="s-back">{$lang.back}</a>{$ur_here}</div>
+        <div class="content">		
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.0}</li>
+                    <li>{$lang.operation_prompt_content.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-head">
+                    <div class="fl">
+                    	<a href="attribute.php?act=add&goods_type={$goods_type}"><div class="fbutton"><div class="add" title="{$lang.10_attribute_add}"><span><i class="icon icon-plus"></i>{$lang.10_attribute_add}</span></div></div></a>
+                    </div>				
+                    <div class="refresh">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+                </div>
+                <div class="common-content">
+					<form method="post" action="attribute.php?act=batch" name="listForm">
+                	<div class="list-div" id="listDiv">
+						{/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                	<th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars"></label></div></th>
+                                	<th width="5%"><div class="tDiv"><a href="javascript:listTable.sort('attr_id');">{$lang.record_id}</a>{$sort_attr_id}</div></th>
+                                    <th width="12%"><div class="tDiv"><a href="javascript:listTable.sort('attr_name'); ">{$lang.attr_name}</a>{$sort_attr_name}</div></th>
+                                    <th width="10%"><div class="tDiv"><a href="javascript:listTable.sort('cat_id'); ">{$lang.cat_id}</a>{$sort_cat_id}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.label_attr_type}</div></th>
+                                    <th width="12%"><div class="tDiv"><a href="javascript:listTable.sort('attr_input_type');">{$lang.attr_input_type}</a></div></th>
+                                    <th width="30%"><div class="tDiv">{$lang.attr_values}</div></th>
+                                    <th width="8%"><div class="tDiv"><a href="javascript:listTable.sort('attr_id');">{$lang.sort_order}</a>{$sort_sort_order}</div></th>
+									{if $attr_set_up eq 1}
+                                    <th width="10%" class="handle">{$lang.handler}</th>
+									{/if}
+                                </tr>
+                            </thead>
+                            <tbody>
+								{foreach from=$attr_list item=attr}
+                            	<tr>
+                                    <td class="sign"><div class="tDiv">
+										<input type="checkbox" name="checkboxes[]" value="{$attr.attr_id}" class="checkbox" id="checkbox_{$attr.attr_id}" />
+										<label for="checkbox_{$attr.attr_id}" class="checkbox_stars"></label>
+									</div></td>
+                                    <td><div class="tDiv">{$attr.attr_id}</div></td>
+									<td>
+                                        <div class="tDiv">
+                                            {if $attr_set_up eq 1}
+                                            <span onclick="listTable.edit(this, 'edit_attr_name', {$attr.attr_id})">{$attr.attr_name}</span>
+                                            {else}
+                                            {$attr.attr_name}
+                                            {/if}  									
+                                        </div>
+                                    </td>
+									<td><div class="tDiv">{$attr.cat_name}</div></td>
+                                    <td>
+                                    	<div class="tDiv">
+                                        	{if $attr.attr_type eq 1}
+                                        		{$lang.attr_type_values[1]}
+                                            {elseif $attr.attr_type eq 2}
+                                            	{$lang.attr_type_values[2]}
+                                            {else}
+                                            	{$lang.attr_type_values[0]}
+                                            {/if}
+                                        </div>
+                                    </td>
+									<td><div class="tDiv">{$attr.attr_input_type_desc}</div></td>
+									<td><div class="tDiv">{$attr.attr_values}</div></td>
+									<td>
+                                        <div class="tDiv">
+                                            {if $attr_set_up eq 1}
+                                            <span onclick="listTable.edit(this, 'edit_sort_order', {$attr.attr_id})">{$attr.sort_order}</span>
+                                            {else}
+                                            {$attr.sort_order}
+                                            {/if}									
+                                        </div>
+                                    </td>
+									{if $attr_set_up eq 1}
+                                    <td class="handle">
+                                        <div class="tDiv a2 tl">
+                                        	{if $attr.attr_cat_type eq 1}
+                                        	<a href="attribute.php?act=set_gcolor&attr_id={$attr.attr_id}" class="btn_edit mr0"><i class="icon icon-edit"></i>{$lang.add_attribute_color}</a>
+                                            {/if}
+                                            <a href="attribute.php?act=edit&amp;attr_id={$attr.attr_id}" class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>
+                                            <a href="javascript:;" onclick="removeRow({$attr.attr_id})" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>										
+                                        </div>
+                                    </td>
+									{/if}
+                                </tr>
+								{foreachelse}
+								<tr><td class="no-records"  colspan="20">{$lang.no_records}</td></tr>								
+								{/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+									<td colspan="12">
+                                        <div class="tDiv">
+                                            {if $attr_set_up eq 1}
+                                            <div class="tfoot_btninfo">
+                                                <div class="shenhe">
+                                                    <input type="submit" id="btnSubmit" value="{$lang.drop}" class="btn btn_disabled" disabled="true" ectype="btnSubmit" />
+                                                </div>										
+                                            </div>
+                                            {/if}
+                                            <div class="list-page">
+                                               {include file="library/page.lbi"}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+						{if $full_page}
+                    </div>
+					</form>
+                </div>
+            </div>
+		</div>
+	</div>
+	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+	  listTable.recordCount = {$record_count|default:0};
+	  listTable.pageCount = {$page_count|default:1};
+
+	  {foreach from=$filter item=item key=key}
+	  listTable.filter.{$key} = '{$item}';
+	  {/foreach}
+	  {literal}
+
+	  /**
+	   * 查询商品属性
+	   */
+	  function searchAttr(goodsType)
+	  {
+		listTable.filter.goods_type = goodsType;
+		listTable.filter.page = 1;
+		listTable.loadList();
+	  }
+
+	  function removeRow(attr_id)
+	  {
+		Ajax.call('attribute.php?act=get_attr_num&attr_id=' + attr_id, '', removeRowResponse, 'GET', 'JSON');
+	  }
+
+	  function removeRowResponse(result)
+	  {
+		if (result.message.length > 0)
+		{
+		  alert(result.message);
+		}
+
+		if (result.error == 0)
+		{
+		  listTable.remove(result.content.attr_id, result.content.drop_confirm);
+		}
+	  }
+	  {/literal}
+	</script>
+</body>
+</html>
+{/if}

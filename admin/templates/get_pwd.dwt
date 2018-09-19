@@ -1,0 +1,169 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{$ur_here}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href="css/login.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../js/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="../js/jquery.validation.min.js"></script>
+    <script type="text/javascript" src="../js/jquery.SuperSlide.2.1.1.js"></script>
+</head>
+
+<body>
+<div class="backPwd_layout">
+    {if $form_act eq "forget_pwd"}
+    <form action="get_password.php" method="post" id="theForm">
+        <div class="backPwd_form">
+            <div class="title">{$lang.get_password}</div>
+            <div id="error"></div>
+            <div class="formInfo">
+                <div class="formText">
+                    <input type="text" name="user_name" autocomplete="off" class="input-text" value="" placeholder="{$lang.sr_admin_username}" />
+                </div>
+                <div class="formText">
+                    <input type="text" name="email" autocomplete="off" class="input-text" value="" placeholder="{$lang.sr_email}" />
+                </div>
+                <div class="formText btn_div">
+                    <input type="submit" name="submit" onclick="send_validate()" class="sub" value="{$lang.get_password}" />
+                    <a href="privilege.php?act=login" class="cancel">{$lang.return_login}</a>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="action" value="get_pwd" />
+        <input type="hidden" name="act" value="forget_pwd" />
+    </form>
+
+    <script type="text/javascript">
+        /*  @author-bylu 找回密码输入验证 start  */
+        $('#theForm input[name=submit]').on('click',function(){
+            var username=true;
+            var email=true;
+
+            if($('#theForm input[name=user_name]').val() == ''){
+                $('#error').html('<span class="error_msg">'+user_name_empty+'</span>');
+                $('#theForm input[name=user_name]').focus();
+                username = false;
+                return false;
+            }
+
+            if($('#theForm input[name=email]').val() == ''){
+                $('#error').html('<span class="error_msg">'+email_empty+'</span>');
+                $('#theForm input[name=email]').focus();
+                email = false;
+                return false;
+            }
+
+            if(CheckMail($('#theForm input[name=email]').val()) == false){
+                $('#error').html('<span class="error_msg">'+email_error+'</span>');
+                $('#theForm input[name=email]').focus();
+                email = false;
+                return false;
+            }
+
+            function CheckMail(mail) {
+                var filter  = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+                if (filter.test(mail)) return true;
+                else {
+                    return false;
+				}
+            }
+
+
+            if(username && email){
+                $('#theForm').submit();
+            }else{
+                return false;
+            }
+        });
+        /*  @author-bylu  end  */
+    </script>
+    {/if}
+
+    {if $form_act eq "reset_pwd"}
+
+    <form action="get_password.php" method="post" id="theForm">
+        <div class="backPwd_form">
+            <div class="title">{$lang.reset_pwd}</div>
+            <div id="error"></div>
+            <div class="formInfo">
+                <div class="formText">
+                    <input type="password"   style="display:none"/> 
+                    <input type="password" name="password" autocomplete="off" class="input-text" value="" placeholder="{$lang.sr_new_pwd}" />
+                </div>
+                <div class="formText">
+                    <input type="password" name="confirm_pwd" autocomplete="off" class="input-text" value="" placeholder="{$lang.confirm_pwd}" />
+                </div>
+                <div class="formText btn_div">
+                    <input type="submit" name="submit" onclick="reset_validate()" class="sub" value="{$lang.button_submit_alt}" />
+                    <input type="button" name="qx" class="cancel" value="{$lang.cancel}" />
+                </div>
+                <div class="formText">
+                    <a href="privilege.php?act=login" class="return">{$lang.return_login}</a>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="action" value="reset_pwd" />
+        <input type="hidden" name="act" value="forget_pwd" />
+        <input type="hidden" name="adminid" value="{$adminid}" />
+        <input type="hidden" name="code" value="{$code}" />
+    </form>
+
+    <script type="text/javascript">
+        /*  @author-bylu 重置密码输入验证 start  */
+        $('#theForm input[name=submit]').on('click',function(){
+            var password=true;
+            var confirm_pwd=true;
+
+            if($('#theForm input[name=password]').val() == ''){
+                $('#error').html('<span class="error_msg">'+admin_pwd_empty+'</span>');
+                $('#theForm input[name=password]').focus();
+                password = false;
+                return false;
+            }
+
+            if($('#theForm input[name=confirm_pwd]').val() == ''){
+                $('#error').html('<span class="error_msg">'+confirm_pwd_empty+'</span>');
+                $('#theForm input[name=confirm_pwd]').focus();
+                confirm_pwd = false;
+                return false;
+            }
+
+            if($('#theForm input[name=confirm_pwd]').val() != $('#theForm input[name=password]').val()){
+                $('#error').html('<span class="error_msg">'+both_pwd_error+'</span>');
+                $('#theForm input[name=confirm_pwd]').focus();
+                confirm_pwd = false;
+                return false;
+            }
+
+            if(password && confirm_pwd){
+                $('#theForm').submit();
+            }else{
+                return false;
+            }
+        });
+        /*  @author-bylu  end  */
+    </script>
+    {/if}
+</div>
+<div id="bannerBox">
+    <ul id="slideBanner" class="slideBanner">
+        <li><img src="images/banner_1.jpg"></li>
+        <li><img src="images/banner_2.jpg"></li>
+        <li><img src="images/banner_3.jpg"></li>
+        <li><img src="images/banner_4.jpg"></li>
+        <li><img src="images/banner_5.jpg"></li>
+    </ul>
+</div>
+<script type="text/javascript">
+    $("#bannerBox").slide({mainCell:".slideBanner",effect:"fold",interTime:3500,delayTime:500,autoPlay:true,autoPage:true,endFun:function(i,c,s){
+        $(window).resize(function(){
+            var width = $(window).width();
+            var height = $(window).height();
+            s.find(".slideBanner,.slideBanner li").css({"width":width,"height":height});
+        });
+    }});
+</script>
+</body>
+</html>

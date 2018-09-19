@@ -1,0 +1,451 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!--申请店铺信息-->
+<div class="panel-body">
+	<div class="panel-tit"><span>{$title.fields_titles}</span></div>
+	<div class="cue">{$title.titles_annotation}</div>
+    <div class="list">
+    	{foreach from=$title.cententFields item=fields}
+        <div class="item">	
+            <div class="label">
+                <em>{if $fields.will_choose eq 1 && $choose_process eq 1}*{/if}</em>
+                <span>{$fields.fieldsFormName}：</span>
+            </div>
+            <div class="value">
+                {if $fields.chooseForm eq 'input'}
+                    <input class="text" type="text" value="{$fields.titles_centents}" size="{$fields.inputForm}" name="{$fields.textFields}">
+                    <div class="verify" id="{$fields.textFields}"></div>
+                {elseif $fields.chooseForm eq 'other'}
+                    {if $fields.otherForm eq 'textArea'}
+                        <select name="{$fields.textFields}[]" class="catselectB" id="selCountries_{$fields.textFields}_{$sn}" onchange="region.changed(this, 1, 'selProvinces_{$fields.textFields}_{$sn}')">
+                          <option value="0">{$lang.please_select}{$lang.country}</option>
+                          <!-- {foreach from=$country_list item=country} -->
+                          <option value="{$country.region_id}" {if $fields.textAreaForm.country eq $country.region_id}selected{/if}>{$country.region_name}</option>
+                          <!-- {/foreach} -->
+                        </select>
+                        <select name="{$fields.textFields}[]" class="catselectB" id="selProvinces_{$fields.textFields}_{$sn}" onchange="region.changed(this, 2, 'selCities_{$fields.textFields}_{$sn}')">
+                          <option value="0">{$lang.please_select}{$lang.province}</option>
+                          {if $fields.province_list}
+                          <!-- {foreach from=$fields.province_list item=province} -->
+                          <option value="{$province.region_id}" {if $fields.textAreaForm.province eq $province.region_id}selected{/if}>{$province.region_name}</option>
+                          <!-- {/foreach} -->
+                          {else}
+                          <!-- {foreach from=$province_list item=province} -->
+                          <option value="{$province.region_id}">{$province.region_name}</option>
+                          <!-- {/foreach} -->
+                          {/if}
+                        </select>
+                        <select name="{$fields.textFields}[]" class="catselectB" id="selCities_{$fields.textFields}_{$sn}" onchange="region.changed(this, 3, 'selDistricts_{$fields.textFields}_{$sn}')">
+                          <option value="0">{$lang.please_select}{$lang.city}</option>
+                          {if $fields.city_list}
+                          <!-- {foreach from=$fields.city_list item=city} -->
+                          <option value="{$city.region_id}" {if $fields.textAreaForm.city eq $city.region_id}selected{/if}>{$city.region_name}</option>
+                          <!-- {/foreach} -->
+                          {else}
+                          <!-- {foreach from=$city_list item=city} -->
+                          <option value="{$city.region_id}">{$city.region_name}</option>
+                          <!-- {/foreach} -->
+                          {/if}
+                        </select>
+                        <select name="{$fields.textFields}[]" class="catselectB" id="selDistricts_{$fields.textFields}_{$sn}" {if $fields.textAreaForm.district eq 0}style="display:none"{/if}>
+                          <option value="0">{$lang.please_select}{$lang.area}</option>
+                          {if $fields.district_list}
+                          <!-- {foreach from=$fields.district_list item=district} -->
+                          <option value="{$district.region_id}" {if $fields.textAreaForm.district eq $district.region_id}selected{/if}>{$district.region_name}</option>
+                          <!-- {/foreach} -->
+                          {else}
+                          <!-- {foreach from=$district_list item=district} -->
+                          <option value="{$district.region_id}">{$district.region_name}</option>
+                          <!-- {/foreach} -->
+                          {/if}
+                        </select>
+                    {elseif $fields.otherForm eq 'dateFile'}
+                        <input name="{$fields.textFields}" type="file" /><input name="text_{$fields.textFields}" type="hidden" value="{$fields.titles_centents}" />{if $fields.titles_centents neq ''}&nbsp;&nbsp;<a href="{$fields.titles_centents}" target="_blank">查看</a>{/if}
+                    {elseif $fields.otherForm eq 'dateTime'} 
+                        {foreach from=$fields.dateTimeForm item=date key=dk}
+                            {if $dk eq 0}  
+                            <input id="{$fields.textFields}_{$dk}" class="input jdate narrow" type="text" size="{$date.dateSize}" readonly value="{$date.dateCentent}" name="{$fields.textFields}[]"> 
+                            {else}
+                            —&nbsp;<input id="{$fields.textFields}_{$dk}" class="input jdate narrow" type="text" size="{$date.dateSize}" readonly value="{$date.dateCentent}" name="{$fields.textFields}[]"> 
+                            {/if}
+                        {/foreach}
+                        <script type="text/javascript">
+							var opts = {
+								'targetId':'{$fields.textFields}_{$dk}',
+								'triggerId':['{$fields.textFields}_{$dk}'],
+								'alignId':'{$fields.textFields}_{$dk}',
+								'hms':'off',
+								'format':'-'
+							}
+							xvDate(opts);
+						</script>
+                    {/if}
+                {elseif $fields.chooseForm eq 'textarea'}
+                    <textarea name="{$fields.textFields}" cols="{$fields.cols}" rows="{$fields.rows}">{$fields.titles_centents}</textarea>  
+                {elseif $fields.chooseForm eq 'select'}  
+                    <select name="{$fields.textFields}">
+                        <option value="0" selected="selected">{$lang.Please_select}</option>
+                    {foreach from=$fields.selectList item=selectList}
+                        <option value="{$selectList}" {if $fields.titles_centents eq $selectList}selected="selected"{/if}>{$selectList}</option>
+                    {/foreach}
+                    </select>    
+                {elseif $fields.chooseForm eq 'radio'}   
+                    {foreach from=$fields.radioCheckboxForm item=radio key=rc_k}
+                    <label><input name="{$fields.textFields}" type="radio" value="{$radio.radioCheckbox}" {if $fields.titles_centents eq $radio.radioCheckbox}checked="checked"{else}{if $rc_k eq 0}checked="checked"{/if}{/if} />&nbsp;{$radio.radioCheckbox}</label>
+                    {/foreach}
+                {elseif $fields.chooseForm eq 'checkbox'}   
+                    {foreach from=$fields.radioCheckboxForm item=checkbox key=rc_k}
+                    <label><input name="{$fields.textFields}" type="checkbox" value="{$radio.radioCheckbox}"  {if $fields.titles_centents eq $checkbox.radioCheckbox}checked="checked"{else}{if $rc_k eq 0}checked="checked"{/if}{/if} />&nbsp;{$checkbox.radioCheckbox}</label>
+                    {/foreach}    
+                {/if}
+                <div class="org">{$fields.formSpecial}</div>
+                <div class="verify" id="{$fields.textFields}"></div>
+            </div>
+        </div>    
+        {/foreach}   
+        <!--以上是自定义基本信息，以下是固定信息-->
+        <div class="item">
+            <div class="label">
+                <em>*</em>
+                <span>{$lang.Main_category}：</span>
+            </div>
+            <div class="value">
+                <select class="select3" name="ec_shop_categoryMain" id="shop_categoryMain_id" onChange="get_shop_categoryMain(this.value)">
+                    <option value="0" selected="selected">{$lang.Please_select}</option>
+                    {foreach from=$title.first_cate item=cate}
+                    <option value="{$cate.cat_id}" {if $title.parentType.shop_categoryMain eq $cate.cat_id}selected="selected"{/if}>{$cate.cat_name}</option>
+                    {/foreach}
+                </select>
+                <font style="color:#F00" id="cate_Html"></font>
+            </div>
+        </div>
+        <div class="item">
+            <div class="label">
+                <em>*</em>
+                <span>{$lang.Detailed_category}：</span>
+            </div>
+            <div class="value">
+                <input id="addCategoryBtn" onClick="openDiv()" class="btns" type="button" value="{$lang.add}">
+                <div id="divSCA">
+                	<div class="divTitle">
+                    	<div class="tit">{$lang.Add_category}</div>
+                        <a onClick="closeDiv()" class="setps_closeDivA"></a>
+                    </div>
+                    <div class="mod">
+                        <div class="mod_list">
+                            <div class="mod-label">{$lang.one_category}：</div>
+                            <div class="mod-value">
+                                <select class="select3" name="addCategoryMain" onChange="selectChildCate(this.value)" id="addCategoryMain_Id">
+                                    <option value="0" selected="selected">{$lang.Please_select}</option>
+                                    {foreach from=$title.first_cate item=cate}
+                                    <option value="{$cate.cat_id}">{$cate.cat_name}</option>
+                                    {/foreach}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mod_list">
+                            <div class="mod-label">{$lang.two_category}：</div>
+                            <div class="mod-value">
+                            	<div class="cart-checkbox">
+                                    <input type="checkbox" class="ui-checkbox CheckBoxShop" name="addCategoryBtn[]" id="getCateAll" onClick="get_cateAll(0,this)">
+                                    <label for="getCateAll">{$lang.check_all_back}</label>
+                                </div>
+                            </div>
+                            <div class="mod_span" id="steps_re_span">{$lang.select_one_category}</div>
+                        </div>
+                        <div class="mod_list_btn">
+                            <a href="javascript:void(0);" onClick="selectChildCate_cheked();">{$lang.submit_goods}</a>
+                            <a href="javascript:void(0);" onClick="get_cateAll(1);">{$lang.is_cancel}</a>
+                        </div>
+                    </div>  
+                </div>
+                <a class="ml10 ftx-05" target="_blank" href="article.php?id=42">{$lang.category_Cost} >></a>
+                <span id="categorySpan" class="error hide" style="color:#F00">{$lang.please_Add_category}</span>
+                <div id="detailCategoryTable">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th width="200">{$lang.Serial_number}</th>
+                                <th width="300">{$lang.one_category}</th>
+                                <th width="300">{$lang.two_category}</th>
+                                <th width="110">{$lang.handle}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {if $category_info}
+                        {foreach from=$category_info item=category key=k}
+                            <tr class="seller_category">
+                                <td>
+                                    <p>
+                                        <span class="index">{$k}</span>
+                                        <input type="hidden" value="{$category.cat_id}" name="cat_id[]" class="cId">
+                                    </p>
+                                </td>
+                                <td>
+                                    <p>
+                                        <input type="hidden" value="{$category.parent_name}" name="parent_name[]" class="cl1Name">
+                                        {$category.parent_name}
+                                    </p>
+                                </td>
+                                <td>
+                                    <p>
+                                        <input type="hidden" value="{$category.cat_name}" name="cat_name[]" class="cl2Name">
+                                        {$category.cat_name}
+                                    </p>
+                                </td>
+                                <td align="center"><p><a class="ftx-05 removeDetailCategoryBtn" href="javascript:void(0);" onClick="deleteChildCate({$category.ct_id})"><span>{$lang.drop}</span></a></p></td>
+                            </tr>
+                        {/foreach}    
+                        {/if}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="item">
+        	<div class="label">
+                <em>*</em>
+                <span>{$lang.Corresponding_zizhi}：</span>
+            </div>
+            <div class="value deletePane">
+            	<div class="tit">{$lang.Corresponding_zizhi_one}<a class="ftx-05" target="_blank" href="article.php?id=42">《{$lang.hangye_zizhi_bz}》</a>。</div>
+                <div id="category_permanent">
+                    <table id="detailCategoryQuaTable" class="table">
+                        <thead>
+                            <tr>
+                                <th width="250">{$lang.leimu_name}</th>
+                                <th width="150">{$lang.zizhi_name}</th>
+                                <th width="250">{$lang.Electronic}</th>
+                                <th width="260">{$lang.Due_date}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {foreach from=$permanent_list item=permanent key=pk}
+                            <tr>
+                                <td>
+                                    {$permanent.cat_name}<input type="hidden" value="{$permanent.cat_id}" name="permanentCat_id_{$permanent.cat_id}[]">
+                                </td>
+                                <td>
+                                    {$permanent.dt_title}
+                                    <input type="hidden" value="{$permanent.dt_id}" name="permanent_title_{$permanent.cat_id}[]">
+                                </td>
+                                <td>
+                                    <input name="permanentFile_{$permanent.cat_id}[]" type="file">{if $permanent.permanent_file}&nbsp;&nbsp;<a href="{$permanent.permanent_file}" target="_blank">{$lang.view}</a>{/if}
+                                </td>
+                                <td>
+                                    {if $permanent.permanent_date}
+                                    <div class="cart-checkbox">
+                                    <input id="categoryId_date_{$permanent.dt_id}" class="text text-2 jdate narrow" type="text" size="17" readonly value="{$permanent.permanent_date}" name="categoryId_date_{$permanent.cat_id}[]">
+                                    <input type="checkbox" id="categoryId_permanent_{$permanent.dt_id}" value="1" name="categoryId_permanent_{$permanent.cat_id}[]" class="ui-checkbox CheckBoxShop">
+                                    <label for="categoryId_permanent_{$permanent.dt_id}">{$lang.permanent}</label>
+                                    </div>
+                                    {else}
+                                    <div class="cart-checkbox">
+                                    <input id="categoryId_date_{$permanent.dt_id}" class="text text-2 jdate narrow" type="text" size="17" readonly value="" name="categoryId_date_{$permanent.cat_id}[]">
+                                    <input type="checkbox" id="categoryId_permanent_{$permanent.dt_id}" {if $permanent.cate_title_permanent eq 1}checked{/if} value="1" name="categoryId_permanent_{$pk}" class="ui-checkbox CheckBoxShop">
+                                    <label for="categoryId_permanent_{$permanent.dt_id}">{$lang.permanent}</label>
+                                    </div>
+                                    {/if}
+                                </td>
+                            </tr>
+                            {/foreach}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(function(){
+	
+	var shop_categoryMain = document.getElementById('shop_categoryMain_id');//  主营类目
+	
+	{if !$title.parentType.shop_categoryMain}
+		if(shop_categoryMain.value != 0){
+			shop_categoryMain.value = 0;
+		}
+	{else}	
+		var addCategoryMain_Id = document.getElementById('addCategoryMain_Id');//  一级类目
+		addCategoryMain_Id.value = shop_categoryMain.value;
+		selectChildCate(shop_categoryMain.value);
+	{/if}
+	
+	var addCategoryMain_Id = document.getElementById('addCategoryMain_Id');//  一级类目
+	if(addCategoryMain_Id.value != 0){
+		addCategoryMain_Id.value = 0;
+	}
+	
+	$("#getCateAll").prop("checked", false);
+});
+
+function get_shop_categoryMain(val){
+	var cate_Html = document.getElementById('cate_Html');//  主营类目
+	if(val != 0 ){
+		cate_Html.innerHTML = '';
+		selectChildCate(val);
+		var addCategoryMain_Id = document.getElementById('addCategoryMain_Id');//  一级类目
+		addCategoryMain_Id.value = val;
+	}else{
+		cate_Html.innerHTML = json_languages.merchants_step_error_four;
+	}
+}
+//----全选/反选 或 全部取消  (type=1:取消)
+function get_cateAll(type,f){ 
+	var cateChild = document.getElementsByName('cateChild[]');
+	var addCategoryBtn = document.getElementsByName('addCategoryBtn[]');
+	var addCategoryMain = document.getElementById('addCategoryMain_Id');
+	var oneCat_id;
+
+	if(type == 0){
+		if(f.checked == true){
+			$('#getCateAll').parent().addClass("cart-checkbox-checked");
+		}else{
+			$('#getCateAll').parent().removeClass("cart-checkbox-checked");
+		}
+	}else{
+		$('#getCateAll').parent().removeClass("cart-checkbox-checked");
+	}
+	
+	if(type == 1){ 
+		if(addCategoryMain.value != 0){
+			addCategoryMain.value = 0;
+			
+			if(document.getElementById('oneCat_id')){
+				oneCat_id = document.getElementById('oneCat_id').value;
+			}else{
+				oneCat_id = 0;
+			}
+			
+			if(oneCat_id > 0){
+				cat_id = oneCat_id;
+			}else{
+				cat_id = addCategoryMain.value;
+			}
+			
+			var cateArr = new Object();
+			var child = new Array();
+			for(i=0; i<cateChild.length; i++){
+				if(cateChild[i].checked == true){
+					child[i] = cateChild[i].value;
+				}else{
+					child[i] = '';
+				}
+			}
+			cateArr.cat_id = child;
+			
+			selectChildCate(cat_id,1,cateArr);
+			closeDiv(); //关闭层
+		}
+	}
+	
+	for(i=0; i<cateChild.length; i++){
+		if(type == 1){
+			cateChild[i].checked = false;
+			addCategoryBtn[0].checked = false;
+		}else{
+			if(f.checked){
+				$("input[name='cateChild[]']").eq(i).parent().addClass("cart-checkbox-checked");
+				if(cateChild[i].checked == false){
+					cateChild[i].checked = true;
+				}else{
+					cateChild[i].checked = false;
+				}
+			}else{
+				$("input[name='cateChild[]']").eq(i).parent().removeClass("cart-checkbox-checked");
+				if(cateChild[i].checked == true){
+					cateChild[i].checked = false;
+				}else{
+					cateChild[i].checked = true;
+				}
+			}
+		}
+	}
+}
+
+//选择一级类目查找二级类目
+function selectChildCate(val,type,cateArr){
+	
+	if(typeof(type) == 'undefined'){
+		type = 0;
+	}
+	
+	if(typeof(cateArr) == 'undefined'){
+		cateArr = '';
+	}
+	
+	var shop_categoryMain = document.getElementById('shop_categoryMain_id');//  主营类目
+	shop_categoryMain.value = val;
+	
+	Ajax.call('merchants_steps.php?step=addChildCate', 'cat_id=' + val + '&type=' + type + '&cateArr=' + $.toJSON(cateArr), responseSelectChildCate, 'POST', 'JSON');
+}
+function responseSelectChildCate(result){
+	
+	if(result.error == 1){
+		alert(result.message);
+		location.href = 'user.php';
+	}else{
+		$('#steps_re_span').html(result.content);
+		$('#getCateAll').attr('checked',false);
+		
+		if(result.type == 1){ //取消二级类目
+			$('#detailCategoryTable').html(result.cate_checked); //删除二级类目列表
+			$('#category_permanent').html(result.catePermanent); //以及类目证件列表
+		}
+	}
+}
+
+$(document).on("click","input[name='cateChild[]']",function(){
+	if($(this).prop("checked") == true){
+		$(this).parent().addClass("cart-checkbox-checked");
+	}else{
+		$(this).parent().removeClass("cart-checkbox-checked");
+	}
+});
+
+//添加二级类目
+function selectChildCate_cheked(){
+	var cateArr = new Object();
+	var child = new Array();
+	var cateChild = document.getElementsByName('cateChild[]');
+	
+	for(i=0; i<cateChild.length; i++){
+		if(cateChild[i].checked == true){
+			child[i] = cateChild[i].value;
+		}else{
+			child[i] = '';
+		}
+	}
+	
+	cateArr.cat_id = child;
+	
+	Ajax.call('merchants_steps.php?step=addChildCate_checked', 'cat_id=' + $.toJSON(cateArr), responseSelectChildCate_cheked, 'POST', 'JSON');
+}
+function responseSelectChildCate_cheked(result){
+	
+	if(result.error == 1){
+		alert(result.message);
+		location.href = 'user.php';
+	}else{
+		closeDiv(); //关闭层
+		$('#detailCategoryTable').html(result.content); //二级类目别表
+		$('#category_permanent').html(result.catePermanent); //以及类目证件列表
+	}	
+}
+
+//删除二级类目
+function deleteChildCate(ct_id){
+	Ajax.call('merchants_steps.php?step=deleteChildCate_checked', 'ct_id=' + ct_id, responseDeleteChildCate, 'POST', 'JSON');
+}
+function responseDeleteChildCate(result){
+	
+	if(result.error == 1){
+		alert(result.message);
+		location.href = 'user.php';
+	}else{
+		$('#detailCategoryTable').html(result.content); //删除类目
+		$('#category_permanent').html(result.catePermanent); //以及类目证件列表
+	}	
+}
+
+</script>

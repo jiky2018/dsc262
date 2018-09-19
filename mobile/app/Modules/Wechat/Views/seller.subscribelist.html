@@ -1,0 +1,250 @@
+{include file="seller_pageheader"}
+
+{include file="seller_nave_header"}
+
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file="seller_menu_left"}
+
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+            {include file="seller_nave_header_title"}
+                <div class="wrapper-right of subscribe_head" >
+                    <div class="tabmenu">
+                        <ul class="tab ">
+                            <li role="presentation" class="active"><a href="#home" role="tab" data-toggle="tab">{$lang['sub_title']}</a></li>
+                        </ul>
+                    </div>
+                    <div class="explanation" id="explanation">
+                        <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4></div>
+                        <ul>
+                            <li>粉丝管理：显示已经关注微信公众号的用户信息。</li>
+                            <li>在对用户进行发送消息操作之前，请及时点击更新按钮，以便同步微信公众号平台的用户分组（标签）与数量。</li>
+                            <li>发送客服消息，可以单独发送微信消息给微信用户（只有48小时内和公众号有过互动的粉丝才能接收到信息，否则会发送失败）</li>
+                        </ul>
+                    </div>
+                    <div class="common-head mt20 fl">
+                        <div class="fl">
+                            <a href="{url('sys_tags')}" class="sc-btn sc-blue-btn" ><i class="fa fa-refresh"></i>{$lang['group_update']}</a>
+                        </div>
+                        <!-- 搜索 -->
+                        <div class="search-info ">
+                            <form action="{url('subscribe_search')}" name="searchForm" method="post" role="search">
+                                <div class="search-form">
+                                    <div class="search-key">
+                                        <input type="text" name="keywords" class="text nofocus" placeholder="{$lang['sub_search']}" autocomplete="off">
+                                        <input type="hidden" value="{$group_id}" name="group_id">
+                                        <input type="submit" value="" class="submit search_button">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="fl tags_button mt20" >
+                        <a href="{url('tags_edit', array('id'=>$val['id']))}" class="sc-btn sc-blue-btn fancybox fancybox.iframe" >{$lang['tag_add']}</a>
+                    </div>
+                    <div class="wrapper-list" >
+                        <form action="{url('batch_tagging')}" method="post" class="form-inline" role="form">
+                        <div class="list-div" id="listDiv">
+                            <table class="ecsc-default-table goods-default-table pull-left" style="width:75%;">
+                                <thead>
+                                    <tr>
+                                        <th width="5%" class="sign"><div class="checks"><input type="checkbox" id="check_box" /></div></th>
+                                        <th width="50%">用户</th>
+                                        <th width="30%">{$lang['handler']}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {if $list}
+                                    {foreach $list as $key=>$val}
+                                    <tr>
+                                        <td width="2%" class="sign" style="text-align:center;"><div class=""><input type="checkbox" name="id[]" value="{$val['openid']}" class="checks"></div></td>
+                                        <td >
+                                            <div class=" user_img_box" style="position:relative">
+                                                <div class="pull-left fan"><img src="{$val['headimgurl']}" width="70" alt="{$val['nickname']}" /></div>
+                                                <div class="pull-left ml10 names">
+                                                    <p>{$val['nickname']}</p>
+                                                    <p class="wei-area" >
+                                                        {foreach $val['taglist'] as $k=>$v}
+                                                        <a href="javascript:;" class="user_tag" tagAttr="{$v['tag_id']}" openidAttr="{$val['openid']}" title="点击取消标签" >{$v['name']}</a>
+                                                        {/foreach}
+                                                    </p>
+                                                </div>
+
+                                                <div class="person-info hidden">
+                                                    <div class="pull-left"><img src="{$val['headimgurl']}"></div>
+                                                    <div class="pull-left person-con">
+                                                        <p class="title">{$lang['sub_nickname']}：{$val['nickname']}</p>
+                                                        <p class="wei-area" >
+                                                        {foreach $val['taglist'] as $k=>$v}
+                                                        <a href="javascript:;" class="user_tag" tagAttr="{$v['tag_id']}" openidAttr="{$val['openid']}" title="点击取消标签" >{$v['name']}</a>
+                                                        {/foreach}
+                                                        </p>
+                                                        <p class="bang">地区： {$val['province']} - {$val['city']}</p>
+                                                         <!--<p class="bang">{$lang['sub_binduser']}：{if $val['user_name']}{$val['user_name']}{else}暂未绑定{/if}</p>-->
+                                                        <p class="time">{$lang['sub_time']}：{date('Y-m-d H:i:s', $val['subscribe_time'])}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </td>
+                                        <td>
+                                        <div class="handle">
+                                            <div class="tDiv">
+                                            <a href="{url('send_custom_message', array('uid'=>$val['uid']))}" class="btn_region fancybox80 fancybox.iframe" title="{$lang['send_custom_message']}"><i class="fa fa-weixin" ></i>发送消息</a>
+                                            <a href="{url('custom_message_list', array('uid'=>$val['uid']))}" class="btn_see" title="{$lang['custom_message_list']}"><i class="sc_icon sc_icon_see"></i>历史记录</a>
+                                            </div>
+                                        </div>
+                                        </td>
+                                    </tr>
+                                    {/foreach}
+                                    {else}
+                                    <tr><td class="no-records" colspan="3">没有找到任何记录</td></tr>
+                                    {/if}
+
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                      <td class="td_border" colspan="3" style="background-color: rgb(255, 255, 255);">
+                                        <span class="fl" style="line-height:30px;margin:0 20px 0 20px;">{$lang['tag_move']}</span>
+                                          <select name="tag_id" class="select mr10 text" style="width:auto">
+                                            {foreach $tag_list as $k=>$v}
+                                            <option value="{$v['tag_id']}">{$v['name']}</option>
+                                            {/foreach}
+                                          </select>
+                                          <input type="submit" class="sc-btn btn_disabled" value="{$lang['tag_join']}" disabled="disabled" ectype='btnSubmit' >
+
+                                      </td>
+                                    </tr>
+                                 </tfoot>
+                            </table>
+                            <table class="ecsc-table-seller pull-left ml10" style="width:24%;">
+                                <tbody>
+
+                                    <tr>
+                                        <th>{$lang['tag_title']}</th>
+                                    </tr>
+                                    {foreach $tag_list as $key=>$val}
+                                    <tr>
+                                        <td>
+                                            <a class="btn_see" href="{url('subscribe_search', array('tag_id'=>$val['tag_id']))}">{$val['name']} </a>
+                                            <span class="badge">{$val['count']}</span>
+
+                                            {if $val['tag_id'] != 0  && $val['tag_id'] != 1 && $val['tag_id'] != 2}
+                                            <div class="handle fr" >
+                                            <a href="{url('tags_edit', array('id'=>$val['id']))}" class="btn_edit fancybox fancybox.iframe" ><i class="fa fa-edit"></i>{$lang['wechat_editor']}</a>
+                                            <a class="btn_trash delete_tags" data-href="{url('tags_delete', array('id'=> $val['id']))}" href="javascript:;" class="btn_trash" ><i class="fa fa-trash-o"></i>{$lang['drop']}</a>
+                                            </div>
+                                            {/if}
+                                        </td>
+                                    </tr>
+                                    {/foreach}
+                                </tbody>
+                            </table>
+                        </div>
+                        </form>
+                    </div>
+                    {include file="seller_pageview"}
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript">
+$(function(){
+            //弹出框
+            $(".fancybox80").fancybox({
+              width   : '80%',
+              height    : '80%',
+              closeBtn  : true,
+              title       : ''
+            });
+
+            // 选择全中复选框
+			$('#check_box').bind('click', function(){
+				$('.checks').prop("checked", $(this).prop("checked"));
+			});
+
+            // 选择单个复选框
+            $("input[type='checkbox']").bind("click",function(){
+                var length = $("input[type='checkbox']:checked").length;
+                if(length > 0){
+                    if($("*[ectype='btnSubmit']").length > 0){
+                        $("*[ectype='btnSubmit']").removeClass("btn_disabled");
+                        $("*[ectype='btnSubmit']").attr("disabled",false);
+                    }
+                }else{
+                    if($("*[ectype='btnSubmit']").length > 0){
+                        $("*[ectype='btnSubmit']").addClass("btn_disabled");
+                        $("*[ectype='btnSubmit']").attr("disabled",true);
+                    }
+                }
+            });
+
+            // 删除标签
+            $(".delete_tags").click(function(){
+                var url = $(this).attr("data-href");
+                //询问框
+                layer.confirm('您确定要删除此标签吗？', {
+                    btn: ['确定','取消'] //按钮
+                }, function(){
+                    $.get(url, '', function(data){
+                        layer.msg(data.msg);
+                        if(data.error == 0 ){
+                            if(data.url){
+                                window.location.href = data.url;
+                            }
+                        }
+                        return false;
+                    }, 'json');
+                });
+            });
+
+            // 批量加入用户标签验证
+            $("input[ectype='btnSubmit']").bind("click",function(){
+                var item = $("select[name=tag_id]").val();
+                if(!item){
+                    layer.msg('请选择标签');
+                    return false;
+                };
+            });
+
+            // 移除用户标签
+            $('.user_tag').click(function(){
+                var tag_id = $(this).attr("tagAttr");
+                var open_id = $(this).attr("openidAttr");
+                $.post("{url('batch_un_tagging')}", {tagid: tag_id, openid: open_id}, function(data){
+                    if(data.status > 0){
+                        window.location.reload();
+                    }else{
+                        layer.msg(data.msg);
+                        return false;
+                    }
+                }, 'json');
+            });
+
+            // 搜索验证
+            $('.search_button').click(function(){
+                var search_keywords = $("input[name=keywords]").val();
+                if(!search_keywords){
+                    layer.msg('搜索关键字不能为空');
+                    return false;
+                }
+            });
+
+    // 查看粉丝详细信息
+    $(".fan img").hover(function(){
+        $(this).parent().siblings(".person-info").removeClass("hidden");
+    },function(){
+        $(this).parent().siblings(".person-info").addClass("hidden");
+    });
+
+
+})
+</script>
+
+{include file="seller_pagefooter"}
+</body>
+</html>

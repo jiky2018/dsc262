@@ -1,0 +1,97 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+            	{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <form method="post" action="" name="listForm">
+                <!-- start ad position list -->
+                <div class="list-div" id="listDiv">
+				{/if}
+                    <table cellpadding="1" cellspacing="1" class="ecsc-default-table mt20">
+                        <thead>
+                        <tr>
+                            <th width="10%">{$lang.record_id}</th>
+                            <th width="20%">{$lang.title}</th>
+                            <th width="15%">{$lang.shipping_title}</th>
+                            <th width="20%">{$lang.type.name}</th>
+                            <th width="20%">{$lang.update_time}</th>
+                            <th width="15%">{$lang.handler}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {foreach from=$transport_list item=list}
+                        <tr>
+                            <td align="center">{$list.tid}</td>
+                            <td>
+								<span onclick="javascript:listTable.edit(this, 'edit_title', {$list.tid})">{$list.title|escape:html}</span>
+                            </td>
+                            <td>
+								{if $list.shipping_title}
+                                    {$list.shipping_title|escape:html}
+                                {else}
+                                    (空)
+                                {/if}
+                            </td>
+                            <td>
+                            	{if $list.freight_type eq 1}
+                                    {$lang.freight_type.two}
+                                {else}
+                                    {$lang.freight_type.one}
+                                    <em class="red">(
+                                    {if $list.type eq 1}
+                                        {$lang.type.on}
+                                    {else}
+                                        {$lang.type.off}
+                                    {/if}
+                                    )</em>
+                                {/if}    
+                            </td>
+                            <td>{$list.update_time}</td>
+                            <td class="ecsc-table-handle">
+                              <span><a href="goods_transport.php?act=edit&tid={$list.tid}" title="{$lang.edit}" class="btn-green"><i class="icon icon-edit"></i><p>{$lang.edit}</p></a></span>
+                              <span class="mr0"><a href="javascript:;" onclick="listTable.remove({$list.tid}, '{$lang.drop_confirm}')" title="{$lang.remove}" class="btn-red"><i class="icon icon-trash"></i><p>{$lang.drop}</p></a></span>
+                            </td>
+                        </tr>
+                        {foreachelse}
+                        <tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+                        {/foreach}
+                        </tbody>
+                        <tfoot>
+                        	<tr><td colspan="10">{include file="page.dwt"}</td></tr>
+                        </tfoot>
+                    </table>
+				{if $full_page}
+                </div>
+				<!-- end ad_position list -->
+				</form>
+            </div>
+        </div>
+    </div>
+</div>
+{include file="library/seller_footer.lbi"}
+<script type="text/javascript">
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+  {literal}
+  onload = function()
+  {
+    startCheckOrder();
+  }
+  {/literal}
+</script>
+</body>
+</html>
+{/if}

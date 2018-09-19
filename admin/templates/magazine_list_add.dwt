@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$lang.mail} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.info.0}</li>
+                    <li>{$lang.operation_prompt_content_common}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info mian-info-temp">
+                        <form action="magazine_list.php" method="post" id="magazine_list_form">
+                            <div class="switch_info">
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}{$lang.magazine_name}：</div>
+                                    <div class="label_value">
+										<input type="text" class="text" name="magazine_name" value="{$magazine_name}" size="40" />
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.magazine_content}：</div>
+                                    <div class="label_value">
+										{$FCKeditor}
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="label_value info_btn">
+										<input type="hidden" name="step" value="2" />
+										<input type="hidden" name="id" value="{$id}" />
+										<input type="hidden" name="act" value="{$act}" />
+										<input type="submit" class="button" name="Submit" value="{$lang.button_submit}" id="submitBtn" />
+                                    </div>
+                                </div>								
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+    </div>
+	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+    	$(function(){	
+			//表单验证
+			$("#submitBtn").click(function(){
+				if($("#magazine_list_form").valid()){
+					$("#magazine_list_form").submit();
+				}
+			});
+		
+			$('#magazine_list_form').validate({
+				errorPlacement:function(error, element){
+					var error_div = element.parents('div.label_value').find('div.form_prompt');
+					element.parents('div.label_value').find(".notic").hide();
+					error_div.append(error);
+				},
+				rules:{
+					magazine_name :{
+						required : true
+					}
+				},
+				messages:{
+					magazine_name:{
+						 required : '<i class="icon icon-exclamation-sign"></i>' + magazine_name_notic
+					}
+				}			
+			});
+		});
+    </script>
+</body>
+</html>

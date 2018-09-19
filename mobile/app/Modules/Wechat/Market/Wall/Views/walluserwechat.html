@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <title>用户信息</title>
+        <link href="{$plugin_themes}/css/wechat_wall_common.css" rel="stylesheet" type="text/css" />
+        <link href="{$plugin_themes}/css/wechat_wall_user.css" rel="stylesheet" type="text/css" />
+        <link href="{$plugin_themes}/css/fonts/iconfont.css" rel="stylesheet" type="text/css" />
+        <script type="text/javascript">var ROOT_URL = '__ROOT__/';</script>
+        <script src="__PUBLIC__/vendor/common/jquery.min.js"></script>
+        <script src="__PUBLIC__/vendor/layer/layer.js"></script>
+        <script src="{$plugin_themes}/js/jquery.nicescroll.js"></script>
+        <script src="{$plugin_themes}/js/jquery.scrollTo.min.js"></script>
+        <script src="{$plugin_themes}/js/wechat_wall.js"></script>
+	</head>
+<body>
+<div class="user-con">
+    <!--header-->
+    <!-- <header>
+        <a href="javascript:history.go(-1);" class="fl">
+            <i class="iconfont">&#xe600;</i>
+        </a>
+        <h1>用户信息</h1>
+    </header> -->
+    <!--main-->
+    <div class="main">
+        <form action="{url('market_show', array('type' => 'wall', 'function' => 'wall_user_wechat'))}" method="post" class="user-form">
+            <div id="" style="border-bottom: 1px solid #d1d1d1;">
+                <div class="fl user-pic">
+                    {if $user.headimgurl}
+                    <img src="{$user.headimgurl}">
+                    {else}
+                    <img src="{$plugin_themes}/images/ava1.png"/>
+                    {/if}
+                </div>
+                <div class="user-info">
+                    <div class="user-name" id="name">
+                        <input type="text" placeholder="姓名" name="nickname" value="{$user.nickname}" />
+                        <i class="iconfont fr">&#xe601;</i>
+                    </div>
+                    <div class="user-name">
+                        <select name="sex">
+                            <option value="0" {if $user.sex == 0}selected{/if}>保密</option>
+                            <option value="1" {if $user.sex == 1}selected{/if}>男</option>
+                            <option value="2" {if $user.sex == 2}selected{/if}>女</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="other-ava">
+                <h2>其他头像</h2>
+                <ul>
+                    <li>
+                        <a href="javascript:;">
+                            <img src="{$plugin_themes}/images/ava1.png"/>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;">
+                            <img src="{$plugin_themes}/images/ava2.png"/>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;">
+                            <img src="{$plugin_themes}/images/ava3.png"/>
+                        </a>
+                    </li>
+                    {if $user.headimgurl}
+                    <li>
+                        <a href="javascript:;" >
+                            <img src="{$user.headimgurl}"/>
+                        </a>
+                    </li>
+                    {/if}
+                </ul>
+                <input type="hidden" name="headimg" value="{if $user.headimgurl}{$user.headimgurl}{else}{$plugin_themes}/images/ava1.png{/if}" />
+                <input type="hidden" name="user_id" value="{$user.id}">
+                <input type="hidden" name="wall_id" value="{$wall_id}">
+                <a href="javascript:$('.user-form').submit();" class="user-btn">确定</a>
+            </div>
+
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        var ISWeixin = !!navigator.userAgent.match(/MicroMessenger/i); //wp手机无法判断
+        if(!ISWeixin){
+            var rd_url = location.href.split('#')[0];  // remove hash
+            var oauth_url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri='+encodeURIComponent(rd_url) + '&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect';
+            location.href = oauth_url;
+            return false;
+        }
+
+        $('.user-info i').show();
+        $('#name input[type=text]').bind("blur",function(){
+            var Value = $(this).val();
+            var isEmpty = false;
+            if(Value == ""){
+                $('.user-info i').hide();
+                isEmpty = true;
+            }
+            if(!isEmpty){
+                $('.user-info i').hide();
+                $('.user-info i').show();
+            }
+            $('#name input[type=text]').bind('input propertychange', function(){
+                $('.user-info i').show();
+            });
+        });
+
+        $('.user-info i').click(function(){
+            $('#name input').val('');
+            $('.user-info i').hide();
+        });
+        $(".other-ava ul li a").click(function(){
+            var img = $(this).find("img").attr("src");
+            if(img){
+                $(".user-pic img").attr("src", img);
+                $("input[name=headimg]").val(img);
+
+                $(this).addClass("selected").parents(".other-ava ul li").siblings().find("a").removeClass("selected");
+            }
+        });
+    });
+</script>
+</body>
+</html>

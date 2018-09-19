@@ -1,0 +1,88 @@
+{include file="pageheader"}
+<div class="wrapper">
+	<div class="title">{$lang['wechat_menu']} - {$lang['share']}</div>
+	<div class="content_tips">
+        <div class="tabs_info">
+            <ul>
+                <li><a href="{url('qrcode_list')}">{$lang['qrcode']}</a></li>
+                <li class="curr"><a href="{url('share_list')}">{$lang['share_qrcode']}</a></li>
+            </ul>
+        </div>
+	    <div class="explanation" id="explanation">
+            <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4><span id="explanationZoom" title="收起提示"></span></div>
+            <ul>
+                <li>扫码引荐：即管理员可以使用网站已有会员生成带推荐功能的二维码（默认永久二维码），让新用户扫码关注，即与推荐人形成上下级关系。</li>
+                <li>推荐二维码的扫描量为新用户首次扫码量，即每注册一个新用户算一次</li>
+                <li>需要开启网站推荐注册分成功能使用。<a href="../admin/affiliate.php?act=list">去开启推荐设置</a></li>
+            </ul>
+        </div>
+		<div class="flexilist of">
+			<div class="common-head">
+                <div class="fl">
+                	<a href="{url('share_edit')}" class="fancybox fancybox.iframe"><div class="fbutton"><div class="add " title="添加二维码"><span><i class="fa fa-plus"></i>{$lang['add'].$lang['share_qrcode']}</span></div></div></a>
+                </div>
+            </div>
+			<div class="common-content">
+				<div class="list-div">
+	                <table cellspacing="0" cellpadding="0" border="0">
+						<tr>
+							<th width="15%"><div class="tDiv">{$lang['share_name']}</div></th>
+							<th width="15%"><div class="tDiv">{$lang['share_account']}</div></th>
+							<th width="10%"><div class="tDiv">{$lang['scan_num']}</div></th>
+							<th width="15%"><div class="tDiv">{$lang['expire_seconds']}</div></th>
+							<th width="15%"><div class="tDiv">{$lang['qrcode_function']}</div></th>
+							<th width="10%"><div class="tDiv">{$lang['sort_order']}</div></th>
+							<th width="30%"><div class="tDiv">{$lang['handler']}</div></th>
+						</tr>
+                        {if $list}
+	                    {foreach $list as $key=>$val}
+						<tr>
+							<td><div class="tDiv">{$val['username']}</div></td>
+							<td><div class="tDiv">{if $val['share_account']}{$val['share_account']}{else}0{/if}</div></td>
+							<td><div class="tDiv">{$val['scan_num']}</div></td>
+							<td><div class="tDiv">{if $val['expire_seconds']}{$val['expire_seconds']}{else}{$lang['no_limit']}{/if}</div></td>
+							<td><div class="tDiv">{$val['function']}</div></td>
+							<td><div class="tDiv">{$val['sort']}</div></td>
+							<td class="handle">
+								<div class="tDiv a3">
+									<a href="{url('qrcode_get', array('id' => $val['id']))}" class="btn_region fancybox fancybox.iframe getqr"><i class="fa fa-qrcode"></i>{$lang['qrcode_get']}</a>
+                                    <a href="{url('share_edit', array('id' => $val['id']))}" class="btn_edit fancybox fancybox.iframe"><i class="fa fa-edit"></i>{$lang['wechat_editor']}</a>
+									<a href="javascript:if(confirm('{$lang['confirm_delete']}')){window.location.href='{url('qrcode_del', array('id'=>$val['id']))}'};" class="btn_trash"><i class="fa fa-trash-o"></i>{$lang['drop']}</a>
+							    </div>
+							</td>
+						</tr>
+						{/foreach}
+                        {else}
+                          <tbody>
+                                 <tr><td class="no-records" colspan="7">没有找到任何记录</td></tr>
+                          </tbody>
+                        {/if}
+						<tfoot>
+                        	<tr>
+                                <td colspan="7">
+                                	{include file="pageview"}
+                                </td>
+                            </tr>
+                        </tfoot>
+					</table>
+			    </div>
+			</div>
+		</div>
+    </div>
+</div>
+<script type="text/javascript">
+$(function(){
+	$(".getqr").click(function(){
+		var url = $(this).attr("href");
+	    $.get(url, '', function(data){
+	        if(data.status <= 0 ){
+	        	$.fancybox.close();
+	        	alert(data.msg);
+	            return false;
+		    }
+		}, 'json');
+	});
+})
+</script>
+
+{include file="pagefooter"}

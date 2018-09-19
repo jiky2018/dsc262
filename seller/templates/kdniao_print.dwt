@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>{include file ='library/seller_html_head.lbi'}</head>
+<body>
+	<div class="print-main">
+		<div class="print-warp kdniao-warp">
+			<div class="kdniao-content" id="kdniaoCon">
+            	<link rel="stylesheet" type="text/css" href="css/general.css">
+            	<link rel="stylesheet" type="text/css" href="css/style.css">
+				{foreach from=$batch_html item=content name=html}
+				<div class="print_content" style="height:180mm;">
+					{$content}
+				</div>
+                {if !$smarty.foreach.html.last}
+                <p style="page-break-before:always"></p>
+                {/if}
+				{/foreach}				
+			</div>
+			<div class="print-handle">
+            	<div class="print-btn"><a href="javascript:void(0);" ectype="btnPreview"><i class="iconfont icon-browse"></i>预览</a></div>
+				<div class="print-btn"><a href="javascript:void(0);" ectype="btnPrint"><i class="iconfont icon-dayin"></i>打印</a></div>
+				<div class="print-spec">
+					<label>快递方式：<em class="blue">{$shipping_info.shipping_name}</em></label>
+					<label>打印尺寸：<em class="black">{$shipping_spec.kdniao_width|default:0}mm x {$shipping_spec.kdniao_height|default:0}mm</em></label>
+					<p>说明：由于不同快递面单尺寸不同，高度在100mm - 180mm不等，我们将单张面单打印尺寸固定为100mm x 180mm，因此我们建议您使用100mm x 180mm尺寸的热敏纸进行打印。</p>					
+				</div>
+			</div>
+		</div>
+    </div>
+	<input type="hidden" name="batch_error" value="{$batch_error}">
+	<input type="hidden" name="kdniao_printer" value="{$kdniao_printer}">
+	
+	{insert_scripts files="jquery.purebox.js"}
+    <script type="text/javascript" src="../js/LodopFuncs.js"></script>
+    <script type="text/javascript">
+	$(document).on("click","*[ectype='btnPrint']",function() {
+		//var printer = "ELP-168ES";
+		var printer = $("input[name='kdniao_printer']").val();
+		 
+		if (printer == '' || printer == null) {
+			alert("该打印规格还没有设置指定的打印机");
+			return false;
+		}
+		var html = $("#kdniaoCon").html();
+		var title = "打印快递单";
+		var count = $(".print_content").length;
+		var height = 181;
+		if(count > 1){
+			height = 180;
+		}		
+		lodop_print_html(title, html, printer,98,height);
+	});
+	
+	$(document).on("click","*[ectype='btnPreview']",function() {
+		var printer = $("input[name='kdniao_printer']").val();
+		 
+		if (printer == '' || printer == null) {
+			alert("该打印规格还没有设置指定的打印机");
+			return false;
+		}
+		var html = $("#kdniaoCon").html();
+		var title = "打印快递单";
+		var count = $(".print_content").length;
+		var height = 181;
+		if(count > 1){
+			height = 180;
+		}			
+		lodop_preview_html(title, html, printer,98,height);
+	});
+	
+	var batch_error = $("input[name='batch_error']").val();
+	if(batch_error){
+		alert(batch_error);
+	}	
+	</script>
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="Description" content="{$description}" />
+{if $auto_redirect}
+<meta http-equiv="refresh" content="3;URL={$message.href}" />
+{/if}
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable --><!-- TemplateBeginEditable name="head" --><!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<link rel="icon" href="animated_favicon.gif" type="image/gif" />
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/base.css" />
+<link href="{$ecs_css_path}" rel="stylesheet" type="text/css" />
+<link href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/select.css" rel="stylesheet" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS|{$page_title}" href="{$feed_url}" />
+<link rel="stylesheet" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/purebox.css">
+{* 包含脚本文件 *}
+{insert_scripts files='jquery-1.9.1.min.js,jquery.json.js,transport_jquery.js'}
+{insert_scripts files='common.js,global.js,utils.js,compare.js,jd_choose.js'}
+
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/sc_common.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/rotate3di.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/ecsc-nav.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/scroll_city.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/notLogin.js"></script>
+<!-- #BeginLibraryItem "/library/js_languages.lbi" --><!-- #EndLibraryItem -->
+</head>
+
+<body>
+	<!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
+    <div class="nch-breadcrumb-layout">
+    	<div class="nch-breadcrumb w1200" id="ur_here">
+        	<!-- #BeginLibraryItem "/library/ur_here.lbi" --><!-- #EndLibraryItem -->
+        </div>
+    </div>
+    <div class="w1200">
+    	<div class="left w210">
+        	<div class="ecsc-layout-210 category_tree_2">
+            </div>
+        </div>
+        <div class="right w945">
+        	<div class="messageList mt0">
+            <!-- #BeginLibraryItem "/library/message_list.lbi" --><!-- #EndLibraryItem -->
+            </div>
+            <div class="ratelist-content">
+            <!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+            </div>
+            <div class="messageForm">
+            	<h3>{$lang.post_message}</h3>
+                <div class="messageFormContent">
+                	<form action="message.php" method="post" name="formMsg" onsubmit="return submitMsgBoard(this);">
+                    	<div class="item">
+                            <div class="label">{$lang.username}：</div>
+                            <div class="value ftx-10"> <!--{if $smarty.session.user_name}-->{$username} <!--{else}-->{$lang.anonymous}<!--{/if}--></div>
+                        </div>
+                        <div class="item">
+                            <div class="label">{$lang.email}：</div>
+                            <div class="value"><input type="text" name="user_email" class="text" value="{$smarty.session.email|escape}"></div>
+                        </div>
+                        <div class="item">
+                            <div class="label">{$lang.message_board_type}：</div>
+                            <div class="value value-checkbox">
+                                <div class="value-item selected">
+                                    <input type="radio" checked="checked" id="checkbox-message" name="msg_type" class="ui-radio">
+                                    <label for="checkbox-message" class="ui-radio-label">{$lang.message_type[0]}</label>
+                                </div>
+                                <div class="value-item">
+                                    <input type="radio" id="checkbox-complaint" name="msg_type" class="ui-radio">
+                                    <label for="checkbox-complaint" class="ui-radio-label">{$lang.message_type[1]}</label>
+                                </div>
+                                <div class="value-item">
+                                    <input type="radio" id="checkbox-ask" name="msg_type" class="ui-radio">
+                                    <label for="checkbox-ask" class="ui-radio-label">{$lang.message_type[2]}</label>
+                                </div>
+                                <div class="value-item">
+                                    <input type="radio" id="checkbox-customer" name="msg_type" class="ui-radio">
+                                    <label for="checkbox-customer" class="ui-radio-label">{$lang.message_type[3]}</label>
+                                </div>
+                                <div class="value-item last">
+                                    <input type="radio" id="checkbox-buy" name="msg_type" class="ui-radio">
+                                    <label for="checkbox-buy" class="ui-radio-label">{$lang.message_type[4]}</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="label">{$lang.message_title}：</div>
+                            <div class="value"><input type="text" name="msg_title" class="text"></div>
+                        </div>
+                        <div class="item">
+                            <div class="label">{$lang.message_content}：</div>
+                            <div class="value"><textarea rows="" cols="" name="msg_content"></textarea></div>
+                        </div>
+                        <!-- 判断是否启用验证码{if $enabled_mes_captcha} -->
+                        <div class="item">
+                            <div class="label">{$lang.comment_captcha}：</div>
+                            <div class="value">
+                            <input type="text" class="text text2" name="captcha" maxlength="6" autocomplete="off">
+                            <img src="captcha_verify.php?captcha=is_get_password&{$rand}" alt="captcha" class="seccodeimg" onClick="this.src='captcha_verify.php?captcha=is_get_password&'+Math.random()" />
+                            </div>
+                        </div>
+                        <!--{/if}-->
+                        <div class="item">
+                            <div class="value">
+                            	<input type="hidden" name="act" value="act_add_message" />
+                                <input type="submit" class="submit right" value="{$lang.post_message}" style="cursor:pointer">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+</body>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.purebox.js"></script>
+<script type="text/javascript">
+{foreach from=$lang.message_board_js item=item key=key}
+var {$key} = "{$item}";
+{/foreach}
+{literal}
+
+$(function(){
+	cat_tree_2();
+});
+/**
+ * 提交留言信息
+*/
+function submitMsgBoard(frm)
+{
+	{if $user_id eq 0}
+		{if $rewrite}
+		var back_url = "message.html";	
+		{else}
+		var back_url = "message.php";
+		{/if}
+		$.notLogin("get_ajax_content.php?act=get_login_dialog",back_url);
+		return false;
+	{/if}
+	var msg = new Object;
+
+	 msg.user_email  = frm.elements['user_email'].value;
+	 msg.msg_title   = frm.elements['msg_title'].value;
+	 msg.msg_content = frm.elements['msg_content'].value;
+	 msg.captcha     = frm.elements['captcha'] ? frm.elements['captcha'].value : '';
+
+	var msg_err = '';
+
+	if (msg.user_email.length == 0)
+	{
+	  	msg_err += msg_empty_email + '\n';
+		get_user_prompt_message(msg_err);
+		return false;
+	}
+	else if (msg.user_email.length > 0)
+	{
+		if (!(Utils.isEmail(msg.user_email)))
+		{
+		  msg_err += msg_error_email + '\n';
+		  
+		  get_user_prompt_message(msg_err);
+			return false;
+		}
+	}
+	
+	if (msg.msg_title.length == 0)
+	{
+		msg_err += msg_title_empty + '\n';
+	}
+	else if (frm.elements['captcha'] && msg.captcha.length==0)
+	{
+		msg_err += msg_captcha_empty + '\n'
+	}
+	else if (msg.msg_content.length == 0)
+	{
+		msg_err += msg_content_empty + '\n'
+	}
+	else if (msg.msg_title.length > 200)
+	{
+		msg_err += msg_title_limit + '\n';
+	}
+
+	if (msg_err.length > 0)
+	{
+		get_user_prompt_message(msg_err);
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+}
+{/literal}
+
+/**
+ * 首页分类树 头部
+ */
+function cat_tree_2(){
+  Ajax.call('message.php', 'act=cat_tree_two', cat_tree_2Response, 'GET', 'JSON');
+}
+
+/**
+ * 接收返回的信息
+ */
+function cat_tree_2Response(res)
+{
+	$('.category_tree_2').html(res.content);
+}
+
+</script>
+</html>

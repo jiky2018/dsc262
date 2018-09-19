@@ -1,0 +1,360 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="presale.php?act=list" class="s-back">{$lang.back}</a>{$lang.promotion} - {$ur_here}</div>
+        <div class="content">
+        	<div class="tabs_info">
+                <ul>
+                    <li class="curr"><a href="javascript:void(0);">{$lang.ess_info}</a></li>
+                    <li><a href="javascript:void(0);">{$lang.act_help}</a></li>
+                </ul>
+            </div>		
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.info.0}</li>
+                    <li>{$lang.operation_prompt_content.info.1}</li>
+                    <li>{$lang.operation_prompt_content.info.2}</li>
+                    <li class="red">{$lang.operation_prompt_content.info.3}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+						<form method="post" action="presale.php?act=insert_update" name="theForm" id="presale_form">
+                            <div class="switch_info">
+								<div class="goods_search_div bor_bt_das">
+									<div class="search_select">
+										<div class="categorySelect">
+											<div class="selection">
+												<input type="text" name="category_name" id="category_name" class="text w250 valid" value="{$lang.select_cat}" autocomplete="off" readonly data-filter="cat_name" />
+												<input type="hidden" name="category_id" id="category_id" value="0" data-filter="cat_id" />
+											</div>
+											<div class="select-container" style="display:none;">
+												{include file="library/filter_category.lbi"}
+											</div>
+										</div>
+									</div>
+									<div class="search_select">
+										<div class="brandSelect">
+											<div class="selection">
+												<input type="text" name="brand_name" id="brand_name" class="text w120 valid" {$lang.select_barnd} autocomplete="off" readonly data-filter="brand_name" />
+												<input type="hidden" name="brand_id" id="brand_id" value="0" data-filter="brand_id" />
+											</div>
+											<div class="brand-select-container" style="display:none;">
+												{include file="library/filter_brand.lbi"}
+											</div>
+										</div>                            
+									</div>
+									<input type="hidden" name="ru_id" value="{$ru_id}" />
+									<input type="hidden" name="presale" value="1" />
+									<input type="text" name="keyword" class="text w150" placeholder={$lang.input_keywords} data-filter="keyword" autocomplete="off" />
+									<a href="javascript:void(0);" class="btn btn30" onclick="searchGoods()" ><i class="icon icon-search"></i>{$lang.search_word}</a>
+								</div>
+                                <div class="items">
+                                    <div class="item">
+                                        <div class="label">{$lang.require_field}{$lang.label_goods_name}</div>
+                                        <div class="label_value">
+                                       		<div id="goods_id" class="imitate_select select_w320">
+                                              <div class="cite">{if $presale.act_id}{$presale.goods_name}{else}{$lang.please_select}{/if}</div>
+                                              <ul>
+                                              	{if !$presale.act_id}<li class="li_not">{$lang.select_search_presale_goods}</li>{/if}
+                                              </ul>
+                                              <input name="goods_id" type="hidden" value="{$presale.goods_id}" id="goods_id_val">
+                                            </div>
+                                            <div class="form_prompt"></div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.shop_price}</div>
+                                        <div class="label_value">
+                                        	<input type="text" name="goods_price" id="goods_price" class="text" value="{$presale.shop_price}" disabled="disabled" autocomplete="off" />
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.label_act_name}</div>
+                                        <div class="label_value">
+                                        	<input type="text" name="act_name" class="text" value="{$presale.act_name}" autocomplete="off"/>
+											<label class="blue_label">{$lang.notice_act_name}</label>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.label_start_end_date}</div>
+                                        <div class="label_value text_time">
+                                        	<input type="text" name="start_time" value="{$presale.start_time}" id="start_time" class="text mr0" readonly />
+										  	<span class="bolang">&nbsp;&nbsp;~&nbsp;&nbsp;</span>
+                                            <input type="text" name="end_time" value="{$presale.end_time}" id="end_time" class="text" readonly />
+                                          	<div class="form_prompt"></div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.pay_start_end}</div>
+                                        <div class="label_value text_time">
+                                        	<input type="text" class="text mr0" name="pay_start_time" id="pay_start_time" value="{$presale.pay_start_time}" autocomplete="off" />
+                                            <span class="bolang">&nbsp;&nbsp;~&nbsp;&nbsp;</span>
+                                            <input type="text" class="text" name="pay_end_time" id="pay_end_time" value="{$presale.pay_end_time}" autocomplete="off" />
+                                            <div class="form_prompt"></div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.require_field}{$lang.label_presale_cat}</div>
+                                        <div class="label_value">
+                                       		<div id="cat_id" class="imitate_select select_w320">
+                                              <div class="cite">{$lang.select_option}</div>
+                                              <ul>
+											  {foreach from=$cat_select item=cat}
+                                                 <li><a href="javascript:;" data-value="{$cat.cat_id}" class="ftx-01">{$cat.name}</a></li>
+											  {/foreach}
+                                              </ul>
+                                              <input name="cat_id" type="hidden" value="{$presale.pa_catid|default:0}">
+                                            </div>
+                                            <div class="form_prompt"></div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.label_deposit}</div>
+                                        <div class="label_value">
+											<input type="text" name="deposit" id="deposit" class="text" value="{$presale.deposit|default:0}" autocomplete="off" />
+										</div>
+                                    </div>
+                                    {if $form_action eq 'update' && $presale.user_id neq 0}
+                                    <div class="item">
+                                        <div class="label">{$lang.adopt_status}：</div>
+                                        <div class="label_value">
+											<div class="checkbox_items" ectype="general_audit_status">
+												<div class="checkbox_item"> 
+													<input name="review_status" type="radio" class="ui-radio" value="1" id="review_status_1" {if $presale.review_status eq 1}checked="checked"{/if} />
+													<label for="review_status_1" class="ui-radio-label">{$lang.not_audited}</label>
+												</div>
+												<div class="checkbox_item"> 
+													<input name="review_status" type="radio" class="ui-radio" value="2" id="review_status_2" {if $presale.review_status eq 2}checked="checked"{/if} />
+													<label for="review_status_2" class="ui-radio-label">{$lang.audited_not_adopt}</label>
+												</div>
+                                                <div class="checkbox_item"> 
+													<input name="review_status" type="radio" class="ui-radio" value="3" id="review_status_3" {if $presale.review_status eq 3}checked="checked"{/if} />
+													<label for="review_status_3" class="ui-radio-label">{$lang.audited_yes_adopt}</label>
+												</div>
+											</div>
+                                        </div>
+                                    </div>			
+									<div class="item {if $presale.review_status neq 2}hide{/if}" id="review_content">
+										<div class="label">{$lang.adopt_reply}：</div>
+										<div class="value">
+											<textarea name="review_content" class="textarea h100">{$presale.review_content}</textarea>
+										</div>
+									</div>
+                                    {/if}
+                                </div>
+                            </div>
+							<div class="switch_info" style="display:none;">{$act_desc}</div>
+                            <div class="info_btn info_btn_bf100 button-info-item0" id="info_btn_bf100">
+                            	<div class="label">&nbsp;</div>
+                                <div class="value">
+                                    <input name="act_id" type="hidden" id="act_id" value="{$presale.act_id}">
+                                    <input type="submit" name="submit" value="{$lang.button_submit}" class="button" id="submitBtn" />
+                                    <!--<input type="reset" value="{$lang.button_reset}" class="button button_reset" />-->
+                                    {if $group_buy.status eq 1}
+                                    <input type="submit" name="finish" value="{$lang.button_finish}" class="button" onclick="return confirm('{$lang.notice_finish}')"/>
+                                    {elseif $group_buy.status eq 2}
+                                    <input type="submit" name="succeed" value="{$lang.button_succeed}" class="button" onclick="return confirm(succeed_confirm)" />{$lang.notice_succeed}<br />
+                                    <input type="submit" name="fail" value="{$lang.button_fail}" class="button" onclick="return confirm(fail_confirm)" />{$lang.notice_fail}
+                                    {elseif $group_buy.status eq 3}
+                                    <input type="submit" name="mail" value="{$lang.button_mail}" class="button" onclick="return confirm('{$lang.notice_mail}')" />
+                                    {/if}
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+        //表单验证
+        $(function(){
+            $("#submitBtn").click(function(){
+                if($("#presale_form").valid()){
+                    $("#presale_form").submit();
+                }
+            }); 
+            
+            $('#presale_form').validate({
+                errorPlacement: function(error, element){
+                    var error_div = element.parents('div.label_value').find('div.form_prompt');
+                    element.parents('div.label_value').find(".notic").hide();
+                    error_div.append(error);
+                },
+                ignore:'.ignore',
+                rules : {
+                    goods_id : {
+                        required : true
+                    },
+                    cat_id: {
+                        required : true,
+                        min:1
+                    },
+                    start_time :{
+                        required : true
+                    },
+                    end_time :{
+                        required : true,
+                        compareDate:"#start_time",
+                    },
+                    pay_start_time:{
+                        required : true,
+                        compareDate:"#end_time",
+                    },
+                    pay_end_time :{
+                        required : true,
+                        compareDate:"#pay_start_time",
+                    }
+                },
+                messages : {
+                    goods_id : {
+                        required : '<i class="icon icon-exclamation-sign"></i>'+error_goods_null
+                    },
+                    cat_id : {
+                        required : '<i class="icon icon-exclamation-sign"></i>'+select_cat_null,
+                        min : '<i class="icon icon-exclamation-sign"></i>'+select_cat_null
+                    },
+                    start_time :{
+                        required : '<i class="icon icon-exclamation-sign"></i>'+start_data_notnull
+                    },
+                    end_time :{
+                        required : '<i class="icon icon-exclamation-sign"></i>'+end_data_notnull,
+                        compareDate:'<i class="icon icon-exclamation-sign"></i>'+data_invalid_gt
+                    },
+                    pay_start_time:{
+                        required : '<i class="icon icon-exclamation-sign"></i>'+pay_start_time_null,
+                        compareDate:'<i class="icon icon-exclamation-sign"></i>'+pay_start_time_cw
+                    },
+                    pay_end_time :{
+                        required : '<i class="icon icon-exclamation-sign"></i>'+pay_end_time_null,
+                        compareDate:'<i class="icon icon-exclamation-sign"></i>'+pay_end_time_cw
+                    }
+                },
+				onfocusout:function(element,event){
+					//实时去除结束时间是否大于开始时间验证
+					var name = $(element).attr("name");
+					
+					if(name == "end_time"){
+						var endDate = $(element).val();
+						var startDate = $(element).siblings("input[name='start_time']").val();
+						
+						var date1 = new Date(Date.parse(startDate.replace(/-/g, "/")));
+						var date2 = new Date(Date.parse(endDate.replace(/-/g, "/")));
+						
+						if(date1 > date2){
+							$(element).removeClass("error");
+							$(element).siblings(".form_prompt").html("");
+						}
+					}else if(name == "pay_end_time"){
+						var endDate = $(element).val();
+						var startDate = $(element).siblings("input[name='pay_start_time']").val();
+						
+						var date1 = new Date(Date.parse(startDate.replace(/-/g, "/")));
+						var date2 = new Date(Date.parse(endDate.replace(/-/g, "/")));
+						
+						if(date1 > date2){
+							$(element).removeClass("error");
+							$(element).siblings(".form_prompt").html("");
+						}
+					}else if(name == "pay_start_time"){
+						var endDate = $(element).val();
+						var startDate = $("input[name='end_time']").val();
+						
+						var date1 = new Date(Date.parse(startDate.replace(/-/g, "/")));
+						var date2 = new Date(Date.parse(endDate.replace(/-/g, "/")));
+						
+						if(date1 > date2){
+							$(element).removeClass("error");
+							$(element).siblings(".form_prompt").html("");
+						}
+					}
+				}
+            });
+        });
+    
+        $.divselect("#goods_id","#goods_id_val",function(){
+            goods_id = document.getElementById("goods_id_val").value;
+            Ajax.call('presale.php?is_ajax=1&act=get_price', "goods_id="+goods_id, showPriceResponse, "GET", "JSON");
+        });
+    
+        function showPriceResponse(result){
+            document.getElementById('goods_price').value = result.content;	
+        }
+        
+        //时间选择
+        var opts1 = {
+            'targetId':'start_time',
+            'triggerId':['start_time'],
+            'alignId':'start_time',
+            'format':'-',
+            'min':''
+        },opts2 = {
+            'targetId':'end_time',
+            'triggerId':['end_time'],
+            'alignId':'end_time',
+            'format':'-',
+            'min':''
+        }
+    
+        //时间选择2
+        var opts3 = {
+            'targetId':'pay_start_time',
+            'triggerId':['pay_start_time'],
+            'alignId':'pay_start_time',
+            'format':'-',
+            'min':''
+        },opts4 = {
+            'targetId':'pay_end_time',
+            'triggerId':['pay_end_time'],
+            'alignId':'pay_end_time',
+            'format':'-',
+            'min':''
+        }
+        xvDate(opts1);
+        xvDate(opts2);
+        xvDate(opts3);
+        xvDate(opts4);
+    
+        /**
+         * 搜索商品
+         */
+        function searchGoods(){
+            var filter = new Object;
+            filter.cat_id   = document.forms['theForm'].elements['category_id'].value;
+            filter.brand_id = document.forms['theForm'].elements['brand_id'].value;
+            filter.keyword  = document.forms['theForm'].elements['keyword'].value;
+            filter.ru_id = document.forms['theForm'].elements['ru_id'].value;
+            filter.presale = document.forms['theForm'].elements['presale'].value;
+            
+            Ajax.call('presale.php?is_ajax=1&act=search_goods', filter, searchGoodsResponse, 'GET', 'JSON');
+        }
+        
+        function searchGoodsResponse(result){
+            var goods = result.content;
+            
+            if (result.error == '1' && result.message != ''){
+                alert(result.message);
+                return;
+            }
+            
+            $("#goods_id").find("li").remove();
+            
+            if(goods){
+                for (i = 0; i < goods.length; i++){
+                    $("#goods_id").children("ul").append("<li><a href='javascript:;' data-value='"+goods[i].goods_id+"' class='ftx-01'>"+goods[i].goods_name+"</a><input type='hidden' name='user_search' value='"+goods[i].goods_id+"'></li>")
+                }
+                
+                $("#goods_id").children("ul").show();
+            }
+            return;
+        }
+    </script>
+</body>
+</html>

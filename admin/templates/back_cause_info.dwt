@@ -1,0 +1,100 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="order.php?act=back_cause_list" class="s-back">{$lang.back}</a>{$lang.order_word} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content_common}</li>
+                    <li>{$lang.operation_prompt_content.return_cause_info.0}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+                         <form action="" method="post" name="theForm" id="back_cause_form">
+                            <div class="switch_info">
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}{$lang.return_reason}：</div>
+                                    <div class="label_value">
+										<input type="text" name="cause_name" value="{$cause_info.cause_name|escape}" size="40" class="text" autocomplete="off" />
+                                        <div class="form_prompt"></div>
+									</div>
+                                </div>
+                                <div class="item">
+									<div class="label">{$lang.reason_cate}：</div>
+									<div id="parent_id" class="imitate_select select_w320">
+									    <div class="cite">{if $parent_cat.cause_name}{$parent_cat.cause_name}{else}{$lang.top_cate}{/if}</div>
+									    <ul>
+									    {foreach from=$cause_list item=cause}
+											<li><a href="javascript:;" data-value="{$cause.id}" class="ftx-01">{$cause.name}</a></li>
+									    {/foreach}
+									    </ul>
+										<input name="parent_id" type="hidden" value="{$parent_cat.cause_id}" id="parent_id_val">
+									</div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.sort_order}：</div>
+                                    <div class="label_value">
+										<input type="text" class="text w120" name='sort_order' {if $cause_info.sort_order} value='{$cause_info.sort_order}'{else} value="50"{/if} size="15" autocomplete="off" />
+									</div>
+                                </div>
+								<div class="item">
+                                    <div class="label">{$lang.whether_display}：</div>
+                                    <div class="label_value">
+										<div class="switch switch_2 {if $cause_info.is_show}active{/if}" title="{$lang.yes}">
+											<div class="circle"></div>
+										</div>
+										<input type="hidden" name="is_show" value="{$cause_info.is_show}">
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="label_value info_btn">
+									  <input type="hidden" name="c_id" value="{$c_id}" />
+									  <input type="submit" value="{$lang.button_submit}" class="button" id="submitBtn" />
+									  <input type="hidden" name="act" value="{$form_act}" />
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+	$(function(){
+		//表单验证
+		$("#submitBtn").click(function(){
+			if($("#back_cause_form").valid()){
+				$("#back_cause_form").submit();
+			}
+		});
+	
+		$('#back_cause_form').validate({
+			errorPlacement:function(error, element){
+				var error_div = element.parents('div.label_value').find('div.form_prompt');
+				element.parents('div.label_value').find(".notic").hide();
+				error_div.append(error);
+			},
+			rules:{
+				cause_name :{
+					required : true
+				}
+			},
+			messages:{
+				cause_name:{
+					required : '<i class="icon icon-exclamation-sign"></i>'+not_back_cause
+				}
+			}			
+		});
+	});
+	</script>
+</body>
+</html>

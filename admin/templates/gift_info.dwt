@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="gift_gard.php?act=bonus_list&bonus_type=2" class="s-back">{$lang.back}</a>{$lang.promotion} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content_common}</li>
+                    <li>{$lang.operation_prompt_content.gift_info.0}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+						<form action="gift_gard.php" method="post" name="theForm" enctype="multipart/form-data" id="gift_gard_form">
+                            <div class="switch_info">
+                                <div class="items">
+                                    <div class="item">
+                                        <div class="label">{$lang.require_field}{$lang.gift_sn}：</div>
+                                        <div class="label_value">
+                                        	<input type="text" name="gift_sn" id="gift_sn" class="text" autocomplete="off" />
+                                            <div class="form_prompt"></div>
+                                        </div>
+                                    </div>							
+                                    <div class="item">
+                                        <div class="label">{$lang.require_field}{$lang.gift_pwd}：</div>
+                                        <div class="label_value">
+                                            <input type="password"  style="display:none"/> 
+											<input type="password" name="gift_pwd" id="gift_pwd" class="text" autocomplete="off" />
+                                            <div class="form_prompt"></div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">&nbsp;</div>
+                                        <div class="label_value info_btn">
+										  <input type="submit" value="{$lang.button_submit}" class="button" id="submitBtn" />
+										  <input type="hidden" name="act" value="{$form_act}" />
+										  <input type="hidden" name="type_id" value="{$gift_id}" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+ {include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+		//表单验证
+		$(function(){
+			$("#submitBtn").click(function(){
+				if($("#gift_gard_form").valid()){
+					$("#gift_gard_form").submit();
+				}
+			});
+			
+			$('#gift_gard_form').validate({
+				errorPlacement:function(error, element){
+					var error_div = element.parents('div.label_value').find('div.form_prompt');
+					element.parents('div.label_value').find(".notic").hide();
+					error_div.append(error);
+				},
+				rules : {
+					gift_sn : {
+						required : true,
+						digits:true,
+						minlength:7
+					},
+					gift_pwd : {
+						required : true,
+						digits:true,
+						minlength:6
+					}
+				},
+				messages : {
+					gift_sn : {
+						required : '<i class="icon icon-exclamation-sign"></i>请输入礼品卡序列号',
+						digits : '<i class="icon icon-exclamation-sign"></i>礼品卡序列号必须为整数',
+						minlength : '<i class="icon icon-exclamation-sign"></i>礼品卡序列号必须为大于等于7位数'
+					},
+					gift_pwd : {
+						required : '<i class="icon icon-exclamation-sign"></i>请输入礼品卡密码',
+						digits : '<i class="icon icon-exclamation-sign"></i>礼品卡密码必须为整数',
+						minlength : '<i class="icon icon-exclamation-sign"></i>礼品卡密码必须为大于等于6位数'
+					}
+				}
+			});
+		});
+    </script>
+</body>
+</html>

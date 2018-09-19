@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+		{include file ='library/seller_menu_left.lbi'}
+		<div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+				{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="clear"></div>
+                <div class="ecsc-qx-list">
+                    <form method="POST" action="privilege_seller.php" name="theFrom">
+                    	{foreach from=$priv_arr item=priv}
+                        {if $priv.priv}
+                        <div class="step">
+                        	<div class="tit">
+                                <div class="checkbox_items">
+                                    <div class="checkbox_item">
+                                        <input type="checkbox" name="chkGroup" value="checkbox" class="ui-checkbox" id="chkGroup_{$priv.action_id}" />
+                                        <label for="chkGroup_{$priv.action_id}" class="ui-label blod">{$lang[$priv.action_code]}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="qx_items">
+                                <div class="qx_item">
+                                    <div class="checkbox_items">
+                                        {foreach from=$priv.priv key=priv_list item=list}
+                                        <div class="checkbox_item">
+                                            <input type="checkbox" value="{$priv_list}" name="action_code[]" class="ui-checkbox" id="{$priv_list}_{$priv.action_id}" date="{$priv.action_code}" {if $list.cando eq 1} checked="true" {/if} title="{$list.relevance}"/>
+                                            <label for="{$priv_list}_{$priv.action_id}" class="ui-label">{$lang[$list.action_code]}</label>
+                                        </div>
+                                        {/foreach}
+                                    </div>
+                                </div>
+                            </div>
+                    	</div>
+                        {/if}
+                        {/foreach}
+                        
+                        <div class="steplast">
+                            <div class="all">
+                            	<input type="checkbox" name="checkall" value="checkbox" class="ui-checkbox" id="checkall" />
+                                <label for="checkall" class="ui-label">全选</label>
+                            </div>
+                            <div class="info_btn">
+                                <input type="submit" value="{$lang.button_save}" class="sc-btn sc-blueBg-btn btn35 mr0 fn">
+                                <input type="hidden" name="id" value="{$user_id}" />
+                                <input type="hidden" name="token" value="{$token}" />
+                                <input type="hidden" name="act" value="{$form_act}" />
+                            </div>
+                        </div>
+					</form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{literal}
+{include file ='library/seller_footer.lbi'}
+<script language="javascript">
+	$("#checkall").click(function(){
+		var checkbox = $(this).parents(".ecsc-qx-list").find('input:checkbox[type="checkbox"]');
+		if($(this).prop("checked") == true){
+			checkbox.prop("checked",true);
+		}else{
+			checkbox.prop("checked",false);
+		}
+	});
+	
+	$("input[name='chkGroup']").click(function(){
+		var checkbox = $(this).parents(".tit").next(".qx_items").find('input:checkbox[type="checkbox"]');
+		if($(this).prop("checked") == true){
+			checkbox.prop("checked",true);
+		}else{
+			checkbox.prop("checked",false);
+		}
+	});
+	
+	$("input[name='action_code[]']").click(function(){    
+		var qx_items = $(this).parents(".qx_items");
+		var length = qx_items.find("input[name='action_code[]']").length;
+		var length2 =  qx_items.find("input[name='action_code[]']:checked").length;
+		if(length == length2){
+			qx_items.prev().find("input[name='chkGroup']").prop("checked",true);
+		}else{
+			qx_items.prev().find("input[name='chkGroup']").prop("checked",false);
+		}
+	});
+	
+	$(".qx_items").each(function(index, element) {
+		var length = $(this).find("input[name='action_code[]']").length;
+		var length2 = $(this).find("input[name='action_code[]']:checked").length;
+		
+		if(length == length2){
+			$(this).prev().find("input[name='chkGroup']").prop("checked",true);
+		}else{
+			$(this).prev().find("input[name='chkGroup']").prop("checked",false);
+		}
+	});
+</script>
+</body>
+</html>

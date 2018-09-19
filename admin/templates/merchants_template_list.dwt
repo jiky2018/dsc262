@@ -1,0 +1,270 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.seller} - 入驻商家列表</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>请选择合适的店铺模板。</li>
+                    <li>更多模板持续开发中。</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                	<div class="mian-info">
+                    	<div class="templet">
+                        	<div class="templet-thumb">
+								{if $curr_template.name}
+								<img id="screenshot" src="{$curr_template.screenshot}" width="168" height="216" />
+								{else}
+								<img src="images/template_default.jpg" width="168" height="216" />
+								{/if}
+							</div>
+                            <div class="templet-info">
+                            	<h3 class="template_tit">当前使用模板</h3>
+								{if $curr_template.name}
+                                <strong class="template_name">{$curr_template.name} {$curr_template.version}</strong>
+								<span>{$curr_template.author}</span>
+                                <div class="template_desc">{$curr_template.desc}</div>
+								{else}
+								<strong class="template_name">默认模板</strong>
+								{/if}
+                                <input class="button" onclick="defaultTemplate()" value="{$lang.default_templates}" type="button" id="default">
+								<div id="CurrTplStyleList">
+									{foreach name=foo from=$template_style.$curr_template.code item=curr_style}
+										{if $smarty.foreach.foo.total>1}
+										  <span style="cursor:pointer;" onMouseOver="javascript:onSOver('screenshot', '{$curr_style}', this);" onMouseOut="onSOut('screenshot', this, '{$curr_template.screenshot}');" onclick="javascript:setupTemplateFG('{$curr_template.code}', '{$curr_style}', '');" id="templateType_{$curr_style}"><img src="../themes/{$curr_template.code}/images/type{$curr_style}_{if $curr_style == $curr_tpl_style }1{else}0{/if}.gif" border="0"></span>
+										{/if}
+									{/foreach}
+								</div>
+                            </div>
+                            <div class="plat"></div>
+                        </div>
+                        <div class="template-list">
+                        	<ul>
+								{foreach from=$available_templates item=template name=template}
+                            	<li {if $curr_template.name eq $template.name}class="curr"{/if}>
+                                	<div class="tit">{$template.name}</div>
+                                    <div class="span">{$template.desc}</div>
+                                    <div class="img">
+                                    	{if $template.screenshot}<img width="263" height="338" src="{$template.screenshot}" data-src-wide="../seller_themes/{$template.code}/template.jpg" border="0" id="{$template.code}" onclick="javascript:setupTemplate('{$template.code}')" class="pic"/>{/if}
+                                        <div class="bg"></div>
+                                    </div>
+                                    <a href="../seller_themes/{$template.code}/template.jpg" class="btnSeeImg">查看大图</a>
+                                    <div class="box" onclick="javascript:setupTemplate('{$template.code}')">
+                                    	<i class="icon icon-gou"></i>
+                                        {if $curr_template.name eq $template.name}
+                                        <span>当前模板</span>
+                                        {else}
+                                        <span>使用改模版</span>
+                                        {/if}
+                                    </div>
+									{if $curr_template.name eq $template.name}
+                                    <i class="ing"></i>
+									{/if}
+                                </li>								
+								{/foreach}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+ {include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+		// 点击查看图片
+		$(function(){
+			$('.btnSeeImg').nyroModal();
+		});
+    </script>	
+	<script type="text/javascript">
+	<!--
+	{literal}
+
+	/**
+	 * 模板风格 全局变量
+	 */
+	var T = 0;
+	var StyleSelected = '{$curr_tpl_style}';
+	var StyleCode = '';
+	var StyleTem = '';
+
+	/**
+	 * 安装模版
+	 */
+	function setupTemplate(tpl)
+	{
+	  if (tpl != StyleTem)
+	  {
+		StyleCode = '';
+	  }
+	  if (confirm(setupConfirm))
+	  {
+		Ajax.call('merchants_template.php?is_ajax=1&act=install', 'tpl_name=' + tpl + '&tpl_fg='+ StyleCode, setupTemplateResponse, 'GET', 'JSON');
+	  }
+	}
+
+	/**
+	 * 处理安装模版的反馈信息
+	 */
+	function setupTemplateResponse(result)
+	{
+		StyleCode = '';
+	  if (result.message.length > 0)
+	  {
+		alert(result.message);
+	  }
+	  if (result.error == 0)
+	  {
+		//showTemplateInfo(result.content);
+		location.reload();
+	  }
+	}
+
+	/**
+	 * 备份当前模板
+	 */
+	function defaultTemplate(tpl)
+	{
+		if(confirm("您确认要使用默认店铺模板吗？")){
+			Ajax.call('merchants_template.php?is_ajax=1&act=user_default', '', defaultTemplateResponse, "GET", "JSON");
+		}
+	}
+
+	function defaultTemplateResponse(result)
+	{
+	  if (result.error == 0)
+	  {
+		location.reload();
+	  }
+	}
+
+	/**
+	 * 显示模板信息
+	 */
+	function showTemplateInfo(res)
+	{
+	  document.getElementById("CurrTplStyleList").innerHTML = res.tpl_style;
+
+	  StyleSelected = res.stylename;
+
+	  document.getElementById("screenshot").src = res.screenshot;
+	  document.getElementById("templateName").innerHTML    = res.name;
+	  document.getElementById("templateDesc").innerHTML    = res.desc;
+	  document.getElementById("templateVersion").innerHTML = res.version;
+	  document.getElementById("templateAuthor").innerHTML  = '<a href="' + res.uri + '" target="_blank">' + res.author + '</a>';
+	  document.getElementById("backup").onclick = function () {backupTemplate(res.code);};
+	}
+
+	/**
+	 * 模板风格 切换
+	 */
+	function onSOver(tplid, fgid, _self)
+	{
+	  var re = /(\/|\\)([^\/\\])+\.png$/;
+	  var img_url = document.getElementById(tplid).src;
+	  StyleCode = fgid;
+	  StyleTem = tplid;
+		
+	  T = 0;
+
+	  // 模板切换
+	  if ( tplid != '' && fgid != '')
+	  {
+		document.getElementById(tplid).src = img_url.replace(re, '/screenshot_' + fgid + '.png');
+	  }
+	  else 
+	  {
+		document.getElementById(tplid).src = img_url.replace(re, '/screenshot.png');
+	  }
+
+	  return true;
+	}
+	//
+	function onSOut(tplid, _self, def)
+	{
+	  if (T == 1)
+	  {
+		return true;
+	  }
+
+	  var re = /(\/|\\)([^\/\\])+\.png$/;
+	  var img_url = document.getElementById(tplid).src;
+
+	  // 模板切换为默认风格
+	  if ( def != '' )
+	 {
+		document.getElementById(tplid).src = def; 
+	  }
+	  else
+	  {
+	 //  document.getElementById(tplid).src = img_url.replace(re, '/screenshot.png');
+	  }
+
+	  return true;
+	}
+	//
+	function onTempSelectClear(tplid, _self)
+	{
+	  var re = /(\/|\\)([^\/\\])+\.png$/;
+	  var img_url = document.getElementById(tplid).src;
+
+	  // 模板切换为默认风格
+	  document.getElementById(tplid).src = img_url.replace(re, '/screenshot.png');
+		
+	  T = 0;
+
+	  return true;
+	}
+
+	/**
+	 * 模板风格 AJAX安装
+	 */
+	function setupTemplateFG(tplNO, TplFG, _self)
+	{
+	  T = 1;
+
+	  if ( confirm(setupConfirm) )
+	  {
+		Ajax.call('merchants_template.php?is_ajax=1&act=install', 'tpl_name=' + tplNO + '&tpl_fg=' + TplFG, setupTemplateResponse, 'GET', 'JSON');
+	  }
+
+	  if (_self)
+	  {
+		onTempSelectClear(tplNO, _self);
+	  }
+
+	  return true;
+	}
+
+	//查看模板演示大图
+	function maxImg(){
+		var carrousel = $(".carrousel");
+		var width = $(window).width();
+		var height = $(window).height();
+		
+		$(".portrait").click(function(e){
+			var parent = $(this).parents('.templates_content');
+			var src = parent.find(".pic").attr("data-src-wide");
+			carrousel.find("img").attr("src",src);
+			carrousel.fadeIn(200);
+		});
+		
+		carrousel.find(".carr_close").click(function(e){
+			carrousel.find("img").attr("src",'');
+			carrousel.fadeOut(200);
+		});
+		
+		$(".carrousel .wrapper").css({'width':(width*0.6),'height':(height*0.8)});
+	}
+	maxImg();
+	//-->
+	{/literal}
+	</script>
+</body>
+</html>

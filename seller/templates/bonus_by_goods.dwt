@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+            	{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="ecsc-form-goods">
+                    <form name="searchForm">
+                    <div class="step_content">
+                        <div class="goods_search_div">
+                        <div class="search_select">
+                            <div class="categorySelect">
+                                <div class="selection">
+                                    <input type="text" name="category_name" id="category_name" class="text w250 valid" value="{$lang.select_cat}" autocomplete="off" readonly data-filter="cat_name" />
+                                    <input type="hidden" name="cat_id" id="category_id" value="0" data-filter="cat_id" />
+                                </div>
+                                <div class="select-container" style="display:none;">
+                                    {include file="library/filter_category.lbi"}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="search_select">
+                            <div class="brandSelect">
+                                <div class="selection">
+                                    <input type="text" name="brand_name" id="brand_name" class="text w120 valid" value="{$lang.select_barnd}" autocomplete="off" readonly data-filter="brand_name" />
+                                    <input type="hidden" name="brand_id" id="brand_id" value="0" data-filter="brand_id" />
+                                </div>
+                                <div class="brand-select-container" style="display:none;">
+                                    {include file="library/filter_brand.lbi"}
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 分类 -->
+                        <input type="text" name="keyword" size="30" class="text text_2 mr10" data-filter="keyword" autocomplete="off" />
+                        <a href="javascript:void(0);" class="sc-btn sc-blueBg-btn" ectype="search"  onclick="searchGoods()" >搜索</a>
+                        </div>
+                    </div>
+                  	</form>
+                  	<form name="theForm" >
+                    <div class="move_div">
+                        <div class="move_left">
+                            <h4>{$lang.all_goods}</h4>
+                            <div class="move_info">
+                                <div class="move_list" id="source_select">
+                                    <ul>
+                                    </ul>	
+                                </div>
+                            </div>
+                            <div class="move_handle">
+                                <a href="javascript:void(0);" class="sc-btn btn25 moveAll" ectype="moveAll">全选</a>
+                                <a href="javascript:void(0);" onclick="addGoods()" class="sc-btn btn25 sc-blueBg-btn">确定</a>
+                            </div>
+                        </div>
+                        <div class="move_middle">
+                            <div class="move_point" onclick="addGoods()"></div>
+                        </div>
+                        <div class="move_right">
+                            <h4>{$lang.send_bouns_goods}</h4>
+                            <div class="move_info">
+                                <div class="move_list" id="target_select" >
+                                    <ul>
+                                        {foreach from=$goods_list item=list}
+                                        <li><i class='sc_icon sc_icon_no'></i><a href='javascript:;' data-value='{$list.goods_id}' class='ftx-01'>{$list.goods_name}</a></li>
+                                        {/foreach}
+                                    </ul>											
+                                </div>
+                            </div>
+                            <div class="move_handle">
+                                <a href="javascript:void(0);" class="sc-btn btn25 moveAll" ectype="moveAll">全选</a>
+                                <a href="javascript:void(0);" onclick="delGoods()" class="sc-btn btn25 sc-blueBg-btn">移除</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="button-bottom">
+                    	<div class="button_info">
+                        	<input type="button" class="sc-btn btn35 sc-blueBg-btn mr20" value="{$lang.send}" onClick="javascript:history.back()" style="float:none;" />
+                        </div>
+                    </div>
+                	</form>  
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+
+<script type="text/javascript" language="JavaScript">
+	//滚动轴
+	$(".move_list").perfectScrollbar();
+	$(".brand-list").perfectScrollbar();
+
+	{literal}
+
+	function searchGoods(){
+		var elements  = document.forms['searchForm'].elements;
+		var filters   = new Object;
+		filters.cat_id = elements['category_id'].value;
+		filters.brand_id = elements['brand_id'].value;
+		filters.keyword = Utils.trim(elements['keyword'].value);
+		$("#source_select").find("ul").html("<i class='icon-spinner icon-spin'></i>");
+		
+		setTimeout(function(){Ajax.call('bonus.php?is_ajax=1&act=get_goods_list', filters, searchGoodsResponse, 'GET', 'JSON');},300);
+	}
+	function searchGoodsResponse(result){
+		
+	$("#source_select").find("li,i").remove();
+
+	var goods = result.content;
+		if (goods)
+		{
+		  for (i = 0; i < goods.length; i++)
+		  {
+			$("#source_select").children("ul").append("<li><i class='sc_icon sc_icon_ok'></i><a href='javascript:;' data-value='"+goods[i].value+"' class='ftx-01'>"+goods[i].text+"</a><input type='hidden' name='user_search[]' value='"+goods[i].value+"'></li>")
+		  }
+		}		
+	}
+        
+        function addGoods()
+	{
+		var goodsId = [];
+		var bid = '{$id}';
+		$("#source_select").find("li").each(function(){
+			if($(this).attr("class") == 'current'){
+				var value = $(this).find("a").data('value');
+				goodsId.push(value);
+			}
+		});
+		Ajax.call('bonus.php?is_ajax=1&act=add_bonus_goods&add_ids='+ goodsId + '&bid=' +bid, '', addGoodsResponse, 'GET', 'JSON');
+	}
+
+	function addGoodsResponse(result){
+		$("#target_select").find('li').remove();
+		var goods = result.content;
+		for(i=0;i<goods.length;i++){
+			$("#target_select").children("ul").append("<li><i class='sc_icon sc_icon_no'></i><a href='javascript:;' data-value='"+goods[i].value+"' class='ftx-01'>"+goods[i].text+"</a></li>")
+		}		
+	}
+
+	function delGoods()
+	{
+		var goodsId = [];
+		var bid = '{$id}';
+		$("#target_select").find("li").each(function(){
+			if($(this).attr("class") == 'current'){
+				var value = $(this).find("a").data('value');
+				goodsId.push(value);
+			}
+		});	
+		Ajax.call('bonus.php?is_ajax=1&act=drop_bonus_goods&drop_ids='+ goodsId + '&bid=' +bid, '', delGoodsResponse, 'GET', 'JSON');
+	}
+	
+	function delGoodsResponse(result){
+		if(result.error == 0){
+			$("#target_select").find('li').remove();
+			var goods = result.content;
+			if(goods){
+				for(i=0;i<goods.length;i++){
+					$("#target_select").children("ul").append("<li><i class='sc_icon sc_icon_no'></i><a href='javascript:;' data-value='"+goods[i].value+"' class='ftx-01'>"+goods[i].text+"</a></li>")
+				}
+			}
+		}	
+	}
+</script>
+</body>
+</html>

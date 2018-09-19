@@ -1,0 +1,172 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$lang.promotion} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.time_info.0}</li>
+					<li>{$lang.operation_prompt_content.time_info.1}</li>
+					<li>{$lang.operation_prompt_content.time_info.2}</li>
+                    <li>{$lang.operation_prompt_content_common}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+						<form action="seckill.php?act={$form_act}" id="myForm" method="post" name="theForm" enctype="multipart/form-data">
+                            <div class="switch_info">
+                                 <div class="items">
+                                    <div class="item">
+                                        <div class="label">{$lang.require_field}{$lang.time_bucket_title}：</div>
+                                        <div class="label_value">
+                                        	<input type="text" name="title" id="title" class="text w200" value="{$tb.title}" autocomplete="off" />
+											<div class="notic"></div>
+                                            <div class="form_prompt"></div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{if !$tb.begin_hour}{$lang.require_field}{/if}{$lang.daily_begin_time}：</div>
+                                        <div class="label_value">
+                                        	<input type="text" class="text w40 fl" maxlength='2' {if $tb.begin_hour}readonly="readonly" name="begin_hour" value="{$tb.begin_hour|default: N/A}"{else}name="begin_hour"{/if} autocomplete="off" /><span class="fl">：</span>
+											<input type="text" class="text w40 fl" maxlength='2' {if $tb.begin_minute}readonly="readonly" name="begin_minute" value="{$tb.begin_minute|default: N/A}"{else}name="begin_minute"{/if} autocomplete="off" /><span class="fl">：</span>
+											<input type="text" class="text w40 fl" maxlength='2' {if $tb.begin_second}readonly="readonly" name="begin_second" value="{$tb.begin_second|default: N/A}"{else}name="begin_second"{/if} autocomplete="off" />
+											{if !$tb.begin_hour}<div class="notic">{$lang.begin_time_notice}</div>{/if}
+                                            <div class="form_prompt"></div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.require_field}{$lang.daily_end_time}：</div>
+                                        <div class="label_value">
+                                        	<input type="text" class="text w40 fl"  name="end_hour" maxlength='2' value="{$tb.end_hour}"/><span class="fl">：</span>
+											<input type="text" class="text w40 fl"  name="end_minute" maxlength='2' value="{$tb.end_minute}"/><span class="fl">：</span>
+											<input type="text" class="text w40 fl"  name="end_second" maxlength='2' value="{$tb.end_second}"/>
+											<div class="notic"></div>
+                                            <div class="form_prompt"></div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">&nbsp;</div>
+                                        <div class="label_value info_btn">
+											<input type="submit" value="{$lang.button_submit}" class="button" id="submitBtn" />
+											<input type="hidden" name="act" value="{$form_act}" />
+											<input type="hidden" name="tb_id" value="{$tb.id}" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+	{include file ='library/pagefooter.lbi'}
+    {literal}	
+    <script type="text/javascript">
+        $(function(){
+            //表单验证
+            $("#submitBtn").click(function(){
+                if($("#myForm").valid()){
+                    $("#myForm").submit();
+                }
+            });
+        
+            $('#myForm').validate({
+                errorPlacement:function(error, element){
+                    var error_div = element.parents('div.label_value').find('div.form_prompt');
+                    element.parents('div.label_value').find(".notic").hide();
+                    error_div.append(error);
+                },
+                rules:{
+                    title :{
+                        required : true
+                    },
+                    begin_hour:{
+                        required : true,
+                        digits :true,
+                        min : 0,
+                        max : 23
+                    },
+                    begin_minute:{
+                        required : true,
+                        digits :true,
+                        min : 0,
+                        max : 59
+                    },
+                    begin_second:{
+                        required : true,
+                        digits :true,
+                        min : 0,
+                        max : 59
+                    },
+                    end_hour:{
+                        required : true,
+                        digits :true,
+                        min : 0,
+                        max : 23
+                    },
+                    end_minute:{
+                        required : true,
+                        digits :true,
+                        min : 0,
+                        max : 59
+                    },
+                    end_second:{
+                        required : true,
+                        digits :true,
+                        min : 0,
+                        max : 59
+                    }
+                },
+                messages:{
+                    title:{
+                         required : '<i class="icon icon-exclamation-sign"></i>'+time_title_not_null
+                    },
+                    begin_hour:{
+                        required : '<i class="icon icon-exclamation-sign"></i>'+begin_hour_required,
+                        digits :  '<i class="icon icon-exclamation-sign"></i>'+digits_prompt,
+                        min : '<i class="icon icon-exclamation-sign"></i>'+is_min_0,
+                        max : '<i class="icon icon-exclamation-sign"></i>'+is_max_23
+                    },
+                    begin_minute:{
+                        required : '<i class="icon icon-exclamation-sign"></i>'+begin_minute_required,
+                        digits :  '<i class="icon icon-exclamation-sign"></i>'+digits_prompt,
+                        min : '<i class="icon icon-exclamation-sign"></i>'+is_min_0,
+                        max : '<i class="icon icon-exclamation-sign"></i>'+is_max_59
+                    },
+                    begin_second:{
+                        required : '<i class="icon icon-exclamation-sign"></i>'+begin_second_required,
+                        digits :  '<i class="icon icon-exclamation-sign"></i>'+digits_prompt,
+                        min : '<i class="icon icon-exclamation-sign"></i>'+is_min_0,
+                        max : '<i class="icon icon-exclamation-sign"></i>'+is_max_59
+                    },
+                    end_hour:{
+                        required : '<i class="icon icon-exclamation-sign"></i>'+end_hour_required,
+                        digits :  '<i class="icon icon-exclamation-sign"></i>'+digits_prompt,
+                        min : '<i class="icon icon-exclamation-sign"></i>'+is_min_0,
+                        max : '<i class="icon icon-exclamation-sign"></i>'+is_max_23
+                    },
+                    end_minute:{
+                        required : '<i class="icon icon-exclamation-sign"></i>'+end_minute_required,
+                        digits :  '<i class="icon icon-exclamation-sign"></i>'+digits_prompt,
+                        min : '<i class="icon icon-exclamation-sign"></i>'+is_min_0,
+                        max : '<i class="icon icon-exclamation-sign"></i>'+is_max_59
+                    },
+                    end_second:{
+                        required : '<i class="icon icon-exclamation-sign"></i>'+end_second_required,
+                        digits :  '<i class="icon icon-exclamation-sign"></i>'+digits_prompt,
+                        min : '<i class="icon icon-exclamation-sign"></i>'+is_min_0,
+                        max : '<i class="icon icon-exclamation-sign"></i>'+is_max_59
+                    }
+                }			
+            });
+        });
+    </script>
+    {/literal}	
+</body>
+</html>

@@ -1,0 +1,100 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.11_system} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>此配送方式的所有仓库配送地区列表。</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<div class="common-head">
+                	<div class="fl">
+                        {if $action_link.href}
+                        <a href="{$action_link.href}"><div class="fbutton"><div class="add_region" title="{$action_link.text}"><span><i class="icon icon-plus"></i>{$action_link.text}</span></div></div></a>
+                        {/if}
+                    </div>
+                   	<div class="refresh">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">刷新</div>
+                    </div>
+                </div>
+                <div class="common-content">
+                    <form method="POST" action="" name="listForm" onsubmit="return confirm_bath()">
+                	<div class="list-div" id="listDiv">
+                        {/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                    <th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars"></label></div></th>
+                                    <th width="5%"><div class="tDiv">{$lang.record_id}</div></th>
+                                    <th width="16%"><div class="tDiv">{$lang.originating_place}</div></th>
+                                    <th width="16%"><div class="tDiv">{$lang.reach_the_destination}</div></th>
+                                    <th width="14%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {foreach from=$shipping_list item=shipping}
+                            	<tr>
+                                    <td class="sign"><div class="tDiv"><input type="checkbox" name="checkboxes[]" value="{$shipping.id}" class="checkbox" id="checkbox_{$shipping.id}" /><label for="checkbox_{$shipping.id}" class="checkbox_stars"></label></div></td>
+                                    <td><div class="tDiv">{$shipping.id}</div></td>
+                                    <td><div class="tDiv">{$shipping.region_name1}</div></td>
+                                    <td><div class="tDiv">{$shipping.region_name2}</div></td>
+                                    <td class="handle">
+                                        <div class="tDiv a2">
+                                            <a href="warehouse_shipping_mode.php?act=freight&id={$shipping.id}" title="{$lang.edit}" class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>
+                                            <a href="javascript:confirm_redirect('{$lang.remove_confirm}', 'warehouse_shipping_mode.php?act=remove&id={$shipping.id}')" title="{$lang.remove}" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {foreachelse}
+                                    <tr><td class="no-records" colspan="12">{$lang.no_records}</td></tr>
+                                {/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="12">
+                                        <div class="tDiv">
+                                            <div class="tfoot_btninfo">
+                                                <input type="hidden" name="act" value="batch_remove" />
+                                                <input type="submit" value="{$lang.drop}" name="remove" ectype="btnSubmit" class="btn btn_disabled" disabled="">
+                                            </div>
+                                            <div class="list-page">
+                                                {include file="library/page.lbi"}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                            {if $full_page}
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+     {include file ='library/pagefooter.lbi'}
+    <script type="text/javascript" src="js/jquery.purebox.js"></script>
+    <script type="text/javascript">
+       listTable.recordCount = {$record_count|default:0};
+        listTable.pageCount = {$page_count|default:1};
+        {foreach from=$filter item=item key=key}
+        listTable.filter.{$key} = '{$item}';
+        {/foreach}
+            
+            function confirm_bath()
+            {
+              cfm = '{$lang.list_still_accounts}' + '{$lang.list_remove_confirm}';
+              return confirm(cfm);
+            }
+    </script>
+</body>
+</html>
+{/if}

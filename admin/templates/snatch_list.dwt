@@ -1,0 +1,223 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.promotion} - {$ur_here}</div>
+        <div class="content">
+            {include file="library/common_tabs_info.lbi"}
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit">
+					<i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span>
+                    {if $open eq 1}
+                    <div class="view-case">
+                    	<div class="view-case-tit"><i></i>{$lang.view_tutorials}</div>
+                        <div class="view-case-info">
+                        	<a href="http://help.ecmoban.com/article-6400.html" target="_blank">{$lang.tutorials_bonus_list_one}</a>
+                        </div>
+                    </div>			
+                    {/if}	
+				</div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.list.0}</li>
+                    <li>{$lang.operation_prompt_content.list.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<div class="common-head">
+                    {if !$rs_id}
+                	<div class="fl">
+                        <a href="snatch.php?act=add"><div class="fbutton"><div class="add" title="{$lang.add_snatch}"><span><i class="icon icon-plus"></i>{$lang.add_snatch}</span></div></div></a>
+                    </div>
+                    {/if}
+                    <div class="refresh">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+                    <div class="search">
+                    	<form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+						{include file ='library/search_store.lbi'}
+                        {if $common_tabs.info}
+                        <div class="select m0">
+                            <div class="imitate_select select_w170">
+                                <div class="cite">{$lang.adopt_status}</div>
+                                <ul>
+                                    <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.adopt_status}</a></li>
+                                    <li><a href="javascript:;" data-value="1" class="ftx-01">{$lang.not_audited}</a></li>
+                                    <li><a href="javascript:;" data-value="2" class="ftx-01">{$lang.audited_not_adopt}</a></li>
+                                    <li><a href="javascript:;" data-value="3" class="ftx-01">{$lang.audited_yes_adopt}</a></li>
+                                </ul>
+                                <input name="review_status" type="hidden" value="0" id="">
+                            </div>
+                        </div>
+                        {/if}
+                    	<div class="input">
+                        	<input type="text" name="keywords" class="text nofocus" placeholder="{$lang.act_name}" autocomplete="off" />
+                            <input type="submit" class="btn" name="secrch_btn" ectype="secrch_btn" value="" />
+                        </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="common-content">
+				<form method="post" action="" name="listForm">
+                	<div class="list-div" id="listDiv">
+                    	<div class="flexigrid ht_goods_list">
+						{/if}
+                    	<table cellpadding="0" cellspacing="0" border="0" class="table_layout">
+                        	<thead>
+                            	<tr>
+									<th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars"></label></div></th>								
+                                    <th width="5%"><div class="tDiv">{$lang.record_id}</div></th>
+                                    <th width="22%"><div class="tDiv">{$lang.snatch_name}</div></th>
+                                    <th width="8%"><div class="tDiv">{$lang.goods_steps_name}</div></th>
+                                    <th width="14%"><div class="tDiv">{$lang.goods_name}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.end_time}</div></th>
+                                    <th width="6%"><div class="tDiv">{$lang.min_price}</div></th>
+                                    <th width="6%"><div class="tDiv">{$lang.integral}</div></th>
+                                    <th width="5%"><div class="tDiv">{$lang.is_hot}</div></th>
+                                    <th width="7%"><div class="tDiv">{$lang.adopt_status}</div></th>
+                                    <th class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+							{foreach from=$snatch_list item=snatch}
+                            	<tr>
+								    <td class="sign">
+                                        <div class="tDiv">
+                                            <input type="checkbox" name="checkboxes[]" value="{$snatch.act_id}" class="checkbox" id="checkbox_{$snatch.act_id}" />
+                                            <label for="checkbox_{$snatch.act_id}" class="checkbox_stars"></label>
+                                        </div>
+                                    </td>
+                                    <td><div class="tDiv">{$snatch.act_id}</div></td>
+                                	<td><div class="tDiv overflow_view"><span title="{$snatch.snatch_name}" data-toggle="tooltip">{$snatch.snatch_name}</span></div></td>
+                                    <td><div class="tDiv red">{$snatch.ru_name}</div></td>
+                                    <td><div class="tDiv overflow_view"><span title="{$snatch.goods_name}" data-toggle="tooltip">{$snatch.goods_name}</span></div></td>
+                                    <td><div class="tDiv">{$snatch.end_time}</div></td>
+                                    <td><div class="tDiv">{$snatch.start_price}</div></td>
+                                    <td><div class="tDiv">{$snatch.cost_points}</div></td>
+                                    <td>
+                                    	<div class="tDiv">
+                                        	<div class="switch mauto {if $snatch.is_hot}active{/if}" onclick="listTable.switchBt(this, 'toggle_hot', {$snatch.act_id})" title="{$lang.yes}">
+                                            	<div class="circle"></div>
+                                            </div>
+                                            <input type="hidden" value="0" name="">
+                                        </div>
+                                    </td> 
+                                    <td>
+                                    	<div class="tDiv">
+                                            {if $snatch.review_status eq 1}
+                                            <font class="org2">{$lang.not_audited}</font>
+                                            {elseif $snatch.review_status eq 2}
+                                            <font class="red">{$lang.audited_not_adopt}</font><br/>
+                                            <i class="tip yellow" title="{$snatch.review_content}" data-toggle="tooltip">{$lang.prompt}</i>
+                                            {elseif $snatch.review_status eq 3}
+                                            <font class="blue">{$lang.audited_yes_adopt}</font>
+                                            {/if}									
+                                        </div>
+                                    </td>   
+                                    <td class="handle">
+										<div class="tDiv ht_tdiv">
+											<a href="snatch.php?act=view&amp;snatch_id={$snatch.act_id}" title="{$lang.view_detail}" class="btn_see"><i class="sc_icon sc_icon_see"></i>{$lang.view}</a>
+											<a href="snatch.php?act=edit&amp;id={$snatch.act_id}" title="{$lang.edit}" class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>
+											<a href="javascript:;" onclick="listTable.remove({$snatch.act_id},'{$lang.drop_confirm}')" title="{$lang.remove}" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>									
+										</div>
+									</td>
+                                </tr>
+							{foreachelse}
+							<tr><td class="no-records" colspan="11">{$lang.no_records}</td></tr>
+							{/foreach}
+                            </tbody>
+                            <tfoot>					
+                            	<tr>
+                                    <td colspan="11">
+										<div class="tDiv">
+											{if $filter.seller_list eq 1}
+											<div class="tfoot_btninfo">
+												<input type="hidden" value="batch" name="act">
+												<div class="item">
+													<div id="drop_select" class="imitate_select select_w120">
+													  <div class="cite">{$lang.select_please}</div>
+													  <ul>
+														 <li><a href="javascript:;" data-value="" class="ftx-01">{$lang.select_please}</a></li>
+														 <li><a href="javascript:;" data-value="batch_remove" class="ftx-01">{$lang.drop}</a></li>
+														 <li><a href="javascript:;" data-value="review_to" class="ftx-01">审核</a></li>
+													  </ul>
+													  <input name="type" type="hidden" value=""  id="drop_val">
+													</div>
+												</div>
+												<div class="item" style="display: none;" id="review_status">
+													<div id="review_status_select" class="imitate_select select_w120">
+													  <div class="cite">{$lang.select_please}</div>
+													  <ul>
+														 <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.all}</a></li>
+														 <li><a href="javascript:;" data-value="2" class="ftx-01">{$lang.audited_not_adopt}</a></li>
+														 <li><a href="javascript:;" data-value="3" class="ftx-01">{$lang.audited_adopt}</a></li>
+													  </ul>
+													  <input name="review_status" type="hidden" value="0" id="review_status_val">
+													</div>
+												</div>
+												<input name="review_content" type="text" value="" class="text text_2 mr10 lh26" style="display:none" />
+												<input type="submit" value="{$lang.button_submit_alt}" name="remove" ectype="btnSubmit" class="btn btn_disabled" disabled="">
+											</div>
+											{else}
+											<div class="tfoot_btninfo">
+												<div class="shenhe">
+													<input type="submit" name="drop" id="btnSubmit" value="{$lang.drop}" class="btn btn_disabled" disabled="true" ectype="btnSubmit" />
+													<input type="hidden" name="act" value="batch" />
+													<input name="type" type="hidden" value="batch_remove"  id="drop_val">
+												</div>										
+											</div>
+											{/if}											
+											<div class="list-page">
+												{include file="library/page.lbi"}
+											</div>
+										</div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+						{if $full_page}
+                        </div>
+                    </div>
+				</form>
+                </div>
+            </div>
+        </div>
+    </div>
+ {include file ='library/pagefooter.lbi'}
+<script type="text/javascript">
+	//列表导航栏设置下路选项
+	$(".ps-container").perfectScrollbar();
+
+	//分页传值
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+
+	$.divselect("#drop_select","#drop_val",function(obj){
+		changeAction();
+	});
+	
+	function changeAction()
+	{
+	
+	 var type = $("input[name='type']").val();
+	 var review_status = $("#review_status");
+	  // 切换商品审核列表的显示
+	
+	  review_status.css("display",type == 'review_to' ? '' : 'none');
+	  if(type != 'review_to')
+	  {
+		review_status.css("display", 'none');
+	  }
+	}	
+
+</script>
+</body>
+</html>
+{/if}

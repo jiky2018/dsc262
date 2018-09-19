@@ -1,0 +1,774 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<!-- #BeginLibraryItem "/library/js_languages_new.lbi" --><!-- #EndLibraryItem -->
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/css/wholesale_new.css" />
+<link rel="stylesheet" type="text/css" href="../js/perfect-scrollbar/perfect-scrollbar.min.css" />
+<link rel="stylesheet" type="text/css" href="../js/calendar/calendar.min.css" />
+</head>
+
+<body class="bg-ligtGary">
+<!-- #BeginLibraryItem "/library/page_header_business.lbi" --><!-- #EndLibraryItem -->
+{if $action eq 'list'}
+<div class="content b2b-content bg-ligtGary">
+    <div class="w w1200">
+        <div class="crumbs-nav">
+            <div class="crumbs-nav-main clearfix">
+                 <span><a href=".">首页</a></span><span class="arrow">&gt;</span> <span class="finish">求购信息</span>
+            </div>
+        </div>
+        <div class="b2b-filter">
+            <div class="bf-tab">
+                <ul>
+                    <li class="{if $is_finished eq '-1'}curr{/if}"><a href="wholesale_purchase.php">全部求购</a></li>
+                    <li class="spacer"></li>
+                    <li class="{if $is_finished eq '0'}curr{/if}"><a href="wholesale_purchase.php?act=list&is_finished=0">进行中的求购</a></li>
+                    <li class="spacer"></li>
+                    <li class="{if $is_finished eq '1'}curr{/if}"><a href="wholesale_purchase.php?act=list&is_finished=1">已截止求购</a></li>
+                    <li class="spacer"></li>
+                    <li class="f-search">
+                        <form method="post" action="wholesale_purchase.php?act=list">
+                            <input type="text" name="keyword" autocomplete="off" id="price-max" value="{$pager.search.keyword}" class="text w180" placeholder="关键字"><input type="submit" value="确定" class="btn sc-redBg-btn btn30"/>
+                            <input type="hidden" name="is_finished" value="{$is_finished}" />
+                        </form>
+                    </li>
+                </ul>
+            </div>
+            <div class="bf-right">
+                <div class="bf-label">今日发布求购：<em ectype="todayNumber">{$today_count}</em>条</div>
+                <div class="bf-label">已成交求购：<em ectype="dealNumber">{$deal_count}</em>条</div>
+            </div>
+        </div>
+        <div class="buyinfo-list">
+            <ul>
+                {foreach from=$purchase_list item=purchase}
+                    <li>
+                        <div class="buyinfo-warp">
+                            <div class="bw-top">
+                                <div class="bwt-left">
+                                    <div class="tit" title="{$purchase.subject}">{$purchase.subject}</div>
+                                    <div class="bwt-info">
+                                        <p>采购数量：<span class="org">{$purchase.goods_number}件</span></p>
+                                        <p>发布时间：{$purchase.add_time}</p>
+                                        <p>剩余时间：{if $purchase.left_day gt 0}{$purchase.left_day}天{elseif $purchase.left_day lt 0}小于1天{else}已结束{/if}</p>
+                                    </div>
+                                </div>
+                                <div class="bwt-right"><a href="{$purchase.url}" target="_blank"><img src="{if $purchase.img}{$purchase.img}{else}themes/<?php echo $GLOBALS['_CFG']['template']; ?>/images/brand_defalut.jpg{/if}"></a></div>
+                            </div>
+                            <div class="bw-bottom">
+                                <div class="bwb-left">
+                                    <div class="name"><span>{$purchase.shop_name}</span>{if $purchase.is_verified}<i><img src="images/b2b/ide.jpg"></i>{/if}</div>
+                                    <div class="address">{$purchase.area_info}</div>
+                                </div>
+                                <div class="bwb-right">
+                                    <a href="{$purchase.url}" class="btn sc-orgBg-btn" target="_blank">立即联系</a>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+				{foreachelse}
+					<div class="no_records">
+						<i class="no_icon_two"></i>
+						<div class="no_info no_info_line">
+							<h3>暂无求购信息</h3>
+							<div class="no_btn">
+								<a href="wholesale.php" class="btn sc-redBg-btn">返回首页</a>
+							</div>
+						</div>
+					</div>
+                {/foreach}
+            </ul>
+            <div class="clear"></div>
+            <div class="tc">
+                <!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->					
+            </div>
+        </div>
+    </div>
+</div>
+{/if}
+{if $action eq 'info'}
+<div class="content b2b-content bg-ligtGary">
+    <div class="w w1200">
+        <div class="crumbs-nav">
+            <div class="crumbs-nav-main clearfix">
+                <span><a href=".">首页</a></span><span class="arrow">&gt;</span> <span class="finish">搜索商品</span>
+            </div>
+        </div>
+        <div class="buydesc-info">
+            <div class="goods-name">{$purchase_info.subject}</div>
+            <div class="buydesc-warp">
+                <div class="bw-left">
+                <div class="bw-section">
+                        <div class="bw-title">
+                        <i></i>
+                        <h3>求购产品</h3>
+                        <em>{$lang.purchase_type.$purchase_info.type}</em>
+                    </div>
+                    <div class="bw-content">
+                        <table class="b2b-table">
+                                <colgroup>
+                                <col width="50">
+                                <col width="180">
+                                <col width="160">
+                                <col width="100">
+                                <col width="100">
+                                <col>
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th></th>
+                                <th>采购商品名称</th>
+                                <th>采购商品分类</th>
+                                <th>采购数量</th>
+                                <th>目标单价</th>
+                                <th>其他备注</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {foreach from=$purchase_info.goods_list item=goods name=goods}
+                                <tr>
+                                    <td>{$smarty.foreach.goods.iteration}</td>
+                                    <td><div class="tDiv t-name">{$goods.goods_name}</div></td>
+                                    <td><div class="tDiv">{$goods.cat_name}</div></td>
+                                    <td><div class="tDiv">{$goods.goods_number}件</div></td>
+                                    <td><div class="tDiv">{$goods.goods_price}元</div></td>
+                                    <td>
+                                        <div class="tDiv">
+                                            <div class="t-desc"><span>{$goods.remarks}</span></div>
+                                            <div class="t-images">
+                                                <div class="t-images-info">
+                                                    <ul>
+                                                    	{foreach from=$goods.goods_img item=img}
+                                                        <li>
+															<a href="{if $img}{$img}{else}themes/<?php echo $GLOBALS['_CFG']['template']; ?>/images/brand_defalut.jpg{/if}" class="img">
+																<img src="{if $img}{$img}{else}themes/<?php echo $GLOBALS['_CFG']['template']; ?>/images/brand_defalut.jpg{/if}">
+															</a>
+															<a href="{if $img}{$img}{else}themes/<?php echo $GLOBALS['_CFG']['template']; ?>/images/brand_defalut.jpg{/if}" class="nyroModal"><i class="iconfont icon-search"></i></a>
+														</li>
+                                                        {/foreach}
+                                                    </ul>
+                                                </div>
+                                                <a href="javascript:void(0);" class="prev"><i class="iconfont icon-left"></i></a>
+                                                <a href="javascript:void(0);" class="next"><i class="iconfont icon-right"></i></a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {/foreach}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="bw-section">
+                        <div class="bw-title">
+                        <i></i>
+                        <h3>采购需求</h3>
+                    </div>
+                    <div class="bw-content">
+                        <div class="items">
+                                <div class="item">
+                                <div class="label">发票信息：</div>
+                                <div class="value">{$lang.need_invoice.$purchase_info.need_invoice}{if $purchase_info.invoice_tax_rate} 税率{$purchase_info.invoice_tax_rate}{/if}</div>
+                            </div>
+                            <!--<div class="item">
+                                <div class="label">收货地区：</div>
+                                <div class="value">{$purchase_info.consignee_region}</div>
+                            </div>-->
+                            <div class="item">
+                                <div class="label">详细地址：</div>
+                                <div class="value">{$purchase_info.consignee_region} {$purchase_info.consignee_address}</div>
+                            </div>
+                            <div class="item">
+                                <div class="label">补充说明：</div>
+                                <div class="value">{$purchase_info.description}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                <div class="bw-right">
+                    {if !$user_id}
+                    <div class="bwr-section">
+                        <div class="tit">
+                            <h3>{$purchase_info.shop_name}</h3>
+                            {if $purchase_info.is_verified}<i><img src="images/b2b/ide.jpg"></i>{/if}
+                        </div>
+                        <div class="bwr-content">
+                            <div class="item">
+                                <i class="iconfont icon-name"></i>
+                                <span>***</span>
+                            </div>
+                            <div class="item">
+                                <i class="iconfont icon-tel-alt"></i>
+                                <span>*******</span>
+                            </div>
+                            <div class="item">
+                                <i class="iconfont icon-email-alts"></i>
+                                <span>**********</span>
+                            </div>
+                        </div>
+                        <div class="notic">很抱歉，未登陆不可见联系人信息</div>
+                        <a href="user.php" class="btn sc-orgBg-btn">立即登录</a>
+                    </div>
+                    {elseif !$is_merchant}
+                    <div class="bwr-section">
+                        <div class="tit">
+                            <h3>{$purchase_info.shop_name}</h3>
+                            <i><img src="images/b2b/ide.jpg"></i>
+                        </div>
+                        <div class="bwr-content">
+                            <div class="item">
+                                <i class="iconfont icon-name"></i>
+                                <span>***</span>
+                            </div>
+                            <div class="item">
+                                <i class="iconfont icon-tel-alt"></i>
+                                <span>*******</span>
+                            </div>
+                            <div class="item">
+                                <i class="iconfont icon-email-alts"></i>
+                                <span>**********</span>
+                            </div>
+                        </div>
+                        <div class="notic">很抱歉，您还不是供应商不可见联系人信息，请立即申请</div>
+                        <a href="merchants.php" class="btn sc-cyanBg-btn">申请入驻</a>
+                    </div>
+                    {else}
+                    <div class="bwr-section">
+                        <div class="tit">
+                            <h3>{$purchase_info.shop_name}</h3>
+                            <i><img src="images/b2b/ide.jpg"></i>
+                        </div>
+                        <div class="bwr-content">
+                            <div class="item">
+                                <i class="iconfont icon-name"></i>
+                                <span>{$purchase_info.contact_name} {$lang.contact_gender.$purchase_info.contact_gender}</span>
+                            </div>
+                            <div class="item">
+                                <i class="iconfont icon-tel-alt"></i>
+                                <span>{$purchase_info.contact_phone}</span>
+                            </div>
+                            <div class="item">
+                                <i class="iconfont icon-email-alts"></i>
+                                <span>{$purchase_info.contact_email}</span>
+                            </div>
+                        </div>
+                        <div class="notic org">注：请尽快线下联系采购商</div>
+                    </div>
+                    {/if}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{/if}
+{if $action eq 'release'}
+<div class="content b2b-content bg-ligtGary">
+    <form action="wholesale_purchase.php" method="POST" enctype="multipart/form-data" id="release_form">
+        <div class="w w1200">
+            <div class="buyorder-title">填写求购单</div>
+            <div class="buy-content">
+                <div class="bw-section">
+                    <div class="bw-title">
+                        <i></i>
+                        <h3>求购产品</h3>
+                    </div>
+                    <div class="bw-content">
+                        <div class="items">
+                            <div class="item">
+                                <div class="label"><em class="org">*</em>求购单标题： </div>
+                                <div class="value"><input type="text" class="text" name="subject"><div class="form_prompt"></div></div>
+                            </div>
+                            <div class="item">
+                                <div class="label"><em class="org">*</em>求购产品： </div>
+                                <div class="value">
+                                    <div class="checkbox_items">
+                                        <div class="checkbox_item">
+                                            <input type="radio" class="ui-radio" name="type" value="0" id="type_0" checked="checked">
+                                            <label for="type_0" class="ui-b2b-radio-label">{$lang.purchase_type.0}</label>
+                                        </div>
+                                        <div class="checkbox_item">
+                                            <input type="radio" class="ui-radio" name="type" value="1" id="type_1">
+                                            <label for="type_1" class="ui-b2b-radio-label">{$lang.purchase_type.1}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <table class="b2b-table" ectype="purchaseTable">
+                            <colgroup>
+                                <col width="280">
+                                <col width="180">
+                                <col width="100">
+                                <col width="100">
+                                <col width="220">
+                                <col width="180">
+                                <col>
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th><em class="org">*</em>采购商品名称</th>
+                                    <th><em class="org">*</em>采购商品分类</th>
+                                    <th><em class="org">*</em>采购数量</th>
+                                    <th>目标单价</th>
+                                    <th>其他备注</th>
+                                    <th>图片</th>
+                                    <th class="handle">删除</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ectype="goodsRow">
+                                    <td><input type="text" name="goods_name[]" class="text"></td>
+                                    <td>
+                                        <div class="imitate_select w160">
+                                        <div class="cite"><span>请选择</span><i class="iconfont icon-down"></i></div>
+                                            <ul>
+                                                <li><a href="javascript:void(0);" data-value="0">请选择..</a></li>
+                                                {foreach from=$wholesale_cat item=cat name=wholesale_cat}
+                                                <li class="current"><a href="javascript:void(0);" data-value="{$cat.id}">{$cat.name|escape:html}</a></li>
+                                                {/foreach}
+                                            </ul>
+                                            <input name="cat_id[]" type="hidden" value="0" ectype="cat_id">
+                                        </div>
+                                    </td>
+                                    <td><input type="text" name="goods_number[]" class="text text-3"></td>
+                                    <td><input type="text" name="goods_price[]" class="text text-3"></td>
+                                    <td><input type="text" name="remarks[]" class="text text-2"></td>
+                                    <td class="pr0">
+                                        <div class="type-file-box">
+                                            <input type="button" name="button" id="button" class="type-file-button" value="上传">
+                                            <input type="file" class="type-file-file" id="ten_file" name="ten_file" data-state="imgfile" size="30" hidefocus="true" value="">
+                                            <span class="show" ectype="pictures">
+
+                                            </span>
+                                            <input type="hidden" name="pictures[]" value="">
+                                        </div>
+                                    </td>
+                                    <td class="handle">
+                                        <a href="javascript:void(0);" class="b2b-remove" ectype="b2b-remove"><i class="iconfont icon-remove-alt"></i></a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="7" class="handle-add">
+                                        <a href="javascript:void(0);" ectype="b2b-add-goods">
+                                            <i class="iconfont icon-jia"></i>
+                                            <span>添加商品</span>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="bw-section">
+                    <div class="bw-title">
+                        <i></i>
+                        <h3>采购商联系方式</h3>
+                    </div>
+                    <div class="bw-content">
+                        <div class="items">
+                            <div class="item">
+                                <div class="label"><em class="org">*</em>姓名： </div>
+                                <div class="value">
+                                    <input type="text" class="text fl mr20" name="contact_name">
+                                    <div class="checkbox_item">
+                                        <input type="radio" class="ui-radio" name="contact_gender" value="1" id="contact_gender_1" autocomplete="off" checked="checked">
+                                        <label for="contact_gender_1" class="ui-b2b-radio-label">男士</label>
+                                    </div>
+                                    <div class="checkbox_item mr0">
+                                        <input type="radio" class="ui-radio" name="contact_gender" value="2" id="contact_gender_2" autocomplete="off">
+                                        <label for="contact_gender_2" class="ui-b2b-radio-label">女士</label>
+                                    </div>
+                                    <div class="form_prompt"></div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label"><em class="org">*</em>联系电话： </div>
+                                <div class="value"><input type="text" class="text" name="contact_phone"><div class="form_prompt"></div></div>
+                            </div>
+                            <div class="item">
+                                <div class="label"><em class="org">*</em>电子邮箱： </div>
+                                <div class="value"><input type="text" class="text" name="contact_email"><div class="form_prompt"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bw-section">
+                    <div class="bw-title">
+                        <i></i>
+                        <h3>采购需求</h3>
+                    </div>
+                    <div class="bw-content">
+                        <div class="items">
+                            <div class="item">
+                                <div class="label"><em class="org">*</em> 求购截止日期： </div>
+                                <div class="value">
+                                    <div id="text_time1" class="text_time">
+                                        <input type="text" class="text mr0" name="end_time" id="end_time" value="" autocomplete="off" readonly>
+                                    	<div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">是否需要发票： </div>
+                                <div class="value">
+                                    <div class="checkbox_items">
+                                        <div class="checkbox_item">
+                                            <input type="radio" class="ui-radio" name="need_invoice" value="0" id="need_invoice_0" ectype="invPayee" autocomplete="off" checked="checked">
+                                            <label for="need_invoice_0" class="ui-b2b-radio-label">不需要发票</label>
+                                        </div>
+                                        <div class="checkbox_item">
+                                            <input type="radio" class="ui-radio" name="need_invoice" value="1" id="need_invoice_1" ectype="invPayee" autocomplete="off">
+                                            <label for="need_invoice_1" class="ui-b2b-radio-label">普通发票</label>
+                                        </div>
+                                        <div class="checkbox_item">
+                                            <input type="radio" class="ui-radio" name="need_invoice" value="2" id="need_invoice_2" ectype="invPayee" autocomplete="off">
+                                            <label for="need_invoice_2" class="ui-b2b-radio-label">增值税发票</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item" style="display:none;" id="inv_payee">
+                                <div class="label">发票抬头：</div>
+                                <div class="value"><input type="text" class="text" name="inv_payee" value=""></div>
+                            </div>
+                            <div class="item" style="display:none;" id="tax_id">
+                                <div class="label">纳税人识别号：</div>
+                                <div class="value"><input type="text" class="text" name="tax_id" value=""></div>
+                            </div>	
+                            <div class="item" ectype="invoiceTaxRate" style="display:none;">
+                                <div class="label">发票税率： </div>
+                                <div class="value"><input type="text" class="text" name="invoice_tax_rate"></div>
+                            </div>
+                            <div class="item">
+                                <div class="label"><em class="org">*</em>收货地区： </div>
+                                <div class="value">
+                                    <div class="form-value" ectype="regionLinkage">
+                                        <dl class="mod-select mod-select-small" ectype="smartdropdown">
+                                            <dt>
+                                                <span class="txt" ectype="txt">{$lang.please_select}{$name_of_region[0]}</span>
+                                                <input type="hidden" value="{$consignee.country}" name="country">
+                                            </dt>
+                                            <dd ectype="layer">
+                                                <!-- {foreach from=$country_list item=country} -->
+                                                <div class="option" data-value="{$country.region_id}" data-text="{$country.region_name}" ectype="ragionItem" data-type="1">{$country.region_name}</div>
+                                                <!-- {/foreach} -->
+                                            </dd>
+                                        </dl>
+                                        <dl class="mod-select mod-select-small" ectype="smartdropdown">
+                                            <dt><span class="txt" ectype="txt">{$lang.please_select}{$name_of_region[1]}</span><input type="hidden" value="{$consignee.province}" ectype="ragionItem"name="province"></dt>
+                                            <dd ectype="layer">
+                                                <div class="option" data-value="0">{$lang.please_select}{$name_of_region[1]}</div>
+                                                <!-- {foreach from=$province_list item=province} -->
+                                                <div class="option" data-value="{$province.region_id}" data-text="{$province.region_name}" data-type="2" ectype="ragionItem">{$province.region_name}</div>
+                                                <!-- {/foreach} -->
+                                            </dd>
+                                        </dl>
+                                        <dl class="mod-select mod-select-small" ectype="smartdropdown">
+                                            <dt><span class="txt" ectype="txt">{$lang.please_select}{$name_of_region[2]}</span><input type="hidden" value="{$consignee.city}" name="city" ></dt>
+                                            <dd ectype="layer">
+                                                <div class="option" data-value="0">{$lang.please_select}{$name_of_region[2]}</div>
+                                                <!-- {foreach from=$city_list item=city} -->
+                                                <div class="option" data-value="{$city.region_id}" data-type="3" data-text="{$city.region_name}" ectype="ragionItem">{$city.region_name}</div>
+                                                <!-- {/foreach} -->
+                                            </dd>
+                                        </dl>
+										<dl class="mod-select mod-select-small" ectype="smartdropdown" style="display:none;">
+											<dt>
+												<span class="txt" ectype="txt">{$please_select}{$name_of_region[3]}</span>
+												<input type="hidden" value="{$consignee.district}" name="district">
+											</dt>
+											<dd ectype="layer">
+												<div class="option" data-value="0">{$please_select}{$name_of_region[3]}</div>
+												{foreach from=$district_list item=district}
+												<div class="option" data-value="{$district.region_id}" data-type="4" data-text="{$district.region_name}" ectype="ragionItem">{$district.region_name}</div>
+												{/foreach}
+											</dd>
+										</dl>
+                                    </div>
+                                    <input type="hidden" name="validate_region" value="0">
+                                    <div class="form_prompt"></div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label"><em class="org">*</em>详细地址： </div>
+                                <div class="value"><input name="consignee_address" class="text" /><div class="form_prompt"></div></div>
+                            </div>
+                            <div class="item">
+                                <div class="label">补充说明： </div>
+                                <div class="value"><textarea name="description" class="textarea"></textarea></div>
+                            </div>
+
+                            <div class="item button-item">
+                                <div class="label">&nbsp;</div>
+                                <div class="value">
+                                    <div class="checkbox_items">
+                                        <div class="checkbox_item mr0">
+                                            <input type="checkbox" class="ui-checkbox" name="remember" id="remember" checked>
+                                            <label for="remember" class="ui-b2b-checkbox-label">我已阅读并同意{$lang.article_wholesale_rule}</label>
+                                            
+                                        </div>
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                    <input type="hidden" name="act" value="do_release" />
+                                    <input type="submit" name="" class="btn sc-orgBg-btn" value="发布采购单" id="submitBtn" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{/if}	
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+{insert_scripts files="jquery.SuperSlide.2.1.1.js,jquery.yomi.js,plupload.full.min.js,jquery.picTip.js,jquery.nyroModal.js,jquery.validation.min.js,perfect-scrollbar/perfect-scrollbar.min.js,calendar.php"}
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/region.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/dsc-common.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.purebox.js"></script>
+
+<!--{if $action eq 'info'}-->
+<script type="text/javascript">
+	$(".t-images").each(function(){
+		var len = $(this).find("li").length;
+		if(len>1){
+			$(this).slide({"mainCell":".t-images-info ul",effect:"left",trigger:"click",pnLoop:false,autoPage:true,vis:2,scroll:1});	
+			$(this).find(".prev,.next").show();
+		}else{
+			$(this).find(".prev,.next").hide();
+		}
+	});
+	
+    $(function(){
+        $(".nyroModal,.t-images-info .img").nyroModal();
+    });
+</script>
+<!--{/if}-->
+
+<!--{if $action eq 'release'}-->
+<script type="text/javascript">
+//地区切换
+$.levelLink(1);
+
+//添加商品
+var i = 1;
+var id = "";
+
+$(document).on("click","[ectype=b2b-add-goods]",function(){
+    var num = $("[ectype=purchaseTable] [ectype=goodsRow]").length;
+    if(num > 4){
+        pbDialog('您一次最多只能添加5条求购商品信息', '', 0, 500);
+    }else{
+        var row = $("[ectype=goodsRow]:first").clone();
+        var str = "";
+        row.find(".type-file-button").attr("id","button_" + (i++));
+		row.find(".text").val("");
+		row.find("input[name='pictures[]']").val("");
+        row.find("[ectype='pictures']").html("");
+        $(this).parents("tr:first").before(row);
+    }
+    initUploaders(uploaders);
+})
+
+//删除商品
+$(document).on("click", "[ectype=b2b-remove]", function(){
+    var num = $("[ectype=purchaseTable] [ectype=goodsRow]").length;
+    if(num > 1){
+        $(this).parents("tr:first").remove();
+    }else{
+        pbDialog('您至少需要填写一条求购商品信息', '', 0, 500);
+    }
+});
+
+//异步上传图片;
+var uploaders = [];
+var initUploaders = function(uploaders){
+    var browse_button_id = "";
+    $(".type-file-button").each(function(){
+		var self = $(this);
+		browse_button_id = self.attr("id");
+    });
+	
+    var uploader_pictures = new plupload.Uploader({//创建实例的构造方法
+        runtimes: 'html5,flash,silverlight,html4', //上传插件初始化选用那种方式的优先级顺序
+        browse_button:browse_button_id, // 上传按钮
+        url: "wholesale_purchase.php?is_ajax=1&act=upload_pic", //远程上传地址
+        filters: {
+            max_file_size: '2mb', //最大上传文件大小（格式100b, 10kb, 10mb, 1gb）
+            mime_types: [//允许文件上传类型
+                {title: "files", extensions: "jpg,png,gif"}
+            ]
+        },
+        multi_selection: true, //true:ctrl多文件上传, false 单文件上传
+        init: {
+            PostInit: function(){},
+            FilesAdded: function(up, files) { //文件上传前
+				var length =  $("#"+browse_button_id).siblings("[ectype=pictures]").find("a").length;
+				if(up.files.length > 5){
+					pbDialog("每个图片最多上传5张","",0);
+					//删除多上传的存在，防止下次上传值叠加
+					uploader_pictures.splice(length,(up.files.length-length));
+				}else{
+					up.start();
+				}
+            },
+            FileUploaded: function(up, file, info) { //文件上传成功的时候触发
+                var data = eval("(" + info.response + ")");
+                var html = '<a href="javascript:;" target="_blank" class="nyroModal"><i class="iconfont icon-image" onmouseover="toolTip(\'<img src='+data.path+'>\')" onmouseout="toolTip()"></i></a>';
+                $("#"+browse_button_id).siblings("[ectype=pictures]").append(html);
+                //保存临时图片id
+                var pic_ids = $("#"+browse_button_id).siblings("[name='pictures[]']").val();
+                var pic_arr = new Array();
+                if(pic_ids){
+                    pic_arr = pic_ids.split(',');
+                }
+                pic_arr.push(data.id);
+                $("#"+browse_button_id).siblings("[name='pictures[]']").val(pic_arr.join(','));
+            },
+            Error: function(up, err) { //上传出错的时候触发
+                pbDialog("文件格式不正确或图片像素大于2M","",0,"","",50);
+            }
+        }
+    });
+    uploader_pictures.init();
+    uploaders.push(uploader_pictures);
+};
+initUploaders(uploaders);
+
+
+//日期选择插件调用start
+var opts1 = {
+	'targetId':'end_time',//时间写入对象的id
+	'triggerId':['end_time'],//触发事件的对象id
+	'alignId':'text_time1',//日历对齐对象
+	'format':'-'//时间格式 默认'YYYY-MM-DD HH:MM:SS'
+}
+
+xvDate(opts1);
+//日期选择插件调用end
+
+$(function(){
+	//发票设置
+	/*$("input[name='need_invoice']").on("click",function(){
+		var val = $(this).val();
+		if(val != 0){
+			$("*[ectype='invoiceTaxRate']").show();
+		}else{
+			$("*[ectype='invoiceTaxRate']").hide();
+		}
+	});*/
+	
+	//表单验证
+	$("#submitBtn").click(function(){
+		if($("#release_form").valid()){
+			$("#release_form").submit();
+		}
+		
+		var iselect =  $("#release_form").find(".imitate_select");
+		
+		iselect.each(function(index, element) {
+            if($(this).find("input[type='hidden']").hasClass("error")){
+				$(this).addClass("error");
+			}else{
+				$(this).removeClass("error");	
+			};
+        });
+	});
+
+	$('#release_form').validate({
+		errorPlacement: function(error, element){
+			var error_div = element.parents('div.value').find('div.form_prompt');
+			element.parents('div.value').find(".notic").hide();
+			error_div.append(error);
+		},
+		ignore : "",
+		rules : {
+			subject : {
+				required : true
+			},
+			contact_name :{
+				required : true
+			},
+			contact_phone:{
+				required : true,
+				digits:true
+			},
+			contact_email : {
+				required : true,
+				email:true
+			},
+			end_time:{
+				required : true
+			},
+			validate_region : {
+				min : 1
+			},
+			consignee_address : {
+				required : true
+			},
+			'goods_name[]' : {
+				required : true
+			},
+			'goods_number[]' : {
+				required : true
+			},
+			'cat_id[]' : {
+				min : 1
+			},
+			remember : {
+				required : true
+			}
+		},
+		messages : {
+			subject : {
+				required : '请填写求购标题'
+			},
+			contact_name :{
+				required : '请填写联系人'
+			},
+			contact_phone : {
+				required : '请填写联系电话',
+				digits: '请正确填写联系电话'
+			},
+			contact_email : {
+				required : '请填写电子邮箱',
+				email : '请输入正确的邮箱格式'
+			},
+			end_time:{
+				required : '请选择求购结束时间'
+			},
+			validate_region : {
+				min : '请选择地区'
+			},
+			consignee_address : {
+				required : '请填写详细地址'
+			},
+			'goods_name[]' : {
+				required : '采购商品名称不能为空'
+			},
+			'goods_number[]' : {
+				required : '采购数量不能为空'
+			},
+			'cat_id[]' : {
+				min : '请选择采购商品分类'
+			},
+			remember : {
+				required : '请确认是否同意采购单发布规则'
+			}
+		}
+	});
+});
+</script>
+<!--{/if}-->
+</body>
+</html>

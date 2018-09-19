@@ -1,0 +1,519 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.19_self_support} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.seller_shopinfo.0}</li>
+                    <li>{$lang.operation_prompt_content.seller_shopinfo.1}</li>
+                    <li>{$lang.operation_prompt_content_common}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+                        <form action="index.php?act=merchants_second" method="post" name="theForm" enctype="multipart/form-data" id="merchants_second">
+                            <div class="switch_info">
+                                <div class="item">
+                                    <div class="label">{if $priv_ru}{$lang.steps_shop_name}{else}{$lang.company_name}{/if}：</div>
+                                    <div class="label_value">
+										<input type="text" name="shop_name" value="{$shop_info.shop_name}" size="40" class="text" autocomplete="off" />
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+								{if !$priv_ru}
+                                <div class="item">
+                                    <div class="label">{$lang.settled_shop_name}：</div>
+                                    <div class="label_value">
+										<input type="text" name="brand_shop_name" value="{$shop_information.shop_name}" disabled="disabled" size="40" class="text" autocomplete="off" />
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.expect_shop_name}：</div>
+                                    <div class="label_value">
+										<input type="text" name="ec_rz_shopName" value="{$shop_information.rz_shopName}" disabled="disabled" size="40" class="text" autocomplete="off" />
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.display_shop_name}：</div>
+                                    <div class="label_value">
+										<label class="mr10"><input type="radio" name="check_sellername" value="0" class="checkbox" {if $shop_info.check_sellername eq 0}checked="checked"{/if} />{$lang.settled_brand_shop_name}</label>
+										<label class="mr10"><input type="radio" name="check_sellername" value="1" class="checkbox" {if $shop_info.check_sellername eq 1}checked="checked"{/if} />{$lang.expect_shop_name}</label>
+										<label><input type="radio" name="check_sellername" value="2" class="checkbox" {if $shop_info.check_sellername eq 2}checked="checked"{/if} />{$lang.company_name}</label>
+										{if $shop_info.shopname_audit eq 1}
+											&nbsp;&nbsp;<font class="red">{$lang.already_examine}</font>
+										{else}
+											&nbsp;&nbsp;<font class="org">{$lang.stay_examine}</font>
+										{/if}
+                                    </div>
+                                </div>								
+								{/if}
+                                <div class="item">
+                                    <div class="label">{$lang.shop_title}：</div>
+                                    <div class="label_value">
+										<input type="text" name="shop_title" value="{$shop_info.shop_title}" class="text" autocomplete="off" />
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.shop_keyword}：</div>
+                                    <div class="label_value">
+										<input type="text" name="shop_keyword" value="{$shop_info.shop_keyword}" class="text" autocomplete="off" />
+                                    </div>
+                                </div>								
+                                <div class="item">
+                                    <div class="label">{$lang.lab_seller_site}：</div>
+                                    <div class="label_value">
+										<input type="text" size="40" value="{$shop_info.domain_name}" name="domain_name" class="text" autocomplete="off" />
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.shop_country}：</div>
+                                    <div class="label_value">
+										<div id="dlcountry" class="ui-dropdown smartdropdown alien">
+                                            <input type="hidden" value="{$shop_info.country}" name="shop_country" id="selcountry">
+                                            <div class="txt">{$lang.ship_country}</div>
+                                            <i class="down u-dropdown-icon"></i>
+                                            <div class="options clearfix" style="max-height:300px;">
+                                                {foreach from=$countries item=list}
+                                                <span class="liv" data-text="{$list.region_name}" data-type="1"  data-value="{$list.region_id}">{$list.region_name}</span>
+                                                {/foreach}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.shop_province}：</div>
+                                    <div class="label_value">
+                                        <div id="dlProvinces" class="ui-dropdown smartdropdown alien">
+                                            <input type="hidden" value="{$shop_info.province}" name="shop_province" id="selProvinces">
+                                            <div class="txt">{$lang.province_alt}</div>
+                                            <i class="down u-dropdown-icon"></i>
+                                            <div class="options clearfix" style="max-height:300px;">
+                                                {foreach from=$provinces item=list}
+                                                <span class="liv" data-text="{$list.region_name}" data-type="2"  data-value="{$list.region_id}">{$list.region_name}</span>
+                                                {/foreach}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.shop_city}：</div>
+                                    <div class="label_value">
+                                        <div id="dlCity" class="ui-dropdown smartdropdown alien">
+                                            <input type="hidden" value="{$shop_info.city}" name="shop_city" id="selCities">
+                                            <div class="txt">{$lang.city}</div>
+                                            <i class="down u-dropdown-icon"></i>
+                                            <div class="options clearfix" style="max-height:300px;">
+                                                {foreach from=$cities item=list}
+                                                <span class="liv" data-text="{$list.region_name}" data-type="3"  data-value="{$list.region_id}">{$list.region_name}</span>
+                                                {/foreach}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.local_area}：</div>
+                                    <div class="label_value">
+                                        <div id="dlRegion" class="ui-dropdown smartdropdown alien">
+                                            <input type="hidden" value="{$shop_info.district}" name="shop_district" id="selDistricts">
+                                            <div class="txt">{$lang.area_alt}</div>
+                                            <i class="down u-dropdown-icon"></i>
+                                            <div class="options clearfix" style="max-height:300px;">
+                                                {foreach from=$districts item=list}
+                                                <span class="liv" data-text="{$list.region_name}" data-type="4"  data-value="{$list.region_id}">{$list.region_name}</span>
+                                                {/foreach}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>	
+                                <div class="item">
+                                    <div class="label">{$lang.shop_address}：</div>
+                                    <div class="label_value">
+										<input type="text" name="shop_address" value="{$shop_info.shop_address}" class="text" autocomplete="off" />
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.03_shipping_list}：</div>
+                                    <div class="label_value">
+										<div id="shipping_id_div" class="imitate_select select_w320">
+											<div class="cite">{$lang.please_select}</div>
+											<ul>
+												<li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.please_select}</a></li>
+												{foreach from=$shipping_list item=list}
+												{if $ru_id == 0 || ($ru_id > 0 && $list.shipping_code != 'cac')}
+												<li><a href="javascript:;" data-value="{$list.shipping_id}" class="ftx-01">{$list.shipping_name}</a></li>
+												{/if}
+												{/foreach}												
+											</ul>
+											<input name="shipping_id" type="hidden" value="{$shop_info.shipping_id}" id="shipping_id">
+										</div>
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.customer_service_mobile}：</div>
+                                    <div class="label_value">
+										<input type="text" size="40" value="{$shop_info.mobile}" name="mobile" class="text" autocomplete="off" />
+                                    	<div class="notic">{$lang.mobile_prompt}</div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.customer_service_address}：</div>
+                                    <div class="label_value">
+										<input type="text" size="40" value="{$shop_info.seller_email}" name="seller_email" class="text" autocomplete="off" />
+                                    	<div class="notic">{$lang.seller_email_prompt}</div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.customer_service_qq}：</div>
+                                    <div class="label_value">
+										<textarea name='kf_qq' value="{$shop_info.kf_qq}" rows="6" cols="48" class="textarea">{$shop_info.kf_qq}</textarea>
+										<div class="notic">{$lang.kf_qq_prompt}</div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.customer_service_taobao}：</div>
+                                    <div class="label_value">
+										<textarea name='kf_ww' value="{$shop_info.kf_ww}" rows="6" cols="48" class="textarea">{$shop_info.kf_ww}</textarea>
+										<div class="notic">{$lang.kf_ww_prompt}</div>
+                                    </div>
+                                </div>
+								<!-- 平台 IM start -->
+								{if $shop_information.is_IM eq 1 || $shop_information.is_dsc}
+								{if $shop_information.is_dsc}
+                                <div class="item">
+                                    <div class="label">{$lang.is_kf_im_switch}：</div>
+                                    <div class="label_value">
+                                    	<div class="checkbox_items">
+                                            <div class="checkbox_item">
+                                                <input type="radio" name="kf_im_switch" value="1" class="ui-radio" id="kf_im_switch1" {if $shop_info.kf_im_switch eq 1} checked="checked" {/if}>
+                                                <label class="ui-radio-label" for="kf_im_switch1">{$lang.open}</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                                <input type="radio" name="kf_im_switch" value="0" class="ui-radio" id="kf_im_switch0" {if $shop_info.kf_im_switch eq 0} checked="checked" {/if}>
+                                                <label class="ui-radio-label" for="kf_im_switch0">{$lang.close}</label>
+                                            </div>
+                                            <div class="fn_notic">{$lang.is_kf_im_switch_prompt}</div>
+                                        </div>
+                                    </div>
+                                </div>
+								{/if}
+                                <div class="item">
+                                    <div class="label">{$lang.kf_touid}：</div>
+                                    <div class="label_value">
+										<input type="text" size="40" value="{$shop_info.kf_touid}" name="kf_touid" class="text text_1" autocomplete="off" />
+										<div class="notic">{$lang.kf_touid_prompt}</div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.kf_appkey}：</div>
+                                    <div class="label_value">
+										<input type="text" size="40" value="{$shop_info.kf_appkey}" name="kf_appkey" class="text text_1" autocomplete="off" />
+										<div class="notic">{$lang.kf_secretkey_prompt}</div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.kf_secretkey}：</div>
+                                    <div class="label_value">
+										<input type="text" size="40" value="{$shop_info.kf_secretkey}" name="kf_secretkey" class="text text_1" autocomplete="off" />
+										<div class="notic">{$lang.kf_appkey_prompt}</div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.kf_logo}：</div>
+                                    <div class="label_value">
+										<input type="text" size="40" value="{$shop_info.kf_logo}" name="kf_logo" class="text text_1" autocomplete="off" />
+										<div class="notic">{$lang.kf_logo_prompt}</div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.kf_welcomeMsg}：</div>
+                                    <div class="label_value">
+										<input type="text" size="40" value="{$shop_info.kf_welcomeMsg}" name="kf_welcomeMsg" class="text text_1" autocomplete="off" />
+										<div class="notic">{$lang.kf_welcomeMsg_prompt}</div>
+                                    </div>
+                                </div>								
+								{/if}
+								<!-- 平台 IM end -->
+								<!-- 美洽客服 start -->
+                                <div class="item">
+                                    <div class="label">{$lang.meiqia}：</div>
+                                    <div class="label_value">
+										<input type="text" size="40" value="{$shop_info.meiqia}" name="meiqia" class="text" autocomplete="off" />
+										<div class="notic">{$lang.meiqia_prompt}</div>
+                                    </div>
+                                </div>
+								<!-- 美洽客服 end -->
+                                <div class="item">
+                                    <div class="label">{$lang.customer_service_tel}：</div>
+                                    <div class="label_value">
+										<input type="text" size="40" value="{$shop_info.kf_tel}" name="kf_tel" class="text" autocomplete="off" />
+                                    	<div class="notic">{$lang.kf_tel_prompt}</div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.customer_service_css}：</div>
+                                    <div class="label_value">
+                                        <div class="checkbox_items">
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="kf_type" id="kf_type_0" value="0" {if $shop_info.kf_type eq 0} checked="true" {/if}  />
+                                                <label for="kf_type_0" class="ui-radio-label">{$lang.QQ_kf}</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="kf_type" id="kf_type_1" value="1" {if $shop_info.kf_type eq 1} checked="true" {/if}  />
+                                                <label for="kf_type_1" class="ui-radio-label">{$lang.wangwang_kf}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+								{if $ru_id}
+                                <div class="item">
+                                    <div class="label">{$lang.seller_logo}：</div>
+                                    <div class="label_value">
+										<input type="file" name="shop_logo" class="file mt5 mb5"/><label class="blue_label">{$lang.shop_logo_prompt}</label><br />
+										{if $shop_info.shop_logo}
+										<div class="seller_img"><img src="{$shop_info.shop_logo}" width="150" /></div>
+										{/if}
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.logo_sbt}：</div>
+                                    <div class="label_value">
+										<input type="file" name="logo_thumb" class="file mt5 mb5"/><label class="blue_label">{$lang.logo_thumb_prompt}</label><br />
+										{if $shop_info.logo_thumb}
+										<div class="seller_img"><img src="{$shop_info.logo_thumb}" width="80" height="80" /></div>
+										{/if}
+                                    </div>
+                                </div>
+								<div class="item">
+                                    <div class="label">{$lang.shop_street_sbt}：</div>
+                                    <div class="label_value">
+										<input type="file" name="street_thumb" class="file mt5 mb5"/><label class="blue_label">{$lang.street_thumb_prompt}</label><br />
+										{if $shop_info.street_thumb}
+										<div class="seller_img"><img src="../{$shop_info.street_thumb}" width="128" height="62" /></div>
+										{/if}
+                                    </div>
+                                </div>
+								<div class="item">
+                                    <div class="label">{$lang.shop_street_brand_sbt}：</div>
+                                    <div class="label_value">
+										<input type="file" name="brand_thumb" class="file mt5 mb5"/><label class="blue_label">{$lang.brand_thumb_prompt}</label><br />
+										{if $shop_info.brand_thumb}
+										<div class="seller_img"><img src="../{$shop_info.brand_thumb}" width="180" height="60" /></div>
+										{/if}
+                                    </div>
+                                </div>
+								<div class="item">
+                                    <div class="label">{$lang.qrcode_thumb}: </div>
+                                    <div class="label_value">
+										<input type="file" name="qrcode_thumb"/><label class="blue_label">{$lang.qrcode_thumb_prompt}</label><br />
+										{if $shop_info.qrcode_thumb}
+										<img src="{$shop_info.qrcode_thumb}" width="80" height="80" /> 
+										{/if}
+                                    </div>
+                                </div>
+								<div class="item">
+                                    <div class="label">{$lang.shop_street_desc}：</div>
+                                    <div class="label_value">
+										<textarea name="street_desc" class="textarea">{$shop_info.street_desc}</textarea>
+                                    </div>
+                                </div>
+								{/if}
+                                <div class="item">
+                                    <div class="label">{$lang.js_appkey}：</div>
+                                    <div class="label_value">
+										<input type="text" size="40" value="{$shop_info.js_appkey}" name="js_appkey" class="text text_1" autocomplete="off" id="code_appkey" />
+										<div class="notic">{$lang.js_appkey_prompt}</div>
+                                    </div>
+                                </div>	
+                                <div class="item">
+                                    <div class="label">{$lang.js_appsecret}：</div>
+                                    <div class="label_value">
+										<input type="text" size="40" value="{$shop_info.js_appsecret}" name="js_appsecret" class="text text_1" autocomplete="off" />
+                                    </div>
+                                </div>	
+								<!--快递鸟设置 start-->
+                                <div class="item">
+                                    <div class="label">{$lang.print_type}：</div>
+                                    <div class="label_value">
+                                        <div class="checkbox_items">
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="print_type" id="print_type_0" value="0" {if $shop_info.print_type eq 0} checked="true" {/if}  />
+                                                <label for="print_type_0" class="ui-radio-label">{$lang.print_type_0}</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="print_type" id="print_type_1" value="1" {if $shop_info.print_type eq 1} checked="true" {/if}  />
+                                                <label for="print_type_1" class="ui-radio-label">{$lang.print_type_1}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.kdniao_printer}：</div>
+                                    <div class="label_value">
+										<input type="text" size="40" value="{$shop_info.kdniao_printer}" name="kdniao_printer" class="text text_1" autocomplete="off" />
+										<div class="notic">{$lang.kdniao_printer_prompt}</div>
+                                    </div>
+                                </div>								
+								<!--快递鸟设置 end-->								
+                                <div class="item">
+                                    <div class="label">{$lang.shop_notice}：</div>
+                                    <div class="label_value">
+										<textarea name="notice" class="textarea">{$shop_info.notice}</textarea>
+                                    </div>
+                                </div>							
+                                <div class="item">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="label_value info_btn">
+										<input type="hidden" name="data_op" value="{$data_op}"/>
+										<input type="submit" value="{$lang.subimt_info}" class="button" id="submitBtn" />
+                                    </div>
+                                </div>								
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+    </div>
+ 	{include file ='library/pagefooter.lbi'}
+	{insert_scripts files="../js/region.js"}
+	<script type="text/javascript" src="js/region.js"></script>
+	<script type="Text/Javascript" language="JavaScript">
+	$(function(){
+		$.levelLink();
+		
+		//表单验证
+		$("#submitBtn").click(function(){
+			if($("#merchants_second").valid()){
+				$("#merchants_second").submit();
+			}
+		});
+		
+		$('#merchants_second').validate({
+			errorPlacement:function(error, element){
+				var error_div = element.parents('div.label_value').find('div.form_prompt');
+				element.parents('div.label_value').find(".notic").hide();
+				error_div.append(error);
+			},
+			rules:{
+				shop_name:{
+					required : true
+				},
+				shipping_id :{
+					min : 1
+				}
+			},
+			messages:{
+				shop_name : {
+					required : '<i class="icon icon-exclamation-sign"></i>'+shop_name_not_null
+				},
+				shipping_id:{
+					 min : '<i class="icon icon-exclamation-sign"></i>'+select_shipping
+				}
+			}			
+		});
+	});
+	
+	<!--
+	{literal}
+	region.isAdmin = true;
+
+	onload = function()
+	{
+		if(document.getElementById('paynon')){
+			document.getElementById('paynon').style.display = 'none';
+		}
+	}
+
+	function show_shipping_area()
+	{
+	  Ajax.call('shipping.php?act=shipping_priv', '', shippingResponse, 'GET', 'JSON');
+	}
+
+	function shippingResponse(result)
+	{
+	  var shipping_name = document.getElementById('shipping_type');
+	  if (result.error == '1' && result.message != '')
+	  {
+		alert(result.message);
+		shipping_name.options[0].selected = true;
+		return;
+	  }
+	  
+	  var area = document.getElementById('shipping_area');
+	  if(shipping_name.value == '')
+	  {
+		area.style.display = 'none';
+	  }
+	  else
+	  {
+		area.style.display = "block";
+	  }
+	}
+
+	function loadConfig()
+	{
+	  var payment = document.forms['theForm'].elements['payment'];
+	  var paymentConfig = document.getElementById('paymentConfig');
+	  if(payment.value == '')
+	  {
+		paymentConfig.style.display = 'none';
+		return;
+	  }
+	  else
+	  {
+		paymentConfig.style.display = 'block';
+	  }
+	  if(document.getElementById('paynon')){
+		  if(payment.value == 'alipay')
+		 {
+		  document.getElementById('paynon').style.display = 'block';
+		}
+		else
+		{
+		  document.getElementById('paynon').style.display = 'none';
+		}
+	  }
+		
+	  var params = 'code=' + payment.value;
+
+	  Ajax.call('payment.php?is_ajax=1&act=get_config', params, showConfig, 'GET', 'JSON');
+	}
+
+	{if $is_false && $priv_ru}
+	Ajax.call('users.php?is_ajax=1&act=main_user','', start_user, 'GET', 'TEXT','FLASE');
+	function start_user(){
+		//
+	}
+	{/if}
+	function showConfig(result)
+	{
+	  var payment = document.forms['theForm'].elements['payment'];
+	  if (result.error == '1' && result.message != '')
+	  {
+		alert(result.message);
+		payment.options[0].selected = true;
+		return;
+	  }
+	  var paymentConfig = document.getElementById('paymentConfig');
+	  var config = result.content;
+
+	  paymentConfig.innerHTML = config;
+	}
+	{if $goods_false && $priv_ru}
+	Ajax.call('goods.php?is_ajax=1&act=main_dsc','', start_dsc, 'GET', 'TEXT','FLASE');
+	function start_dsc(){
+		//
+	}
+	{/if}
+	{/literal}
+	//-->
+	</script>
+</body>
+</html>

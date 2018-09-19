@@ -1,0 +1,97 @@
+<div class="tbar-panel-main">
+    <div class="ibar_plugin_content">
+    	<div class="coupon-wrap">
+            <div class="coupon-type sku_conpon_title">{$lang.voucher_tobe_received}{$aaa}</div>
+            {foreach from=$kelingqu_coupons item=vo}
+            <div class="coupon-item sku_coupon_item" id="sc_1">
+                <div class="item-wrap">
+                    <div class="coupon-price">
+                        <span class="token">￥</span>{$vo.cou_money}
+                    </div>
+                    <div class="coupon-info"><span class="tit" title="{$vo.cou_title}">{$vo.cou_title}</span><span class="condition">{$lang.man}{$vo.cou_man}{$lang.available_full}</span></div>
+                    <a class="btn-get q-btn get-coupon" href="javascript:;" cou_id="{$vo.cou_id}">{$lang.receive_now}</a>
+                    <p class="coupon-time">{$lang.valid_time}{$vo.cou_start_time}{$lang.zhi}{$vo.cou_end_time}</p>
+                </div>
+            </div>
+            {/foreach}
+
+            <div class="coupon-type user_conpon_title">{$lang.Received_couponsa}</div>
+            {foreach from=$user_coupons item=vo}
+            <div class="coupon-item uc">
+                <div class="item-wrap">
+                    <div class="coupon-price"><span class="token">￥</span>{$vo.cou_money}</div>
+                    <div class="coupon-info"><span class="tit" title="{$vo.cou_title}">{$vo.cou_title}</span><span class="condition">{$lang.man}{$vo.cou_man}{$lang.available_full}</span></div>
+                    {if $vo.keyong eq 1}
+                    <a class="btn-get usable" href="javascript:;">{$lang.Current_commodity_available}</a>
+                    {/if}
+                    <p class="coupon-time">{$vo.cou_start_time}{$lang.zhi}{$vo.cou_end_time}</p>
+                </div>
+            </div>
+            {/foreach}
+            <a href="user.php?act=coupons" class="follow-bottom-more">{$lang.see_more}&gt;&gt;</a>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript" src="themes/ecmoban_dsc/js/jquery.purebox.js"></script>
+<script>
+	var winHeight =$(window).height();
+	$(".tbar-panel-content").css({"height":winHeight-128});
+	$(".tbar-panel-main").css({"height":winHeight-38});
+	$(window).resize(function(){
+		winHeight = $(this).height();
+		$(".tbar-panel-main").css({"height":winHeight-38});
+		$(".tbar-panel-content").css({"height":winHeight-128});
+	});
+
+    //优惠券领取 bylu
+    $(".get-coupon").click(function(){
+        if({$smarty.session.user_id} == 0){
+            var back_url = "coupons.php?act=coupons_index";
+			$.notLogin("get_ajax_content.php?act=get_login_dialog",back_url);
+			return false;
+        }else{
+            var cou_id = $(this).attr('cou_id');
+            $.post('coupons.php?act=coupons_receive',{'cou_id':cou_id},function(data){
+                if(data.status=='ok'){
+                    $(".item-fore h3").html(data.msg);
+                    $(".success-icon").removeClass("i-icon").addClass("m-icon");
+                    var content =$("#pd_coupons").html();
+
+                    pb({
+                        id:"coupons_dialog",
+                        title:json_languages.receive_coupons,
+                        width:550,
+                        height:140,
+                        ok_title:json_languages.Immediate_use, 	//按钮名称
+                        cl_title:json_languages.no_enabled, 	//按钮名称
+                        content:content, 	//调取内容
+                        drag:false,
+                        foot:true,
+                        onOk:function(){
+                            location.href="search.php?cou_id="+cou_id
+                        }
+                    });
+
+                    $(".pb-ok").addClass("color_df3134");
+                }else{
+                    $(".success-icon").removeClass("m-icon").addClass("i-icon");
+                    $(".item-fore h3").addClass("red");
+                    $(".item-fore h3").html(data.msg);
+                    var content =$("#pd_coupons").html();
+
+                    pb({
+                        id:"coupons_dialog",
+                        title:json_languages.receive_coupons,
+                        width:550,
+                        height:140,
+                        ok_title:json_languages.no_enabled, 	//按钮名称
+                        content:content, 	//调取内容
+                        cl_cBtn:false
+                    });
+                }
+            },'json');
+        }
+    });
+</script>

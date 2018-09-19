@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<!-- #BeginLibraryItem "/library/js_languages_new.lbi" --><!-- #EndLibraryItem -->
+</head>
+
+<body class='{if $cate_info.top_style_tpl eq 1}catetop-cloth{elseif $cate_info.top_style_tpl eq 2}catetop-jiadian{elseif $cate_info.top_style_tpl eq 3}catetop-food{else}catetop-default{/if}'>
+	<!-- #BeginLibraryItem "/library/page_header_category_top.lbi" --><!-- #EndLibraryItem -->
+	<!--{if $cate_info.top_style_tpl eq 1}-->
+	<!-- #BeginLibraryItem "/library/top_style_tpl_1.lbi" --><!-- #EndLibraryItem -->
+	<!--{elseif $cate_info.top_style_tpl eq 2}-->
+	<!-- #BeginLibraryItem "/library/top_style_tpl_2.lbi" --><!-- #EndLibraryItem -->
+	<!--{elseif $cate_info.top_style_tpl eq 3}-->
+	<!-- #BeginLibraryItem "/library/top_style_tpl_3.lbi" --><!-- #EndLibraryItem -->
+	<!--{else}-->
+	<!-- #BeginLibraryItem "/library/top_style_tpl_0.lbi" --><!-- #EndLibraryItem -->
+	<!--{/if}-->
+    {* DSC 提醒您：动态载入user_menu_position.lbi，显示首页分类小广告 *}{insert name='user_menu_position'}
+
+    <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+    
+    {insert_scripts files='jquery.SuperSlide.2.1.1.js,jquery.yomi.js,cart_common.js,parabola.js,cart_quick_links.js'}
+	<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/dsc-common.js"></script>
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/asyLoadfloor.js"></script>
+	<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.purebox.js"></script>
+    
+    <script type="text/javascript">
+	$(function(){
+		//顶级分类页模板id
+		//tpl==0 默认模板、tpl==1 女装模板、tpl==2 家电模板、tpl==3 食品模板
+		var tpl = $("input[name='tpl']").val();
+		var length = $(".catetop-banner .bd").find("li").length;
+		//轮播图
+		if(length>1){
+			if(tpl == 1){
+				$(".catetop-banner").slide({titCell:".cloth-hd ul",mainCell:".bd ul",effect:"fold",interTime:3500,delayTime:500,autoPlay:true,autoPage:true,trigger:"mouseover"});
+			}else if(tpl == 3){
+				$(".catetop-banner").slide({titCell:".food-hd ul",mainCell:".bd ul",effect:"fold",interTime:3500,delayTime:500,autoPlay:true,autoPage:true,trigger:"mouseover"});
+			}else{
+				$(".catetop-banner").slide({titCell:".hd ul",mainCell:".bd ul",effect:"fold",interTime:3500,delayTime:500,autoPlay:true,autoPage:true,trigger:"mouseover"});
+			}
+		}else{
+			$(".catetop-banner .hd").hide();
+		}
+		
+		if(tpl == 1){
+			//女装模板 精品大牌
+			var length2 = $(".selectbrand-slide .bd").find("li").length;
+			if(length2>5){
+				$(".selectbrand-slide").slide({mainCell:".bd ul",titCell:".hd ul",effect:"left",pnLoop: false,vis: 5,scroll: 5,autoPage:"<li></li>"});
+				$(".selectbrand-slide .prev,.selectbrand-slide .next").show();
+			}else{
+				$(".selectbrand-slide .prev,.selectbrand-slide .next").hide();
+			}
+		}else if(tpl == 2){
+			$(".hotrecommend").slide({hd:".hr-slide-hd ul",effect:"fold"});
+		}else if(tpl == 0){
+			$(".toprank").slide({effect:"fold",titCell:".hd ul li"});
+			$(".catetop-brand .brand-slide").slide({mainCell: '.bs-bd ul',effect: 'left',vis: 10,scroll: 10,autoPage: true});
+			$.catetopLift();
+			
+			if($("input[name='history']").val() == 0){
+				$(".lift-history").hide();
+			}else{
+				$(".lift-history").show();
+			}
+		}
+		
+		//随手购
+		if($(".atwillgo-slide .bd").find("li").length > 6){
+			$(".atwillgo-slide").slide({mainCell:".bd ul",titCell:".hd ul",effect:"left",pnLoop:false,vis: 6,scroll: 6,autoPage:"<li></li>"});
+		}else{
+			$(".atwillgo-slide").find(".prev,.next").hide();
+		}
+		
+		//楼层异步加载封装函数调用
+		if(tpl != 0){
+			$.catTopLoad(tpl);
+		}
+	});
+    </script>
+</body>
+</html>

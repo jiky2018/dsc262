@@ -1,0 +1,351 @@
+<!DOCTYPE html PUBLIC "-
+<html xmlns="http:
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<form action="order.php?act=operate" method="post" name="theForm">
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+				{include file ='library/url_here.lbi'}
+            	<div class="ecsc-order-show">
+                    <div class="order-step-info">
+                    	<div class="step-title"><i class="dian"></i><h3>{$lang.order_info}</h3></div>
+                        <ul class="order-info-list">
+                        	<li>
+                            	<dl>
+                                    <dt>{$lang.label_buyer}</dt>
+                                    <dd>
+                                        <span class="txt">{$order.user_name|default:$lang.anonymous}</span>
+                                    </dd>
+                                </dl>
+                                <dl>
+                                	<dt>{$lang.label_order_sn}</dt>
+                                    <dd>
+                                    	<span class="txt">{$order.order_sn}</span>
+                                        <span class="handle">{if $order.extension_code eq "group_buy"}<a href="group_buy.php?act=edit&id={$order.extension_id}">{$lang.group_buy}</a>{elseif $order.extension_code eq "exchange_goods"}<a href="exchange_goods.php?act=edit&id={$order.extension_id}">{$lang.exchange_goods}</a>{/if}<a href="order.php?act=info&order_id={$order.order_id}&print=1" target="_blank"><i class="icon icon-print"></i></a></span>
+                                	</dd>
+                                </dl>
+                            </li>
+                        	<li>
+                            	<dl>
+                                    <dt>{$lang.label_consignee}</dt>
+                                    <dd>
+                                        <span class="txt">{$order.consignee|default:$lang.anonymous}</span>
+                                        <!--{if $order.user_id > 0}<span class="handle"><a href="user_msg.php?act=add&order_id={$order.order_id}&user_id={$order.user_id}"><i class="icon icon-edit"></i></a></span>{/if}-->
+                                    </dd>
+                                </dl>
+                                <dl>
+                                	<dt>{$lang.label_order_time}</dt>
+                                    <dd><span class="txt">{$order.formated_add_time}</span></dd>
+                                </dl>	
+                            </li>
+                            <li>
+                            	<dl>
+                                    <dt>{$lang.label_address}</dt>
+                                    <dd>
+                                    	<span class="txt">{$order.address|escape}</span>
+                                    </dd>
+                                </dl>
+							
+                                	{if $order.shipping_id>0 and $order.shipping_status>0}
+                                <dl>
+                                    <dt>{$lang.label_invoice_no}</dt>
+                                    <dd>
+                                    <span id="invoice_no">{if $order.invoice_no}{$order.invoice_no}{else}<span class="grey">{$lang.not_filled}</span>{/if}</span>
+                                    <span class="handle">{if !$order.child_order}<a href="order.php?act=edit&order_id={$order.order_id}&step=shipping"><i class="icon icon-edit"></i></a>{/if}</span>
+                                    </dd>
+                                </dl>
+                                {else}
+                                <dl>
+                                	<dt>手机号码：</dt>
+                                    <dd>{$order.mobile}</dd>
+                                </dl>
+                                {/if}						
+                            </li>
+                            <li>
+                            	<dl>
+                                	<dt>支付方式：</dt>
+                                	<dd>
+                                    	<span class="txt">{$order.pay_name}</span>
+                                    </dd>
+                                </dl>	
+                                <dl>
+                                    <dt>支付状态：</dt>
+                                    <dd><span class="txt">{if $order.pay_status eq 0}未支付{if $order.pay_code eq 'bank' || $order.pay_code eq 'cod'}<a href="#" ectype="pay" class="sc-btn sc-redBg-btn ml10" data-order="{$order.order_id}">支付</a>{/if}{else}已支付{/if}</span></dd>
+                                </dl>					
+                            </li>
+                            <li>
+                                <dl>
+                                    <dt>订单备注：</dt>
+                                    <dd><span class="txt">{$order.postscript|escape}</span></dd>
+                                </dl>
+                                <dl>
+                                	<dt>&nbsp;</dt>
+                                	<dd>
+                                    	<span class="txt">&nbsp;</span>
+                                    </dd>
+                                </dl>
+                            </li>
+                            <li>
+                                <dl>
+                                    <dt>发票类型：</dt>
+                                    <dd><span class="txt">{$lang.need_invoice.$order.inv_type}</span></dd>
+                                </dl>							
+								{if $order.inv_type}
+                            	<dl>
+                                	<dt>{$lang.label_inv_payee}</dt>
+                                	<dd><span class="txt">{$order.inv_payee}</span></dd>
+                                </dl>
+								{/if}
+                                <!--<dl>
+                                    <dt>{$lang.label_inv_content}</dt>
+                                    <dd><span class="txt">{$order.inv_content}</span></dd>
+                                </dl>-->							
+                            </li>
+							<li>
+                                <dl>
+                                    <dt>税号：</dt>
+                                    <dd><span class="txt">{$order.tax_id}</span></dd>
+                                </dl>	
+								<dl></dl>
+							</li>
+                            {if $order.is_stages}
+                            <li>
+                                <dl>
+                                    <dt>{$lang.total_stage}：</dt>
+                                    <dd>{$order.stages_total}&nbsp;{lang.stage}</dd>
+                                </dl>
+                                <dl>
+                                    <dt>{$lang.by_stage}：</dt>
+                                    <dd>{$order.stages_one_price}{$lang.yuan_stage}</dd>
+                                </dl>
+                            </li>
+                            {/if}
+                        </ul>
+                    </div>
+                    <div class="order-step-info">
+                    	<div class="step-title">
+                        <i class="dian"></i>
+                        <h3>{$lang.goods_info}</h3>                        
+                        </div>
+                    	<div class="ecsc-order-content">
+                            <table class="ecsc-default-table order">
+                                <thead>
+                                <tr>
+                                    <th class="w10">&nbsp;</th>
+                                    <th colspan="2">{$lang.goods_name_brand}</th>
+                                    <th class="w100">{$lang.warehouse_name}</th>
+                                    <th class="w70">{$lang.goods_sn}</th>
+                                    <th class="w70">{$lang.product_sn}</th>
+                                    <th>{$lang.goods_price}</th>
+                                    <th>{$lang.goods_number}</th>
+                                    <th>{$lang.goods_attr}</th>
+                                    <th>{$lang.storage}</th>
+                                    <th class="bdr">{$lang.subtotal}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {foreach from=$goods_list item=goods}
+                                <tr class="bd-line">
+                                    <td class="bdl">&nbsp;</td>
+                                    <td class="w50"><div class="pic-thumb"><a target="_blank" href="../goods.php?id={$goods.goods_id}"><img src="{$goods.goods_thumb}"></a></div></td>
+                                    <td class="tl">
+                                        {if $goods.goods_id gt 0 && $goods.extension_code neq 'package_buy'}
+                                        <a href="../goods.php?id={$goods.goods_id}" target="_blank">
+                                            {$goods.goods_name}
+                                            {if $goods.brand_name}[ {$goods.brand_name} ]{/if}
+                                            {if $goods.is_gift}{if $goods.goods_price > 0}{$lang.remark_favourable}{else}{$lang.remark_gift}{/if}{/if}
+                                            {if $goods.parent_id > 0}{$lang.remark_fittings}{/if}
+                                        </a>
+                                        {elseif $goods.goods_id gt 0 && $goods.extension_code eq 'package_buy'}
+                                        <a href="javascript:void(0)" onclick="setSuitShow({$goods.goods_id})">{$goods.goods_name}<span class="red">{$lang.remark_package}</span></a>
+                                        <div id="suit_{$goods.goods_id}" style="display:none">
+                                            {foreach from=$goods.package_goods_list item=package_goods_list}
+                                              <a href="../goods.php?id={$package_goods_list.goods_id}" target="_blank">{$package_goods_list.goods_name}</a>
+                                            {/foreach}
+                                        </div>
+                                        {/if}
+                                        <span>{$lang.label_bar_code}{if $goods.bar_code}{$goods.bar_code}{else}无{/if}</span>
+                                    </td>
+                                    <td>{$goods.warehouse_name}</td>
+                                    <td>{$goods.goods_sn}</td>
+                                    <td>{$goods.product_sn}</td>
+                                    <td>{$goods.formated_goods_price}</td>
+                                    <td>{$goods.goods_number}</td>
+                                    <td align="center">{$goods.goods_attr|nl2br}</td>
+                                    <td align="center">{$goods.storage}</td>
+                                    <td class="bdr">
+                                        <div align="center">
+                                            {$goods.formated_subtotal}
+                                            {if $goods.dis_amount > 0}
+                                            <br/>
+                                            <font class="org">({$lang.ciscount}：{$goods.discount_amount})</font>
+                                            {/if}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {/foreach}
+                                </tbody>
+                            </table>
+                    	</div>
+                    </div>
+                    <div class="order-step-info">
+                    	<div class="step-title"><i class="dian"></i><h3>{$lang.fee_info}</h3></div>
+                        <div class="ecsc-order-content">
+                        	<div class="total">
+                                <div class="item">
+                                    {$lang.label_goods_amount}<strong>{$order.formated_goods_amount}</strong>
+                                    - {$lang.label_discount}<strong>{$order.formated_discount}</strong>
+                                    + {$lang.label_tax}<strong>{$order.formated_tax}</strong>
+                                    + {$lang.label_shipping_fee}<strong>{$order.formated_shipping_fee}</strong>
+                                    + {$lang.label_insure_fee}<strong>{$order.formated_insure_fee}</strong>
+                                    + {$lang.label_pay_fee}<strong>{$order.formated_pay_fee}</strong>
+                                    + {$lang.label_pack_fee}<strong>{$order.formated_pack_fee}</strong>
+                                    + {$lang.label_card_fee}<strong>{$order.formated_card_fee}</strong>
+                                </div>
+                                <div class="item"> = {$lang.label_order_amount}<strong class="em">{$order.formated_total_fee}</strong></div>
+                        		<div class="item">
+                                    - {$lang.label_money_paid}<strong>{$order.formated_money_paid}</strong>
+                                    - {$lang.label_surplus} <strong>{$order.formated_surplus}</strong>
+                                    - {$lang.label_integral} <strong>{$order.formated_integral_money}</strong>
+                                    - {$lang.label_bonus} <strong>{$order.formated_bonus}</strong>
+                                </div>
+                                <div class="item">
+                                    = {if $order.order_amount >= 0}
+                                      {$lang.label_money_dues}
+                                      <strong class="em">{$order.formated_order_amount}</strong>
+                                    {else}
+                                        {$lang.label_money_refund}
+                                        <strong>{$order.formated_money_refund}</strong>
+                                        <input name="refund" type="button" value="{$lang.refund}" onclick="location.href='order.php?act=process&func=load_refund&anonymous={if $order.user_id <= 0}1{else}0{/if}&order_id={$order.order_id}&refund_amount={$order.money_refund}'" />
+                                    {/if}
+                                    {if $order.extension_code eq "group_buy"}
+                                      <br />{$lang.notice_gb_order_amount}
+                                    {/if}
+                                </div>
+                                {if $order.is_delete}
+                                <div class="item red">{$lang.notice_delete_order}</div>
+                                {/if}
+                            </div>
+                        </div>
+                    </div>                  
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</form>
+
+<form action="order.php?act=operate" method="post" name="theForm">
+<div id="order_goods_layer" style="display:none;">
+    <div class="brank_s"></div>
+    <div class="delivery_content">
+        <div class="items">
+            <div class="item">
+                <div class="label">{$lang.label_consignee}</div>
+                <div class="value">{$order.consignee|escape}</div>
+            </div>
+            <div class="item">
+                <div class="label">{$lang.label_mobile}</div>
+                <div class="value">{if $order.mobile}{$order.mobile|escape}{else}{$lang.wu}{/if}</div>
+            </div>
+            <div class="item">
+                <div class="label">{$lang.label_address}</div>
+                <div class="value">[{$order.region}] {$order.address|escape}</div>
+            </div>
+            <div class="item">
+                <div class="label ftx-02"><em class="require-field">*</em>发货单号：</div>
+                <div class="value">
+                	<input type="text" name="invoice_no" id="invoice_no" class="text mr0" autocomplete="off" />
+                    <input type="submit" name="to_shipping" value="发货" class="btn" id="invoice_btn">
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 
+</form>
+
+{insert_scripts files="jquery.purebox.js"}
+<script>
+    $(document).on("click","[ectype='pay']",function(){
+                var order_id = $(this).data('order');
+                if(confirm("确定支付吗？")){
+                     $.jqueryAjax('wholesale_order.php', 'act=pay_order&order_id='+order_id, function(data){
+                         if(data.error == 1){
+                             alert(data.msg);
+                         }else{
+                             location.reload();
+                         }
+                    });
+                }
+            })
+  
+  function set_grab_order(order_id)
+  {
+	$.ajax({
+		type:'get',
+		url:'order.php',
+		data:'act=set_grab_order&order_id='+order_id,
+		dataType:'json',
+		success:function(data){
+			pb({
+			 id:'goods_dialog',
+			 title:'设置抢单',
+			 
+			 
+			 content:data.content,
+			 drag:false,
+			 foot:false,
+			 onOk:function(){
+				
+			 }
+		  });
+		}
+	})
+  }
+  
+  orderLevitate("one_delivery","order_goods_layer",95.5,-410);
+  
+  $(function(){
+		$(document).on("click","#invoice_btn",function(){
+			var val = $(this).prev().val();
+			if(val != ""){
+				$("#operate_form").submit();
+			}else{
+				$(this).prev().addClass("error");
+				return false;
+			}
+		});
+		
+		$("*[data-dialog='userinfo']").click(function(){
+			var content = $("#topbar").html();
+			pb({
+				id:"userInfo",
+				title:"收货人信息",
+				content:content,
+				width:450,
+				foot:false
+			});
+			$("#userInfo .topbar_info").perfectScrollbar();
+		});
+  });
+</script>
+
+{if $order.invoice_no}
+<script type="text/javascript">
+	if(document.getElementById("shipping_name")){
+		document.getElementById("retData").innerHTML="<center>正在查询物流信息，请稍后...</center>";
+		var expressid = document.getElementById("shipping_name").innerHTML;
+		var expressno = document.getElementById("invoice_no").innerHTML;
+		Ajax.call('../plugins/kuaidi100/kuaidi100_post.php?com='+ expressid+'&nu=' + expressno,'showtest=showtest', function(data){document.getElementById("retData").innerHTML=data;}, 'GET', 'TEXT');	
+	}
+</script>
+{/if}
+{include file ='library/seller_footer.lbi'}
+</script>
+</body>
+</html>

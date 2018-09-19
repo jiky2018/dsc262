@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="integrate.php?act=list" class="s-back">{$lang.back}</a>{$lang.08_members} - {$ur_here}</div>
+            <div class="content">
+            <div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.uc_import_notice}</li>
+                    <li>{$user_startid_intro}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="mian-info">
+                	<form action="integrate.php" method="post" name="theForm">
+                    <div class="switch_info" style="display:block;">
+                    	<div class="item">
+                            <div class="label">{$lang.uc_members_merge}：</div>
+                            <div class="label_value">
+                                <div class="checkbox_items">
+                                    <div class="checkbox_item" style="list-style-type:none;">
+                                        <input type="radio" class="ui-radio" name="merge" id="merge_1" value="1" checked />
+                                        <label for="merge_1" class="ui-radio-label">{$lang.uc_members_merge_way1}</label>
+                                    </div>
+                                    <div class="checkbox_item" style="list-style-type:none;">
+                                        <input type="radio" class="ui-radio" name="merge" id="merge_2" value="2" />
+                                        <label for="merge_2" class="ui-radio-label">{$lang.uc_members_merge_way2}</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    	<p id="ECS_NOTICE"></p>
+                        <div class="item">
+                            <div class="label">&nbsp;</div>
+                            <div class="label_value info_btn">
+                                <input type="button" value="{$lang.start_import}" class="button" onclick="import_start(this)">
+                            </div>
+                        </div>
+                	</div>
+                	</form>
+                </div>
+            </div>
+        </div>
+    </div>
+ 	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+	function import_start(obj)
+	{
+	  var frm = document.forms['theForm'];
+	  var merge = -1;
+	  for (var i=0; i<frm.elements['merge'].length; i++)
+	  {
+		if (frm.elements['merge'][i].checked)
+		{
+		  merge = frm.elements['merge'][i].value;
+		}
+	  }
+	  if (merge < 0)
+	  {
+		alert(no_method);
+		return;
+	  }
+
+	  var notice = document.getElementById('ECS_NOTICE');
+	  notice.innerHTML = user_importing;
+	  obj.disabled = true;
+	  Ajax.call('integrate.php?act=import_user', 'start=0&merge=' + merge, checkResponse, 'GET', 'JSON');
+	}
+
+	function checkResponse(result)
+	{
+	  if (result.error > 0)
+	  {
+		alert(result.message);
+	  }
+	  if (result.error == 0)
+	  {
+		var notice = document.getElementById('ECS_NOTICE');
+		notice.innerHTML = result.message;
+		window.setTimeout(function ()
+		{
+			location.href='integrate.php?act=complete';
+		}, 1000);
+	  }
+	}
+    </script>
+</body>
+</html>

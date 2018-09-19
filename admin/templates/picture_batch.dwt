@@ -1,0 +1,353 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.goods_alt} - {$ur_here}</div>
+        <div class="content">
+            {include file ='library/batch_tab.lbi'}
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.batch.0}</li>
+                    <li>{$lang.operation_prompt_content.batch.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+					<form action="picture_batch.php" method="post" name="theForm" onsubmit="return start()">
+                    <div class="step" ectype="filter" data-filter="goods">
+                        <div class="step_content">
+							<!--通用部分 start-->
+							<div class="goods_search_div">
+								<div class="search_select">
+									<div class="categorySelect">
+										<div class="selection">
+											<input type="text" name="category_name" id="category_name" class="text w250 valid" value="{$lang.select_cat}" autocomplete="off" readonly data-filter="cat_name" />
+											<input type="hidden" name="category_id" id="category_id" value="0" data-filter="cat_id" />
+										</div>
+										<div class="select-container" style="display:none;">
+											{include file="library/filter_category.lbi"}
+										</div>
+									</div>
+								</div>
+								<div class="search_select">
+									<div class="brandSelect">
+										<div class="selection">
+											<input type="text" name="brand_name" id="brand_name" class="text w120 valid" {$lang.select_barnd} autocomplete="off" readonly data-filter="brand_name" />
+											<input type="hidden" name="brand_id" id="brand_id" value="0" data-filter="brand_id" />
+										</div>
+										<div class="brand-select-container" style="display:none;">
+											{include file="library/filter_brand.lbi"}
+										</div>
+									</div>                            
+								</div>
+								<input type="text" name="keyword" class="text w150" value="" placeholder={$lang.input_keywords} data-filter="keyword" autocomplete="off" />
+								<a href="javascript:void(0);" class="btn btn30" ectype="search"><i class="icon icon-search"></i>{$lang.search_word}</a>
+							</div>
+							<!--通用部分 end-->
+                            <div class="move_div">
+                                <div class="move_all">
+                                    <h4>{$lang.all_goods}</h4>
+                                    <div class="move_info">
+                                        <div class="move_list">
+											{include file="library/move_left.lbi"}
+                                        </div>
+                                    </div>
+                                    <div class="move_handle">
+										<a href="javascript:void(0);" class="btn btn25 moveAll" ectype="moveAll">{$lang.check_all}</a>
+                                    	<div class="checkbox_items mt20">
+                                        	<div class="checkbox_item">
+                                            	<input type="checkbox" name="do_icon" id="do_icon" class="ui-checkbox" checked  value="1"/>
+                                                <label for="do_icon" class="ui-label">{$lang.do_icon}</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                            	<input type="checkbox" name="do_album" id="do_album" class="ui-checkbox" checked value="1"/>
+                                                <label for="do_album" class="ui-label">{$lang.do_album}</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                            	<input type="checkbox" name="process_thumb" id="process_thumb" class="ui-checkbox" checked value="1"/>
+                                                <label for="process_thumb" class="ui-label">{$lang.thumb}</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                            	<input type="checkbox" name="process_watermark" id="process_watermark" class="ui-checkbox" checked value="1"/>
+                                                <label for="process_watermark" class="ui-label">{$lang.watermark}</label>
+                                            </div>
+                                        </div>
+                                        <div class="checkbox_items">
+                                        	<div class="checkbox_item">
+                                            	<input type="radio" name="change_link" id="yes_change" class="ui-radio" value="1"/>
+                                                <label for="yes_change" class="ui-radio-label">{$lang.yes_change}</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                            	<input type="radio" name="change_link" id="no_change" class="ui-radio" checked value="0"/>
+                                                <label for="no_change" class="ui-radio-label">{$lang.no_change}</label>
+                                            </div>
+                                        </div>
+                                        <div class="checkbox_items">
+                                        	<div class="checkbox_item">
+                                            	<input type="radio" name="silent" id="silent" class="ui-radio" checked value="1"/>
+                                                <label for="silent" class="ui-radio-label">{$lang.silent}</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                            	<input type="radio" name="silent" id="no_silent" class="ui-radio" value="0"/>
+                                                <label for="no_silent" class="ui-radio-label">{$lang.no_silent}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="batch_btn">
+									<input type="submit" class="btn btn35 red_btn" value="{$lang.button_submit}" />
+                                </div>
+                            </div>							
+							<!--直接引用 start-->
+							<div class="move_buttom_div bor_top_not">
+								<div class="list-div mt20" id="listDiv">
+								  <table id="listTable" class="table_item pt0">
+									<tr>
+									  <th><div class="tDiv">{$lang.page}</div></th>
+									  <th><div class="tDiv">{$lang.total}</div></th>
+									  <th><div class="tDiv">{$lang.time}</div></th>
+									</tr>
+								  </table>
+								</div>
+								<div id="errorMsg" ></div>
+							</div>
+							<!--直接引用 end-->							
+                        </div>
+                    </div>
+					</form>
+                </div>
+            </div>
+		</div>
+	</div>
+	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+	<!--
+	{literal}
+	/**
+	* 取得商品数据并生成option
+	*/
+	function goods_list(obj, cat_level)
+	{
+		var brand_id = obj.form.elements['brand_id'].value;
+		var cat_id = obj.form.elements['cat_id'].value;
+
+		Ajax.call('picture_batch.php?is_ajax=1&get_goods=1', 'brand_id=' + brand_id + '&cat_id=' + cat_id, make_goods_option, 'GET', 'JSON');
+	}
+
+	function make_goods_option(result)
+	{
+		var len = result.length;
+		var opt = '<select name="goods_id" class="select"><option value="0">{$lang.all_goods}</option>';
+
+		for (var i = 0; i < len; ++i)
+		{
+		   opt += '<option value="' + result[i].goods_id + '">' +  result[i].goods_name + '</option>';
+		}
+		opt += '</select>';
+		document.getElementById('list').innerHTML = opt;
+	}
+
+	function add_search_goods(obj)
+	{
+		var goods_id = document.forms['theForm'].elements['goods_id'].value;
+		var goods_name = '';
+		var len = document.forms['theForm'].elements['goods_id'].options.length;
+		for (var i = 0; i < len; ++i)
+		{
+			if (document.forms['theForm'].elements['goods_id'].options[i].selected)
+			{
+				goods_name = document.forms['theForm'].elements['goods_id'].options[i].innerHTML;
+				break;
+			}
+		}
+		if (goods_id == '0' || document.getElementById('goods_' + goods_id))
+		{
+			return ;
+		}
+		var goods_div = document.createElement("div");
+		goods_div.className = 'goods_item'
+		goods_div.id = 'goods_' + goods_id;
+		goods_div.innerHTML = '<p class="goods_item_p"><span>' + goods_name + '</span><img alt="{$lang.drop}" onclick="del_search_goods(\'' + 'goods_' + goods_id + '\');" src="images/no.gif"/>'+'<input type="hidden" name="multi_goods_id[]" value="' + goods_id + '"></p>';
+		document.getElementById('goods_list').appendChild(goods_div);
+	}
+	function del_search_goods(gid)
+	{
+		var boldElm = document.getElementById(gid);
+		if (boldElm)
+		{
+			var removed =  document.getElementById(gid).parentNode.removeChild(boldElm);
+		}
+
+	}
+	var first_act = 'icon';
+	var restart = 1;
+	/**
+	 * 开始处理数据
+	 */
+	function start()
+	{
+		var thumb = document.forms['theForm'].elements['process_thumb'].checked ? 1 : 0;
+		var watermark = document.forms['theForm'].elements['process_watermark'].checked ? 1 : 0;
+		var change = document.forms['theForm'].elements['change_link'][0].checked? 1 : 0;
+		var silent = document.forms['theForm'].elements['silent'][0].checked? 1 : 0;
+		//var cat_id = document.forms['theForm'].elements['cat_id'].value;
+		//var brand_id = document.forms['theForm'].elements['brand_id'].value;
+		var cat_id = document.forms['theForm'].elements['category_id'].value;
+		var brand_id = document.forms['theForm'].elements['brand_id'].value;	
+
+		var do_album = document.forms['theForm'].elements['do_album'].checked? 1 : 0;
+		var do_icon = document.forms['theForm'].elements['do_icon'].checked? 1 : 0;
+		var goods_id = 0;
+		var multi_goods = document.forms['theForm'].elements['multi_goods_id[]'];
+		/*if (!multi_goods)
+		{
+			goods_id = document.forms['theForm'].elements['goods_id'].value;;
+		}
+		else
+		{
+			if( multi_goods.length > 0)
+			{
+				goods_id = '';
+				for(var i = 0; i < multi_goods.length; i++)
+				{
+					goods_id += (multi_goods.length != i + 1) ?( multi_goods[i].value + ',') : multi_goods[i].value;
+				}
+			}
+			else
+			{
+				goods_id = multi_goods.value
+			}
+
+		}*/
+		//将所有值插入数组传递 by wu
+		var goods_id = new Array();
+		$(".move_all .move_info ul").find("li.current").each(function(){
+			goods_id.push($(this).data("value"));
+		});
+
+		if (do_album == 0 && do_icon == 0)
+		{
+			alert('{$lang.action_notice}');
+			return false;
+		}
+
+		if (do_icon == 0)
+		{
+			first_act = 'album';
+		}
+
+		if (thumb || watermark )
+		{
+			if (restart)
+			{
+				var tbl = document.getElementById("listTable");
+				for (i = tbl.rows.length - 1; i > 0; i--)
+				{
+				  tbl.deleteRow(i);
+				}
+				restart = 0;
+			}
+			var elem = document.getElementById('errorMsg');
+			elem.style.display = 'none';
+			elem.innerHTML = '';
+			Ajax.call('picture_batch.php?is_ajax=1&start=1', 'total_' + first_act + '=1&thumb=' + thumb + '&watermark=' + watermark + '&change=' + change + '&silent=' + silent + '&do_icon=' + do_icon + '&do_album=' + do_album + '&goods_id=' + goods_id + '&brand_id=' + brand_id + '&cat_id=' + cat_id , start_response, 'GET', 'JSON');
+		}
+		else
+		{
+			alert(no_action);
+		}
+		return false;
+	}
+
+	/**
+	 * 处理反馈信息
+	 * @param: result
+	 * @return
+	 */
+	function start_response(result)
+	{
+		//没有执行错误
+		if (result.error == 0)
+		{
+		  if (result.done == 0 && first_act == 'icon' && document.forms['theForm'].elements['do_album'].checked)
+		  {
+			document.getElementById('time_1').id = first_act + 'done';
+			first_act = 'album';
+			start();
+		  }
+		  else if (result.done == 0)
+		  {
+			document.getElementById('time_1').id = first_act + 'done';
+			first_act = 'icon';
+			restart = 1;
+			/* 结束时，删除多余的最后一行 */
+			var tbl = document.getElementById("listTable"); //获取表格对象
+			tbl.deleteRow(tbl.rows.length - 1);
+		  }
+		  else
+		  {
+			var cell;
+			var tbl = document.getElementById("listTable"); //获取表格对象
+
+			if (result.done == 1)
+			{
+
+			  if (result.module_no > 0 )
+			  {
+				if (tbl.rows.length >1)
+				/* 已经换模块，删除多余的最后一行 */
+				{
+					tbl.deleteRow(tbl.rows.length - 1);
+				}
+			  }
+			  /* 产生一个标题行 */
+			  var row = tbl.insertRow(-1);
+
+			  cell = row.insertCell(0);
+			  cell.className = 'first-cell tc';
+			  cell.colSpan = '3';
+			  cell.innerHTML = result.title ;
+			}
+			else
+			{
+			  document.getElementById(result.row.pre_id).innerHTML = result.row.pre_time; //更新上一行执行时间
+			}
+
+			//创建新任务行
+			var row = tbl.insertRow(-1);
+			cell = row.insertCell(0);
+			cell.innerHTML = result.row.new_page ;
+			cell = row.insertCell(1);
+			cell.innerHTML = result.row.new_total ;
+			cell = row.insertCell(2);
+			cell.id = result.row.cur_id;
+			cell.innerHTML = result.row.new_time ;
+
+			//提交任务
+			Ajax.call('picture_batch.php?is_ajax=1', 'thumb=' + result.thumb + '&watermark=' + result.watermark + '&change=' + result.change + '&module_no=' + result.module_no + '&page=' + result.page + '&page_size=' + result.page_size + '&total=' + result.total + '&silent=' + result.silent + '&do_icon=' + result.do_icon + '&do_album=' + result.do_album + '&goods_id=' + result.goods_id + '&brand_id=' + result.brand_id + '&cat_id=' + result.cat_id  , start_response, 'GET', 'JSON');
+		  }
+
+		  if (result.silent && result.content.length > 0)
+		  {
+			var elem = document.getElementById('errorMsg');
+			elem.style.display = '';
+			elem.innerHTML += result.content;
+		  }
+
+
+		}
+
+		if (result.message.length > 0)
+		{
+		  //有信息则输出出错信息
+		  alert(result.message);
+		}
+	}
+	{/literal}
+	//-->
+	</script>    
+</body>
+</html>

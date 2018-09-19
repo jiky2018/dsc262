@@ -1,0 +1,220 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<thead class="thead">
+    <th class="th u-info first"><span>{$lang.zc_order_info}</span></th>
+    <th class="th u-seller"><span>{$lang.business}</span></th>
+    <th class="th u-total"><span>{$lang.order_total}</span></th>
+    <th class="th u-merge2"><span>{$lang.people_time}</span></th>
+    <th class="th u-status"><span>{$lang.au_bid_status}</span></th>
+    <th class="th u-operate"><span>{$lang.handle}</span></th>
+</thead>
+<tbody class="tbody">
+    {foreach from=$orders.order_list item=order}
+    <tr class="tr">
+        <td class="td u-info first">
+        	{if $order.order_over eq 1}
+        	<input name="order_id[]" value="{$order.order_id}" type="hidden">
+            {/if}
+        	<div class="order-info">
+                <div class="order-info-number clearfix">
+                    <span>{$lang.order_number}：</span>
+                    <a href="user.php?act=order_detail&order_id={$order.order_id}" class="ftx-07">{$order.order_sn}</a>
+                    {if $order.invoice_no}
+                        <span id="invoice_no_{$order.order_id}" style="display:none">{$order.invoice_no}</span>
+                        <span id="shipping_name_{$order.order_id}" style="display:none">{$order.shipping_name}</span>
+                        <div class="logistics-track">
+                            <div class="logistics-t">
+                                <i class="logistics-icon"></i>
+                            </div>
+                            <div class="logistics-c">
+                            <div class="logistics-items" id="retData_{$order.order_id}"></div>
+                        </div>
+                        </div>
+                    {/if}
+                </div>
+                {foreach from=$order.order_goods item=goods name=foo}
+                <div class="order-info-desc"{if $smarty.foreach.foo.index > 2} style="display:none;"{/if}>
+                	{if $goods.extension_code neq 'package_buy'}
+                	<div class="product-img">
+                    	<a href="{$goods.url}" target="_blank"><img src="{if $goods.goods_thumb}{$goods.goods_thumb}{else}{$order.no_picture}{/if}" width="55" height="55" /></a>
+                    </div>
+                    {/if}
+                    <div class="desc-info">
+                    	<div class="p-name">
+                        	{if $goods.goods_id gt 0 && $goods.extension_code eq 'package_buy'}
+                            {$goods.goods_name|truncate:30}
+                            <font style="color:#FF0000">（{$lang.remark_package}）</font>
+                            {else}
+                        	<a href="{$goods.url}" target="_blank" title="{$goods.goods_name}">{$goods.goods_name|truncate:30}</a>
+                            {/if} 
+                        </div>
+                    	<span>{$goods.goods_price}</span><em class="num">x{$goods.goods_number}</em>
+                        {if $order.is_stages eq 1}<font class="baitiao">白条分期</font>{/if}
+                    	{if $order.order_count > 1}<font class="zdd">子订单</font>{/if}
+                    </div>
+                </div>
+                {/foreach}
+                {if $order.order_goods_count gt 3}
+                <span class="ellipsis">......</span>
+                <a href="javascript:void(0);" class="order-prolist-more">{$lang.see_more}︾</a>
+                {/if}
+            </div>
+        </td>
+        <td class="td u-seller">
+        	<div class="u-desc u-seller-desc">
+                <div class="item"><a href="{$order.shop_url}" class="ftx-02" target="_blank">{$order.shop_name}</a></div>
+                <div class="item ecsc-service">
+                    <!--start 在线客服 bylu-->
+                    {if $order.is_IM eq 1 || $order.is_dsc}
+                    <a id="IM" onclick="openWin(this)" href="javascript:;" ru_id="{$order.ru_id}" class="seller-btn custom"><i class="btn-im"></i><span class="ftx-04">{$lang.con_cus_service}</span></a>
+                    {else}
+                    {if $order.kf_type eq 1}
+                    <a href="http://www.taobao.com/webww/ww.php?ver=3&touid={$order.kf_ww}&siteid=cntaobao&status=1&charset=utf-8" class="seller-btn custom" target="_blank"><i class="btn-im"></i><span class="ftx-04">{$lang.con_cus_service}</span></a>
+                    {else}
+                    <a href="http://wpa.qq.com/msgrd?v=3&uin={$order.kf_qq}&site=qq&menu=yes" class="seller-btn custom" target="_blank"><i class="btn-im"></i><span class="ftx-04">{$lang.con_cus_service}</span></a>
+                    {/if}
+                    {/if}
+                    <!--end 在线客服 bylu-->
+                </div>
+            </div>
+        </td>
+        <td class="td u-total"><span class="total_span ftx-08">{$order.total_fee}<br/>{$order.pay_name}</span></td>
+        <td class="td u-merge2">
+        	<div class="u-desc order-consignee">
+                <div class="item"><span>{$order.consignee}</span></div>
+                <div class="item"><span class="order-time ftx-03">{$order.order_time}</span></div>
+            </div>
+        </td>
+        <td class="td u-status">
+        	<span class="trad-state0 ftx-03" id="ss_received_{$order.order_id}">{if $order.order_over neq 1}{$order.order_status}{/if}</span>
+        </td>
+        <td class="td u-operate">
+            <div class="u-desc u-operate-desc" id="ss_msg_{$order.order_id}">
+                <div class="item">
+                {if $order.order_over neq 1}
+                    <a href="user.php?act=order_detail&order_id={$order.order_id}">{$lang.view}</a>
+                    {if !$order.delete_yes eq 1}
+                    <span class="pop-recycle-a">
+                        |
+                        {if $action eq 'order_list'}
+                        <a href="javascript:get_order_delete_restore('delete', {$order.order_id});">{$lang.drop}</a>
+                        {else $action eq 'order_recycle'}
+                        <a href="javascript:get_order_delete_restore('restore', {$order.order_id});">{$lang.reduction}</a>
+                        |
+                        <a href="javascript:get_order_delete_restore('thorough', {$order.order_id});">{$lang.drop}</a>
+                        {/if}
+                    </span>
+                    {/if}
+                    <br/>
+                    <span class="pop-recycle-a">
+                        {$order.handler}
+                        {$order.handler_return}
+                    </span>
+                {/if}    
+                </div>
+            </div>
+        </td>
+    </tr>
+    {/foreach}
+</tbody>
+<tfoot>
+    <tr>
+        <td colspan="6">
+        <div class="pager_tech pages26">
+            <div class="pages"><div class="pages-it">{$orders.pager}</div></div>
+        </div>
+        <div class="hint"><span>{$lang.order_user_desc} </span></div>
+        </td>
+    </tr>
+</tfoot>
+
+{if $orders.order_list}
+<script type="text/javascript">
+$(function(){
+	{foreach from=$orders.order_list item=order}           
+		{if $order.invoice_no}
+			$('#retData_' + {$order.order_id}).html("<center>" + json_languages.logistics_tracking_in + "</center>");
+			var expressid = $('#shipping_name_'+{$order.order_id}).html();
+			var expressno = $('#invoice_no_'+{$order.order_id}).html();
+			$.ajax({
+				url: "plugins/kuaidi/express.php",
+				type: "post",
+				data:'com=' + expressid + '&nu=' + expressno,
+				success: function(data,textStatus){
+					$('#retData_'+{$order.order_id}).html(data);
+				},
+				error: function(o){
+				}
+			});
+	 {/if}
+	{/foreach}
+	
+	//订单多个产品展开
+	$(".order-prolist-more").click(function(){
+		$(this).prevAll(".order-info-desc").show();
+		$(this).prev().hide();
+		$(this).hide();
+	});
+	
+	//用户中心 物流跟踪
+	$(".logistics-track").hover(function(){
+		$(this).addClass("hover");
+		$(this).parents("tr").css({"z-index":99,"position":"relative"});
+	},function(){
+		$(this).removeClass("hover");
+		$(this).parents("tr").css({"z-index":"auto","position":"static"});
+	});
+	
+	
+	//自动确认收货
+	{if $open_delivery_time eq 1}
+	$(":input[name='order_id[]']").each(function(index, element) {
+		var order_id = $(this).val();
+        $.ajax({
+			url: "user.php",
+			type: "get",
+			data:'act=return_order_status' + '&order_id=' + order_id,
+			dataType: 'json',
+			success:function(result){
+				if(result.error == 1){
+					$('#ss_received_' + order_id).html(result.ss_received);
+					$('#ss_msg_' + order_id).html(result.msg);
+				}
+			}
+		});
+    });
+	{/if}
+});		
+</script>
+
+<!--@author-bylu start (用户中心)-->
+<script type="text/javascript">
+    function openWin(obj) {
+        var where_goods = "";
+		if($(obj).attr('goods_id')){
+			where_goods = '&goods_id=' + $(obj).attr('goods_id');
+		}
+		
+		var where_seller = "";
+		if($(obj).attr('ru_id')){
+			where_seller = '&ru_id=' + $(obj).attr('ru_id');
+		}
+
+		if($(obj).attr('IM_type') != 'dsc'){
+			var where = where_goods + where_seller;
+		}else{
+			var where = '';
+		}
+		var url='online.php?act=service' + where                   //转向网页的地址;
+        var name='webcall';                         //网页名称，可为空;
+        var iWidth=700;                          //弹出窗口的宽度;
+        var iHeight=500;                         //弹出窗口的高度;
+        //获得窗口的垂直位置
+        var iTop = (window.screen.availHeight - 30 - iHeight) / 2;
+        //获得窗口的水平位置
+        var iLeft = (window.screen.availWidth - 10 - iWidth) / 2;
+        window.open(url, name, 'height=' + iHeight + ',,innerHeight=' + iHeight + ',width=' + iWidth + ',innerWidth=' + iWidth + ',top=' + iTop + ',left=' + iLeft + ',status=no,toolbar=no,menubar=no,location=no,resizable=no,scrollbars=0,titlebar=no');
+    }
+</script>
+<!--@author-bylu end-->
+{/if}

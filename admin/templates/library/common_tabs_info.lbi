@@ -1,0 +1,31 @@
+<form method="post" action="{$common_tabs.url}" name="commonTabsForm">
+<div class="tabs_info">
+    <ul>
+        {if !$rs_id}
+        <li {if !$common_tabs.info}class="curr"{/if}>
+            <a href="javascript:;" data-val="0" ectype="tabs_info">自营</a>
+        </li>
+        {/if}
+        <li {if $common_tabs.info eq 1}class="curr"{/if}>
+            <a href="javascript:;" data-val="1" ectype="tabs_info">店铺</a>
+        </li>
+        {if $supplier_enabled && ($filename eq 'gallery_album.php' || $filename eq 'goods_type.php')}
+        <li {if $common_tabs.info eq 2}class="curr"{/if}>
+            <a href="javascript:;" data-val="2" ectype="tabs_info">供货商</a>
+        </li>
+        {/if}
+    </ul>
+</div>
+
+{if $filter.user_id}<input type="hidden" name="user_id" value="{$filter.user_id|default:0}" /><!-- 会员ID -->{/if} 
+{if $filter.composite_status}<input type="hidden" name="composite_status" value="{$filter.composite_status|default:-1}" /><!-- 订单状态ID -->{/if} 
+<input type="hidden" name="seller_list" value="0" />
+</form>
+
+<script type="text/javascript">
+    $(document).on('click','*[ectype="tabs_info"]',function(){
+        var val = $(this).data('val');
+        $(":input[name='seller_list']").val(val);
+        $("form[name='commonTabsForm']").submit();	        
+    });
+</script>

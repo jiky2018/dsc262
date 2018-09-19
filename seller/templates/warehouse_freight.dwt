@@ -1,0 +1,167 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+		{include file ='library/seller_menu_left.lbi'}
+		<div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+				{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="ecsc-form-goods">
+                <form method="post" action="warehouse.php" name="theForm" enctype="multipart/form-data">
+                <div class="wrapper-list">
+                	<dl>
+                    	<dt>{$lang.originating_place}：</dt>
+                        <dd>
+							<div class="label_value">
+								<div id="warehouse_id" class="imitate_select select_w320">
+									<div class="cite">请选择仓库</div>
+									<ul>
+										{foreach from=$warehouse_list item=warehouse}
+											<li><a href='javascript:;' data-value='{$warehouse.region_id}' class='ftx-01'>{$warehouse.region_name}</a></li>
+										{/foreach}
+									</ul>
+									<input name="warehouse_id" id="warehouse_id_val" type="hidden" value="{$parent_id}">
+								</div>
+								<div class="form_prompt"></div>
+							</div>
+                        </dd>
+                    </dl>
+                    <dl>
+                    	<dt>{$lang.reach_the_destination}：</dt>
+                        <dd><span class="red_text" id="region_name">{$region_name}</span></dd>
+                    </dl>
+                    <dl>
+                    	<dt>{$lang.logistics_distribution}：</dt>
+                        <dd>
+							<div class="label_value">
+								<div id="shipping_id" class="imitate_select select_w320">
+									<div class="cite">请选择物流配送</div>
+									<ul>
+										{foreach from=$shipping_list item=shipping}
+											<li><a href='javascript:;' data-value='{$shipping.shipping_id}' class='ftx-01'>{$shipping.shipping_name}</a></li>
+										{/foreach}
+									</ul>
+									<input name="shipping_id" id="shipping_id_val" type="hidden" value="{$shipping.shipping_id}">
+								</div>
+								<div class="form_prompt"></div>
+							</div>
+                        </dd>
+                    </dl>
+                    <div id="freightArea"></div>
+                    <dl class="button_info">
+                    	<dt>&nbsp;</dt>
+                        <dd>
+                            <input type="submit" value="{$lang.button_submit}" class="sc-btn sc-blueBg-btn btn35" />
+                            <input type="reset" value="{$lang.button_reset}" class="sc-btn btn35 sc-blue-btn" />
+                            <input type="hidden" name="act" value="{$form_action}" />
+                            <input name="id" value="{$region_id}" type="hidden" id="region_id"/>
+                            <input name="rId" value="{$regionId}" type="hidden" id="regionId"/>
+                        </dd>
+                    </dl>
+                </div>
+                </form>
+                <div class="ecsc-form-title">
+                	<i class="dian"></i>
+                    <h3>{$lang.logistics_info}</h3>
+                </div>
+                <dl class="notBg border-bottom0">
+                	<dt>{$lang.select_logistics_company}：</dt>
+                    <dd class="lh">
+                    	{foreach from=$freight_list item=freight name=nofreight}
+                        <a href="warehouse_shipping_mode.php?act=list&shipping_id={$freight.shipping_id}&id={$freight.region_id}" class="fl mr10">{$freight.shipping_name}</a>
+                        {foreachelse}
+                        <span style="color:#aaa;">{$lang.no_records}</span>
+                        {/foreach}
+                    </dd>
+                </dl>
+                </div>
+        	</div>
+    	</div>
+	</div>
+</div>
+{include file ='library/seller_footer.lbi'}
+{literal}
+<script type="text/javascript">
+/**
+ * 查询运费模式参数
+ */
+$.divselect("#warehouse_id","#warehouse_id_val",function(){
+	var region_id = $("#regionId").val();
+	var shipping_id = $("#shipping_id_val").val();
+	var warehouse_id = $("#warehouse_id_val").val();
+	Ajax.call('warehouse.php?act=get_freight_area&shipping_id=' + shipping_id + '&warehouse_id=' + warehouse_id + '&region_id=' + region_id, '', area_freightResponse, 'GET', 'JSON');
+});
+
+$.divselect("#shipping_id","#shipping_id_val",function(){
+	var region_id = $("#regionId").val();
+	var shipping_id = $("#shipping_id_val").val();
+	var warehouse_id = $("#warehouse_id_val").val();
+	Ajax.call('warehouse.php?act=get_freight_area&shipping_id=' + shipping_id + '&warehouse_id=' + warehouse_id + '&region_id=' + region_id, '', area_freightResponse, 'GET', 'JSON');
+});
+
+function area_freightResponse(res){
+	document.getElementById('freightArea').innerHTML = res.content;
+}
+
+//-->
+function addImg(obj)
+  {
+      var src  = obj.parentNode.parentNode;
+      var idx  = rowindex(src);
+      var tbl  = document.getElementById('info-table');
+      var row  = tbl.insertRow(idx + 1);
+      var cell = row.insertCell(-1);
+      cell.innerHTML = src.cells[0].innerHTML.replace(/(.*)(addImg)(.*)(\[)(\+)/i, "$1removeImg$3$4-");
+  }
+  
+function removeImg(obj)
+  {
+      var row = rowindex(obj.parentNode.parentNode);
+      var tbl = document.getElementById('info-table');
+
+      tbl.deleteRow(row);
+  } 
+
+/**
+ * 配送费用计算方式
+ */
+function compute_mode(shipping_code,mode)
+{
+    var base_fee  = document.getElementById("base_fee");
+    var step_fee  = document.getElementById("step_fee");
+    var item_fee  = document.getElementById("item_fee");
+    if(shipping_code == 'post_mail' || shipping_code == 'post_express')
+    {
+     var step_fee1  = document.getElementById("step_fee1");
+    }
+
+    if(mode == 'number')
+    {
+      item_fee.style.display = '';
+      base_fee.style.display = 'none';
+      step_fee.style.display = 'none';
+      if(shipping_code == 'post_mail' || shipping_code == 'post_express')
+      {
+       step_fee1.style.display = 'none';
+      }
+    }
+    else
+    {
+      item_fee.style.display = 'none';
+      base_fee.style.display = '';
+      step_fee.style.display = '';
+      if(shipping_code == 'post_mail' || shipping_code == 'post_express')
+      {
+       step_fee1.style.display = '';
+      }
+    }
+}
+</script>
+{/literal}
+</body>
+</html>

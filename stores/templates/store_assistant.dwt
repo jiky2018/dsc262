@@ -1,0 +1,67 @@
+{if $full_page}
+<!doctype html>
+<html>
+{include file='pageheader.dwt'}
+<div class="content">
+	<div class="title">{$page_title}</div>
+    <div class="explanation" id="explanation">
+        <i class="sc_icon"></i>
+        <ul>
+            <li>门店职员为管理员方便分配权限设定，目前权限暂定为：商品管理、订单管理、职员管理、设置管理。</li>
+            <li>添加新职员时请填写正确的邮箱地址，方便找回密码时使用。</li>
+        </ul>
+    </div>
+    <div class="common-head">
+    	<a href="{$action_link.href}" class="btn btn30 blue_btn ml0" ectype="addAssistant">{$action_link.text}</a>
+        <a href="{$action_link2.href}" class="btn btn30 blue_btn ml0" ectype="addAssistant">{$action_link2.text}</a>
+    </div>
+    <div class="list-div" id="listDiv">
+    	{/if}  
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                	<th width="5%" class="first">编号</th>
+                    <th width="20%">{$lang.login_name}</th>
+                    <th width="20%">{$lang.tel}</th>
+                    <th width="20%">{$lang.email}</th>
+                    <th width="20%">{$lang.add_time}</th>
+                    <th width="15%" class="last">{$lang.handler}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {foreach from=$list item=list name=assistant}
+                <tr>
+                    <td class="first">{$smarty.foreach.assistant.iteration}</td>
+                    <td>{$list.stores_user}</td>
+                    <td>{$list.tel}</td>
+                    <td>{$list.email}</td>
+                    <td>{$list.add_time}</td>
+                    <td class="handle last">
+                        <a href="store_assistant.php?act=edit&id={$list.id}" class="btn_pencil"><i class="icon icon-pencil"></i>{$lang.edit}</a>
+                        <a href="javascript:;" onclick="dialog('delete', {id:{$list.id}})" title="{$lang.remove}" class="btn_trash"><i class="icon icon-trash"></i>{$lang.remove}</a>
+                    </td>
+                </tr>
+                {foreachelse}
+                <tr class="tfoot"><td class="no-records" colspan="10">{$lang.no_records}</td></tr>  
+                {/foreach}
+            </tbody>
+            <tfoot>
+            	<tr>
+                    <td colspan="10" style="padding-right:26px;">{include file='page.dwt'}</td>
+                </tr>
+            </tfoot>
+        </table>
+		{if $full_page}
+    </div>
+</div>
+
+<script type="text/javascript">
+	listTable.recordCount = {$record_count};
+	listTable.pageCount = {$page_count};
+	
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+</script>
+{include file='pagefooter.dwt'}
+{/if}

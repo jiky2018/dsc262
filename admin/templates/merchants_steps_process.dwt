@@ -1,0 +1,127 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="merchants_steps.php?act=list" class="s-back">{$lang.back}</a>{$lang.seller} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content_common}</li>
+                    <li>{$lang.operation_prompt_content.process.0}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+						<form method="post" action="merchants_steps.php" name="theForm" id="merchants_steps_form">
+                            <div class="switch_info">
+                                <div class="items">
+                                    <div class="item">
+                                        <div class="label">{$lang.fields_steps}：</div>
+                                        <div class="label_value">
+											<div id="process_steps" class="imitate_select select_w320">
+												<div class="cite">{$lang.settled_need_know}</div>
+												<ul>
+													<li><a href='javascript:;' data-value='1' class='ftx-01'>{$lang.settled_need_know}</a></li>
+													<li><a href='javascript:;' data-value='2' class='ftx-01'>{$lang.company_info_aut}</a></li>
+													<li><a href='javascript:;' data-value='3' class='ftx-01'>{$lang.shop_info_aut}</a></li>
+												</ul>
+                                                <input name="process_steps" type="hidden" value="{$process_info.process_steps}" id="process_steps_val">
+											</div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.require_field}{$lang.steps_process_title}：</div>
+                                        <div class="label_value">
+											<input type="text" name="process_title" id="process_title" class="text" value="{$process_info.process_title}" autocomplete="off" />
+											<div class="form_prompt"></div>
+                                        </div>
+                                    </div>
+									<div class="item">
+                                        <div class="label">{$lang.steps_process_article}：</div>
+                                        <div class="label_value">
+											<input type="text" name="process_article" id="process_article" class="text" value="{$process_info.process_article|default:0}" autocomplete="off" />
+                                            <div class="form_prompt"></div>
+										</div>
+                                    </div>
+									<div class="item">
+                                        <div class="label">{$lang.steps_sort}：</div>
+                                        <div class="label_value">
+											<input type="text" name="steps_sort" id="steps_sort" class="text" value="{$process_info.steps_sort|default:0}" autocomplete="off" />
+                                            <div class="form_prompt"></div>
+										</div>
+                                    </div>
+									<div class="item">
+                                        <div class="label">{$lang.fields_next}：</div>
+                                        <div class="label_value">
+											<input type="text" name="fields_next" id="fields_next" class="text" value="{$process_info.fields_next}" autocomplete="off" />
+											<div class="form_prompt"></div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">&nbsp;</div>
+                                        <div class="label_value info_btn">
+											<input type="submit" value="{$lang.button_submit}" class="button" id="submitBtn" />
+											<input type="reset" value="{$lang.button_reset}" class="button button_reset" />
+											<input type="hidden" name="act" value="{$form_action}" />
+											<input type="hidden" name="id" value="{$process_info.id}" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+	$(function(){
+		//表单验证
+		$("#submitBtn").click(function(){
+			if($("#merchants_steps_form").valid()){
+				$("#merchants_steps_form").submit();
+			}
+		});
+	
+		$('#merchants_steps_form').validate({
+			errorPlacement:function(error, element){
+				var error_div = element.parents('div.label_value').find('div.form_prompt');
+				element.parents('div.label_value').find(".notic").hide();
+				error_div.append(error);
+			},
+			rules:{
+				process_title :{
+					required : true
+				},
+				process_article:{
+					required : true,
+					digits:true
+				},
+				steps_sort:{
+					required : true,
+					digits:true
+				}
+			},
+			messages:{
+				process_title:{
+					required : '<i class="icon icon-exclamation-sign"></i>'+select_step_info_title
+				},
+				process_article:{
+					required : '<i class="icon icon-exclamation-sign"></i>'+article_id_not_null,
+					digits : '<i class="icon icon-exclamation-sign"></i>'+article_id_integer
+				},
+				steps_sort:{
+					required : '<i class="icon icon-exclamation-sign"></i>'+sort_not_null,
+					digits : '<i class="icon icon-exclamation-sign"></i>'+sort_integer
+				}
+			}			
+		});
+	});
+    </script>
+</body>
+</html>

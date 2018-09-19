@@ -1,0 +1,198 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<!-- #BeginLibraryItem "/library/js_languages_new.lbi" --><!-- #EndLibraryItem -->
+</head>
+
+<body>
+	<!-- #BeginLibraryItem "/library/page_header_common.lbi" --><!-- #EndLibraryItem -->
+	<div class="full-main-n">
+        <div class="w w1200 relative">
+			<!-- #BeginLibraryItem "/library/ur_here.lbi" --><!-- #EndLibraryItem -->
+			<!-- #BeginLibraryItem "/library/goods_merchants_top.lbi" --><!-- #EndLibraryItem -->
+        </div>
+    </div>
+    <div class="container">
+    	<div class="w w1200">
+			{if !$img_list}
+            <div class="discuss-info">
+                <div class="discuss-left">
+                    <div class="discuss-info-warp">
+                        <div class="u-ico"><img src="{if $user_picture}{$user_picture}{else}themes/<?php echo $GLOBALS['_CFG']['template']; ?>/images/touxiang.jpg{/if}"></div>
+                        <div class="ud-right d-i-info">
+                            <div class="d-i-tit">
+                                <p>{if $discuss.nick_name}{$discuss.nick_name}{else}{$lang.anonymous}{/if}</p>
+                                <p>{$discuss.add_time}</p>
+                            </div>
+                            <div class="d-i-txt">{$discuss.dis_text}</div>						
+                        </div>
+                    </div>
+                    <div class="discuss-reply-info">
+                        <div class="u-ico"><img src="{if $user_id}{if $user_info.user_picture}{$user_info.user_picture}{else}themes/<?php echo $GLOBALS['_CFG']['template']; ?>/images/touxiang.jpg{/if}{else}themes/<?php echo $GLOBALS['_CFG']['template']; ?>/images/avatar.png{/if}"></div>
+                        <div class="ud-right d-r-warp">
+                            <div class="user-name">发表回复</div>
+                            <input type="hidden" id="dis_id" name="dis_id" value="{$discuss.dis_id}">
+                            <input type="hidden" id="quote_id" name="quote_id" value="">
+                            <input type="hidden" id="nick_user" name="nick_user" value="{$discuss.user_id}">
+                            <div class="editor-quote fl" id="editor-quote" style="display: none;">
+                                <blockquote class="quote"><a onclick="closeQuote();" class="close" title="删除引用">X</a>
+                                    <input type="hidden" id="dis_id" name="dis_id" value="{$discuss.dis_id}">
+                                    <input type="hidden" id="quote_id" name="quote_id" value="">
+                                    <input type="hidden" id="nick_user" name="nick_user" value="{$discuss.user_id}">
+                                    <div id="quoteTitle" class="quote_title">回复&#12288; <em class="userName"></em> </div>
+                                    <div id="quoteContent" class="quote_content"> {$lang.reply_desc}</div>
+                                </blockquote>
+                            </div>
+                            <textarea name="" id="reply_content" class="textarea"></textarea>
+                            <a href="#" class="btn sc-redBg-btn" ectype="publish">回复</a>
+                        </div>
+                    </div>
+                    <div class="discuss-all">
+                        <div class="tit">全部评论（{$reply_discuss.record_count}）</div>
+                        {foreach from=$reply_discuss.list item=list key=key name=noreply}
+                        <div class="item">
+                            <div class="u-ico"><img src="{if $list.user_picture}{$list.user_picture}{else}themes/<?php echo $GLOBALS['_CFG']['template']; ?>/images/touxiang.jpg{/if}"></div>
+                            <div class="ud-right d-a-info">
+                                {if $list.quote}
+                                <div>
+                                    <blockquote class="quote">
+                                    <fieldset><legend>回复&nbsp;{$list.quote.nick_name}&nbsp;</legend>
+                                    <div class="quote_content"> 
+                                        {$list.quote.dis_text}
+                                    </div>
+                                    </fieldset>
+                                    </blockquote>
+                                </div>
+                                {/if}
+                                <div class="d-a-lie">
+                                    <div class="user-name">{$list.nick_name}</div>
+                                    <div class="time">{$list.add_time}</div>
+                                </div>
+                                <div class="d-i-txt">{$list.dis_text}</div>
+                                <a href="#reply" class="reply_parent" dis_id="{$discuss.dis_id}" quote_id="{$list.dis_id}" userID="{$list.user_id}" userName="{$list.nick_name}" data="{$list.dis_text}">回复</a>
+                            </div>                     
+                        </div>
+                        {/foreach}
+                    </div>
+                </div>
+                <!-- #BeginLibraryItem "/library/discuss_right.lbi" --><!-- #EndLibraryItem -->
+            </div>
+            {else}
+            <div class="album-info">
+                <div class="album-big">
+                    <div class="album-big-cen">
+                        <ul>
+                            {foreach from=$img_list item=img key=key name=img}
+                            <li><img src="{$img.comment_img}" width="720" height="720"></li>
+                            {/foreach}
+                        </ul>
+                    </div>
+                    <a href="javascript:void(0);" class="albumbig-prev"><i class="iconfont icon-left"></i></a>
+                    <a href="javascript:void(0);" class="albumbig-next"><i class="iconfont icon-right"></i></a>
+                </div>
+                <div class="album-right">
+                    <div class="album-list">
+                        <div class="album-tit">商品相册({$num})</div>
+                        <div class="album-list-warp">
+                            <div class="album-ul">
+                                <ul>
+                                    {foreach from=$img_list item=img key=key name=img}
+                                    <li><img src="{$img.comment_img}" width="64" height="64"></li>
+                                    {/foreach}
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="album-nunber">
+                            <a href="javascript:void(0);" class="album-prev"><i class="iconfont icon-left"></i></a>
+                            <span class="a-p-s"></span>
+                            <a href="javascript:void(0);" class="album-next"><i class="iconfont icon-right"></i></a>
+                        </div>
+                    </div>
+                    <div class="pur-info">
+                        <p>商城价：<span>{$goodsInfo.goods_price}</span></p>
+                        <p>销售量：<b>{$goodsInfo.sales_volume}</b>件</p>
+                        <a href="javascript:addToCart({$goodsInfo.goods_id})" class="btn sc-redBg-btn"><i class="iconfont icon-carts"></i>加入购物车</a>
+                    </div>
+                </div>
+            </div>
+        	{/if}	
+        </div>
+    </div>
+    
+    {* DSC 提醒您：动态载入user_menu_position.lbi，显示首页分类小广告 *}{insert name='user_menu_position'}
+    
+    <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+   
+    {insert_scripts files='jquery.SuperSlide.2.1.1.js,common.js,warehouse_area.js,cart_common.js,parabola.js,cart_quick_links.js'}
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/dsc-common.js"></script>
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.purebox.js"></script>
+    <script type="text/javascript">
+        $(".reply_parent").click(function(){
+			var T = $(this);
+			$("#dis_id").val(T.attr('dis_id'));
+			$("#quote_id").val(T.attr('quote_id'));
+			$("#nick_user").val(T.attr('userID'));
+			$("#quoteContent").html(T.attr('data'));
+			$(".userName").html(T.attr('userName'));
+			$('.editor-quote').show();
+		});
+		
+		$("*[ectype='publish']").on("click",function(){
+			var dis_id = $("#dis_id").val();
+			var quote_id = $("#quote_id").val();
+			var nick_user = $("#nick_user").val();
+			var reply_content = $("#reply_content").val();
+			onsubmit_comm(dis_id, quote_id, reply_content, nick_user);
+		});
+			
+		function closeQuote(){
+			$("#dis_id").val({$discuss.dis_id});
+			$("#quote_id").val('');
+			$("#nick_userId").val({$discuss.user_id});
+			$("#quoteContent").html('');
+			$(".userName").html('');
+			$('.editor-quote').hide();
+		}
+		
+		function onsubmit_comm(id,quote_id,content,nick_user){
+			if(content == ''){
+				var message = "{$lang.reply_desc_one}";
+				pbDialog(message,"",0);
+				return false;
+			}
+	
+			Ajax.call('single_sun.php?act=check_comm', 'dis_id=' + id + '&quote_id=' + quote_id + '&comment_content=' + content + '&nick_user=' + nick_user, get_reply_comm, 'GET', 'JSON');
+		}
+		
+		function get_reply_comm(res){
+			if(res.error == 1){
+				pbDialog(res.err_msg,"",0,'','','',true,function(){location.reload();});
+				return false;
+			}else if(res.error == 2){
+				var back_url = "single_sun.php?act=discuss_show&did=" + res.dis_id;
+				$.notLogin("get_ajax_content.php?act=get_login_dialog",back_url);
+				return false;			
+			}else{
+				location.reload();
+			}
+		}
+		
+		$(".album-info").slide({titCell:".album-list-warp li",mainCell:".album-big ul",effect:"left",autoPlay:false,prevCell:".albumbig-prev",nextCell:".albumbig-next",titOnClassName:"curr"});
+		$(".album-list").slide({mainCell:".album-ul",effect:"left",autoPage:true,autoPlay:false,prevCell:".album-prev",nextCell:".album-next",pageStateCell:".a-p-s"});
+    </script>
+    <script type="text/javascript" id="bdshare_js" data="type=tools&amp;uid=692785" ></script>
+    <script type="text/javascript" id="bdshell_js"></script>
+    <script type="text/javascript">
+    	document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + new Date().getHours();
+    </script>
+</body>
+</html>

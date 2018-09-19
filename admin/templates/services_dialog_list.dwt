@@ -1,0 +1,210 @@
+{if $full_page}
+<!doctype html>
+<html lang="en">
+<head>{include file ='library/admin_html_head.lbi'}</head>
+<style>
+    .chat-wrap{background:#fff;height:600px;}
+    .chat-left{height:100%;overflow-y:scroll;box-sizing:border-box;}
+    .chat-right{height:100%;box-sizing:border-box;}
+    .right-con{width:100%;height:100%;overflow:hidden;display:box;display:-webkit-box;display:-moz-box;box-orient:vertical;-webkit-box-orient:vertical;-moz-webkit-box-orient:vertical;}
+	.chat-box{box-flex:1;-webkit-box-flex:1;-moz-box-flex:1;overflow-y:scroll}
+    .time{height:20px;position:relative;width:80%;margin:0 auto;border-bottom:1px solid #ccc;margin-bottom:15px;text-align:center;}
+    .time span{position:absolute;top:6px;padding:0 20px;margin-left:-55px;background:#fff;font-size:16px;}
+    .search-box{width:100%;height:50px;border-top:1px solid #ccc;padding-top:10px;box-sizing:border-box;}
+    .search-box .icon-download{font-size:28px;margin-right:10px;vertical-align:middle}
+    .search-box .icon-calendar{font-size:20px;margin-right:10px;vertical-align:middle}
+    .service .img{float: left;width:60px;height:60px;margin-top: 3px;}
+	.service .desc{float: left;margin-left: 10px;width:calc(100% - 70px)}
+	.green{color:green;}
+	.blue{color:blue;}
+    .search-box .search{float:left;margin-left:20px;margin-top:0;}
+    .chat-box p span{margin-left:10px;}
+    .footer-tool-date.j-footer-tool-date a,.footer-tool-date.j-footer-tool-date a:hover{color:#707070;}
+</style>
+<link rel="stylesheet" id=cal_style type="text/css" href="../mobile/public/assets/chat/css/flatpickr.min.css">
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">权限 - 客服管理</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>该页面展示了统计聊天的信息。</li>
+                </ul>
+            </div>
+            <div class="tabs_info mt30">
+	            <ul id="dialog_list_ul">
+	                <li class="curr"><a href="javascript:void(0);">今天</a></li>
+	                <li class=""><a href="javascript:void(0);">最近一周</a></li>
+	                <li class=""><a href="javascript:void(0);">最近一月</a></li>
+	                <li class=""><a href="javascript:void(0);">全部</a></li>
+	            </ul>
+	        </div>
+            <div class="flexilist mt30">
+                <div class="common-content chat-wrap">
+                	<div class="items_bf50 fl chat-left">
+    	                <div class="mian-info sale_info ">
+    	                    <!-- 列表 start -->
+    	                    <div>
+    	                    	<table cellpadding="0" cellspacing="0" border="0" width="100%" >
+                                    <tbody id='dialog_list'>
+                                        {/if}
+                                        {if $message_page neq 1}
+                                        {foreach from=$dialog_list item=list}
+        								<tr class="list-div">
+                                            <td>
+                                            	<div class="tDiv service" cid='{$list.customer_id}' mid='{$list.id}'>
+        											<div class="img"><img src="{$list.goods_thumb}" width="60" height="60"></div>
+                                                    <div class="desc">
+                                                    	<p class="brand"><em>{$list.user_name}</em></p>
+                                                		<div class="name">
+                                                        	<span title="{$list.goods_name}" data-toggle="tooltip" class="span">{$list.goods_name}</span>
+                                                        </div>
+                                                    	<p class="activity">
+                                                            <span class="mr10">开始时间：{$list.start_time}</span>
+                                                            <span class="mr10">结束时间：{$list.end_time}</span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {foreachelse}
+                                             <tr><td class="no-records" colspan="12">{$lang.no_records}</td></tr>
+                                        {/foreach}
+                                        {/if}
+    	                                {if $full_page}
+        							</tbody>
+                                 </table>
+    	                    </div>
+    	                    <!-- 列表 end -->
+    	                </div>
+    	            </div>
+    	            <div class="items_bf50 fl chat-right">
+                        <div class="right-con">
+                            <div class="chat-box p15" id="message_list">
+                                 {/if}
+                                {if $message_page eq 1}
+                                <div class="time"><span>{$message_list[0].add_time}</span></div>
+                                {foreach from=$message_list item=mli}
+                                    <p {if $mli.user_type eq 1}class="green"{elseif $mli.user_type eq 2}class="blue"{/if}>{if $mli.user_type eq 1}{$dialog.nick_name}{elseif $mli.user_type eq 2}{$dialog.user_name}{/if}<span>{$mli.add_time}</span></p>
+                                    <div>{$mli.message}</div>
+                                 {foreachelse}
+                                    <div>{$lang.no_records}</div>
+                                {/foreach}
+                                {/if}
+                                {if $full_page}
+                            </div>
+                        	<div class="search-box pl15 pr15">
+                                <span class="fl j-generate-word"><i class="icon icon-download"></i>导出</span>
+                                    <div class="fl ml20 footer-tool-date j-footer-tool-date flatpickr" data-wrap="true" data-click-opens="false" id="enableNextSeven">
+                                        <a class="input-btn" data-toggle><i class="icon icon-calendar"></i></a>
+                                        <input id="flatpickr-tryme" style="border:none;width:68px" data-input>
+                                    </div>
+                                <div class="search">
+                                    <div class="input">
+                                        <input type="text" name="keyword" class="text nofocus" placeholder="" autocomplete="off">
+                                        <input type="submit" class="btn j-keywords" value=''>
+                                    </div>
+                                </div>
+                                <div class="list-page fr">
+                                    <span id="page-link">
+                                        <a class="first" title="第一页"></a>
+                                        <a class="prev" title="上一页"></a>
+                                        <a class="next" title="下一页"></a>
+                                        <a class="last" title="最末页"></a>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+	</div>
+</body>
+
+<script src='../mobile/public/assets/chat/js/flatpickr.js'></script>
+<script>
+    var service_id = {$id};
+    var customer_id ;
+    var dialog_id ;
+    var page=1;
+    var count;  //总数
+
+    var d = new Date();
+    var datetime = (d.getFullYear().toString()) +'-'+ ((d.getMonth()+1).toString()) +'-'+ (d.getDate().toString());
+    //Regular flatpickr
+    document.getElementById("flatpickr-tryme").setAttribute("placeholder", datetime);
+    document.getElementById("flatpickr-tryme").flatpickr();
+    document.getElementsByClassName("calendar").flatpickr();
+    document.getElementsByClassName("flatpickr").flatpickr();
+
+    function getData(date){
+        if(dialog_id == undefined || dialog_id == '' || customer_id == undefined || customer_id == '' || date == '') return;
+
+        Ajax.call('services.php?is_ajax=1&act=get_message_by_date', 'id=' + dialog_id + '&customer_id=' + customer_id + '&service_id=' + service_id + '&date=' + date, messageResponse, "POST", "JSON");
+
+    }
+    //************************
+
+
+//关键词查找
+$('.j-keywords').click(function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    var keyword =  $(this).siblings('[name=keyword]').val();
+
+    Ajax.call('services.php?is_ajax=1&act=message_list_ajax', 'id=' + dialog_id + '&customer_id=' + customer_id + '&service_id=' + service_id + '&keyword=' + keyword, messageResponse, "POST", "JSON");
+
+});
+
+//end
+
+//导出word
+$('.j-generate-word').click(function(){
+    if(dialog_id == undefined || dialog_id == '' || !confirm('确认导出聊天记录？'))return;
+    window.location.href='services.php?is_ajax=1&act=generage_word' + '&id=' + dialog_id + '&customer_id=' + customer_id + '&service_id=' + service_id;
+});
+
+//end
+
+
+$('#dialog_list_ul li').click(function(){
+    Ajax.call('services.php?is_ajax=1&act=dialog_list_ajax', 'id=' + service_id + '&val=' + $(this).index(), dialogResponse, "POST", "JSON");
+
+});
+
+function dialogResponse(result){
+    $('#dialog_list').html(result.content);
+}
+$('#dialog_list').on('click', 'div.tDiv', function(){
+    customer_id = $(this).attr('cid');
+    dialog_id = $(this).attr('mid');
+    page = 1;
+    Ajax.call('services.php?is_ajax=1&act=message_list_ajax', 'id=' + dialog_id + '&customer_id=' + customer_id + '&service_id=' + service_id + '&page=' + page, messageResponse, "POST", "JSON");
+});
+
+/** 分页 */
+$('#page-link a').click(function(){
+    if($(this).attr('class') == 'prev'){
+        page -= 1 ;
+    }else if($(this).attr('class') == 'next'){
+        page += 1 ;
+    }
+    if(page < 1) page = 1;
+    if(page > count) page = count;
+
+    Ajax.call('services.php?is_ajax=1&act=message_list_ajax', 'id=' + dialog_id + '&customer_id=' + customer_id + '&service_id=' + service_id + '&page=' + page, messageResponse, "POST", "JSON");
+});
+function messageResponse(result){
+    $('#message_list').html(result.content);
+    count = result.message;
+    if(page > count) page = count;
+}
+
+$('#dialog_list').on('mouseover', 'div.tDiv', function(){
+    $(this).css('cursor', 'pointer');
+});
+</script>
+</html>
+{/if}

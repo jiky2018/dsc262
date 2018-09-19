@@ -1,0 +1,91 @@
+{include file="seller_pageheader"}
+
+{include file="seller_nave_header"}
+
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file="seller_menu_left"}
+
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+            {include file="seller_nave_header_title"}
+                <div class="wrapper-right of" >
+                    <div class="tabmenu">
+                        <ul class="tab">
+                            <li class="active"><a href="{url('reply_subscribe')}">关注自动回复</a></li>
+                            <li><a href="{url('reply_msg')}">消息自动回复</a></li>
+                            <li><a href="{url('reply_keywords')}">关键词自动回复</a></li>
+                        </ul>
+                    </div>
+                    <div class="explanation" id="explanation">
+                        <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4></div>
+                        <ul>
+                          <li>自动回复的类型 共分三种：关注自动回复、消息自动回复、关键词自动回复。回复内容可以设置为文字，图片，语音，视频。文本消息回复内容可以直接填写，长度限制1024字节（大约200字，含标点以及其他特殊字符），其他素材需要先在素材管理中添加。</li>
+                          <li>一、关注自动回复：即用户首次关注，自动回复的消息，重新关注也回复。例如：欢迎关注微信公众号！</li>
+                          <li>★ 关注自动回复，不支持图文消息素材。</li>
+                        </ul>
+                    </div>
+                    <div class="tab-content">
+                        <div class="tab-pane active">
+                            <div class="wrapper-list mt20">
+                                <form action="{url('reply_subscribe')}" method="post">
+                                <div class="account-setting">
+                                    <div class="panel panel-default" >
+                                        <div class="panel-heading">
+                                            <ul class="nav nav-pills" role="tablist">
+                                                <li role="presentation"><a href="javascript:;" title="文字" class="f-14"><i class="fa fa-pencil"></i><span>文字</span></a></li>
+                                                <li role="presentation"><a href="{url('auto_reply', array('type'=>'image'))}" class="fancybox fancybox.iframe f-14" title="图片"><i class="fa fa-file-image-o"></i><span>图片</span></a></li>
+                                                <li role="presentation"><a href="{url('auto_reply', array('type'=>'voice'))}" class="fancybox fancybox.iframe f-14" title="语音"><i class="fa fa-volume-up"></i><span>语音</span></a></li>
+                                                <li role="presentation"><a href="{url('auto_reply', array('type'=>'video'))}" class="f-14 fancybox fancybox.iframe" title="视频"><i class="fa fa-film"></i><span>视频</span></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="panel-body" >
+                                            <div {if $subscribe['media_id']} class="hidden" {/if}>
+                                                <textarea name="content" placeholder="文本内容" rows="6" class="form-control" style="border:none;">{if $subscribe['content']}{$subscribe['content']}{/if}</textarea>
+                                            </div>
+                                            <div class="{if empty($subscribe) || $subscribe['content']}hidden{/if} col-xs-6 col-md-3 thumbnail content" style="border:none;">
+                                                {if $subscribe['media']}
+                                                    {if $subscribe['media']['type'] == 'voice'}
+                                                        <input type='hidden' name='media_id' value="{$subscribe['media_id']}"><img src='{elixir("img/voice.png")}' class='img-rounded' /><span class='help-block'>{$subscribe['media']['file_name']}</span>
+                                                    {elseif $subscribe['media']['type'] == 'video'}
+                                                        <input type='hidden' name='media_id' value="{$subscribe['media_id']}"><img src='{elixir("img/video.png")}' class='img-rounded' /><span class='help-block'>{$subscribe['media']['file_name']}</span>
+                                                    {else}
+                                                        <input type='hidden' name='media_id' value="{$subscribe['media_id']}"><img src="{$subscribe['media']['file']}" class='img-rounded' />
+                                                    {/if}
+                                                {/if}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bottom mt20">
+                                    <input type="hidden" name="content_type" value="text" />
+                                    <input type="submit" class="sc-btn sc-blueBg-btn btn35" name="submit" value="保存" />
+                                    <input type="reset" class="sc-btn sc-blue-btn btn35" name="reset" value="清除内容" />
+                                </div>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+$(function(){
+    $(".nav-pills li").click(function(){
+        var index = $(this).index();
+        var tab = $(this).parent().parent(".panel-heading").siblings(".panel-body");
+        if(index == 0){
+            tab.find("div").addClass("hidden");
+            tab.find("div").eq(index).removeClass("hidden");
+            $("input[name=content_type]").val("text");
+        }
+    });
+})
+</script>
+
+{include file="seller_pagefooter"}
+</body>
+</html>

@@ -1,0 +1,153 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="search-info">
+                    <div class="search-form">
+                      <form action="javascript:searchArticle()" name="searchForm">
+                      	<div id="status" class="imitate_select select_w145">
+                            <div class="cite">{$lang.adopt_status}</div>
+                            <ul>
+                                <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.adopt_status}</a></li>
+                                <li><a href="javascript:;" data-value="1" class="ftx-01">{$lang.not_audited}</a></li>
+                                <li><a href="javascript:;" data-value="2" class="ftx-01">{$lang.audited_not_adopt}</a></li>
+                                <li><a href="javascript:;" data-value="3" class="ftx-01">{$lang.audited_yes_adopt}</a></li>
+                            </ul>
+                            <input name="review_status" type="hidden" value="0"/>
+                        </div>
+                        <div class="search-key">
+                            <input type="text" name="keyword" id="keyword" class="text text_2" placeholder="{$lang.title}" />
+                            <input type="submit" value="{$lang.button_search}" class="submit" />
+                        </div>
+                      </form>
+                    </div>
+				</div>
+                <form method="POST" action="exchange_goods.php?act=batch_remove" name="listForm">
+                <div class="list-div" id="listDiv">
+                {/if}
+                <table class="ecsc-default-table">
+                <thead>
+                <tr>
+                    <th width="10%">
+                        <div class="first_all">
+                            <input onclick='listTable.selectAll(this, "checkboxes")' type="checkbox" class="ui-checkbox" id="all">
+                            <label for="all" class="ui-label"><a href="javascript:listTable.sort('goods_id'); ">{$lang.goods_id}</a></label>
+                            {$sort_goods_id}
+                        </div>
+                    </th>
+                    <th width="24%" class="tl"><a href="javascript:listTable.sort('goods_name'); ">{$lang.goods_name}</a><div class="img">{$sort_goods_name}</div></th>
+                    <th width="10%"><a href="javascript:listTable.sort('exchange_integral'); ">{$lang.exchange_integral}</a><div class="img">{$sort_exchange_integral}</div></th>
+                    <th width="8%"><a href="javascript:listTable.sort('is_exchange'); ">{$lang.is_exchange}</a><div class="img">{$sort_is_exchange}</div></th>
+                    <th width="8%"><a href="javascript:listTable.sort('is_hot'); ">{$lang.is_hot}</a><div class="img">{$sort_is_hot}</div></th>
+                    <th width="8%"><a href="javascript:listTable.sort('is_best'); ">{$lang.is_best}</a><div class="img">{$sort_is_best}</div></th>
+                    <th width="12%">{$lang.adopt_status}</th>
+                    <th width="20%">{$lang.handler}</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {foreach from=$goods_list item=list}
+                    <tr>
+                        <td class="first_td_checkbox"><div class="first_all"><input name="checkboxes[]" type="checkbox" value="{$list.goods_id}" id="{$list.goods_id}" class="ui-checkbox"/><label for="{$list.goods_id}" class="ui-label">{$list.goods_id}</label></div></td>
+                        <td class="tl"><span class="activity_name w410">{$list.goods_name|escape:html}</span></td>
+                        <td><span onclick="listTable.edit(this, 'edit_exchange_integral', {$list.goods_id})">{$list.exchange_integral}</span></td>
+						<td>
+							<div class="switch{if $list.is_exchange} active{/if} ml20" title="{if $list.is_exchange}是{else}否{/if}" onclick="listTable.switchBt(this, 'toggle_exchange', {$list.goods_id})">
+								<div class="circle"></div>
+							</div>
+							<input type="hidden" value="0" name="">
+						</td>
+						<td>
+							<div class="switch{if $list.is_hot} active{/if} ml20" title="{if $list.is_hot}是{else}否{/if}" onclick="listTable.switchBt(this, 'toggle_hot', {$list.goods_id})">
+								<div class="circle"></div>
+							</div>
+							<input type="hidden" value="0" name="">
+						</td>
+						<td>
+							<div class="switch{if $list.is_best} active{/if} ml20" title="{if $list.is_best}是{else}否{/if}" onclick="listTable.switchBt(this, 'toggle_best', {$list.goods_id})">
+								<div class="circle"></div>
+							</div>
+							<input type="hidden" value="0" name="">
+						</td>
+                        <td class="audit_status">
+                            {if $list.review_status eq 1}
+                            <font class="org2">{$lang.not_audited}</font>
+                            {elseif $list.review_status eq 2}
+                            <font class="red">{$lang.audited_not_adopt}</font>
+                            <i class="tip yellow" title="{$list.review_content}">{$lang.prompt}</i>
+                            {elseif $list.review_status eq 3}
+                            <font class="green">{$lang.audited_yes_adopt}</font>
+                            {/if}
+                        </td>
+						<td class="ecsc-table-handle tr">
+                            <span><a href="../exchange.php?id={$list.goods_id}&act=view" target="_blank" title="{$lang.view}" class="btn-orange"><i class="icon sc_icon_see"></i><p>{$lang.view}</p></a></span>
+                            <span><a href="exchange_goods.php?act=edit&id={$list.goods_id}" title="{$lang.edit}" class="btn-green"><i class="icon icon-edit"></i><p>{$lang.edit}</p></a></span>
+                            <span><a href="javascript:;" onclick="listTable.remove({$list.goods_id}, '{$lang.drop_confirm}')" title="{$lang.drop}" class="btn-red"><i class="icon icon-trash"></i><p>{$lang.drop}</p></a></span>
+                        </td>
+                    </tr>
+                    {foreachelse}
+                    <tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+                    {/foreach}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td class="td_border" colspan="10">
+                            <div class="shenhe">
+                                <input type="submit" name="drop" id="btnSubmit" value="{$lang.drop}" class="sc-btn btn_disabled" disabled="true" />
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="20">
+                            {include file="page.dwt"}
+                        </td>
+                    </tr>
+                </tfoot>
+                </table>
+                {if $full_page}
+                </div>
+               </form>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript">
+<!--
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+  {literal}
+
+  onload = function()
+  {
+    // 开始检查订单
+    startCheckOrder();
+  }
+
+ /* 搜索文章 */
+ function searchArticle()
+ {
+    listTable.filter.keyword = Utils.trim(document.forms['searchForm'].elements['keyword'].value);
+	listTable.filter.review_status = Utils.trim(document.forms['searchForm'].elements['review_status'].value);
+    listTable.filter.page = 1;
+    listTable.loadList();
+ }
+  {/literal}
+//-->
+</script>
+</body>
+</html>
+{/if}

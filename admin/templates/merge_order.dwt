@@ -1,0 +1,139 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="gift_gard.php?act=bonus_list&bonus_type=2" class="s-back">{$lang.back}</a>{$lang.promotion} - {$ur_here}</div>
+        <div class="content">
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+						<div class="switch_info">
+							<div class="items">
+								<form action="" name="searchForm">
+									<div class="item">
+										<div class="label">{$lang.steps_shop_name}：</div>
+										<div id="store_search"  class="imitate_select select_w320">
+											<div class="cite">{$lang.select_please}</div>
+											<ul>
+											   <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.platform_self}</a></li>
+											   <li><a href="javascript:;" data-value="1" class="ftx-01">{$lang.s_shop_name}</a></li>
+											</ul>
+                                            <input name="store_search" type="hidden" value="-1" id="store_search_val">
+										</div>
+										<div id="merchant_id" style="display:none"  class="imitate_select select_w300">
+											<div class="cite">{$lang.select_please}</div>
+											<ul>
+											   {foreach from=$store_list item=store}
+											   <li><a href="javascript:;" selectid="{$store.ru_id}" class="ftx-01">{$store.store_name}</a></li>
+											   {/foreach}
+											</ul>
+										<input name="merchant_id" type="hidden" value="" id="merchant_id_val">
+										</div>
+										
+										<a href="javascript:void(0);"  onclick="searchMerchant()" class="btn btn30"><i class="icon icon-search"></i>{$lang.search_word}</a>
+									</div>
+								</form>
+								<span id="merge_order">
+									<div class="item">
+										<div class="label">{$lang.to_order_sn}</div>
+										<div class="label_value">
+											<input type="text" name="to_order_sn" id="to_order_sn" class="text" autocomplete="off" />
+											<div id="to_list"  class="imitate_select select_w320">
+												<div class="cite">{$lang.select_please}</div>
+												<ul>
+												</ul>
+											<input name="to_list" type="hidden" value="" id="to_list_val">
+											</div>
+											<input name="to_list" type="hidden" value="" id="to_list_val">
+											<div class="form_prompt"></div>
+										</div>
+									</div>							
+									<div class="item">
+										<div class="label">{$lang.from_order_sn}</div>
+										<div class="label_value">
+											<input type="text" name="from_order_sn" id="from_order_sn" class="text" autocomplete="off" />
+											<div id="from_list"  class="imitate_select select_w320">
+												<div class="cite">{$lang.select_please}</div>
+												<ul>
+												</ul>
+											<input name="from_list" type="hidden" value="" id="from_list_val">
+											</div>
+											<div class="form_prompt"></div>
+										</div>
+									</div>
+								</span>
+								<div class="item">
+									<div class="label">&nbsp;</div>
+									<div class="label_value info_btn">
+										<input name="merge" type="button" id="merge" value="{$lang.merge}" class="button" onclick="if (confirm(confirm_merge)) merge()" />
+									</div>
+								</div>
+							</div>
+						</div>	
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+    {include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+    //活动商品下拉
+    $.divselect("#store_search","#store_search_val",function(){
+        $("#merchant_id").hide();
+        var value = $("#store_search_val").val();
+        if(value == 1){
+            $("#merchant_id").show();
+        }
+    });
+    
+    $.divselect("#to_list","#to_list_val",function(){
+        $("#to_order_sn").val($("#to_list_val").val());
+    });
+    
+    $.divselect("#from_list","#from_list_val",function(){
+        $("#from_order_sn").val($("#from_list_val").val());
+    });
+    
+    function searchMerchant(){
+        var store_search = document.forms['searchForm'].elements['store_search'].value;
+        var merchant_id = document.forms['searchForm'].elements['merchant_id'].value;
+        Ajax.call('order.php?is_ajax=1&act=ajax_merge_order_list','store_search=' + store_search + '&merchant_id=' + merchant_id, searchMerchantResponse, 'POST', 'JSON');
+    }
+    
+    function searchMerchantResponse(result){
+        document.getElementById('merge_order').innerHTML = result.content;
+    }
+    
+    /**
+     * 合并
+     */
+    function merge()
+    {
+        var fromOrderSn = trim(document.getElementById('from_order_sn').value);
+        var toOrderSn = trim(document.getElementById('to_order_sn').value);
+        Ajax.call('order.php?is_ajax=1&act=ajax_merge_order','from_order_sn=o' + fromOrderSn + '&to_order_sn=o' + toOrderSn, mergeResponse, 'POST', 'JSON');
+    }
+    
+    function mergeResponse(result)
+    {
+      // if (result.message.length > 0)
+      // {
+        // alert(result.message);
+      // }
+      // if (result.error == 0)
+      // {
+        //成功则清除用户填写信息
+        // document.getElementById('from_order_sn').value = '';
+        // document.getElementById('to_order_sn').value = '';
+        // location.reload();
+      // }
+    }
+    
+    function trim(str){ //删除左右两端的空格
+　　     return str.replace(/(^\s*)|(\s*$)/g, "");
+　　 }
+    </script>
+</body>
+</html>

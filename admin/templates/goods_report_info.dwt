@@ -1,0 +1,156 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$lang.goods_alt} - {$ur_here}</div>
+            <div class="content">
+            <div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.info.0}</li>
+                    <li>{$lang.operation_prompt_content_common}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="mian-info">
+                    <form method="post" action="goods_report.php" name="theForm" enctype="multipart/form-data"  id="report_form">
+                        <div class="switch_info user_basic" style="display:block;">
+                            <div class="item">
+                                <div class="label">{$lang.report_goods}：</div>
+                                <div class="label_value">
+                                    {$goods_report.goods_name}
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.involve_shop}：</div>
+                                <div class="label_value">
+                                    {$goods_report.shop_name}
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.report_user}：</div>
+                                <div class="label_value">
+                                    {$goods_report.user_name}
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.goods_report_type}：</div>
+                                <div class="label_value">
+                                    {$goods_report.type_name}
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.goods_report_title}：</div>
+                                <div class="label_value">
+                                    {$goods_report.title_name}
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.report_should}：</div>
+                                <div class="label_value">
+                                    {foreach from=$goods_report.img_list item=img}
+                                    <span class="show fl mr10">
+                                        <a target="_blank" href="{$img.img_file}" class="nyroModal"><i class="icon icon-picture" data-tooltipimg="{$img.img_file}" ectype="tooltip" title="tooltip"></i></a>
+                                    </span>
+                                    {/foreach}
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.report_describe}：</div>
+                                <div class="label_value">
+                                    {$goods_report.inform_content}
+                                </div>
+                            </div>
+                            {if $goods_report.report_state eq 0}
+                            <div class="item">
+                                <div class="label">{$lang.handle_type}：</div>
+                                <div class="label_value">
+                                    {foreach from=$handle_type item=handle key=key name=name}
+                                    <div class="checkbox_items">
+                                        <div class="checkbox_item">
+                                            <input type="radio" name="handle_type" class="ui-radio" id="handle_type{$key}" value="{$key}" {if $smarty.foreach.name.first}checked="checked"{/if}>
+                                            <label for="handle_type{$key}" class="ui-radio-label">{$handle}</label> 
+                                        </div>
+                                    </div>
+                                    {/foreach}
+                                    <div class="form_prompt"></div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.handle_message}：</div>
+                                <div class="label_value">
+                                    <textarea class="textarea" name="handle_message" id="type_desc">{$goods_report.handle_message}</textarea>
+                                    <div class="form_prompt"></div>
+                                </div>
+                            </div>
+                            {elseif $goods_report.report_state eq 1}
+                            <div class="item">
+                                <div class="label">{$lang.handle_type}：</div>
+                                <div class="label_value">
+                                    {$lang.inform_handle_type.$goods_report.handle_type}
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.handle_message}：</div>
+                                <div class="label_value">
+                                    {$goods_report.handle_message}
+                                </div>
+                            </div>
+                            {/if}
+                            <div class="item">
+                                <div class="label">&nbsp;</div>
+                                <div class="label_value info_btn mt0">
+                                    {if $goods_report.report_state eq 0}
+                                        <a href="javascript:;" class="button" id="submitBtn">{$lang.button_submit}</a>
+                                        <input type="hidden" name="act" value="submit_handle" />
+                                        <input type="hidden" name="report_id" value="{$goods_report.report_id}" />
+                                    {else}
+                                        <a href="goods_report.php?act=list" class="button" id="submitBtn">{$lang.back}</a>
+                                    {/if}
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+		//表单验证
+		$(function(){
+			$("#submitBtn").click(function(){
+				if($("#report_form").valid()){
+					$("#report_form").submit();
+				}
+			});
+		
+			$('#report_form').validate({
+				errorPlacement:function(error, element){
+					var error_div = element.parents('div.label_value').find('div.form_prompt');
+					element.parents('div.label_value').find(".notic").hide();
+					error_div.append(error);
+				},
+				rules:{
+					handle_type:{
+						required:true
+					},
+                    handle_message:{
+						required:true
+					}
+				},
+				messages:{
+					handle_type:{
+						required:'<i class="icon icon-exclamation-sign"></i>'+handle_type_null
+					},
+                    handle_message:{
+						required:'<i class="icon icon-exclamation-sign"></i>'+handle_message_null
+					}
+				}
+			});
+		});
+    </script>
+</body>
+</html>

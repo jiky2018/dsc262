@@ -1,0 +1,131 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.11_system} - {$ur_here}</div>
+        <div class="content">			
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit">
+					<i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span>
+                    {if $open eq 1}
+                    <div class="view-case">
+                    	<div class="view-case-tit"><i></i>{$lang.view_tutorials}</div>
+                        <div class="view-case-info">
+                        	<a href="http://help.ecmoban.com/article-6898.html" target="_blank">{$lang.tutorials_bonus_list_one}</a>
+                        </div>
+                    </div>			
+                    {/if}	
+				</div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.list.0}</li>
+                    <li>{$lang.operation_prompt_content.list.1}</li>
+                    <li>{$lang.operation_prompt_content.list.2}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-head">
+                    <div class="fl">
+                    	<a href="{$action_link.href}"><div class="fbutton"><div class="add" title="{$action_link.text}"><span><i class="icon icon-plus"></i>{$action_link.text}</span></div></div></a>
+                    </div>				
+                    <div class="refresh">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+                </div>
+                <div class="common-content">
+                	<div class="list-div" id="listDiv">
+						{/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                	<th width="30%"><div class="tDiv">{$lang.item_name}</div></th>
+                                    <th width="15%"><div class="tDiv">{$lang.item_ifshow}</div></th>
+                                    <th width="15%"><div class="tDiv">{$lang.item_opennew}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.item_vieworder}</div></th>
+                                    <th width="15%"><div class="tDiv">{$lang.item_type}</div></th>
+                                    <th width="15%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+								{foreach from=$navdb item=val}
+                            	<tr>
+                                    <td>
+                                        <div class="tDiv">
+                                            <!-- {if $val.id} -->{$val.name}<!-- {else} -->&nbsp;<!-- {/if} -->									
+                                        </div>
+                                    </td>
+									<td>
+                                        <div class="tDiv">
+                                            <!-- {if $val.id} -->
+                                            <div class="switch {if $val.ifshow}active{/if}" title="{if $val.ifshow}是{else}否{/if}" onclick="listTable.switchBt(this, 'toggle_ifshow', {$val.id})">
+                                                <div class="circle"></div>
+                                            </div>
+                                            <input type="hidden" value="0" name="">
+                                            <!-- {/if} -->									
+                                        </div>
+                                    </td>
+									<td>
+                                        <div class="tDiv">
+                                            <!-- {if $val.id} -->
+                                            <div class="switch {if $val.opennew}active{/if}" title="{if $val.opennew}是{else}否{/if}" onclick="listTable.switchBt(this, 'toggle_opennew', {$val.id})">
+                                                <div class="circle"></div>
+                                            </div>
+                                            <input type="hidden" value="0" name="">
+                                            <!-- {/if} -->
+                                        </div>
+                                    </td>
+									<td>
+                                        <div class="tDiv">
+                                            <!-- {if $val.id} -->
+                                            <input type="text" name="sort_order" class="text w40" value="{$val.vieworder}" onkeyup="listTable.editInput(this, 'edit_sort_order', {$val.id})"/>
+                                            <!-- {/if} -->									
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="tDiv">
+                                            <!-- {if $val.id} -->{$lang[$val.type]}<!-- {/if} -->									
+                                        </div>
+                                    </td>                               
+                                    <td class="handle">
+                                        <div class="tDiv a2">
+                                            <!-- {if $val.id} -->
+                                            <a href="navigator.php?act=edit&id={$val.id}" class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>
+                                            <a href="navigator.php?act=del&id={$val.id}" onclick="return confirm('{$lang.ckdel}');" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>
+                                            <!-- {/if} -->
+                                        </div>
+                                    </td>
+                                </tr>
+                                {foreachelse}
+                                    <tr><td class="no-records" colspan="20">{$lang.no_records}</td></tr>								
+								{/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="10">
+                                    	<div class="list-page">
+                                           {include file="library/page.lbi"}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+						{if $full_page}
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+ 	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+	</script>
+</body>
+</html>
+{/if}

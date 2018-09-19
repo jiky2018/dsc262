@@ -1,0 +1,162 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <form method="post" action="" name="listForm" onsubmit="return confirm(batch_drop_confirm);">
+                <div class="explanation clear" id="explanation">
+                    <div class="ex_tit"><i class="sc_icon"></i><h4>温馨提示</h4></div>
+                    <ul>
+                        <li>当前页面仅显示确认收货订单。</li>
+                        <li>运费金额将不计入收取佣金。</li>
+                        <li>退单金额将不计入收取佣金。</li>
+                        <li>【订单】：表示是按店铺比例或者分类比例</li>
+                    	<li>【商品】：表示是商品单独设置比例结算</li>
+                    </ul>
+                </div>
+                
+                <div class="list-div" id="listDiv">
+                	{/if}
+                  	<table class="ecsc-default-table goods-default-table mt20">	
+                    <thead>
+                    <tr>
+                      <th width="7%">{$lang.record_id}</th>
+                      <th width="28%" class="tl">订单总金额</th>
+                      {if $is_dir}<th width="10%">分销金额</th>{/if}
+                      {if $filter.commission_model neq 1}<th width="10%" class="tl">比例</th>{/if}
+                      <th width="15%">收取佣金</th>
+                      <th width="15%">本期应结</th>
+                      <th width="10%">订单状态</th>
+                      <th>{$lang.handler}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {foreach from=$bill_list item=bill name=nobill}
+                    <tr>
+                      <td class="bdr" rowspan="2">
+                        <div class="number">{$bill.id}</div>
+                      </td>
+                      <td class="tl">
+                      	<div class="tc_items pl10">
+                      		<div class="item">订单总金额：{$bill.format_order_amount}<em class="org2">(含运费)</em></div>
+                            <div class="item">
+                            {if $bill.goods_rate && $bill.should_amount > 0}
+                            	{$lang.effective_settlement_amount}：
+                                {if $bill.commission_total_fee neq 0}
+                                <p class="red">&nbsp;&nbsp;&nbsp;&nbsp;{$bill.format_commission_total_fee}【{$lang.edit_order}】</p>
+                                {/if}
+                                <p class="red">&nbsp;&nbsp;&nbsp;&nbsp;{$bill.goods_rate.format_total_fee}【{$lang.goods_alt}】</p>
+                                <p><em class="org2">&nbsp;&nbsp;&nbsp;&nbsp;({$lang.freight_charges_not})</em></p>
+                            {else}
+                            	{$lang.effective_settlement_amount}：{$bill.format_commission_total_fee}<em class="org2">({$lang.freight_charges_not})</em>
+                            {/if}
+                            </div>
+                            <div class="item">运费金额：{$bill.format_shipping_fee}</div>
+                            <div class="item">退单金额：{$bill.format_return_amount}</div>
+                        </div>
+                      </td>
+                      {if $is_dir}
+                      <td>{$bill.format_drp_money}</td>
+                      {/if}
+                      {if $filter.commission_model neq 1}
+                      <td class="tl">
+                      	<div class="tc_items">
+                      		<div class="item">收取比例：{$bill.gain_proportion}%</div>
+                            <div class="item">应结比例：{$bill.should_proportion}%</div>
+                        </div>
+                      </td>
+                      {/if}
+                      <td>
+                      	{if $bill.chargeoff_status neq 0 && $bill.model eq 0}
+                        	{if $bill.is_goods_rate eq 1}
+                            	<em class="red">【商品】</em>
+                            {else}
+                                <em class="red">【订单】：{$bill.gain_proportion}%</em>
+                                <br/>
+                            {/if}
+                        {/if}
+                        
+                        {if $bill.goods_rate && $bill.gain_commission > 0}
+                            <p class="red"> + {$bill.gain_commission}【订单】</p>
+                            <p class="red"> + {$bill.goods_rate.gain_commission}【商品】</p>
+                        {/if}
+                        <p>
+                            {if $bill.goods_rate && $bill.gain_commission > 0}={/if}{$bill.format_gain_commission}
+                            <br/>
+                            <em class="org2">(不含运费)</em>
+                        </p>
+                      </td>
+                      
+                      <td>
+                      	{if $bill.chargeoff_status neq 0 && $bill.model eq 0}
+                        	<p>
+                        	{if $bill.is_goods_rate eq 1}
+                            	<em class="red">【商品】</em>
+                            {else}
+                                <em class="red">【订单】：{$bill.should_proportion}%</em>
+                                <br/>
+                            {/if}
+                            </p>
+                        {/if}
+                        
+                        {if $bill.goods_rate && $bill.should_amount > 0}
+                            <p class="red"> + {$bill.should_amount}【订单】</p>
+                            <p class="red"> + {$bill.goods_rate.should_amount}【商品】</p>
+                        {/if}
+                        <p>
+                            {if $bill.goods_rate && $bill.should_amount > 0}={/if}{$bill.format_should_amount}
+                            <br/>
+                            <em class="org2">(含运费)</em>
+                        </p>
+                      </td>
+                      <td>{$lang.os[$bill.order_status]}<br />{$lang.ps[$bill.pay_status]}<br />{$lang.ss[$bill.shipping_status]}</td>
+                      <td class="ecsc-table-handle">
+                      	<span><a href="merchants_commission.php?act=bill_goods&order_id={$bill.order_id}&seller_id={$filter.seller_id}&commission_model={$filter.commission_model}" class="btn-orange"><i class="sc_icon_see"></i><p>订单明细</p></a></span>
+                      </td>
+                    </tr>
+                    <tr class="row_header">
+                        <td colspan="10">
+                        	<div class="fl pl10 mr10">
+                                <em class="fl">订单编号：</em>
+                                <em class="fl">{$bill.order_sn}</em>
+                            </div>
+                            <div class="fl">
+                            	{if $bill.is_settlement}<p class="red">【{if $bill.chargeoff_before eq 1}出账前：{elseif $bill.chargeoff_before eq 2}出账后：{/if}手动结算】</p>{/if}
+                            </div>
+                        </td>
+                    </tr>
+                    {foreachelse}
+                    <tr><td class="no-records" colspan="20">{$lang.no_records}</td></tr>
+                    {/foreach}
+                    </tbody>
+                  	</table>
+                  	{include file="page.dwt"}
+                	{if $full_page}
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript">
+	listTable.recordCount = {$record_count};
+	listTable.pageCount = {$page_count};
+	listTable.query = "bill_detail_query";
+	
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+</script>
+</body>
+</html>
+{/if}

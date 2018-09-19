@@ -1,0 +1,141 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+		{include file ='library/seller_menu_left.lbi'}
+		<div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+            	{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <form method="post" action="" name="listForm">
+                <!-- start ad position list -->
+                <div class="list-div" id="listDiv">
+				{/if}
+                    <table cellpadding="1" cellspacing="1" class="ecsc-default-table mt20">
+                        <thead>
+                        <tr>
+                            <th width="5%"><a href="javascript:listTable.sort('ad_id'); ">{$lang.record_id}</a>{$sort_ad_id}</th>
+                            <th width="15%"><a href="javascript:listTable.sort('ad_name'); ">{$lang.ad_name}</a>{$sort_ad_name}</th>
+                            <th width="15%"><a href="javascript:listTable.sort('position_id'); ">{$lang.position_id}</a>{$sort_position_id}</th>
+                            <th width="15%"><a href="javascript:listTable.sort('media_type'); ">{$lang.media_type}</a>{$sort_media_type}</th>
+                            <th width="10%"><a href="javascript:listTable.sort('start_date'); ">{$lang.start_date}</a>{$sort_start_date}</th>
+                            <th width="10%"><a href="javascript:listTable.sort('end_date'); ">{$lang.end_date}</a>{$sort_end_date}</th>
+                            <th width="6%"><a href="javascript:listTable.sort('click_count'); ">{$lang.click_count}</a>{$sort_click_count}</th>
+                            <th width="6%">{$lang.ads_stats}</th>
+                            <th width="10%">{$lang.handler}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {foreach from=$ads_list item=list}
+                        <tr>
+                            <td align="center">{$list.ad_id}</td>
+                            <td class="first-cell">
+                            	<span onclick="javascript:listTable.edit(this, 'edit_ad_name', {$list.ad_id})">{$list.ad_name|escape:html}</span>
+                            </td>
+                            <td align="left">{if $list.position_id eq 0}{$lang.outside_posit}{else}{$list.position_name}{/if}
+                            </td>
+                            <td valign="middle">
+                                <div class="tDiv">
+                                            {if ($list.type == $lang.imgage)}
+                                            <span class="show">
+                                                <a href="{if strpos($list.ad_code,'www')}{$list.ad_code}{else}../data/afficheimg/{$list.ad_code}{/if}" class="nyroModal" target="_blank"><i class="icon icon-picture" onmouseover="toolTip('<img src={if strpos($list.ad_code,'www')}{$list.ad_code}{else}../data/afficheimg/{$list.ad_code}{/if}>')" onmouseout="toolTip()"></i></a>
+                                            </span>
+                                            {/if}
+                                        </div>
+                            </td>
+                            <td align="center">{$list.start_date}</td>
+                            <td align="center">{$list.end_date}</td>
+                            <td align="center">{$list.click_count}</td>
+                            <td align="center">{$list.ad_stats}</td>
+                            <td class="ecsc-table-handle tr">
+                              {if $list.position_id eq 0}
+                              <span><a href="ads.php?act=add_js&type={$list.media_type}&id={$list.ad_id}" title="{$lang.view}" class="btn-orange"><i class="icon sc_icon_see"></i><p>{$lang.view}</p></a></span>
+                              {/if}
+                              <span><a href="ads.php?act=edit&id={$list.ad_id}" title="{$lang.edit}" title="{$lang.edit}" class="btn-green"><i class="icon icon-edit"></i><p>{$lang.edit}</p></a></span>
+                              <span><a href="javascript:;" onclick="listTable.remove({$list.ad_id}, '{$lang.drop_confirm}')" title="{$lang.drop}" class="btn-red"><i class="icon icon-trash"></i><p>{$lang.drop}</p></a></span>
+                            </td>
+                        </tr>
+                        {foreachelse}
+                        <tr><td class="no-records" colspan="10">{$lang.no_ads}</td></tr>
+                        {/foreach}
+                        </tbody>
+                        <tfoot>
+                        	<tr><td colspan="10">{include file="page.dwt"}</td></tr>
+                        </tfoot>
+                    </table>
+                    <table cellpadding="1" cellspacing="1" class="table_page">
+                      <tr>
+                        <td align="right" nowrap="true" colspan="10"></td>
+                      </tr>
+                    </table>
+				{if $full_page}
+                </div>
+				<!-- end ad_position list -->
+				</form>
+            </div>
+        </div>
+    </div>
+</div>
+{include file="library/seller_footer.lbi"}
+{if $full_page}
+<script type="text/javascript" src="../js/jquery.picTip.js"></script>
+<script type="text/javascript">
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+  {literal}
+  onload = function()
+  {
+    startCheckOrder();
+  }
+  
+  {if $priv_ru eq 1}
+	function get_store_search(val){
+		if(val == 1){
+			document.forms['searchForm'].elements['merchant_id'].style.display = '';
+			document.forms['searchForm'].elements['store_keyword'].style.display = 'none';
+			document.forms['searchForm'].elements['store_type'].style.display = 'none';
+		}else if(val == 2){
+			document.forms['searchForm'].elements['merchant_id'].style.display = 'none';
+			document.forms['searchForm'].elements['store_keyword'].style.display = '';
+			document.forms['searchForm'].elements['store_type'].style.display = 'none';
+		}else if(val == 3){
+			document.forms['searchForm'].elements['merchant_id'].style.display = 'none';
+			document.forms['searchForm'].elements['store_keyword'].style.display = '';
+			document.forms['searchForm'].elements['store_type'].style.display = '';
+		}else{
+			document.forms['searchForm'].elements['merchant_id'].style.display = 'none';
+			document.forms['searchForm'].elements['store_keyword'].style.display = 'none';
+			document.forms['searchForm'].elements['store_type'].style.display = 'none';
+		}
+	}
+	{/if}
+  
+  function searchAd_position()
+    {
+		{if $priv_ru eq 1}
+		listTable.filter['store_search'] = Utils.trim(document.forms['searchForm'].elements['store_search'].value);
+		listTable.filter['merchant_id'] = Utils.trim(document.forms['searchForm'].elements['merchant_id'].value);
+		listTable.filter['store_keyword'] = Utils.trim(document.forms['searchForm'].elements['store_keyword'].value);
+		listTable.filter['store_type'] = Utils.trim(document.forms['searchForm'].elements['store_type'].value);
+		{/if}
+		
+        listTable.filter['keyword'] = Utils.trim(document.forms['searchForm'].elements['keyword'].value);
+        listTable.filter['page'] = 1;
+
+        listTable.loadList();
+    }
+  {/literal}
+</script>
+{/if}
+</body>
+</html>
+{/if}

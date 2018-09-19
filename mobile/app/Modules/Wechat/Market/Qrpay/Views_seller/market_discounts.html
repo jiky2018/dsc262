@@ -1,0 +1,95 @@
+
+<div class="wrapper-right of">
+    <div class="tabmenu">
+        <ul class="tab">
+            <li><a href="{url('market_list', array('type' => $config['keywords']))}" class="s-back">返回</a></li>
+            <li><a href="{url('market_list', array('type' => $config['keywords']))}" > 收款码</a></li>
+            <li><a href="{url('data_list', array('type' => $config['keywords'], 'function' => 'qrpay_log_list'))}">收款记录</a></li>
+            <li role="presentation" class="active"><a href="{url('data_list', array('type' => $config['keywords'], 'function' => 'qrpay_discounts'))}">收款码优惠</a></li>
+            <li><a href="{url('data_list', array('type' => $config['keywords'], 'function' => 'qrpay_tag_list'))}">标签管理</a></li>
+        </ul>
+    </div>
+
+    <div class="explanation" id="explanation">
+        <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4></div>
+        <ul>
+            <li>1. 收款码优惠是一种针对扫描二维码支付的营销活动，通过设置一定额度的优惠，鼓励消费者使用二维码支付。</li>
+            <li>2. 添加新的优惠活动需要先将不需要的优惠活动设置失效。</li>
+            <li>3. 失效后的优惠活动不可再编辑与使用，只做记录查询使用。</li>
+        </ul>
+    </div>
+
+	<div class="wrapper-list mt20" >
+        <div class="common-head">
+            <div class="fl mb10">
+                {if $disabled_num == '1'}
+                <a href="javascript:;" class="sc-btn sc-blue-btn disabled dis-bg" ><div class="fbutton"><div class="add disabled" title="添加优惠"><span><i class="fa fa-plus"></i>添加优惠</span></div></div></a>
+                {else}
+                <a href="{url('data_list', array('type' => $config['keywords'], 'function' => 'qrpay_discounts', 'handler' => 'edit', 'id' => $config['market_id']))}" class="sc-btn sc-blue-btn"  ><div class="fbutton"><div class="add " title="添加优惠"><span><i class="fa fa-plus"></i>添加优惠</span></div></div></a>
+                {/if}
+            </div>
+        </div>
+
+        <div class="list-div" id="listDiv">
+        <table id="list-table" class="ecsc-default-table" style="">
+            <thead>
+            <tr class="text-center">
+                <th class="col-sm-2 text-center">收款码优惠</th>
+                <th class="col-sm-1 text-center">当前状态</th>
+                <th class="col-sm-3 text-center">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {foreach $list as $val}
+            <tr class="text-center">
+                <td>{$val['dis_name']}</td>
+                <td>{$val['status_fromat']}</td>
+                <td class="handle">
+                <div class="tDiv a2">
+                    {if $val['status'] == '1'}
+                    <a class="btn_edit" href="{url('data_list', array('type' => $config['keywords'], 'function' => 'qrpay_discounts', 'handler' => 'edit', 'id' => $val['id']))}"><i class="fa fa-edit"></i>编辑</a>
+                    <a class="btn_trash disabled_dis" href="javascript:;" data-href="{url('market_action', array('type' => $config['keywords'], 'handler' => 'disabled', 'id' => $val['id']))}"  title="使失效" ><i class="fa fa-ban"></i>使失效</a>
+                    {/if}
+                </div>
+                </td>
+            </tr>
+            {/foreach}
+            </tbody>
+            {if empty($list)}
+            <tbody>
+                <tr><td class="no-records" colspan="3">没有找到任何记录</td></tr>
+            </tbody>
+            {/if}
+            </table>
+        </div>
+
+        {include file="seller_pageview"}
+
+    </div>
+
+</div>
+<script type="text/javascript">
+$(function(){
+
+    // 使优惠活动失效
+    $(".disabled_dis").click(function(){
+        var url = $(this).attr("data-href");
+        //询问框
+        layer.confirm('您确定要将优惠活动设置为失效吗？失效后无法再编辑和使用', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            $.get(url, '', function(data){
+                layer.msg(data.msg);
+                if(data.error == 0 ){
+                    if(data.url != ''){
+                        window.location.href = data.url;
+                    }else{
+                        window.location.reload();
+                    }
+                }
+                return false;
+            }, 'json');
+        });
+    });
+})
+</script>

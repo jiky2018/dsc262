@@ -1,0 +1,76 @@
+{include file="pageheader"}
+<style>
+#footer {position: static;bottom:0px;}
+</style>
+<div class="wrapper">
+	<div class="title">{$lang['wechat_menu']} - 素材管理</div>
+	<div class="content_tips">
+			<div class="tabs_info">
+			    <ul>
+                     <li role="presentation"><a href="{url('article')}">图文消息</a></li>
+                     <li role="presentation" class="curr"><a href="{url('picture')}">图片</a></li>
+                     <li role="presentation"><a href="{url('voice')}">语音</a></li>
+                     <li role="presentation"><a href="{url('video')}">视频</a></li>
+			     </ul>
+			</div>
+            <div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4><span id="explanationZoom" title="收起提示"></span></div>
+                <ul>
+                    <li>图片素材： 包含图文素材中的图片，以及单张上传的图片。</li>
+                    <li>★ 图片大小: 不超过1M, 格式: jpg。</li>
+                </ul>
+            </div>
+			<div class="flexilist">
+    			<form action="{url('picture')}" method="post" enctype="multipart/form-data" id="picForm">
+    			    <div class="form-group of">
+    			     	<div class="type-file-box">
+	    			        <a href="javascript:;" class="type-file-button updata_pic" style="margin-right:20px;"></a>
+	    			        <input type="file" name="pic" style="display: none;" onChange="$('#picForm').submit();" />
+    			        </div>
+    			    </div>
+    			</form>
+    			<div class="row" style="margin:0;">
+    			{foreach $list as $v}
+                    <div class="col-xs-4 col-md-2 col-lg-2 thumbnail" style="margin-right:10px;">
+                        <img alt="{$v['file_name']}" src="{$v['file']}" class="img-rounded" style="height:220px" />
+                        <p class="text-muted" style="word-wrap:break-word;word-break:normal;">{$v['file_name']}</p>
+                        <p class="text-muted">{$v['size']}</p>
+                        <div class="bg-info">
+                            <ul class="nav nav-pills nav-justified" role="tablist">
+                            <li role="presentation"><a href="{url('download', array('id'=>$v['id']))}" title="下载" class="ectouch-fs18"><span class="glyphicon glyphicon-download-alt"></span></a></li>
+                            <li role="presentation"><a href="{url('media_edit', array('id'=>$v['id']))}" title="编辑" class="ectouch-fs18 fancybox fancybox.iframe"><span class="glyphicon glyphicon-pencil"></span></a></li>
+                            <li role="presentation">
+                            {if $v['is_prize'] == 1}
+                            <a href="javascript:;" title="禁止删除" class="ectouch-fs18">
+                            {else}
+                            <a href="javascript:if(confirm('{$lang['confirm_delete']}')){window.location.href='{url('media_del', array('id'=>$v['id']))}'};" title="删除" class="ectouch-fs18">
+                            {/if}
+                            <span class="glyphicon glyphicon-trash"></span></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                {/foreach}
+                </div>
+			</div>
+		    <div class="list-div of">
+	        	<table cellspacing="0" cellpadding="0" border="0">
+			        <tfoot>
+			        	<tr>
+			                <td colspan="7">
+			                	{include file="pageview"}
+			                </td>
+			            </tr>
+			        </tfoot>
+		        </table>
+		    </div>
+	</div>
+</div>
+<script type="text/javascript">
+$(function(){
+	$(".updata_pic").click(function(){
+	    $("input[name=pic]").click();
+	});
+})
+</script>
+
+{include file="pagefooter"}

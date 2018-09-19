@@ -1,0 +1,109 @@
+{include file="pageheader"}
+<div class="wrapper">
+    <div class="title">{$lang['wechat_menu']} - {$lang['templates']}</div>
+	<div class="content_tips">
+        <div class="explanation" id="explanation">
+        	<div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4><span id="explanationZoom" title="收起提示"></span></div>
+            <ul>
+            	<li>消息提醒，即微信模板消息，需要先登录微信公众号平台右侧菜单，添加插件，申请开通模板消息。</li>
+                <li>然后选择填写所在行业： IT科技/互联网|电子商务，如果有其他行业则选填：IT科技/电子技术。每月可更改1次所选行业</li>
+                <li>启用列表所需要的模板消息，即可在相应事件触发模板消息；编辑模板消息备注，可增加显示自定义提示消息内容</li>
+                <li>每个公众号账号可以同时使用25个模板，超过将无法使用模板消息功能。</li>
+            </ul>
+        </div>
+        <div class="flexilist">
+            <div class="common-head industry">
+                {if $industry}
+                <div class="h34">所在行业：主营行业 <span>{$industry.primary_industry.first_class}</span> / <span>{$industry.primary_industry.second_class}</span>， 副营行业 <span>{$industry.secondary_industry.first_class}</span> / <span>{$industry.secondary_industry.second_class}</span> 。 <a href="#inline" class="btn_edit fancybox "><i class="fa fa-edit"></i>修改行业</a></div>
+                {else}
+                <div class="h34">{$error}</div>
+                {/if}
+            </div>
+            <div class="common-content">
+                <div class="list-div">
+                <table cellspacing="0" cellpadding="0" border="0">
+                    <tr>
+                        <th class="text-center">{$lang['template_title']}</th>
+                        <th class="text-center">{$lang['template_code']}</th>
+                        <th class="text-center">{$lang['wechat_add_time']}</th>
+                        <th class="text-center">{$lang['handler']}</th>
+                    </tr>
+                    <from method="get" action="{url(is_switch)}" >
+                    {foreach $list as $key=>$val}
+                    <tr>
+                        <td  class="text-center">{$val['title']}</td>
+                        <td  class="text-center">{$val['code']}</td>
+                        <td  class="text-center">{$val['add_time']}</td>
+                        <td class="handle text-center">
+                            <div class="tDiv a3">
+                                {if $val['status'] == 1}
+                                <a href="{url('switch', array('id'=>$val['id'], 'status'=>0))}" class="btn_trash" title="点击禁用"><i class="fa fa-toggle-on"></i>已{$lang['enabled']}</a>
+                                {else}
+                                <a href="{url('switch', array('id'=>$val['id'], 'status'=>1))}" class="btn_trash" title="点击启用"><i class="fa fa-toggle-off"></i>已{$lang['disabled']}</a>
+                                {/if}
+
+                                <a href="{url('edit_template', array('id' => $val['id']))}" class="btn_edit fancybox fancybox.iframe"><i class="fa fa-edit"></i>{$lang['wechat_editor']}</a>
+
+                                <a class="btn_trash reset-template"  href="javascript:;" data-href="{url('reset_template', array('id' => $val['id']))}"  title="{$lang['reset']}"><i class="fa fa-repeat"></i>{$lang['reset']}</a>
+                           </div>
+
+                        </td>
+                    </tr>
+                    {/foreach}
+                    </form>
+                </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="display:none">
+     <div id="inline" class="industry" style="width:500px; height: auto; overflow:hidden">
+        <div class="label_value h34 mr20">
+            <form action="{url('template')}" method="post">
+            <div class="fl" >
+                <select name="data[primary_industry]" class="select">
+                    <option value='0' >选择主行业</option>
+                    <option value="1" >IT科技 / 互联网|电子商务</option>
+
+                </select>
+            </div>
+            <div class="fl pl10 mr10" >
+                <select name="data[secondary_industry]" class="select">
+                    <option value='0' >选择副行业</option>
+                    <option value="4" >IT科技 / 电子技术</option>
+                </select>
+            </div>
+            <input type="submit" class="button bg-green" value="确定" />
+            </form>
+        </div>
+     </div>
+</div>
+
+<script type="text/javascript">
+$(function(){
+    // 重置模板消息
+    $(".reset-template").click(function(){
+        var url = $(this).attr("data-href");
+        //询问框
+        layer.confirm('您确定要重置模板消息吗？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            $.get(url, '', function(data){
+                layer.msg(data.msg);
+                if(data.error == 0 ){
+                    if(data.url){
+                        window.location.href = data.url;
+                    }else{
+                        window.location.reload();
+                    }
+                }
+                return false;
+            }, 'json');
+        });
+    });
+})
+</script>
+
+{include file="pagefooter"}

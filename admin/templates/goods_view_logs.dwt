@@ -1,0 +1,118 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.view_logs.0}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+				<form method="POST" action="goods.php?act=log_batch_drop" name="listForm">
+                	<div class="list-div" id="listDiv">
+						{/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                    <th width="4%"><div class="tDiv">{$lang.record_id}</div></th>
+                                    <th width="9%"><div class="tDiv">{$lang.shop_price}</div></th>
+                                    <th width="9%"><div class="tDiv">{$lang.fixed_freight}</div></th>
+                                    <th width="9%"><div class="tDiv">{$lang.promotion_price}</div></th>
+                                    <th width="9%"><div class="tDiv">{$lang.user_price}</div></th>
+                                    <th width="9%"><div class="tDiv">{$lang.step_price}</div></th>
+                                    <th width="9%"><div class="tDiv">{$lang.consumption_integral}</div></th>
+									<th width="9%"><div class="tDiv">{$lang.rank_integral}</div></th>
+									<th width="9%"><div class="tDiv">{$lang.goods_weight}</div></th>
+									<th width="9%"><div class="tDiv">{$lang.is_on_sale}</div></th>
+                                    <th width="12%"><div class="tDiv">{$lang.handler_info}</div></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            	{foreach from=$log_list item=list key=key name=nolist}
+                                <tr>
+                                    <td>
+                                    	<div class="tDiv">
+                                        	{$list.log_id}
+                                            <input type="checkbox" name="checkboxes[]" value="{$list.log_id}" class="checkbox hide" id="checkbox_{$list.log_id}" />
+                                            <label for="checkbox_{$list.log_id}" class="checkbox_stars hide"></label>
+                                    	</div>
+                                    </td>
+									<td><div class="tDiv">{if $list.old_record}{$lang.primary}：{else}{$lang.present}：{/if}{$list.shop_price}</div></td>
+                                    <td><div class="tDiv">{if $list.old_record}{$lang.primary}：{else}{$lang.present}：{/if}{$list.shipping_fee}</font></div></td>
+                                    <td><div class="tDiv">{if $list.old_record}{$lang.primary}：{else}{$lang.present}：{/if}{$list.promote_price}</div></td>
+                                    <td><div class="tDiv">{if $list.old_record}{$lang.primary}：{else}{$lang.present}：{/if}<a href="javascript:;" ectype="view_detail" data-logid="{$list.log_id}" data-step="member">查看详情</a></div></td>
+									<td><div class="tDiv">{if $list.old_record}{$lang.primary}：{else}{$lang.present}：{/if}<a href="javascript:;" ectype="view_detail" data-logid="{$list.log_id}" data-step="volume">查看详情</a></div></td>
+                                    <td><div class="tDiv">{if $list.old_record}{$lang.primary}：{else}{$lang.present}：{/if}{$list.give_integral}</font></div></td>
+                                    <td><div class="tDiv">{if $list.old_record}{$lang.primary}：{else}{$lang.present}：{/if}{$list.rank_integral}</div></td>
+                                    <td><div class="tDiv">{if $list.old_record}{$lang.primary}：{else}{$lang.present}：{/if}{$list.goods_weight}</div></td>
+									
+									<td><div class="tDiv">{if $list.old_record}{$lang.primary}：{else}{$lang.present}：{/if}{if $list.is_on_sale}{$lang.on_sale_in}{else}{$lang.not_on_sale_in}{/if}</div></td>
+                                    <td>
+                                    	<div class="tDiv">
+                                        	<p>{$list.admin_name}</p>
+                                            <p>{$list.handle_time}</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {foreachelse}
+								<tr><td class="no-records" colspan="12">{$lang.no_records}</td></tr>
+								{/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="12">
+                                        <div class="tDiv">
+                                            <div class="list-page">
+                                                {include file="library/page.lbi"}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+						{if $full_page}
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+ 	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+	listTable.query = 'view_query';
+
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+	listTable.filter.goodsId = {$goods_id};
+	
+	$(document).on("click","a[ectype='view_detail']",function(){
+		var log_id = $(this).data('logid');
+		var step = $(this).data('step');
+		
+		$.jqueryAjax('goods.php', 'act=view_detail' + '&log_id=' + log_id + '&step=' + step, function(data){
+			var content = data.content;
+			pb({
+				id:"categroy_dialog",
+				title:"{$lang.view_info}",
+				width:560,
+				content:content,
+				ok_title:"{$lang.button_submit_alt}",
+				cl_title:"{$lang.cancel}",
+				drag:true,
+				foot:false
+			});
+		});
+	});
+    </script>
+</body>
+</html>
+{/if}

@@ -1,0 +1,84 @@
+<!-- $Id -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+				{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <form name="theForm" method="get" action="order.php" onsubmit="return check()">
+                <div class="list-div">
+                <table class="table_item" width="100%">
+                    <tr>
+                      <td class="label">{$lang.label_refund_amount}</td>
+                      <td>{$formated_refund_amount}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">{$lang.label_handle_refund}</td>
+                        <td>
+                            <dd>
+                                <div class="checkbox_items">
+                                    {if !$anonymous}<div class="checkbox_item"><input type="radio" class="ui-radio" name="refund" value="1" id="refund_1" checked="checked" autocomplete="off" /><label class="ui-radio-label" for="refund_1">{$lang.return_user_money}</label></div>{/if}
+                                    <div class="checkbox_item"><input type="radio" class="ui-radio" name="refund" value="2" id="refund_2" {if $anonymous}checked="checked"{/if} autocomplete="off" /><label class="ui-radio-label" for="refund_2">{$lang.create_user_account}</label></div>
+                                    <div class="checkbox_item"><input name="refund" type="radio" class="ui-radio" value="3" id="refund_3" autocomplete="off" /><label class="ui-radio-label" for="refund_3">{$lang.not_handle}</label></div>
+                                </div>
+                            </dd>
+                        </td>
+                    </tr>
+                  <tr>
+                    <td class="label">{$lang.label_refund_note}</td>
+                    <td><textarea name="refund_note" cols="60" rows="3" id="refund_note" class="textarea fl">{$refund_note}</textarea></td>
+                  </tr>
+                  <tr>
+                  	<td></td>
+                    <td>
+                        <div class="td_btn">
+                            <input type="submit" name="submit" value="{$lang.button_submit}" class="button mr10" />
+                            <input type="button" name="back" value="{$lang.back}" class="button" onclick="history.back()" />
+                            <input type="hidden" name="order_id" value="{$order_id}" />
+                            <input type="hidden" name="func" value="refund" />
+                            <input type="hidden" name="act" value="process" />
+                            <input type="hidden" name="refund_amount" value="{$refund_amount}" />
+                        </div>
+                     </td>
+                  </tr>
+                </table>
+                </div>
+                </form>
+            </div>
+         </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script language="JavaScript">
+{literal}
+  function check()
+  {
+    var selected = false;
+    for (var i = 0; i < document.forms['theForm'].elements.length; i++)
+    {
+      ele = document.forms['theForm'].elements[i];
+      if (ele.tagName == 'INPUT' && ele.name == 'refund' && ele.checked)
+      {
+        selected = true;
+        break;
+      }
+    }
+    if (!selected)
+    {
+      alert(pls_select_refund);
+      return false;
+    }
+    return true;
+  }
+{/literal}
+</script>
+</script>
+</body>
+</html>

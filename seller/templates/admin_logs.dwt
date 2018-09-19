@@ -1,0 +1,134 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+		{include file ='library/seller_menu_left.lbi'}
+		<div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+            	{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi.lbi'}
+                <div class="search-info">
+                	<div class="search-form">
+                	<form name="searchForm" action="javascript:searchlog()" class="fl mr20">
+                        	<div  class="imitate_select select_w145">
+                                <div class="cite">{$lang.select_ip}</div>
+                                <ul>
+                                    <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.select_ip}</a></li>
+                                    {foreach from=$ip_list item=list key=key}
+                                    <li><a href="javascript:;" data-value="{$key}" class="ftx-01">{$list}</a></li>
+                                    {/foreach}
+                                </ul>
+                                <input name="ip" type="hidden" />
+                            </div>
+                            <div class="search-key">
+                                <input type="text" class="text text_2" name="keywords" value="" placeholder="{$lang.keyword}">
+                                <input type="submit" class="submit" value="{$lang.button_search}">
+                            </div>
+                        </form>
+                        <form name="Form2" action="admin_logs.php?act=batch_drop" method="POST" class="fl" onsubmit="return batch_drop();">
+                            <div  class="imitate_select select_w145">
+                                <div class="cite">{$lang.select_date}</div>
+                                <ul>
+                                    <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.select_date}</a></li>
+                                    <li><a href="javascript:;" data-value="1" class="ftx-01">{$lang.week_date}</a></li>
+                                    <li><a href="javascript:;" data-value="2" class="ftx-01">{$lang.month_date}</a></li>
+                                    <li><a href="javascript:;" data-value="3" class="ftx-01">{$lang.three_month}</a></li>
+                                    <li><a href="javascript:;" data-value="4" class="ftx-01">{$lang.six_month}</a></li>
+                                    <li><a href="javascript:;" data-value="5" class="ftx-01">{$lang.a_yaer}</a></li>
+                                </ul>
+                                <input name="log_date" type="hidden" />
+                            </div>
+                            <input name="drop_type_date" type="submit" value="{$lang.comfrom}" class="sc-btn btn30 sc-blueBg-btn" />
+                        </form>
+                	</div>
+                </div>
+				{/if}
+                <form method="POST" action="admin_logs.php?act=batch_drop" name="listForm">
+                    <div class="list-div" id="listDiv">
+                        <table class="ecsc-default-table mt20">
+                            <thead>
+                                <tr>
+                                    <th width="8%">
+                                        <div class="first_all">
+                                            <input onclick='listTable.selectAll(this, "checkboxes")' type="checkbox" class="ui-checkbox" id="all">
+                                            <label class="ui-label" for="all"><a href="javascript:listTable.sort('log_id');">{$lang.log_id}</a></label>
+                                            {$sort_log_id}
+                                        </div>
+                                    </th>
+                                    <th width="12%"><a href="javascript:listTable.sort('user_id');">{$lang.user_id}</a>{$sort_user_id}</th>
+                                    <th width="15%"><a href="javascript:listTable.sort('log_time');">{$lang.log_time}</a>{$sort_log_time}</th>
+                                    <th width="15%"><a href="javascript:listTable.sort('ip_address');">{$lang.ip_address}</a>{$sort_ip_address}</th>
+                                    <th width="50%">{$lang.log_info}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {foreach from=$log_list item=list}
+                                <tr>
+                                    <td class="first_td_checkbox"><div class="first_all"><input name="checkboxes[]" type="checkbox" value="{$list.log_id}" id="checkbox_{$list.log_id}" class="ui-checkbox" /><label class="ui-label" for="checkbox_{$list.log_id}">{$list.log_id}</label></div></td>
+                                    <td class="first-cell"><span>{$list.user_name|escape:html}</span></td>
+                                    <td><span>{$list.log_time}</span></td>
+                                    <td><span>{$list.ip_address}</span></td>
+                                    <td class="tl">{$list.log_info}</td>
+                                </tr>
+                                {foreachelse}
+                                <tr><td class="no-records" colspan="11">{$lang.no_records}</td></tr>
+                                {/foreach} 
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="20">{include file="page.dwt"}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </form>
+             </div>
+         </div>
+	</div>
+</div>                
+{if $full_page}
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript">
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+  {literal}
+  onload = function()
+  {
+    startCheckOrder();
+  }
+  {/literal}
+/**
+ * 搜索用户名称
+ */
+function searchlog()
+{
+	var frm = $("form[name='searchForm']");
+	
+	listTable.filter = [];
+	listTable.filter['keywords'] = Utils.trim(frm.find("input[name='keywords']").val());
+	listTable.filter['ip'] = Utils.trim(frm.find("input[name='ip']").val());
+	listTable.filter['page'] = 1;
+    listTable.loadList();
+}
+
+function batch_drop(){
+	var frm = $("form[name='Form2']");
+	var val = frm.find("input[name='log_date']").val();
+	if(val == ""){
+		alert("请选择清除的日期");
+		return false;
+	}
+	return true;
+}
+</script>
+</body>
+</html>
+{/if}

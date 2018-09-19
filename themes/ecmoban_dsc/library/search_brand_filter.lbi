@@ -1,0 +1,149 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+{insert_scripts files='warehouse.js'}
+<div id="filter">
+        <div class="component-filter-sort w1200">
+        	<div class="filter-sortbar" id="filter-sortbar">
+            	<div class="button-strip">
+                    <a href="brand.php?id={$brand_id}&mbid={$mbid}&cat={$category}&display={$pager.display}&price_min={$price_min}&price_max={$price_max}&sort=goods_id&is_ship={$is_ship}&order=<!-- {if $pager.sort == 'goods_id' && $pager.order == 'DESC'} -->ASC<!-- {else} -->DESC<!-- {/if} -->" class="button-strip-item <!-- {if $pager.sort == 'goods_id'}-->current<!-- {/if} -->">默认<i class="icon <!-- {if $pager.sort == 'goods_id' && $pager.order == 'DESC'} -->icon-down<!-- {else} -->icon-up<!-- {/if} -->"></i></a>
+                    <a href="brand.php?id={$brand_id}&mbid={$mbid}&cat={$category}&display={$pager.display}&price_min={$price_min}&price_max={$price_max}&sort=sales_volume&is_ship={$is_ship}&order=<!-- {if $pager.sort == 'sales_volume' && $pager.order == 'DESC'} -->ASC<!-- {else} -->DESC<!-- {/if} -->" class="button-strip-item <!-- {if $pager.sort == 'sales_volume'}-->current<!-- {/if} -->">销量<i class="icon <!-- {if $pager.sort == 'sales_volume' && $pager.order == 'DESC'} -->icon-down<!-- {else} -->icon-up<!-- {/if} -->"></i></a>
+                    <a href="brand.php?id={$brand_id}&mbid={$mbid}&cat={$category}&display={$pager.display}&price_min={$price_min}&price_max={$price_max}&sort=last_update&is_ship={$is_ship}&order=<!-- {if $pager.sort == 'last_update' && $pager.order == 'DESC'} -->ASC<!-- {else} -->DESC<!-- {/if} -->" class="button-strip-item <!-- {if $pager.sort == 'last_update'}-->current<!-- {/if} -->">新品<i class="icon <!-- {if $pager.sort == 'last_update' && $pager.order == 'DESC'} -->icon-down<!-- {else} -->icon-up<!-- {/if} -->"></i></a>
+                    <a href="brand.php?id={$brand_id}&mbid={$mbid}&cat={$category}&display={$pager.display}&price_min={$price_min}&price_max={$price_max}&sort=comments_number&is_ship={$is_ship}&order=<!-- {if $pager.sort == 'comments_number' && $pager.order == 'ASC'} -->DESC<!-- {else} -->ASC<!-- {/if} -->#goods_list" class="button-strip-item <!-- {if $pager.sort == 'comments_number'}-->current<!-- {/if} -->">评论数<i class="icon <!-- {if $pager.sort == 'comments_number' && $pager.order == 'DESC'} -->icon-down<!-- {else} -->icon-up<!-- {/if} -->"></i></a>
+                    <a href="brand.php?id={$brand_id}&mbid={$mbid}&cat={$category}&display={$pager.display}&price_min={$price_min}&price_max={$price_max}&sort=shop_price&is_ship={$is_ship}&order=<!-- {if $pager.sort == 'shop_price' && $pager.order == 'ASC'} -->DESC<!-- {else} -->ASC<!-- {/if} -->" class="button-strip-item <!-- {if $pager.sort == 'shop_price'}-->current<!-- {/if} -->">价格<i class="icon <!-- {if $pager.sort == 'shop_price' && $pager.order == 'DESC'} -->icon-down<!-- {else} -->icon-up<!-- {/if} -->"></i></a>
+                </div>
+                <form method="GET" action="brand.php" class="sort" name="listform">
+                	<input type="hidden" name="id" value="{$brand_id}" />
+                    <input type="hidden" name="mbid" value="{$mbid}" />
+                    <input type="hidden" name="cat" value="{$category}" />
+                    <input type="hidden" name="ship" value="{$pager.ship}" />
+                    <input type="hidden" name="self" value="{$pager.self}" />
+                    <div class="price-button-strip">
+                        <div class="fP-box">
+                        <input type="text" name="price_min" value="{if $pager.search.price_min}{$pager.search.price_min}{/if}" class="price-min" id="price-min" placeholder="￥" />&nbsp;~&nbsp;<input type="text" name="price_max" class="price-max" id="price-max" value="{if $pager.search.price_max}{$pager.search.price_max}{/if}" placeholder="￥" />
+                        </div>
+                        <div class="fP-expand">
+                            <a class="ui-btn-s ui-btn-clear" href="brand.php?id={$brand_id}&mbid={$mbid}&cat={$category}&display={$pager.display}&sort={$pager.sort}&order={$pager.order}&ship={$pager.ship}&ship={$pager.self}">清空</a>
+                    		<a href="javascript:void(0);" class="ui-btn-s ui-btn-s-primary ui-btn-submit">确定</a>
+                        </div>
+                    </div>
+                    <input type="hidden" name="display" value="{$pager.display}" id="display" />
+                    <input type="hidden" name="sort" value="{$pager.sort}" />
+                    <input type="hidden" name="order" value="{$pager.order}" />
+            	</form>
+                {if $open_area_goods} 
+                <div class="f-store dorpdown">
+                <div class="sc-icon">
+                    <span class="fs-cell">收货地：</span>
+                    <div class="sc-choie"><span class="sc-address">{$province_row.region_name}&nbsp;{$city_row.region_name}&nbsp;{$district_row.region_name}</span><i class="icon"></i></div>
+                </div>
+                <div class="dorpdown-layer" id="area_list">
+                    <div class="dd-spacer"></div>
+                    <div id="stock_list" class="stock_list">
+                    	<div class="mt">
+                            <ul class="tab">
+                                <li class="curr" onclick="region.selectArea(this, 1);" value="{$province_row.region_id}" id="province_li">{$province_row.region_name}<i class="sc-icon-right"></i></li>
+                                <li class="select_city" id="city_li" onclick="region.selectArea(this, 2);" value="{$city_row.region_id}">{$city_row.region_name}<i class="sc-icon-right"></i></li>
+                                <li class="select_district" id="district_type" onclick="region.selectArea(this, 3);" value="{$city_district.region_id}">{$district_row.region_name}<i class="sc-icon-right"></i></li>
+                            </ul>
+                            <div class="stock-line"></div>
+                        </div>
+                        <div class="mc" id="house_list">
+                        	<ul class="area-list" id="province_list">
+                            <!-- 省、直辖市 start --> 
+                            {foreach from=$province_list item=province name=noprovince}
+                            	<li>
+                                    <a v="{$province.region_id}" title="{$province.region_name}" onclick="region.getRegion({$province.region_id}, 2, city_list, this,{$user_id});" href="javascript:void(0);">{$province.region_name}</a>
+                                </li>
+                            {/foreach}
+                            <!-- 省、直辖市 end -->
+                            </ul>
+                        </div>
+                        <div class="mc hide" id="city_list_id">
+                        	<ul class="area-list" id="city_list">
+                            <!-- 市区 start -->                   	                             
+                                {foreach from=$city_list item=city name=nocity}                                     
+                                    <li>
+                                        <a v="{$city.region_id}" title="{$city.region_name}" onclick="region.getRegion({$city.region_id}, 3, district_list, '{$city.region_name}',{$user_id});" href="javascript:void(0);">{$city.region_name}</a>  
+                                    </li>
+                                {/foreach}
+                            <!-- 市区 end -->
+                            </ul>
+                        </div>
+                        <div class="mc hide" id="district_list_id">
+                        	<ul class="area-list"  id="district_list">
+                             <!-- 县 start -->    
+                                {foreach from=$district_list item=district name=nodistrict}
+                                    <li>                     
+                                        <a v="{$county.region_id}" title="{$district.region_name}" onclick="region.changedDis({$district.region_id},{$user_id});" href="javascript:void(0);" id="district_{$district.region_id}">{$district.region_name}</a>  
+                                    </li>    
+                                {/foreach}
+                            <!-- 县 start -->
+                            </ul>
+                        </div>
+                        <p class="mod_storage_state">商品暂时只支持配送至中国大陆地区</p>
+                        <div onclick="$('.f-store').removeClass('hover')" class="close"></div>
+                        <input type="hidden" value="{$province_row.region_id}" id="province_id" name="province_region_id">
+                         <input type="hidden" value="{$city_row.region_id}" id="city_id" name="city_region_id">
+                         <input type="hidden" value="{if $district_row.region_id}{$district_row.region_id}{else}0{/if}" id="district_id" name="district_region_id">         
+                         <input type="hidden" value="{$region_id}" id="region_id" name="region_id">
+                         <input type="hidden" value="{$goods_id}" id="good_id" name="good_id">
+                         <input type="hidden" value="{$user_id}" id="user_id" name="user_id">
+                         <input type="hidden" value="{$area_id}" id="area_id" name="area_id">
+                         <input type="hidden" value="{$goods.user_id}" id="merchantId" name="merchantId">
+                    </div>
+                </div>
+            </div>
+            	{/if}
+                <div class="xz-button-strip">
+                    <div class="store-checkbox <!-- {if $pager.ship} -->checkbox-checked<!-- {/if} -->">
+                    	<input type="checkbox" name="fk-type" id="store-checkbox-011" class="checkbox" <!-- {if $pager.ship} -->checked="checked"<!-- {/if} --> />
+                        <label for="store-checkbox-011">包邮</label>
+                        <i id="input-i1" rev="brand.php?id={$brand_id}&mbid={$mbid}&cat={$category}&display={$pager.display}&price_min={$price_min}&price_max={$price_max}&ship=1&self={$pager.self}&sort={$pager.sort}&order={$pager.order}"></i>
+                        <i id="input-i2" rev="brand.php?id={$brand_id}&mbid={$mbid}&cat={$category}&display={$pager.display}&price_min={$price_min}&price_max={$price_max}&ship=0&self={$pager.self}&sort={$pager.sort}&order={$pager.order}"></i>
+                    </div>
+
+                    <div class="store-checkbox <!-- {if $pager.self} -->checkbox-checked<!-- {/if} -->">
+                        <input type="checkbox" name="fk-type" id="store-checkbox-011" class="checkbox" <!-- {if $pager.self} -->checked="checked"<!-- {/if} --> />
+                        <label for="store-checkbox-011">自营商品</label>
+                        <i id="input-i1" rev="brand.php?id={$brand_id}&mbid={$mbid}&cat={$category}&display={$pager.display}&price_min={$price_min}&price_max={$price_max}&ship={$pager.ship}&self=1&sort={$pager.sort}&order={$pager.order}"></i>
+                        <i id="input-i2" rev="brand.php?id={$brand_id}&mbid={$mbid}&cat={$category}&display={$pager.display}&price_min={$price_min}&price_max={$price_max}&ship={$pager.ship}&self=0&sort={$pager.sort}&order={$pager.order}"></i>
+                    </div>
+                </div>
+                <div class="button-page">
+                	<span class="pageState"><span>{$pager.page}</span>/{$pager.page_count}</span>
+                    <!-- {if $pager.page_next} --><a href="{$pager.page_next}" title="下一页" class="pageNext">&gt;</a><!-- {else} --><a href="javascript:;">&gt;</a><!-- {/if} -->
+                    <!-- {if $pager.page_prev} --><a href="{$pager.page_prev}" title="上一页" class="pagePrev">&lt;</a><!-- {else} --><a href="javascript:;">&lt;</a><!-- {/if} -->
+                </div>
+            </div>
+        </div>
+    </div>
+<script type="text/javascript">
+//价格筛选提交
+	$('.ui-btn-submit').click(function(){
+		var min_price = Number($(".price-min").val());
+		var max_price = Number($(".price-max").val());
+		
+		if(min_price == '' && max_price == ''){
+			alert('请填写筛选价格');
+			return false;
+		}else if(min_price == ''){
+			alert('请填写筛选左边价格');
+			return false;
+		}else if(max_price == ''){
+			alert('请填写筛选右边价格');
+			return false;
+		}else if(min_price > max_price || min_price == max_price){
+			alert('左边价格不能大于或等于右边价格');
+			return false;
+		}
+		
+		$("form[name='listform']").submit();
+	});
+	
+	function selectStoreTab(a){
+		var li =$(".tab").find("li").eq(a);
+		if(!li.hasClass("curr")){
+			li.addClass("curr").siblings().removeClass("curr");
+		}
+		$("#stock_list").find(".mc").eq(a).removeClass("hide").siblings(".mc").addClass("hide");
+	}
+</script>

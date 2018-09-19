@@ -1,0 +1,163 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/suggest.css" />
+{insert_scripts files='suggest.js'}
+<div id="site-nav">
+    <div class="w1200 dorpdown">
+        {* DSC 提醒您：根据用户id来调用header_region_style.lbi显示不同的界面  *}{insert name='header_region'}
+        <div class="ecsc-login" id="ECS_MEMBERZONE">
+            {* DSC 提醒您：根据用户id来调用member_info.lbi显示不同的界面  *}{insert name='member_info'}
+        </div>
+        <ul class="quick-menu fr">
+        	<!--{if $navigator_list.top}-->
+            <!-- {foreach name=nav_top_list from=$navigator_list.top item=nav key=key} -->
+            <!--{if $smarty.foreach.nav_top_list.index < 4}-->
+            <li>
+            	<div class="dt"><a href="{$nav.url}" {if $nav.opennew}target="_blank"{/if}>{$nav.name}</a></div>
+            </li>
+            <li class="spacer"></li>
+            <!--{/if}-->
+            <!-- {/foreach} -->
+            <!-- {/if} -->
+            <!--{if $navigator_list.top}-->
+            <li class="li_dorpdown">
+            	<div class="dt"><a href="javascript:;" >{$lang.Site_navigation}</a><i class="ci-right"><s>◇</s></i></div>
+                <div class="dd dorpdown-layer">
+                	<div class="dd-spacer"></div>
+                    <!-- {foreach name=nav_top_list from=$navigator_list.top item=nav key=key} -->
+            			<!--{if $smarty.foreach.nav_top_list.index >= 4}-->
+                    		<div class="item"><a href="{$nav.url}" {if $nav.opennew}target="_blank"{/if}>{$nav.name}</a></div>
+                    	<!--{/if}-->
+            		<!-- {/foreach} -->
+                </div>
+            </li>
+            <!-- {/if} -->
+        </ul>
+        <div class="shopcart-2015" id="ECS_CARTINFO" data-carteveval="0">
+            {insert name='cart_info'}
+        </div>
+    </div>
+</div>
+<div class="header w1200">
+    <div class="ecsc-logo"><a href="{$url_index}" class="logo"><img src="images/logo.gif" /></a></div>
+    <div class="ecsc-join"><a href="{$url_merchants}" target="_blank"><img src="images/ecsc-join.gif" /></a></div>
+    <div class="ecsc-search">
+        <form id="searchForm" name="searchForm" method="get" action="search.php" onSubmit="return checkSearchForm(this)" class="ecsc-search-form">
+            <div class="ecsc-search-tabs">
+                <i class="sc-icon-right"></i>
+                <ul class="shop_search" id="shop_search">
+                {if $search_type eq 1}
+                    <li rev="1"><span>{$lang.seller_store}</span></li>
+                    <li rev="0" class="curr"><span>{$lang.goods}</span></li>
+                {else}
+                    <li rev="0"><span>{$lang.goods}</span></li>
+                    <li rev="1" class="curr"><span>{$lang.seller_store}</span></li>
+                {/if}   
+                </ul>
+            </div>
+            <input autocomplete="off" onKeyUp="lookup(this.value);" name="keywords" type="text" id="keyword" value="{insert name='rand_keyword'}" class="ecsc-search-input"/>
+            <input type="hidden" name="store_search_cmt" value="{$search_type|default:0}">
+            <button type="submit" class="ecsc-search-button"><i></i></button>
+        </form>
+        <div class="keyword">
+        {if $searchkeywords}
+            <ul>
+                {foreach from=$searchkeywords item=val} <li><a href="search.php?keywords={$val|escape:url}" target="_blank">{$val}</a></li> {/foreach}
+            </ul>
+            {/if}
+        </div>
+        <!-- @Author guan 搜索栏提示 start -->
+            <div class="suggestions_box" id="suggestions" style="display:none;">
+                <div class="suggestions_list" id="auto_suggestions_list">
+                &nbsp;
+                </div>
+            </div>
+        <!-- @Author guan 搜索栏提示 end -->
+    </div>
+    <div class="site-commitment">
+        <div class="site-commitment-front"><a style="background:url({$site_commitment}) -6px 0px no-repeat;" href="#" target="_blank"></a></div>
+        <div class="site-commitment-back"><a style="background:url({$site_commitment}) -6px 0px no-repeat;" href="#" target="_blank"></a></div>
+    </div>
+</div>
+<div class="nav">
+        <div class="w1200 preSale">
+            <div class="categorys channel">
+                <div class="dt"><a href="#" target="_blank">{$lang.presell_cat}</a></div>
+                <div class="dd">
+                    <div class="cata-nav" id="cata-nav">
+                        <!-- {foreach from=$pre_nav_list item=nav name=nav_li} -->
+                        <div class="item {if $smarty.foreach.nav_li.last} last{/if} {if $pager.cat_id eq $nav.cat_id} current{/if}">
+                            <a href="{$nav.url}">
+                                <i class="pre-icon pre{$smarty.foreach.nav_li.iteration}"></i>
+                                <span>{$nav.cat_name}</span>
+                            </a>
+                        </div>
+                        <!-- {/foreach} -->
+                    </div>
+                </div>
+            </div>
+            <div class="navitems" id="nav">
+                <ul>
+                    <li class="channel {if $pager.act eq 'index'}channel-now{/if}"><a href="{$url_presale}">{$lang.home}</a></li>
+                    <li class="channel {if $pager.act eq 'new'}channel-now{/if}"><a href="{$url_presale_new}">{$lang.New_product_release}</a></li>
+                    <li class="channel {if $pager.act eq 'advance'}channel-now{/if}"><a href="{$url_presale_advance}">{$lang.First_order}</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+<script type="text/javascript">
+$(function(){
+	//首页导航滑动
+	var moveNav=function(o){
+		var f=$("."+o.f),a=f.find("."+o.a);
+		f.css({position:"relative"});
+		var moveDiv=function(w,l,a,b){
+			var div=$("<div class='wrap-line'></div>");
+			f.append(div);
+			if(b){
+				div.addClass("active");
+			}
+			div.css({position:"absolute",left:l,width:w});
+			addEvent(w,l,a,div,b);
+		}
+		
+		var addEvent=function(w,l,a,div,b){
+			a.each(function(){
+				$(this).hover(function(){
+					if(b){
+						div.removeClass("active");
+					}
+					var w2=$(this).outerWidth();
+					var l2=$(this).position().left;
+					div.stop(true,false).animate({left:l2,width:w2});
+				},function(){
+					if(b){
+						div.stop(true,false).animate({left:l,width:w},function(){
+							div.addClass("active");
+						});
+					}
+					else{
+						div.stop(true,false).animate({left:l,width:w});
+					}
+				});
+			});
+		}
+		
+		a.each(function(i){
+			if($(this).hasClass("channel-now")){
+				var w=$(this).outerWidth();
+				var l=$(this).position().left;
+				if(i==0){
+					moveDiv(w,l,a,true);
+				}else{
+					moveDiv(w,l,a);
+				}
+			}
+		});
+	}
+	moveNav({
+		f:"navitems",
+		a:"channel"
+	});
+});
+</script>

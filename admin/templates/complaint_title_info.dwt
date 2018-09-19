@@ -1,0 +1,99 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$lang.order_word} - {$ur_here}</div>
+            <div class="content">
+            <div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>                    
+                    <li>{$lang.operation_prompt_content_common}</li>
+                    <li>{$lang.operation_prompt_content.info.0}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="mian-info">
+                    <form method="post" action="complaint.php" name="theForm" enctype="multipart/form-data"  id="report_form">
+                        <div class="switch_info user_basic" style="display:block;">
+                            <div class="item">
+                                <div class="label">{$lang.require_field}&nbsp;{$lang.title_name}：</div>
+                                <div class="label_value">
+                                    <input type="text" name='title_name' value='{$complaint_title_info.title_name}' class="text" autocomplete="off" id="type_name"/>
+                                    <div class="form_prompt"></div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.require_field}&nbsp;{$lang.title_desc}：</div>
+                                <div class="label_value">
+                                    <textarea class="textarea" name="title_desc" id="type_desc">{$complaint_title_info.title_desc}</textarea>
+                                    <div class="form_prompt"></div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.is_show}：</div>
+                                <div class="label_value">
+                                    <div class="checkbox_items" style="width:auto;">
+                                        <div class="checkbox_item">
+                                            <input type="radio" class="ui-radio" name="is_show" id="is_show_1" value="1" {if $complaint_title_info.is_show eq 1} checked="true" {/if}  />
+                                            <label for="is_show_1" class="ui-radio-label">{$lang.yes}</label>
+                                        </div>
+                                        <div class="checkbox_item">
+                                            <input type="radio" class="ui-radio" name="is_show" id="is_show_0" value="0" {if $complaint_title_info.is_show neq 1} checked="true" {/if}  />
+                                            <label for="is_show_0" class="ui-radio-label">{$lang.no}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">&nbsp;</div>
+                                <div class="label_value info_btn mt0">
+                                    <a href="javascript:;" class="button" id="submitBtn">{$lang.button_submit}</a>
+                                    <input type="hidden" name="act" value="{$form_action}" />
+                                    <input type="hidden" name="title_id" value="{$complaint_title_info.title_id}" />
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+	//表单验证
+	$(function(){
+		$("#submitBtn").click(function(){
+			if($("#report_form").valid()){
+				$("#report_form").submit();
+			}
+		});
+	
+		$('#report_form').validate({
+			errorPlacement:function(error, element){
+				var error_div = element.parents('div.label_value').find('div.form_prompt');
+				element.parents('div.label_value').find(".notic").hide();
+				error_div.append(error);
+			},
+			rules:{
+				title_name:{
+					required:true
+				},
+				title_desc:{
+					required:true
+				}
+			},
+			messages:{
+				title_name:{
+					required:'<i class="icon icon-exclamation-sign"></i>'+title_name_null
+				},
+				title_desc:{
+					required:'<i class="icon icon-exclamation-sign"></i>'+title_desc_null
+				}
+			}
+		});
+	});
+    </script>
+</body>
+</html>

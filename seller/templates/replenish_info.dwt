@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <!--start-->
+				<div class="ecsc-form-goods">
+				<form method="post" action="virtual_card.php" name="theForm" id="virtual_card_form">
+                <div class="wrapper-list border1">
+                	<dl>
+                    	<dt>{$lang.lab_goods_name}：</dt>
+                        <dd><input type="text" name="goods_name" maxlength="60"  value="{$card.goods_name}" disabled="true" class="text text_2" /></dd>
+                    </dl>
+                    <dl>
+                    	<dt>{$lang.require_field}&nbsp;{$lang.lab_card_sn}：</dt>
+                        <dd><input type="text" name="card_sn" maxlength="60" size="40" value="{$card.card_sn}" class="text" /><div class="form_prompt"></div></dd>
+                    </dl>
+                    <dl>
+                    	<dt>{$lang.lab_card_password}：</dt>
+                        <dd><input type="text" name="card_password" maxlength="60" size="40" value="{$card.card_password}" class="text" /><div class="form_prompt"></div></dd>
+                    </dl>
+                    <dl>
+                    	<dt>{$lang.lab_end_date}：</dt>
+                        <dd>
+                        	<div class="imitate_select select_w85">
+                                <div class="cite">请选择</div>
+                                <ul>
+                                    <li><a href="javascript:;" data-value="0" class="ftx-01">请选择</a></li>
+                                    {foreach from=$data_year item=data key=key}
+                                    <li><a href="javascript:;" data-value="{$data}" class="ftx-01">{$data}</a></li>
+                                    {/foreach}
+                                </ul>
+                                <input name="end_dateYear" type="hidden" value="{$data_time.year}" id="">
+                            </div>
+                            <div class="imitate_select select_w85">
+                                <div class="cite">请选择</div>
+                                <ul>
+                                    <li><a href="javascript:;" data-value="0" class="ftx-01">请选择</a></li>
+                                    {foreach from=$data_month item=data key=key}
+                                    <li><a href="javascript:;" data-value="{$data}" class="ftx-01">{$data}</a></li>
+                                    {/foreach}
+                                </ul>
+                                <input name="end_dateMonth" type="hidden" value="{$data_time.month}" id="">
+                            </div>
+                            <div class="imitate_select select_w85">
+                                <div class="cite">请选择</div>
+                                <ul>
+                                    <li><a href="javascript:;" data-value="0" class="ftx-01">请选择</a></li>
+                                    {foreach from=$data_day item=data key=key}
+                                    <li><a href="javascript:;" data-value="{$data}" class="ftx-01">{$data}</a></li>
+                                    {/foreach}
+                                </ul>
+                                <input name="end_dateDay" type="hidden" value="{$data_time.day}" id="">
+                            </div>
+                            <!--{html_select_date prefix="end_date" field_order="YMD" month_format="%m"  day_value_format="%02d" start_year="-1" end_year="+10" display_days=yes time=$card.end_date}-->
+                        </dd>
+                    </dl>
+                    <dl class="button_info">
+                    	<dt>&nbsp;</dt>
+                        <dd>
+                            <input type="hidden" name="act" value="action" />
+                            <input type="hidden" name="goods_id" value="{$card.goods_id}" />
+                            <input type="submit" value="{$lang.button_submit}" class="sc-btn sc-blueBg-btn btn35" id="submitBtn" />
+                        </dd>
+                    </dl>
+                </div>
+				</form>
+				</div>
+                <!--end-->
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript">
+$(function(){
+	//表单验证
+	$("#submitBtn").click(function(){
+		if($("#virtual_card_form").valid()){
+			$("#virtual_card_form").submit();
+		}
+	});
+	
+	$('#virtual_card_form').validate({
+		errorPlacement:function(error, element){
+			var error_div = element.parents('dl').find('div.form_prompt');
+			//element.parents('dl').find(".notic").hide();
+			error_div.append(error);
+		},
+		rules:{
+			card_sn :{
+				required : true
+			},
+			card_password :{
+				required : true
+			}
+		},
+		messages:{
+			card_sn:{
+				 required : '<i class="icon icon-exclamation-sign"></i>请输入卡号序号'
+			},
+			card_password:{
+				 required : '<i class="icon icon-exclamation-sign"></i>请输入卡号密码'
+			}
+		}			
+	});
+});
+</script>
+</body>
+</html>

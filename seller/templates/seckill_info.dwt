@@ -1,0 +1,287 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+            	{include file ='library/url_here.lbi'}
+                <div class="tabmenu">
+                    <ul class="tab">
+                        <li class="active"><a href="javascript:;">{$ur_here}</a></li>
+                    </ul>
+                </div>
+   
+				{if $action_link}
+				<div class="btn-info">
+					{if $action_link}
+					<a class="sc-btn sc-blue-btn" href="{$action_link.href}"><i class="{$action_link.class}"></i>{$action_link.text}</a>
+					{/if}
+					{if $action_link2}
+					<a class="sc-btn sc-blue-btn" href="{$action_link2.href}"><i class="{$action_link2.class}"></i>{$action_link2.text}</a>
+					{/if}
+					{if $action_link3}
+					<a class="sc-btn sc-blue-btn" href="{$action_link3.href}"><i class="{$action_link3.class}"></i>{$action_link3.text}</a>
+					{/if}
+				</div>
+				{/if}
+                
+                <div class="explanation clear" id="explanation">
+                    <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4></div>
+                    <ul>
+                    	<li>温馨提示：提交操作将会重新审核，请慎重提交确定。</li>
+                    </ul>
+                </div>
+                
+                <div class="ecsc-form-goods">
+                	<div class="items-info">
+                    <form action="seckill.php?act={$form_act}" id="myForm" method="post" name="theForm" enctype="multipart/form-data">
+                        <div class="wrapper-list border1">
+                            <dl>
+                                <dt>{$lang.require_field}{$lang.acti_title}：</dt>
+                                <dd>
+                                  <input type="text" name="acti_title" id="acti_title" class="text" value="{$sec.acti_title}" autocomplete="off" />
+								  <div class="form_prompt"></div>
+                                </dd>
+                            </dl>
+                            <dl>
+                                <dt>{$lang.require_field}{$lang.start_end_time}：</dt>
+                                <dd>
+                                    <div class="text_time">
+                                        <input type="text" name="begin_time" value="{$sec.begin_time}" id="start_time" class="text" autocomplete="off" readonly />
+                                    </div>
+                                    <span class="bolang">&nbsp;&nbsp;~&nbsp;&nbsp;</span>
+                                    <div class="text_time">
+                                        <input type="text" name="acti_time" value="{$sec.acti_time}" id="end_time" class="text" autocomplete="off" readonly />
+                                    </div>
+                                    <div class="form_prompt"></div>
+                                </dd>
+                            </dl>
+                            <dl>
+                                <dt>{$lang.is_putaway}：</dt>
+                                <dd>
+                                    <div class="checkbox_items">
+                                        <div class="checkbox_item"> 
+                                            <input name="is_putaway" type="radio" class="ui-radio" value="0" id="is_putaway_0"{if $sec.is_putaway eq 0}checked="checked"{/if} />
+                                            <label for="is_putaway_0" class="ui-radio-label">下架</label>
+                                        </div>
+                                        <div class="checkbox_item"> 
+                                            <input name="is_putaway" type="radio" class="ui-radio" value="1" id="is_putaway_1" {if $sec.is_putaway || $sec.is_putaway eq ''}checked="checked"{/if} />
+                                            <label for="is_putaway_1" class="ui-radio-label">上线</label>
+                                        </div>
+                                    </div>
+                                </dd>
+                            </dl>
+                        <div class="button-bottom">
+                            <div class="button_info">
+                                <input type="submit" name="submit" value="{$lang.button_submit}" id="submitBtn" class="sc-btn sc-blueBg-btn btn35" />
+                                <input type="reset" value="{$lang.button_reset}" class="sc-btn btn35 sc-blue-btn" />
+                                <input type="hidden" name="act" value="{$form_act}" />
+                                <input type="hidden" name="sec_id" value="{$sec.sec_id}" />
+                            </div>
+                        </div>
+                    </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript">
+<!--
+{literal}
+var display_yes = (Browser.isIE) ? 'block' : 'table-row-group';
+
+
+$.divselect("#select_goods_id","#select_goods_id_val",function(obj){
+    var val = obj.attr("data-value");
+    change_good_products(val);
+});
+
+//表单验证
+$(function(){
+	$("#submitBtn").click(function(){
+		if($("#myForm").valid()){
+			$("#myForm").submit();
+		}
+	});
+	
+	$('#myForm').validate({
+		errorPlacement:function(error, element){
+			var error_div = element.parents('dl').find('div.form_prompt');
+			//element.parents('dl').find(".notic").hide();
+			error_div.append(error);
+		},
+		rules:{
+			acti_title :{
+				required : true
+			},
+			begin_time :{
+				required : true
+			},
+			acti_time :{
+				required : true,
+				compareDate:"#start_time"
+			}
+		},
+		messages:{
+			acti_title:{
+				 required : '<i class="icon icon-exclamation-sign"></i>秒杀活动标题不能为空'
+			},
+			begin_time :{
+				required : '<i class="icon icon-exclamation-sign"></i>'+start_data_notnull
+			},
+			acti_time :{
+				required : '<i class="icon icon-exclamation-sign"></i>'+end_data_notnull,
+				compareDate:'<i class="icon icon-exclamation-sign"></i>'+data_invalid_gt
+			}
+		},
+		onfocusout:function(element,event){
+			//实时去除结束时间是否大于开始时间验证
+			var name = $(element).attr("name");
+			
+			if(name == "acti_time"){
+				var endDate = $(element).val();
+				var startDate = $(element).parents("dd").find("input[name='begin_time']").val();
+				
+				var date1 = new Date(Date.parse(startDate.replace(/-/g, "/")));
+				var date2 = new Date(Date.parse(endDate.replace(/-/g, "/")));
+				
+				if(date1 > date2){
+					$(element).removeClass("error");
+					$(element).parents("dd").find(".form_prompt").html("");
+				}
+			}
+		}
+	});
+});
+
+function searchGoods()
+{
+  var filter = new Object;
+  filter.keyword = document.forms['theForm'].elements['keywords'].value;
+  filter.ru_id = document.forms['theForm'].elements['ru_id'].value;
+
+  Ajax.call('snatch.php?is_ajax=1&act=search_goods', filter, searchGoodsResponse, 'GET', 'JSON');
+}
+
+function searchGoodsResponse(result)
+{
+  if (result.error == 0)
+  {
+    /* 清除 options */
+    $("#select_goods_id").find("ul").html('');
+    $("#select_product_id").find("ul").html('');
+    /* 创建 options */
+    var goods = result.content.goods;
+    if (goods)
+    {
+      for (i = 0; i < goods.length; i++)
+      {
+          var opt = '<li><a href="javascript:;" data-value="'+ goods[i].goods_id +'" class="ftx-01">'+ goods[i].goods_name +'</a></li>';
+           $("#select_goods_id").find("ul").append(opt);
+      }
+      $("#select_goods_id").find("ul").show();
+    }
+    else
+    {
+         var opt = '<li><a href="javascript:;" data-value="0" class="ftx-01">'+ search_is_null +'</a></li>';
+         $("#select_goods_id").find("ul").append(opt);
+    }
+
+    /* 创建 product options */
+    var products = result.content.products;
+    if (products != '')
+    {
+      $("#select_product_id").css("display",display_yes);
+      for (i = 0; i < products.length; i++)
+      {
+            var p_opt = '<li><a href="javascript:;" data-value="'+ products[i].product_id +'" class="ftx-01">'+ products[i].goods_attr_str +'</a></li>';
+            $("#select_product_id").find("ul").append(p_opt);
+      }
+    }
+    else
+    {
+      $("#select_product_id").css("display",'none');
+
+      var p_opt = '<li><a href="javascript:;" data-value="0" class="ftx-01">'+ search_is_null +'</a></li>';
+      $("#select_product_id").find("ul").append(p_opt);
+    }
+  }
+
+  if (result.message.length > 0)
+  {
+    alert(result.message);
+  }
+}
+
+function change_good_products(val)
+{
+  var filter = new Object;
+  filter.goods_id = val;
+
+  Ajax.call('snatch.php?is_ajax=1&act=search_products', filter, searchProductsResponse, 'GET', 'JSON');
+}
+
+function searchProductsResponse(result)
+{
+
+  if (result.error == 0)
+  {
+    /* 清除 options */
+    $("#select_product_id").find("ul").html('');
+
+    /* 创建 product options */
+    var products = result.content.products;
+    if (products.length)
+    {
+      $("#select_product_id").css("display",display_yes);
+
+      for (i = 0; i < products.length; i++)
+      {
+            var p_opt = '<li><a href="javascript:;" data-value="'+ products[i].product_id +'" class="ftx-01">'+ products[i].goods_attr_str +'</a></li>';
+            $("#select_product_id").find("ul").append(p_opt);
+      }
+    }
+    else
+    {
+      $("#select_product_id").css("display",'none');
+
+      var p_opt = '<li><a href="javascript:;" data-value="0" class="ftx-01">'+ search_is_null +'</a></li>';
+      $("#select_product_id").find("ul").append(p_opt);
+    }
+  }
+
+  if (result.message.length > 0)
+  {
+    alert(result.message);
+  }
+}
+//日期选择插件调用start sunle
+var opts1 = {
+  'targetId':'start_time',//时间写入对象的id
+  'triggerId':['start_time'],//触发事件的对象id
+  'alignId':'start_time',//日历对齐对象,
+  'hms':'off',
+  'format':'-'//时间格式 默认'YYYY-MM-DD HH:MM:SS'
+},opts2 = {
+  'targetId':'end_time',
+  'triggerId':['end_time'],
+  'alignId':'end_time',
+  'hms':'off',
+  'format':'-'
+}
+
+xvDate(opts1);
+xvDate(opts2);
+//日期选择插件调用end sunle
+//-->
+{/literal}
+</script>
+</body>
+</html>

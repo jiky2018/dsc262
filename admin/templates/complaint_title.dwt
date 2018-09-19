@@ -1,0 +1,99 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.order_word} - {$ur_here}</div>
+        <div class="content">
+        	<div class="tabs_info">
+            	<ul>
+                    <li {if $act_type eq 'complaint_conf'}class="curr"{/if}><a href="{$action_link2.href}">{$action_link2.text}</a></li>
+                    <li {if $act_type eq 'list'}class="curr"{/if}><a href="{$action_link.href}">{$action_link.text}</a></li>
+                    <li {if $act_type eq 'title'}class="curr"{/if}><a href="{$action_link1.href}">{$action_link1.text}</a></li>
+                </ul>
+            </div>
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.type.0}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-head">
+                    <div class="refresh ml0">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+                    <div class="fl">
+                    	<a href="{$action_link3.href}"><div class="fbutton"><div class="add" title="{$action_link3.text}"><span><i class="icon icon-plus"></i>{$action_link3.text}</span></div></div></a>
+                    </div>
+                </div>
+                <div class="common-content">
+                	<div class="list-div" id="listDiv">
+                    	{/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                    <th width="10%"><div class="tDiv">{$lang.record_id}</div></th>
+                                    <th width="15%"><div class="tDiv">{$lang.title_name}</div></th>
+                                    <th width="58%"><div class="tDiv">{$lang.title_desc}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.is_show}</div></th>
+                                    <th width="12%"><div align="center">{$lang.handler}</div></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {foreach from=$title_info item=info}
+                                <tr>
+                                    <td><div class="tDiv">{$info.title_id}</div></td>
+                                    <td><div class="tDiv">{$info.title_name}</div></td>
+                                    <td><div class="tDiv">{$info.title_desc}</div></td>
+                                    <td>
+                                    	<div class="tDiv">
+                                            <div class="switch {if $info.is_show eq 1}active{/if}" title="{if $info.is_show eq 1}{$lang.yes}{else}{$lang.no}{/if}" onclick="listTable.switchBt(this, 'toggle_show', {$info.title_id})">
+                                            	<div class="circle"></div>
+                                            </div>
+                                            <input type="hidden" value="{$info.is_show}" name="">
+                                        </div>
+                                    </td>
+                                    <td class="handle">
+                                    	<div class="tDiv a3" align="center">
+                                            <a href="complaint.php?act=edit&title_id={$info.title_id}" class="btn_see"><i class="sc_icon icon-edit"></i>{$lang.edit}</a>
+                                            <a href="javascript:;" onclick="listTable.remove({$info.title_id}, '{$lang.drop_confirm}','remove_title')" title="{$lang.remove}" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {foreachelse}
+                                <tr><td class="no-records" colspan="8">{$lang.no_records}</td></tr>
+                                {/foreach}
+                            </tbody>   
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="8">
+                                        <div class="list-page">
+                                            {include file="library/page.lbi"}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>   
+                        {if $full_page}
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+	listTable.act_type = '{$act_type}';
+	listTable.query = 'title_query';
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+    </script>
+</body>
+</html>
+{/if}

@@ -1,0 +1,96 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+<body class="iframe_body">
+<div class="warpper">
+    <div class="title">{$lang.order_word} - {$ur_here}</div>
+    <div class="content">			
+        <div class="explanation" id="explanation">
+            <div class="ex_tit">
+                <i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span>					
+            </div>
+            <ul>
+                <li>{$lang.operation_prompt_content.list.0}</li>
+                <li>{$lang.operation_prompt_content.list.1}</li>
+            </ul>
+        </div>
+        <div class="flexilist">
+            <div class="common-head">
+                <div class="fl">
+                    <a href="{$action_link.href}"><div class="fbutton"><div class="add" title="{$action_link.text}"><span><i class="icon icon-plus"></i>{$action_link.text}</span></div></div></a>
+                </div>
+                <div class="refresh">
+                    <div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    <div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                </div>
+                <div class="search">
+                	<form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+                    <div class="input">
+                        <input type="text" name="keyword" class="text nofocus" placeholder="{$lang.label_user_name}" autocomplete="off" />
+                        <input type="submit" class="btn" name="secrch_btn" ectype="secrch_btn" value="" />
+                    </div>
+                    </form>
+                </div>
+            </div>
+            <div class="common-content">
+                <form method="POST" action="" name="listForm">
+                    <div class="list-div" id="listDiv">
+                    {/if}
+                    <table cellpadding="0" cellspacing="0">
+                    	<thead>
+                            <tr>
+                                <th><div class="tDiv"><a href="javascript:listTable.sort('user_name'); ">{$lang.username}</a>{$sort_user_name}</div></th>
+                                <th><div class="tDiv"><a href="javascript:listTable.sort('order_sn'); ">{$lang.order_sn}</a>{$sort_order_sn}</div></th>
+                                <th><div class="tDiv">{$lang.surplus}</div></th>
+                                <th><div class="tDiv">{$lang.integral_money}</div></th>
+                                <th><div class="tDiv"><a href="javascript:listTable.sort('add_time'); ">{$lang.add_time}</a>{$sort_add_time}</div></th>
+                                <th class="handle">{$lang.handler}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                      	{foreach from=$order_list item=order}
+                            <tr>
+                                <td><div class="tDiv">{$order.user_name|escape}</div></td>
+                                <td><div class="tDiv">{$order.order_sn}</div></td>
+                                <td><div class="tDiv">{$order.surplus}</div></td>
+                                <td><div class="tDiv">{$order.integral_money}</div></td>
+                                <td><div class="tDiv">{$order.add_time}</div></td>
+                                <td class="handle">
+                                    <div class="tDiv"><a href="order.php?act=info&order_id={$order.order_id}" title="{$lang.view_order}" class="btn_see"><i class="sc_icon sc_icon_see"></i>{$lang.view}</a></div>
+                                </td>
+                            </tr>
+                      	{foreachelse}
+                        	<tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+                        {/foreach}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="12">
+                                    <div class="list-page">
+                                        {include file="library/page.lbi"}
+                                    </div>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    {if $full_page}
+                	</div>
+            	</form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{include file ='library/pagefooter.lbi'}
+<script type="text/javascript" language="JavaScript">
+listTable.recordCount = {$record_count};
+listTable.pageCount = {$page_count};
+
+{foreach from=$filter item=item key=key}
+listTable.filter.{$key} = '{$item}';
+{/foreach}
+</script>
+</body>
+</html>
+{/if}

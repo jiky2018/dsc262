@@ -1,0 +1,144 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link2.href}" class="s-back">{$lang.back}</a>{$lang.11_system} - {$ur_here}</div>
+            <div class="content">
+            <div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content_common}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="mian-info">
+                    <form method="post" action="warehouse_shipping_mode.php" name="theForm" enctype="multipart/form-data"  id="warehouse_form">
+                        <div class="switch_info">
+                            <div class="item pb20 mb20 bor_bt_das">
+                                <div class="label">始发地：</div>
+                                <div class="label_value">
+                                    <div class="fl">
+                                        {$region_name1}
+                                    </div>
+                                    <div class="jt"></div>
+                                    <div class="destination">
+                                        <strong>到达目的地：</strong><span class="red">{$region_name2}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            {if $shipping_area.shipping_code =='ems' || $shipping_area.shipping_code =='yto' || $shipping_area.shipping_code =='zto' || $shipping_area.shipping_code =='sto_express' || $shipping_area.shipping_code =='post_mail' || $shipping_area.shipping_code =='sf_express' || $shipping_area.shipping_code =='post_express' }
+                            <div class="item">
+                                <div class="label">{$lang.fee_compute_mode}：</div>
+                                <div class="label_value">
+                                    <div class="checkbox_items">
+                                        <div class="checkbox_item">
+                                            <input type="radio" class="ui-radio" id="fee_compute_mode_1" {if $fee_compute_mode != 'by_number' }checked="true"{/if} onclick="compute_mode('{$shipping_area.shipping_code}','weight')" name="fee_compute_mode" value="by_weight"/>
+                                            <label for="fee_compute_mode_1" class="ui-radio-label">{$lang.fee_by_weight}</label>
+                                        </div>
+                                         <div class="checkbox_item">
+                                            <input type="radio" class="ui-radio" id="fee_compute_mode_0" {if $fee_compute_mode == 'by_number'}checked="true"{/if}  onclick="compute_mode('{$shipping_area.shipping_code}','number')" name="fee_compute_mode" value="by_number"/>
+                                            <label for="fee_compute_mode_0" class="ui-radio-label">{$lang.fee_by_number}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {/if}
+                            <!--{if $shipping_area.shipping_code != 'cac'}-->
+                                {foreach from=$fields item=field}
+                                <!--{if $fee_compute_mode == 'by_number'}-->
+                                   <!--{if $field.name == 'item_fee' || $field.name == 'free_money' || $field.name == 'pay_fee'}-->
+                                                <div class="item" id="{$field.name}">
+                                                    <div class="label">{$lang.require_field}&nbsp;{$field.label}：</div>
+                                                    <div class="label_value">
+                                                        <input type="text" name="{$field.name}" value="{$field.value}" class="text" autocomplete="off"/>
+                                                        <div class="form_prompt"></div>
+                                                    </div>
+                                                </div>
+                                                <!--{else}-->
+                                                <div class="item" id="{$field.name}" style="display:none">
+                                                    <div class="label">{$lang.require_field}&nbsp;{$field.label}：</div>
+                                                    <div class="label_value">
+                                                        <input type="text" name="{$field.name}" value="{$field.value}" class="text" autocomplete="off"/>
+                                                        <div class="form_prompt"></div>
+                                                    </div>
+                                                </div>
+                                        <!--{/if}-->
+                                <!--{else}-->
+                                        <!--{if $field.name != 'item_fee'}-->
+                                                <div class="item" id="{$field.name}">
+                                                    <div class="label">{$lang.require_field}&nbsp;{$field.label}：</div>
+                                                    <div class="label_value">
+                                                        <input type="text" name="{$field.name}" value="{$field.value}" class="text" autocomplete="off"/>
+                                                        <div class="form_prompt"></div>
+                                                    </div>
+                                                </div>
+                                        <!--{else}-->
+                                                <div class="item" id="{$field.name}" style="display:none">
+                                                    <div class="label">{$lang.require_field}&nbsp;{$field.label}：</div>
+                                                    <div class="label_value">
+                                                        <input type="text" name="{$field.name}" value="{$field.value}" class="text" autocomplete="off"/>
+                                                        <div class="form_prompt"></div>
+                                                    </div>
+                                                </div>
+                                        <!--{/if}-->
+                                 <!--{/if}-->
+                                {/foreach}
+                            <!--{/if}-->
+                            
+                            <div class="item" id="freightArea">
+                                
+                            </div>
+                            <div class="item">
+                                <div class="label">&nbsp;</div>
+                                <div class="label_value info_btn">
+                                    <input type="submit" value="{$lang.button_submit}" class="button"  id="submitBtn"/>
+                                    <input type="hidden" name="act" value="{$form_action}" />
+                                    <input type="hidden" name="id" value="{$shipping_area.id}" />
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+ {include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+       
+// 配送费用计算方式
+function compute_mode(shipping_code,mode)
+{
+    var base_fee  = $("#base_fee");
+    var step_fee  = $("#step_fee");
+    var item_fee  = $("#item_fee");
+    if(shipping_code == 'post_mail' || shipping_code == 'post_express')
+    {
+     var step_fee1  = $("#step_fee1");
+    }
+
+    if(mode == 'number')
+    {
+      item_fee.css('display','');
+      base_fee.css('display','none');
+      step_fee.css('display','none');
+      if(shipping_code == 'post_mail' || shipping_code == 'post_express')
+      {
+          step_fee1.css('display','none');
+      }
+    }
+    else
+    {
+        item_fee.css('display','none');
+        base_fee.css('display','');
+        step_fee.css('display','');
+      if(shipping_code == 'post_mail' || shipping_code == 'post_express')
+      {
+          step_fee1.css('display','');
+      }
+    }
+}
+    </script>
+</body>
+</html>

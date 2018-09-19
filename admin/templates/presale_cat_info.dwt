@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="presale_cat.php?act=list" class="s-back">{$lang.back}</a>{$lang.16_presale} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content_common}</li>
+                    <li>{$lang.operation_prompt_content.info.0}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+						 <form action="presale_cat.php" method="post" name="theForm" id="presale_cat_form" >
+                            <div class="switch_info">
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}{$lang.cat_name}：</div>
+                                    <div class="label_value">
+										<input type="text" name="cat_name" value="{$cat_info.cat_name|escape:html}" size="40" class="text" autocomplete="off" />
+                                        <div class="form_prompt"></div>
+									</div>
+                                </div>
+                                <div class="item hide">
+									<div class="label">{$lang.parent_id}：</div>
+									<div id="parent_id" class="imitate_select select_w320">
+									    <div class="cite">{$lang.cat_top}</div>
+									    <ul>
+									    {foreach from=$cat_select item=list}
+											<li><a href="javascript:;" data-value="{$list.cat_id}" class="ftx-01">{$list.cat_name}</a></li>
+									    {/foreach}
+									    </ul>
+										<input name="parent_id" type="hidden" value="{$cat_info.parent_id}" id="parent_id_val">
+									</div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.sort_order}：</div>
+                                    <div class="label_value">
+										<input type="text" class="text w120" name='sort_order' {if $cat_info.sort_order} value='{$cat_info.sort_order}'{else} value="50"{/if} size="15" autocomplete="off" />
+									</div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="label_value info_btn">
+									  <input type="submit" value="{$lang.button_submit}" id="submitBtn" class="button" />
+								      <input type="hidden" name="act" value="{$form_act}" />
+									  <input type="hidden" name="old_cat_name" value="{$cat_info.cat_name}" />
+									  <input type="hidden" name="cat_id" value="{$cat_info.cat_id}" />
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+	$(function(){
+		//表单验证
+		$("#submitBtn").click(function(){
+			if($("#presale_cat_form").valid()){
+				$("#presale_cat_form").submit();
+			}
+		});
+		$('#presale_cat_form').validate({
+			errorPlacement:function(error, element){
+				var error_div = element.parents('div.label_value').find('div.form_prompt');
+				element.parents('div.label_value').find(".notic").hide();
+				error_div.append(error);
+			},
+			rules:{
+				cat_name :{
+					required : true
+				}
+			},
+			messages:{
+				cat_name:{
+					required : '<i class="icon icon-exclamation-sign"></i>'+cat_name_null
+				}
+			}			
+		});
+	});
+	</script>
+</body>
+</html>

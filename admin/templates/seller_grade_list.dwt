@@ -1,0 +1,95 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.seller} - {$ur_here}</div>
+        <div class="content">
+        	{include file ='library/seller_step_tab.lbi'}		
+        	<div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.list.0}</li>
+                    <li>{$lang.operation_prompt_content.list.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<div class="common-head">
+					<div class="fl">
+						<a href="{$action_link.href}"><div class="fbutton"><div class="add" title="{$action_link.text}"><span><i class="icon icon-plus"></i>{$action_link.text}</span></div></div></a>
+						<a href="{$action_link2.href}"><div class="fbutton"><div class="open" title="{$action_link2.text}"><span><i class="icon icon-screenshot"></i>{$action_link2.text}</span></div></div></a>
+					</div>
+                </div>
+                <div class="common-content">
+                	<div class="list-div"  id="listDiv">
+                    	<div class="flexigrid ht_goods_list">
+                    	{/if}
+                    	<table cellpadding="1" cellspacing="1">
+                        	<thead>
+                            	<tr>
+                                	<th width="6%"><div class="tDiv">{$lang.grade_name}</div></th>
+                                    <th width="8%"><div class="tDiv">{$lang.goods_sun}</div></th>
+									<th width="7%"><div class="tDiv">{$lang.seller_temp}</div></th>
+                                    <th width="12%"><div class="tDiv">{$lang.grade_introduce}</div></th>
+                                    <th width="18%"><div class="tDiv">{$lang.entry_criteria}</div></th>
+                                    <th width="6%"><div class="tDiv">{$lang.is_open}</div></th>
+                                    <th width="6%"><div class="tDiv">{$lang.is_default}</div></th>
+                                    <th width="6%"><div class="tDiv">{$lang.grade_img}</div></th>
+                                    <th class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+							    {foreach from=$garde_list item=list}
+								<tr>
+								<td><div class="tDiv">{$list.grade_name|escape:html}</div></td>
+                                <td><div class="tDiv"><input name="sort_order" class="text w40" value="{$list.goods_sun|escape:html}" onkeyup="listTable.editInput(this, 'edit_goods_sun',{$list.id} )" type="text"></div></td>
+                                <td><div class="tDiv"><input name="sort_order" class="text w40" value="{$list.seller_temp|escape:html}" onkeyup="listTable.editInput(this, 'edit_seller_temp',{$list.id} )" type="text"></div></td>
+                                <td><div class="tDiv">{$list.grade_introduce|escape:html}</div></td>
+                                <td><div class="tDiv">{$list.entry_criteria}</div></td>
+								<td>
+									<div class="tDiv">
+										<div class="switch mauto {if $list.is_open}active{/if}" onclick="listTable.switchBt(this, 'toggle_show', {$list.id})" title="{$lang.yes}">
+											<div class="circle"></div>
+										</div>
+										<input type="hidden" value="" name="is_hot">
+									</div>
+								</td>
+							    <td><div class="tDiv">{if $list.is_default}{$lang.default}{else}--{/if}</div></td>
+								<td>
+									<div class="tDiv">{if $list.grade_img}<a href="../{$list.grade_img}"  title="{$lang.see_img}" target="_blank"><img src="../{$list.grade_img}" width="20" /></a>{/if}</div>
+								</td>  
+							    <td class="handle">
+                                    <div class="tDiv ht_tdiv ht_tdiv_w130">
+                                        <a href="merchants_privilege.php?act=allot&grade_id={$list.id}" title="{$lang.icon_priv}" class="btn_see" ><i class="icon icon-cog"></i>{$lang.icon_priv}</a>
+                                        <a href="seller_grade.php?act=edit&id={$list.id}" title="{$lang.edit}" class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>
+                                        <a href="javascript:;" onclick="listTable.remove({$list.id}, '{$lang.drop_confirm}')" title="{$lang.remove}" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>
+                                    </div>
+								</td>
+								</tr>
+								{foreachelse}
+								<tr><td class="no-records"  colspan="11">{$lang.no_records}</td></tr>
+								{/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="12">
+                                    	<div class="list-page">
+                                            {include file="library/page.lbi"}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        {if $full_page}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+	{include file ='library/pagefooter.lbi'}
+</body>
+</html>
+{/if}

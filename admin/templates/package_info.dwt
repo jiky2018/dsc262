@@ -1,0 +1,263 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="package.php?act=list" class="s-back">{$lang.back}</a>{$lang.promotion} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content_common}</li>
+                    <li>{$lang.operation_prompt_content.info.0}</li>
+                    <li>{$lang.operation_prompt_content.info.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+						<form method="post" action="package.php" enctype="multipart/form-data" name="theForm" id="package_form">
+							<div class="step" ectype="filter">
+                            <div class="switch_info">
+                                <div class="items">
+                                    <div class="item">
+                                        <div class="label">{$lang.require_field}{$lang.package_name}：</div>
+                                        <div class="label_value">
+                                        	<input type="text" name="package_name" id="package_name" class="text" value="{$package.package_name}" autocomplete="off" />
+                                            <div class="form_prompt"></div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.require_field}{$lang.start_end_time}：</div>
+                                        <div class="label_value text_time">
+                                    		<input type="text" name="start_time" value="{$package.start_time}" id="start_time" class="text mr0" readonly />
+                                            <span class="bolang">&nbsp;&nbsp;~&nbsp;&nbsp;</span>
+                                            <input type="text" name="end_time" value="{$package.end_time}" id="end_time" class="text" readonly />
+											<div class="form_prompt"></div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.upload_image}：</div>
+                                        <div class="label_value">
+                                        	<div class="type-file-box">
+                                                <input type="button" name="button" id="button" class="type-file-button" value="" />
+                                                <input type="file" class="type-file-file" id="activity_thumb" name="activity_thumb" data-state="imgfile" size="30" hidefocus="true" value="" />
+                                                {if $package.activity_thumb neq ""}
+                                                <span class="show">
+                                                    <a href="../{$package.activity_thumb}" target="_blank" class="nyroModal"><i class="icon icon-picture" data-tooltipimg="../{$package.activity_thumb}" ectype="tooltip" title="tooltip"></i></a>
+                                                </span>
+                                                {/if}
+                                                <input type="text" name="textfile" {if $package.activity_thumb neq ''}value="../{$package.activity_thumb}"{/if} class="type-file-text" id="textfield" autocomplete="off" readonly />
+                                            </div>
+                                            <div class="notic">{$lang.size}：580*270</div>
+                                            <div class="form_prompt"></div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.require_field}{$lang.package_price}：</div>
+                                        <div class="label_value">
+                                        	<input type="text" name="package_price" id="package_price" class="text" value="{$package.package_price}" autocomplete="off" />
+											<div class="notic">{$lang.notice_package_price}</div>
+                                            <div class="form_prompt"></div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.require_field}{$lang.desc}：</div>
+                                        <div class="label_value">
+											<textarea name="desc" cols="60" rows="4" class="textarea">{$package.act_desc}</textarea>
+                                            <div class="form_prompt"></div>
+                                        </div>
+                                    </div>
+                                    {if $form_action eq 'update' && $package.user_id neq 0}
+                                    <div class="item">
+                                        <div class="label">{$lang.adopt_status}：</div>
+                                        <div class="label_value">
+											<div class="checkbox_items" ectype="general_audit_status">
+												<div class="checkbox_item"> 
+													<input name="review_status" type="radio" class="ui-radio" value="1" id="review_status_1" {if $package.review_status eq 1}checked="checked"{/if} />
+													<label for="review_status_1" class="ui-radio-label">{$lang.not_audited}</label>
+												</div>
+												<div class="checkbox_item"> 
+													<input name="review_status" type="radio" class="ui-radio" value="2" id="review_status_2" {if $package.review_status eq 2}checked="checked"{/if} />
+													<label for="review_status_2" class="ui-radio-label">{$lang.audited_not_adopt}</label>
+												</div>
+                                                <div class="checkbox_item"> 
+													<input name="review_status" type="radio" class="ui-radio" value="3" id="review_status_3" {if $package.review_status eq 3}checked="checked"{/if} />
+													<label for="review_status_3" class="ui-radio-label">{$lang.audited_yes_adopt}</label>
+												</div>
+											</div>
+                                        </div>
+                                    </div>			
+									<div class="item {if $package.review_status neq 2}hide{/if}" id="review_content">
+										<div class="label">{$lang.adopt_reply}：</div>
+										<div class="value">
+											<textarea name="review_content" class="textarea h100">{$package.review_content}</textarea>
+										</div>
+									</div>
+                                    {/if}
+                                    <div class="item">
+                                        <div class="label">{$lang.package_goods_alt}：</div>
+                                        <div class="label_value">
+                                            <input type="button" class="btn btn30 blue_btn fl mr10 valid" value="{$lang.set_goods}" ectype="setupGroupGoods" data-diffeseller="1" data-pbmode="setpackagegoods" data-pbtype="package" aria-invalid="false">
+                                        </div>
+                                    </div>
+                                    <div class="list-div">
+                                        <table cellpadding="1" cellspacing="1" >
+                                            <thead>
+                                                <tr>
+                                                    <th width="20%"><div class="tDiv">{$lang.goods_name}</div></th>
+                                                    <th width="15%"><div class="tDiv">{$lang.goods_price}</div></th>
+                                                    <th width="15%"><div class="tDiv">{$lang.goods_number}</div></th>
+                                                    <th width="20%"><div class="tDiv">{$lang.09_attribute_list}</div></th>
+                                                    <th width="10%"><div class="handle">{$lang.handler}</div></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody ectype="group_list">
+                                            {foreach from=$package_goods_list item=package_goods}
+                                                <tr data-goods="{$package_goods.goods_id}">
+                                                    <td><div class="tDiv">{$package_goods.goods_name_pack}</div></td>
+                                                    <td><div class="tDiv">{$package_goods.shop_price}</div></td>
+                                                    <td><div class="tDiv"><input class="text w50 tc fn" style="margin-right:0px;" onblur="edit_package_nuber(this)" name="goods_number[]" autocomplete="off" value="{$package_goods.goods_number}" type="text"></div></td>
+                                                    <td>
+                                                        <div class="tDiv">
+                                                            {if $package_goods.products}
+                                                            <div class="imitate_select select_w220">
+                                                                <div class="cite">{$lang.select_please}</div>
+                                                                <ul style="display: none;" class="ps-container">
+                                                                    <li><a href="javascript:;" data-value="" class="ftx-01">{$lang.select_please}</a></li>
+                                                                    {foreach from=$package_goods.products item=products}
+                                                                    <li><a href="javascript:;" data-value="{$products.product_id}" class="ftx-01" ectype="package_checked">{$products.goods_attr_str}</a></li>
+                                                                    {/foreach}
+                                                                </ul>
+                                                                <input type="hidden" name="product_id[]" value="{$package_goods.product_id}" data-oldproduct="{$package_goods.product_id}" >
+                                                            </div>
+                                                            {/if}
+                                                        </div>
+                                                    </td>
+                                                    <td class="handle">
+                                                        <div class="tDiv a1">
+                                                            {if $package_goods.products}
+                                                            <a href="javascript:;" ectype="add_package_goods" title="{$lang.increase}" class="btn_trash"><i class="icon icon-plus"></i>{$lang.increase}</a>						
+                                                            {/if}
+                                                            <a href="javascript:;" ectype="remove_group" title="{$lang.remove}" data-operation="package" data-msg="{$lang.confirm_drop_goods}" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            {foreachelse}
+                                                <tr><td class="no-records" colspan="12">{$lang.no_records}</td></tr>
+                                            {/foreach}
+                                            </tbody>
+                                        </table>
+									</div>
+						            <div class="clear"></div>
+                                    <div class="info_btn info_btn_bf100 mt30">
+                                        <input type="submit" value="{$lang.button_submit}" class="button" id="submitBtn" />
+                                        <input type="hidden" name="act" value="{$form_action}" />
+                                        <input type="hidden" name="id" value="{$package.id}" />
+                                        <input type="hidden" name="ru_id" value="{$package.ru_id}" />
+                                    </div>
+                            	</div>        
+                            </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+    {include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+        //表单验证
+        $(function(){
+            $("#submitBtn").click(function(){
+                if($("#package_form").valid()){
+                    $("#package_form").submit();
+                }
+            });
+        
+            $('#package_form').validate({
+                errorPlacement: function(error, element){
+                    var error_div = element.parents('div.label_value').find('div.form_prompt');
+                    element.parents('div.label_value').find(".notic").hide();
+                    error_div.append(error);
+                },
+                rules : {
+                    package_name : {
+                        required : true
+                    },
+                    package_price : {
+                        required : true,
+                        number:true
+                    },
+                    desc : {
+                        required : true
+                    },
+                    start_time :{
+                        required : true
+                    },
+                    end_time :{
+                        required : true,
+                        compareDate:"#start_time",
+                    }
+                },
+                messages : {
+                    package_name : {
+                        required : '<i class="icon icon-exclamation-sign"></i>' + no_name
+                    },
+                    package_price : {
+                        required : '<i class="icon icon-exclamation-sign"></i>' + invalid_package_price,
+                        number : '<i class="icon icon-exclamation-sign"></i>' + invalid_package_price
+                    },
+                    desc : {
+                        required : '<i class="icon icon-exclamation-sign"></i>' + no_desc
+                    },
+                    start_time :{
+                        required : '<i class="icon icon-exclamation-sign"></i>'+start_data_notnull
+                    },
+                    end_time :{
+                        required : '<i class="icon icon-exclamation-sign"></i>'+end_data_notnull,
+                        compareDate:'<i class="icon icon-exclamation-sign"></i>'+data_invalid_gt
+                    }
+                },
+				onfocusout:function(element,event){
+					//实时去除结束时间是否大于开始时间验证
+					var name = $(element).attr("name");
+					
+					if(name == "end_time"){
+						var endDate = $(element).val();
+						var startDate = $(element).siblings("input[name='start_time']").val();
+						
+						var date1 = new Date(Date.parse(startDate.replace(/-/g, "/")));
+						var date2 = new Date(Date.parse(endDate.replace(/-/g, "/")));
+						
+						if(date1 > date2){
+							$(element).removeClass("error");
+							$(element).siblings(".form_prompt").html("");
+						}
+					}
+				}
+            });
+            
+            $('.nyroModal').nyroModal();
+        });
+        
+        //时间选择
+        var opts1 = {
+            'targetId':'start_time',//时间写入对象的id
+            'triggerId':['start_time'],//触发事件的对象id
+            'alignId':'start_time',//日历对齐对象
+            'format':'-',//时间格式 默认'YYYY-MM-DD HH:MM:SS'
+            'min':'{$package.start_time}' //最小时间
+        },opts2 = {
+            'targetId':'end_time',
+            'triggerId':['end_time'],
+            'alignId':'end_time',
+            'format':'-',
+            'min':'{$package.start_time}'
+        }
+        xvDate(opts1);
+        xvDate(opts2);
+    </script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+{include file="admin/header"}
+<style>
+.contentWarp .contentWarp_item {width: 100% !important;}
+.contentWarp .section_drp_count .sc_icon{background-position: -2px -286px;}
+</style>
+<div class="warpper">
+    <div class="title">分销统计</div>
+    <div class="content_tips start_content">
+        <div class="explanation" id="explanation">
+            <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4><span id="explanationZoom" title="收起提示"></span></div>
+            <ul>
+                <li>一、分销商统计：所有分销商（包括未审核的、已审核的分销商）</li>
+                <li>二、分销订单统计：所有有分销商品的订单（包括未分成、已分成分销订单）</li>
+                <li>三、分销订单佣金统计：所有已分成订单的分销佣金。</li>
+            </ul>
+        </div>
+        <div class="contentWarp">
+            <div class="contentWarp_item clearfix">
+                {if $drp_shop_trend}
+                <div class="section section_drp_count">
+                    <div class="sc_title">
+                        <i class="sc_icon"></i>
+                        <h3>分销商统计  (总人数：{$drp_shop_count})</h3>
+                        <div class="filter_date">
+                            <a href="javascript:;" onclick="set_statistical_chart(this, 'shop', 'week')">七天</a>
+                            <a href="javascript:;" onclick="set_statistical_chart(this, 'shop', 'month')">一月</a>
+                            <a href="javascript:;" onclick="set_statistical_chart(this, 'shop', 'year')">半年</a>
+                        </div>
+                    </div>
+                    <div class="sc_warp">
+                        <div id="shop_main" style="height:274px;"></div>
+                    </div>
+                </div>
+                {/if}
+                {if $drp_order_trend}
+                <div class="section section_order_count">
+                    <div class="sc_title">
+                        <i class="sc_icon"></i>
+                        <h3>分销订单统计 (总订单数：{$drp_order_count})</h3>
+                        <div class="filter_date">
+                            <a href="javascript:;" onclick="set_statistical_chart(this, 'order', 'week')">七天</a>
+                            <a href="javascript:;" onclick="set_statistical_chart(this, 'order', 'month')">一月</a>
+                            <a href="javascript:;" onclick="set_statistical_chart(this, 'order', 'year')">半年</a>
+                        </div>
+                    </div>
+                    <div class="sc_warp">
+                        <div id="order_main" style="height:274px;"></div>
+                    </div>
+                </div>
+                {/if}
+                {if $drp_sales_trend}
+                <div class="section section_total_count">
+                    <div class="sc_title">
+                        <i class="sc_icon"></i>
+                        <h3>分销佣金统计 (总佣金数：{$drp_sales_count})</h3>
+                        <div class="filter_date">
+                            <a href="javascript:;" onclick="set_statistical_chart(this, 'sale', 'week')">七天</a>
+                            <a href="javascript:;" onclick="set_statistical_chart(this, 'sale', 'month')">一月</a>
+                            <a href="javascript:;" onclick="set_statistical_chart(this, 'sale', 'year')">半年</a>
+                        </div>
+                    </div>
+                    <div class="sc_warp">
+                        <div id="total_main" style="height:274px;"></div>
+                    </div>
+                </div>
+                {/if}
+            </div>
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript" src="../js/echarts-all.js"></script>
+<script type="text/javascript">
+    set_statistical_chart(".section_drp_count .filter_date a:first", "shop", "week"); //初始设置
+    set_statistical_chart(".section_order_count .filter_date a:first", "order", "week"); //初始设置
+    set_statistical_chart(".section_total_count .filter_date a:first", "sale", "week"); //初始设置
+    function set_statistical_chart(obj, type, date)
+    {
+        var obj = $(obj);
+        obj.addClass("active");
+        obj.siblings().removeClass("active");
+
+        $.ajax({
+            type:'get',
+            url:"{url('drp_count')}",
+            data:'type='+type+'&date='+date,
+            dataType:'json',
+            success:function(data){
+                if(type == 'shop'){
+                    var div_id = "shop_main";
+                }
+                if(type == 'order'){
+                    var div_id = "order_main";
+                }
+                if(type == 'sale'){
+                    var div_id = "total_main";
+                }
+                var myChart = echarts.init(document.getElementById(div_id));
+                myChart.setOption(data);
+            }
+        })
+    }
+
+</script>
+<script type="text/javascript">
+    $("#explanationZoom").on("click",function(){
+        var explanation = $(this).parents(".explanation");
+        var width = $(".content_tips").width();
+        if($(this).hasClass("shopUp")){
+            $(this).removeClass("shopUp");
+            $(this).attr("title","收起提示");
+            explanation.find(".ex_tit").css("margin-bottom",10);
+            explanation.animate({
+                width:width
+            },300,function(){
+                $(".explanation").find("ul").show();
+            });
+        }else{
+            $(this).addClass("shopUp");
+            $(this).attr("title","提示相关设置操作时应注意的要点");
+            explanation.find(".ex_tit").css("margin-bottom",0);
+            explanation.animate({
+                width:"118"
+            },300);
+            explanation.find("ul").hide();
+        }
+    });
+
+</script>
+{include file="admin/footer"}

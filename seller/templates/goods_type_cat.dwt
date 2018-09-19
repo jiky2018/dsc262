@@ -1,0 +1,119 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="search-info">
+                    <div class="search-form">
+                        <form method="post" action="javascript:searchUser()" name="searchForm">		
+                            <div class="search-key">
+                                <input type="text" class="text text_2" name="keywords" value="" placeholder="{$lang.cat_name}">
+                                <input type="submit" class="submit" value="{$lang.button_search}">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="list-div" id="listDiv">
+                {/if}
+                <table id="list-table" class="ecsc-default-table">
+					<thead>
+                        <tr>
+                            {if $level lt 3}
+                            <th width="8%">级别({$lang.cat_level.$level})</th>
+                            {/if}
+                            <th width="20%">分类名称</th>
+                            {if $level gt 1}
+                            <th width="10%">父级分类</th>
+                            {/if}
+                            <th width="10%">类型数量</th>
+                            <th width="10%">排序</th>
+                            <th width="12%" class="handle">操作</th>
+                        </tr>
+					</thead>
+					<tbody>
+                        {foreach from=$goods_type_arr item=cat}
+                        <tr align="center" class="{$cat.level}" id="{$cat.level}_{$cat.cat_id}">
+                            {if $level lt 3}
+                            <td class="tl pl10">
+                                <div class="tDiv first_setup">
+                                    <div class="setup_span">
+                                        <em><i class="icon icon-cog"></i>设置<i class="arrow"></i></em>
+                                        <ul>
+                                            <li><a href="goods_type.php?act=cat_add&parent_id={$cat.cat_id}">新增下一级</a></li>
+                                            <li><a href="goods_type.php?act=cat_list&parent_id={$cat.cat_id}&level={$cat.level}">查看下一级</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </td>
+                            {/if}
+							<td>
+							{if $attr_set_up eq 1}
+							<a href="goods_type.php?act=manage&cat_id={$cat.cat_id}" class="ftx-01">{$cat.cat_name}</a>
+							{else}
+							{$cat.cat_name}
+							{/if}
+							</td>
+                            {if $level gt 1}
+                            <td>{$cat.parent_name}</td>
+                            {/if}
+                            <td>{$cat.type_num}</td>
+                            <td align="center"><span onclick="listTable.edit(this, 'edit_sort_order', {$cat.cat_id})">{$cat.sort_order}</span></td>
+                            <td class="ecsc-table-handle tr">
+							{if $attr_set_up eq 1}
+                                <span><a href="goods_type.php?act=cat_edit&amp;cat_id={$cat.cat_id}" class="btn-green"><i class="icon icon-edit"></i><p>{$lang.edit}</p></a></span>
+                                <span><a href="javascript:void(0);" onclick="listTable.remove({$cat.cat_id}, '{$lang.drop_confirm}','remove_cat')" class="btn-red"><i class="icon icon-trash"></i><p>{$lang.drop}</p></a></span>
+							{/if}
+							</td>
+                        </tr>
+                        {foreachelse}
+                        <tr><td class="no-records" colspan="11">{$lang.no_records}</td></tr>
+                        {/foreach}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="20">
+                            {include file="page.dwt"}
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+                    {if $full_page}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript" src="js/jquery.purebox.js"></script>
+<script type="text/javascript">
+	listTable.recordCount = {$record_count|default:0};
+	  listTable.pageCount = {$page_count|default:1};
+          listTable.query = 'cat_list_query';
+
+	  {foreach from=$filter item=item key=key}
+	  listTable.filter.{$key} = '{$item}';
+	  {/foreach}
+            /**
+              * 搜索用户
+              */
+             function searchUser()
+             {
+                 var frm = $("form[name='searchForm']");
+                 listTable.filter['keywords'] = Utils.trim(frm.find("input[name='keywords']").val());
+
+                 listTable.filter['page'] = 1;
+                 listTable.loadList();
+            }
+    </script>
+</body>
+</html>
+{/if}

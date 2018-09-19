@@ -1,0 +1,228 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+<style>
+.contentWarp_item{ width:24%;margin-bottom:12px}
+.content .contentWarp_item .section_select .item{width:24%;margin-bottom:12px;margin-right:1.3%;}
+.contentWarp_item:nth-child(2) {width: 100%;}
+.contentWarp_item .section_select .item:last-child{margin-right:0}
+.contentWarp_item{margin-top:20px}
+.contentWarp_item{width:100%}
+</style>
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">权限 - {$ur_here}</div>
+        <div class="content">
+            <div class="tabs_info">
+                <ul>
+                    <li{if $filter.extension_code == ''} class="curr"{/if}>
+                        <a href="services.php?act=list">全部客服 </a>
+                    </li>
+                    <li{if $filter.extension_code == 'platform'} class="curr"{/if}>
+                        <a href="services.php?act=list&extension_code=platform">平台客服 <em class="li_color"></em></a>
+                    </li>
+                    <li{if $filter.extension_code == 'seller'} class="curr"{/if}>
+                        <a href="services.php?act=list&extension_code=seller">商家客服 <em class="li_color"></em></a>
+                    </li>
+                    <li{if $filter.extension_code == 'deleted'} class="curr"{/if}>
+                        <a href="services.php?act=list&extension_code=deleted">已删除客服 <em class="li_color"></em></a>
+                    </li>
+                </ul>
+            </div>
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>该页面展示了所有客服的信息。</li>
+                    <li>可删除、编辑客服。</li>
+                </ul>
+            </div>
+            <div class="contentWarp_item">
+                <div class="section_select">
+                    <div class="item item_order">
+                        <i class="icon"><img src="../mobile/public/assets/chat/images/reception1.png" width='74px' height='74px'></i>
+                        <div class="desc">
+                            <div class="tit">{$times.times}</div>
+                            <span>历史接待次数</span>
+                        </div>
+                        <i class="icon"></i>
+                    </div>
+                    <div class="item item_order">
+                        <i class="icon"><img src="../mobile/public/assets/chat/images/reception2.png" width='74px' height='74px'></i>
+                        <div class="desc">
+                            <div class="tit">{$times.people}</div>
+                            <span>历史接待人数</span>
+                        </div>
+                        <i class="icon"></i>
+                    </div>
+                    <div class="item item_order">
+                        <i class="icon"><img src="../mobile/public/assets/chat/images/reception3.png" width='74px' height='74px'></i>
+                        <div class="desc">
+                            <div class="tit">{$times.today_times}</div>
+                            <span>今日接待次数</span>
+                        </div>
+                        <i class="icon"></i>
+                    </div>
+                    <div class="item item_order">
+                        <i class="icon"><img src="../mobile/public/assets/chat/images/reception4.png" width='74px' height='74px'></i>
+                        <div class="desc">
+                            <div class="tit">{$times.today_people}</div>
+                            <span>今日接待人数</span>
+                        </div>
+                        <i class="icon"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flexilist">
+            	<!--客服人员列表-->
+                <div class="common-head">
+                    <div class="fl">
+                        <a href="services.php?act=add{if $pix}&extension_code={$pix}{/if}">
+                        <div class="fbutton"><div class="add" title="添加客服">
+                        <span><i class="icon icon-plus"></i>添加客服</span>
+                        </div></div>
+                        </a>
+                    </div>
+                    <div class="search">
+                        <form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+                        <div class="input">
+                            <input type="text" name="keyword" value="{$filter.keyword}" class="text nofocus w140" placeholder="请输入关键词" autocomplete="off">
+                            <input type="hidden" name="extension_code" value="{$filter.extension_code}">
+                            <input type="submit" class="btn" name="secrch_btn" ectype="secrch_btn" value="" />
+                        </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="common-content">
+                    <form method="post" action="services.php" name="listForm" onsubmit="return confirm('确认删除这些客服吗？');">
+                	<div class="list-div" id="listDiv">
+                        {/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                            <thead>
+                                <tr>
+                                    <th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars"></label></div></th>
+                                    <th width="5%"><div class="tDiv"><a>{$lang.record_id}</div></th>
+                                    <th width="20%"><div class="tDiv"><a>账号</a></div></th>
+                                    <th width="20%"><div class="tDiv">昵称</div></th>
+                                    <th width="20%"><div class="tDiv">商家</div></th>
+                                    <th width="20" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {foreach from=$services_list item=services}
+                            	<tr>
+                                    <td class="sign"><div class="tDiv"><input type="checkbox" name="checkboxes[]" class="checkbox" value="{$services.id}" id="checkbox_{$services.id}" /><label for="checkbox_{$services.id}" class="checkbox_stars"></label></div></td>
+                                    <td><div class="tDiv">{$services.id}</div></td>
+                                    <td><div class="tDiv">{$services.user_name|escape:html}</div></td>
+                                    <td><div class="tDiv">{$services.nick_name|nl2br}</div></td>
+                                    <td><div class="tDiv">{$services.shop_name}</div></td>
+                                    <td class="handle">
+                                        <div class="tDiv a2">
+                                           <a href="services.php?act=dialog_list&id={$services.id}" title="会话记录"  class="btn_edit"><i class="icon icon-edit"></i>会话记录</a>
+                                           {if $removed == 1}
+                                               <a title="恢复客服"  class="btn_edit" onclick='backservice();'><i class="icon icon-edit"></i>恢复客服</a>
+                                           {else}
+                                               <a href="services.php?act=edit&id={$services.id}" title="{$lang.edit}"  class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>
+                                           <a href="javascript:void(0);" onclick="listTable.remove({$services.id}, '{$lang.drop_confirm}')" title="{$lang.remove}" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>
+                                          {/if}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {foreachelse}
+                                    <tr><td class="no-records" colspan="12">{$lang.no_records}</td></tr>
+                                {/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="12">
+                                        <div class="tDiv">
+                                            <div class="tfoot_btninfo">
+                                                <input name="act" type="hidden" value="batch" />
+                                            	<input type="submit" name="remove" ectype="btnSubmit" value="{$lang.drop}" class="btn btn_disabled" disabled />
+                                            </div>
+                                            <div class="list-page">
+                                                {include file="library/page.lbi"}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        {if $full_page}
+                    </div>
+                     </form>
+                </div>
+            </div>
+		</div>
+	</div>
+    <script type="text/javascript">
+        $('.fbutton').on('click', 'div', function(){
+                Ajax.call('services.php?is_ajax=1&act=removed', '', listCallback, "GET", "JSON");
+        });
+        function backservice(){
+            //恢复客服
+            if(confirm('确认恢复客服？')){
+                window.location.href='services.php?act=backservice&id={$services.id}';
+            }
+        }
+
+        /** 回调方法 */
+        function listCallback(result){
+        if (result.error > 0)
+          {
+            alert(result.message);
+          }
+          else
+          {
+            try
+            {
+        	  var ById = "listDiv";
+
+        	  if(result.class){
+        		ById = result.class;
+        	  }
+              document.getElementById(ById).innerHTML = result.content;
+              /** 已删除客服按钮 */
+              if($('.deleted_service>div>div').attr('title') == '客服列表'){
+                $('.deleted_service>div>div').attr('title', '已删除客服');
+                $('.deleted_service>div>div>span').text('已删除客服');
+                $('.fbutton').off('click', 'div');
+                $('.fbutton').on('click', 'div', function(){
+                    Ajax.call('services.php?is_ajax=1&act=removed', '', listCallback, "GET", "JSON");
+                });
+              }else if($('.deleted_service>div>div').attr('title') == '已删除客服'){
+                $('.deleted_service>div>div').attr('title', '客服列表');
+                $('.deleted_service>div>div>span').text('客服列表');
+                $('.fbutton').off('click', 'div');
+                $('.fbutton').on('click', 'div', function(){
+                        Ajax.call('services.php?is_ajax=1&act=list', '', listCallback, "POST", "JSON");
+                });
+              }
+
+              //
+
+              if (typeof result.filter == "object")
+              {
+                listTable.filter = result.filter;
+              }
+              listTable.pageCount = result.page_count;
+        	  if($(".refresh_span").length > 0){
+        		$(".refresh_span").html($(".refresh_span").html().replace(/\d+/g, result.filter['record_count'])); //刷新数量 by wu
+        	  	$(".refresh_tit").removeClass("loading");
+        	  }
+            }
+            catch (e)
+            {
+              alert(e.message);
+            }
+          }
+        }
+
+    </script>
+ {include file ='library/pagefooter.lbi'}
+
+</body>
+
+</html>
+{/if}

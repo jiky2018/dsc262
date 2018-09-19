@@ -1,0 +1,120 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="search-info">
+                    <div class="search-form">
+                        <form action="javascript:searchSnatch()" name="searchForm">
+                        <div class="search-key">
+                            <input type="text" name="keyword" class="text text_2" placeholder="{$lang.snatch_name}" />
+                            <input type="submit" value="{$lang.button_search}" class="submit" />
+                        </div>
+                        </form>
+                    </div>
+                </div>
+                <form method="POST" action="gift_gard.php?act=batch&bonus_type={$smarty.get.bonus_type}" name="listForm">
+                <!-- start user_bonus list -->
+                <div class="list-div" id="listDiv">
+                {/if}
+                <table class="ecsc-default-table">
+                    <thead>
+                        <tr>
+                          <th width="10%"><div class="first_all"><input onclick='listTable.selectAll(this, "checkboxes")' type="checkbox" id="all" class="ui-checkbox"><label class="ui-label" for="all">{$lang.record_id}</label></div></th>
+                          <th width="20%">{$lang.gift_sn}</th>
+                          <th width="20%">{$lang.gift_pwd}</th>
+                          <th width="15%">{$lang.gift_type}</th>
+                          <th width="15%">{$lang.gift_user_time}</th>
+                          <th width="10%">{$lang.is_goods}</th>
+                          <th width="10%">{$lang.handler}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {foreach from=$bonus_list item=bonus}
+                    <tr class="bd-line">
+                      <td class="first_td_checkbox"><div class="first_all"><input value="{$bonus.gift_gard_id}" name="checkboxes[]" type="checkbox" id="checkbox_{$bonus.gift_gard_id}" class="ui-checkbox"><label for="checkbox_{$bonus.gift_gard_id}" class="ui-label">{$bonus.gift_gard_id}</label></div></td>
+                      <td>{$bonus.gift_sn}</td>
+                      <td>{$bonus.gift_password}</td>
+                      <td>{$bonus.gift_name}</td>
+                      <td>{if $bonus.user_time}<span class="green">{$bonus.user_time}</span>{else}<span class="red">{$lang.not_use}</span>{/if}</td>
+                      <td>{if $bonus.config_goods_id}<span class="green">{$lang.yes_goods}</span>{else}<span class="red">{$lang.not_goods}</span>{/if}</td>
+                      <td class="ecsc-table-handle">
+                      	<span class="mr0"><a href="javascript:;" onclick="listTable.remove({$bonus.gift_gard_id}, '{$lang.drop_confirm}', 'remove_bonus')" class="btn-red" title="{$lang.drop}"><i class="icon icon-trash"></i><p>{$lang.drop}</p></a></span>
+                      </td>
+                    </tr>
+                    {foreachelse}
+                    <tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+                    {/foreach}
+                    </tbody>
+                    <tfoot>
+                    	<tr>
+                        	<td colspan="20" class="td_border">
+                            	<div class="shenhe">
+                                    <input type="submit" name="drop" id="btnSubmit" value="{$lang.drop}" class="sc-btn btn_disabled" disabled="true" />
+                                    <input type="submit" name="configure_goods" id="btnSubmit1" value="配置商品" class="sc-btn btn_disabled" disabled="true" />
+                                    <input type="hidden" name="type_id" id="type_id" value="{}" />
+                              	</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="20">
+                            	{include file="page.dwt"}
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+                {if $full_page}
+              </div>
+              <!-- end user_bonus list -->
+              </form>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript">
+<!--
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+  listTable.query = "query_bonus";
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+
+  {literal}
+  onload = function()
+  {
+    // 寮�妫�煡璁㈠崟
+    startCheckOrder();
+    document.forms['listForm'].reset();
+  }
+  
+  
+  {/literal}
+</script>
+
+<script type="text/javascript">
+
+function searchSnatch()
+{
+  var keyword = Utils.trim(document.forms['searchForm'].elements['keyword'].value);
+  listTable.filter.keywords = keyword;
+  listTable.filter.page = 1;
+  listTable.loadList();
+}
+  {/literal}
+//-->
+</script>
+</body>
+</html>
+{/if}

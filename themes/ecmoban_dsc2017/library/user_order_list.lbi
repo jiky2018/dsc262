@@ -1,0 +1,193 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<div class="user-order-list user-order-list-special">
+{foreach from=$orders.order_list item=order}
+{if $order.order_over eq 1}
+<input name="order_id[]" value="{$order.order_id}" type="hidden">
+{/if}
+<dl class="item">
+	<dt class="item-t item-t-qb">
+		<div class="t-statu">
+        	<div class="t-statu-name" id="ss_received_{$order.order_id}">{if $order.order_over neq 1}{$order.order_status}{/if}</div>
+            {if $order.invoice_no}
+            <div class="logistics">
+                <div class="logistics-track">
+                    <div class="logistics-t">
+                        <i class="logistics-icon"></i>
+                    </div>
+                    <div class="logistics-c">
+                    	<div class="logistics-items" id="retData_{$order.order_id}"></div>
+                	</div>
+                </div>
+                <span id="invoice_no_{$order.order_id}" style="display:none">{$order.invoice_no}</span>
+                <span id="shipping_name_{$order.order_id}" style="display:none">{$order.shipping_name}</span>
+            </div>    
+            {/if}
+            {if $order.allow_order_delay && $order.allow_order_delay_handler}
+            <div class="fr">
+                <div class="time fl" ectype="time" data-time="{$order.auto_delivery_time}">
+                    <span></span><span class="days">00</span><em>:</em><span class="hours">00</span><em>:</em><span class="minutes">00</span><em>:</em><span class="seconds">00</span>					   
+                </div>
+            </div>
+            {/if}
+        </div>
+		<div class="t-info">
+			<span class="info-item">订单号：{$order.order_sn}</span>
+			<span class="info-item">{$order.order_time}</span>
+			<span class="info-item">{$order.consignee}</span>	
+		</div>
+		<div class="t-price">{$order.total_fee}</div>
+	</dt>
+	<dd class="item-c">
+		<div class="c-left">
+			{foreach from=$order.order_goods item=goods name=foo}
+			<div class="c-goods" ectype="c-goods" {if $smarty.foreach.foo.index > 2} style="display:none;"{/if}>
+				{if $goods.og_extension_code neq 'package_buy'}
+					<div class="c-img"><a href="{$goods.url}"><img src="{if $goods.goods_thumb}{$goods.goods_thumb}{else}{$order.no_picture}{/if}" alt=""></a></div> 
+				{else}
+				<div class="c-img"><a href="./package.php"><img src="{if $goods.goods_thumb}./data/gallery_album/package_goods_default.jpg{else}{$order.no_picture}{/if}" alt=""></a></div> 
+				{/if}
+				<div class="c-info">
+					<div class="o-info-lm">
+                        {if $goods.og_extension_code eq 'package_buy'}
+                        {$goods.goods_name|truncate:30}
+                        <span class="red">{$lang.remark_package}</span>
+                        {else}
+                        <a href="{$goods.url}" class="info-name" target="_blank" title="{$goods.goods_name}">{$goods.goods_name}</a>
+                        {/if}
+                    </div>
+                    <div class="fl">
+					<div class="info-price mr10" style="width: auto;"><b>{$goods.goods_price}</b><i>×</i><span>{$goods.goods_number}</span></div>
+					{if $goods.trade_id &&  $goods.og_extension_code neq 'package_buy'}<a href="user.php?act=trade&tradeId={$goods.trade_id}&snapshot=true" class="ftx-05 trade_snapshot" target="_blank">{$lang.trade_snapshot}</a>{/if}
+					</div>
+                    {if $goods.goods_attr}<div class="info-attr">{$goods.goods_attr}</div>{/if}
+				</div>
+			</div>
+			{/foreach}
+            {if $order.order_goods_count gt 3}
+            <span class="ellipsis">......</span>
+            <a href="javascript:void(0);" class="order-prolist-more" ectype="opm">{$lang.see_more}︾</a>
+            {/if}
+		</div>
+        <div class="c-outhr">
+            <span class="info-item"><a href="{$order.shop_url}" class="user-shop-link">{$order.shop_name}</a>
+                {if $order.is_IM eq 1 || $order.is_dsc}
+                <a id="IM" onclick="openWin(this)" href="javascript:;" ru_id="{$order.ru_id}" class="iconfont icon-kefu user-shop-kefu"></a>
+                {else}
+                {if $order.kf_type eq 1}
+                <a href="http://www.taobao.com/webww/ww.php?ver=3&touid={$order.kf_ww}&siteid=cntaobao&status=1&charset=utf-8" class="iconfont icon-kefu user-shop-kefu" target="_blank"></a>
+                {else}
+                <a href="http://wpa.qq.com/msgrd?v=3&uin={$order.kf_qq}&site=qq&menu=yes" class="iconfont icon-kefu user-shop-kefu" target="_blank"></a>
+                {/if}
+                {/if}
+            </span>
+            {if $order.return_url}<span class="info-item"><a href="{$order.return_url}"class="ftx-05">{$lang.return_apply}</a></span>{/if}	
+        </div>
+		<div class="c-handle" id="ss_msg_{$order.order_id}">
+            {if $order.order_over neq 1}
+				{if $goods.og_extension_code eq 'package_buy' && !$order.is_package}
+					<span style="color:red">礼包已下架</span>
+				{else}
+					{if $order.allow_order_delay && $order.allow_order_delay_handler}
+					<a href="javascript:void(0);" class="sc-btn" data-id="{$order.order_id}" id="sbumit_order_delay">{$order.allow_order_delay_handler}</a>
+					{/if}
+					{if $action eq 'auction'}
+					<a href="user.php?act=auction_order_detail&order_id={$order.order_id}"  class="sc-btn">{$lang.order_detail}</a>
+					{else}
+					<a href="user.php?act=order_detail&order_id={$order.order_id}"  class="sc-btn">{$lang.order_detail}</a>
+					{/if}
+					{if $order.delete_yes neq 1}
+						{if $action eq 'order_list' || $action eq 'auction'}
+							<a href="javascript:get_order_delete_restore('delete', {$order.order_id});" class="sc-btn">{$lang.delete_order}</a>
+						{else $action eq 'order_recycle' || $action eq 'auction_order_recycle'}
+							<a href="javascript:get_order_delete_restore('restore', {$order.order_id});" class="sc-btn">{$lang.reduction}</a>
+							<a href="javascript:get_order_delete_restore('thorough', {$order.order_id});" class="sc-btn">{$lang.delete_order}</a>
+						{/if}
+					{/if}
+					{if $order.handler_order_status}
+						<span style="color:red">{$order.original_handler}</span>
+					{elseif $order.handler_act && $order.original_handler}
+						{if $order.is_my_shop neq 'my_shop'}
+						<a href="user.php?act={$order.handler_act}&order_id={$order.order_id}{if $order.sign neq 0}{$order.sign_url}{/if}{if $action eq 'auction'}&action=auction{/if}" {if $order.remind} onclick="if (!confirm('{$order.remind}')) return false;"{/if} class="sc-btn">{if $order.is_comment_again}查看评论{else}{$order.original_handler}{/if}</a>
+						{/if}
+					{/if}
+				{/if}
+            {/if} 
+		</div>
+	</dd>
+</dl>
+{foreachelse}
+<div class="no_records">
+	<i class="no_icon"></i>
+    <div class="no_info">
+    	<h3>
+        	{if $no_records}
+            	{$no_records}
+            {else}
+        		{insert name='get_page_no_records' filename=$filename act=$action}
+            {/if}
+        </h3>
+    </div>
+</div>
+{/foreach}
+</div>
+
+{if $orders.order_list}
+<div class="pages pages_warp">{$orders.pager}</div>
+{/if}
+
+{if $orders.order_list}
+{insert_scripts files='jquery.yomi.js'}
+<script type="text/javascript">
+$(function(){
+	$("*[ectype='time']").each(function(){
+		$(this).yomi();
+	});
+	
+	{foreach from=$orders.order_list item=order}           
+		{if $order.invoice_no}
+			$('#retData_' + {$order.order_id}).html("<center>" + json_languages.logistics_tracking_in + "</center>");
+			var expressid = $('#shipping_name_'+{$order.order_id}).html();
+			var expressno = $('#invoice_no_'+{$order.order_id}).html();
+			$.ajax({
+				url: "plugins/kuaidi/express.php",
+				type: "post",
+				data:'com=' + expressid + '&nu=' + expressno,
+				success: function(data,textStatus){
+					$('#retData_'+{$order.order_id}).html(data);
+				},
+				error: function(o){
+				}
+			});
+		{/if}
+	{/foreach}
+	
+	//用户中心 物流跟踪
+	$(".logistics-track").hover(function(){
+		$(this).addClass("hover");
+		$(this).parents("tr").css({"z-index":99,"position":"relative"});
+	},function(){
+		$(this).removeClass("hover");
+		$(this).parents("tr").css({"z-index":"auto","position":"static"});
+	});
+	
+	//自动确认收货
+	{if $open_delivery_time eq 1}
+	$(":input[name='order_id[]']").each(function(index, element) {
+		var order_id = $(this).val();
+        $.ajax({
+			url: "user.php",
+			type: "get",
+			data:'act=return_order_status' + '&order_id=' + order_id,
+			dataType: 'json',
+			success:function(result){
+				if(result.error == 1){
+					$('#ss_received_' + order_id).html(result.ss_received);
+					$('#ss_msg_' + order_id).html(result.msg);
+				}
+			}
+		});
+    });
+	{/if}
+});
+</script>
+{/if}

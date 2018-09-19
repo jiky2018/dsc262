@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.13_backup} - {$ur_here}</div>
+        <div class="content">
+			{if $warning}
+			<ul style="padding:0; margin: 0; list-style-type:none; color: #CC0000;">
+			  <li style="border: 1px solid #CC0000; background: #FFFFCC; padding: 10px; margin-bottom: 5px;" >{$warning}</li>
+			</ul>
+			{/if}
+            <div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+					<li>{$lang.operation_prompt_content_common}</li>
+                    <li>{$lang.operation_prompt_content.restore.0}</li>
+                    <li>{$lang.operation_prompt_content.restore.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+                    	<form method="post" action="database.php" enctype="multipart/form-data">
+                        <div class="switch_info business_info">
+                          	<div class="step">
+                            	<div class="tit"><strong class="ml10">{$lang.restore}</strong></div>
+                            	<div class="items">
+                                	<div class="item">
+                                    	<div class="label">{$lang.sqlfile}：</div>
+                                        <div class="value">
+                                        	<div class="type-file-box">
+                                                <input type="button" name="button" id="button" class="type-file-button" value="">
+                                                <input type="file" class="type-file-file" id="sqlfile" name="sqlfile" data-state="sqlfile" size="50" hidefocus="true" value="">
+                                                <input type="text" name="textfile" class="type-file-text"  id="textfield" autocomplete="off" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                    	<div class="label">&nbsp;</div>
+                                        <div class="value info_btn"><input type="hidden" name = "act" value = "upload_sql"><input type="submit" value={$lang.upload_and_exe} class="button"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </form>
+                        
+                        <form action="database.php" name="file_list" method="POST" onsubmit="return confirm('{$lang.confirm_remove}');" >
+                        <div class="switch_info business_info restore">
+                          	<div class="step">
+                        		<div class="list-div" id="listDiv">
+                                <table cellpadding="1" cellspacing="1">
+                                	<thead>
+                                        <tr>
+                                            <th width="3%" class="sign"><div class="tDiv"><input type="checkbox" class="checkbox" name="all_list" id="all_list"><label for="all_list" class="checkbox_stars"></label></div></th>
+                                            <th width="25%"><div class="tDiv">{$lang.server_sql}</div></th>
+                                            <th width="20%"><div class="tDiv">{$lang.ver}</div></th>
+                                            <th width="15%"><div class="tDiv">{$lang.add_time}</div></th>
+                                            <th width="10%"><div class="tDiv">{$lang.file_size}</div></th>
+                                            <th width="10%"><div class="tDiv">{$lang.vol}</div></th>
+                                            <th width="15%" class="handle">{$lang.handler}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {foreach from=$list item=item}
+                                        <tr {if $item.mark eq 2}style="display:none"{/if}>
+                                            <td class="sign"><div class="tDiv"><input type="checkbox" name="checkboxes[]" class="checkbox" value="{$item.name}" id="checkbox_{$item.name}" /><label for="checkbox_{$item.name}" class="checkbox_stars"></label></div></td>
+                                            <td><div class="tDiv">{if $item.mark eq 1}<img src="images/menu_plus.png" onclick="rowClicked(this)">{/if}{if $item.mark eq 2}<img src="images/menu_arrow.gif">{/if}<a href="../data/sqldata/{$item.name}">{$item.name}</a></div></td>
+                                            <td><div class="tDiv">{$item.ver}</div></td>
+                                            <td><div class="tDiv">{$item.add_time}</div></td>
+                                            <td><div class="tDiv">{$item.file_size}</div></td>
+                                            <td><div class="tDiv">vol:{$item.vol}</div></td>
+                                            <td align="center">{if $item.mark neq 2}<a href="database.php?act=import&file_name={$item.name}">[{$lang.import}]</a>{else}&nbsp;{/if}</td>
+                                        </tr>
+                                    {foreachelse}
+                                    	<tr><td class="no-records" colspan="7">{$lang.no_records}</td></tr>
+                                    {/foreach}
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="7">
+                                                <div class="tDiv">
+                                                    <div class="tfoot_btninfo">
+                                                        <input type="hidden" name="act" value="remove">
+                                                        <input type="submit" value="{$lang.submit_remove}" id="btnSubmit" name="btnSubmit" class="btn btn_disabled" disabled="true" ectype="btnSubmit" />
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                                </div>
+							</div>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+	{include file ='library/pagefooter.lbi'}
+</body>
+</html>

@@ -1,0 +1,1565 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{if $zc_title}{$zc_title}{else}{$lang.crowdfunding}{/if}</title>
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/base.css" />
+<link href="{$ecs_css_path}" rel="stylesheet" type="text/css" />
+<link href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/css/zc.index.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/purebox.css">
+{insert_scripts files='jquery-1.9.1.min.js,jquery.json.js,transport_jquery.js'}
+{insert_scripts files='common.js,global.js,utils.js,compare.js,region.js'}
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/sc_common.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.tabso_yeso.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/rotate3di.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/scroll_city.js"></script>
+<!-- #BeginLibraryItem "/library/js_languages.lbi" --><!-- #EndLibraryItem -->
+</head>
+<body class="page-header">
+<!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
+	<!-- 众筹首页 start -->
+    <!-- {if $action eq 'default'} -->
+    <div class="z_container">
+        <div class="w_c banner_c">
+            <div class="wrap_c">
+				{* DSC 提醒您：动态载入zc_index_banner.lbi，显示众筹首页轮播图 *}{insert name='get_adv_child' ad_arr=$zc_index_banner}
+            </div>
+            <div class="ban_nav"><ul></ul></div>
+            <a class="btn_Left" href="javascript:;"></a>
+            <a class="btn_Right" href="javascript:;"></a>
+        </div>
+        <div class="z_main" style='margin-bottom:20px;padding-bottom:0;'>
+            <div class="z_mod_tit">
+                <i class="icon"></i>
+                <h2 class="font20">{$lang.Boutique_project}</h2>
+                <div class="search">
+                    <div class="searchInput">
+                        <input type="text" class="searchtext s-placeholder" id="w" placeholder="{$lang.Keyword_search}">
+                        <a href="javascript:;" class="searchbtn" id='sousuo'>{$lang.search}</a>
+                    </div>
+                    <span class="line"></span>
+                    <span class="pro-more">
+                        <a target="_blank" href="crowdfunding.php?act=xm">{$lang.more_projects} &gt;</a>
+                    </span>
+                </div>
+            </div>
+            <div class="query-list">
+                <div class="attr">
+                    <div class="a-key">{$lang.category}：</div>
+                    <div class="a-values">
+                        <div class="v-option" style="display: none;">
+                            <b></b><span>{$lang.more}</span>
+                        </div>
+                        <div class="v-fold v-list">
+                            <ul class="f-list" id="parent_catagory">
+                                <li class="current"><a name="parentId" href="javascript:;" code="0">{$lang.project_all}</a></li>
+                                {foreach from=$cate_one item=item}
+                                <li><a name="parentId" href="javascript:;" code="{$item.cat_id}">{$item.cat_name}</a></li>
+                                {/foreach}
+                            </ul>
+                        </div>
+                        <div class="v-second-list">
+                            {foreach from=$cate_two item=res key=key}
+                                <ul class="s-list">
+                                    {foreach from=$res item=item}
+                                    <li><a name="category" parentid="{$key}" code="{$item.cat_id}" href="javascript:;">{$item.cat_name}</a></li>
+                                    {/foreach}
+                                </ul>
+                            {/foreach}
+                        </div>
+                    </div>
+                </div>
+                <div class="attr">
+                    <div class="a-key">{$lang.sort}：</div>
+                    <div class="a-values">
+                        <div class="v-fold v-order">
+                            <ul class="f-list" code="zhtj" id="sort">
+                                <li class="current">
+                                    <a name="sort" code="zhtj" href="javascript:;">{$lang.Comprehensive_rec}</a>
+                                </li>
+                                <li>
+                                    <a name="sort" code="zxsx" href="javascript:;">{$lang.on_line_new}</a>
+                                </li>
+                                <li>
+                                    <a name="sort" code="jezg" href="javascript:;">{$lang.Maximum_amount}</a>
+                                </li>
+                                <li>
+                                    <a name="sort" code="zczd" href="javascript:;">{$lang.Maximum_Support}</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="data-list" id="projectlist">
+                {foreach from=$zc_arr item=item}
+                <div class="Module_c">
+                    <a target="_blank" href="crowdfunding.php?act=detail&id={$item.id}"><img src="{$item.title_img}" width="520" height="263" title="" alt=""></a>
+                    <div class="Module_text">
+                        <div class="Module_topic">
+                            <h3><a target="_blank" href="crowdfunding.php?act=detail&id={$item.id}">{$item.title}</a></h3>
+                            <p title={$item.des}>{$item.duan_des}</p>
+                        </div>
+                        <div class="Module_progress">
+                            <span><i style="width:{if $item.baifen_bi gt 100}100{else}{$item.baifen_bi}{/if}%"></i></span>
+                            <em class="ing">{$item.zc_status}</em>
+                        </div>
+                        <div class="Module_op">
+                            <ul>
+                                <li><p>{$item.baifen_bi}%</p><span>{$lang.reached}</span></li>
+                                <li class="gap" style="width:100px;"><p>￥{$item.join_money}</p><span>{$lang.Raise}</span></li>
+                                <li class="gap"><p>{$item.shenyu_time}{$lang.day}</p><span>{$lang.residual_time}</span></li>
+                            </ul>
+                        </div>
+                        <div class="Module_fav">
+                            <p><span style="margin-right:10px;">{$lang.Support}：{$item.join_num}</span></p>
+                        </div>
+                    </div>
+                    <div class="Module_shadow_wrap">
+                        <div class="Module_shadow Module_shadow_top"></div>
+                        <div class="Module_shadow Module_shadow_bottom"></div>
+                    </div>
+                </div>
+                {/foreach}
+            </div>
+			{if $gengduo gt 5}
+			<div class="data-more" id="data-more">{$lang.see_more}<span class="sim"></span></div>
+			{/if}
+        </div>
+        <div class="z_sidebar w264 mt20">
+            <div class="White_c">
+                <div class="z_mod_tit">
+                    <i class="icon"></i>
+                    <h2 class="font18">{$lang.zx_Recommend}</h2>
+                </div>
+                <div id="winners">
+				  {foreach from=$sp_zc_list item=one}
+				  <div class="sp-zc-info">					
+					<img src="{$one.title_img}" width="250" style="margin:7px;">
+                    <a href="crowdfunding.php?act=detail&id={$one.id}" target="_blank">{$one.title}</a>					
+				  </div>	
+				  {/foreach}
+                </div>
+            </div>
+        </div>
+    </div>
+	<script type="text/javascript">
+	$(".banner_c").slide({titCell:".ban_nav ul",mainCell:".wrap_c ul",effect:"left",autoPlay:false,autoPage:true,scroll:1,vis:1,prevCell:".btn_Left",nextCell:".btn_Right"});
+
+    $('#parent_catagory li').on('click',function(){
+        $('.s-list a').removeClass('curr');
+        var code = $(this).find('a').attr('code');
+        var wenzi = $.trim($('#w').val());
+        if(code==0){
+            $.post('crowdfunding.php?act=quanbu',{code:code,wenzi:wenzi},function(data){
+                $('#projectlist').remove();
+                $('#data-more').remove();
+                $('.z_main').append(data);
+            },'json');
+        }else{
+            $.post('crowdfunding.php?act=cate',{code:code,wenzi:wenzi},function(data){
+                $('#projectlist').remove();
+                $('#data-more').remove();
+                $('.z_main').append(data);
+            },'json');
+        }
+    });
+
+    $('.s-list a').on('click',function(){
+        var code = $(this).attr('code');
+        var wenzi = $.trim($('#w').val());
+        $(this).parent().siblings().find('a').removeClass('curr');
+        $(this).addClass('curr');
+        $.post('crowdfunding.php?act=cate_child',{code:code,wenzi:wenzi},function(data){
+            $('#projectlist').remove();
+            $('#data-more').remove();
+            $('.z_main').append(data);
+        },'json');
+    })
+
+    $('body').on('click','#data-more',function(){
+        var wenzi = $.trim($('#w').val());
+        var pid = $('#parent_catagory').find('li[class=current]').children('a').attr('code');
+        var tid = $('.s-list').find('a[class=curr]').attr('code');
+        var len = $('#projectlist').find('div[class=Module_c]').length;
+
+        if(tid){
+            $.post('crowdfunding.php?act=gengduo_tid',{id:tid,len:len,wenzi:wenzi},function(data){
+                $('#projectlist').append(data);
+                var zx_tig = $('#zx_tig').attr('zx_tig');
+                if(zx_tig<=0){
+                    $('#data-more').hide();
+                }
+                $('#zx_tig').remove();
+            },'json');
+        }else{
+            if(pid==0){
+                $.post('crowdfunding.php?act=gengduo_pid_zero',{id:pid,len:len,wenzi:wenzi},function(data){
+                    $('#projectlist').append(data);
+                    var zx_tig = $('#zx_tig').attr('zx_tig');
+                    if(zx_tig<=0){
+                        $('#data-more').hide();
+                    }
+                    $('#zx_tig').remove();
+                },'json');
+            }else{
+                $.post('crowdfunding.php?act=gengduo_pid',{id:pid,len:len,wenzi:wenzi},function(data){
+                    $('#projectlist').append(data);
+                    var zx_tig = $('#zx_tig').attr('zx_tig');
+                    if(zx_tig<=0){
+                        $('#data-more').hide();
+                    }
+                    $('#zx_tig').remove();
+                },'json');
+            }
+        }
+    })
+
+    $('body').on('click','#sort li',function(){
+        var wenzi = $.trim($('#w').val());
+        var sig = $(this).find('a').attr('code');
+        var pid = $('#parent_catagory').find('li[class=current]').children('a').attr('code');
+        var tid = $('.s-list').find('a[class=curr]').attr('code');
+        var len = $('#projectlist').find('div[class=Module_c]').length;
+
+        if(tid){
+            $.post('crowdfunding.php?act=paixu_tid',{id:tid,len:len,sig:sig,wenzi:wenzi},function(data){
+                $('#projectlist').remove();
+                $('#data-more').remove();
+                $('.z_main').append(data);
+            },'json');
+        }else{
+            if(pid==0){
+                $.post('crowdfunding.php?act=paixu_pid_zero',{id:pid,len:len,sig:sig,wenzi:wenzi},function(data){
+                    $('#projectlist').remove();
+                    $('#data-more').remove();
+                    $('.z_main').append(data);
+                },'json');
+            }else{
+                $.post('crowdfunding.php?act=paixu_pid',{id:pid,len:len,sig:sig,wenzi:wenzi},function(data){
+                    $('#projectlist').remove();
+                    $('#data-more').remove();
+                    $('.z_main').append(data);
+                },'json');
+            }
+
+        }
+        
+    })
+
+    $('#sousuo').on('click',function(){
+        var wenzi = $.trim($('#w').val());
+        var sig = $('#sort').find('li[class=current]').find('a').attr('code');
+        var pid = $('#parent_catagory').find('li[class=current]').children('a').attr('code');
+        var tid = $('.s-list').find('a[class=curr]').attr('code');
+        var len = $('#projectlist').find('div[class=Module_c]').length;
+
+        if(tid){
+            $.post('crowdfunding.php?act=paixu_tid',{id:tid,len:len,sig:sig,wenzi:wenzi},function(data){
+                $('#projectlist').remove();
+                $('#data-more').remove();
+                $('.z_main').append(data);
+            },'json');
+        }else{
+            if(pid==0){
+                $.post('crowdfunding.php?act=paixu_pid_zero',{id:pid,len:len,sig:sig,wenzi:wenzi},function(data){
+                    $('#projectlist').remove();
+                    $('#data-more').remove();
+                    $('.z_main').append(data);
+                },'json');
+            }else{
+                $.post('crowdfunding.php?act=paixu_pid',{id:pid,len:len,sig:sig,wenzi:wenzi},function(data){
+                    $('#projectlist').remove();
+                    $('#data-more').remove();
+                    $('.z_main').append(data);
+                },'json');
+            }
+        }
+
+    })
+	</script>	
+	<!-- {/if} -->
+	<!-- 众筹首页 end -->
+	
+	<!-- 众筹项目详情页 start -->
+    <!-- {if $action eq 'detail'} -->
+    <div class="detail w1200">
+        <div class="project clearfix">
+        	<div class="project_wrap">
+            	<div class="project-img"><i class="zc-icon {if $zhongchou.result eq 0}zc-green-ing{elseif $zhongchou.result eq 1}zc-grey-sb{elseif $zhongchou.result eq 2}zc-violet-cg{/if}"></i><img src="{$zhongchou.title_img}" width="790" height="400" /></div>
+            	<div class="project-introduce">
+                	<p class="p-title">{$zhongchou.title}</p>
+                    <p class="p-have">{$lang.Raise}</p>
+                    <p class="p-num"><span>￥</span>{$zhongchou.join_money}</p>
+                    <div class="p-bar">
+                        <div style="width:{if $zhongchou.baifen_bi gt 100}100{else}{$zhongchou.baifen_bi}{/if}%" class="p-bar-green"></div>
+                    </div>
+                    <p class="p-progress">
+                        <span class="fl green">{$lang.Current_progress}{$zhongchou.baifen_bi}%</span><span class="fr">{$zong_zhichi}{$lang.Supporter}</span>
+                    </p>
+                    <p class="p-target" id="projectMessage">{$lang.project_Prompt_one} <span class="f_red">{$zhongchou.zw_end_time} </span>{$lang.project_Prompt_two} <span class="f_red"><i>￥</i>{$zhongchou.amount}</span>{$lang.project_Prompt_three}{if $zhongchou.zc_status eq 1}{$lang.remaining}<span class="f_red"> {$zhongchou.shenyu_time}</span>{$lang.day}！{/if}</p>
+                    <p class="p-btns">
+                        <a id="a_focus" href="javascript:;" class="p-btn follow" onclick="hotClick(this,{$smarty.get.id},1)" data-focus_status="{$focus_status}"><span id="focus">{if $focus_status eq 1}{$lang.already}{/if}{$lang.follow}</span><span class="num" id="focusCount">({$zhongchou.focus_num})</span></a>
+                        <a id="a_prais" href="javascript:;" class="p-btn not-praise" onclick="hotClick(this,{$smarty.get.id},2)" data-prais_status="{$prais_status}"><span id="prais">{if $prais_status eq 1}{$lang.already}{/if}{$lang.Fabulous}</span><span class="num" id="praisCount">({$zhongchou.prais_num})</span></a>
+                    </p>
+                    <p class="p-share">{$lang.Share_to}</p>
+                    <ul class="p-list">
+                    	<li><a target="_blank" href="http://service.weibo.com/share/share.php?url={$share_url}&title={$share_title}&pic={$share_img}" class="i-sina"></a></li>
+                    	<li><a target="_blank" href="http://share.v.t.qq.com/index.php?c=share&a=index&url={$share_url}&title={$share_title}&pics={$share_img}" class="i-weibo"></a></li>
+                    	<li><a target="_blank" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url={$share_url}&title={$share_title}&pics={$share_img}" class="i-zoom"></a></li>
+                        <li><a target="_blank" href="http://www.douban.com/share/service?image={$share_url}&href={$share_url}&text={$share_title}" class="i-dou"></a></li>
+                        <li><a target="_blank" href="http://widget.renren.com/dialog/share?resourceUrl={$share_url}&images={$share_img}&title={$share_title}" class="i-renren"></a></li>
+                        <li>
+                        	<a class="i-wechart" href="javascript:void(0);"></a>
+                            <div class="code" style="display: none;">
+                                <span class="code-close"></span>
+                                <img class="code-img" src="{$weixin_img_url}">
+                                <p class="code-p">{$lang.smfx_WeChat}</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="wrap-details">
+            	<div class="details-l">
+                	<div class="tab-bg">
+                    	<div class="tab-wrap" id="tabWrap">
+                        	<div class="tab-name current-now">{$lang.Project_Home}</div>
+                            <div id="qaBtn" class="tab-name">{$lang.project_debriefing}<span class="tab-bubble">{$zc_evolve_list_num}</span></div>
+                            <div id="topicBtn" class="tab-name">{$lang.conversation}<span class="tab-bubble">{$topic_num}</span></div>
+                            <div id="supporterBtn" class="tab-name">{$lang.Supporter}<span class="tab-bubble">{$backer_num}</span></div>
+                            <div class="clear"></div>
+                            <div class="tab-line"></div>
+                        </div>
+                    </div>
+                    <div class="tab-body" id="menu_con">
+                        <div class="tab_cont tab-current">
+                            <div class="tab-img-group">
+                            	<br>
+                                <p>
+                                	{if $zhongchou.details}
+                                    	{$zhongchou.details}
+                                    {else}
+                                    	{if $zhongchou.img}
+                                        {foreach from=$zhongchou.img item=img}
+                                        	<img src="{$img}" />
+                                        {/foreach}
+                                        {/if}
+                                    {/if}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="tab_cont">
+                            <div class="zc-dev-box" id="qaProgress" style="border-bottom: none;">
+                                <div class="zc-d-a-tips">{$lang.project_Record}</div>
+                                {if $zc_evolve_list[0]}
+                                <div class="zc_evolve">
+                                        {foreach from=$zc_evolve_list item=vo}
+                                        <div class="zc_evolve_list">
+                                            <div class="pro-detail">
+                                                <span class="pro-point"></span>
+                                                {if $vo['pro-day'] eq 0}
+                                                <span class="pro-day">{$lang.Today}</span>
+                                                {else}
+                                                <span class="pro-day">{$vo.pro-day}{$lang.Days_ago}</span>
+                                                {/if}
+                                                <p>{$vo.progress}</p>
+                                            </div>
+                                            <div class="pro-img">
+                                                <ul class="pro-img-ul">
+                                                    <li class="pro-img-li">
+														{if $vo['img']}
+                                                        {foreach from=$vo['img'] item=vo_img}
+                                                            {if $vo_img!='./'}
+                                                                <img src="{$vo_img}" alt="" width="80" height="80">
+                                                            {/if}
+                                                        {/foreach}
+														{/if}
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        {/foreach}
+                                    </div>
+                                {else}
+                                <p style="font-size: 26px;color: #ccc;margin-top: 30px;">{$lang.Progress_null}</p>
+                                {/if}
+                                <div class="zc-d-c-more" id="zc-d-c-more" style="display: none;">
+                                    <a href="#" clstag="jr|keycount|zc_detail|zc_zd_ckxq">{$lang.couponstype_view}</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab_cont" id="topicList">
+                            <div class="topicArea">
+                                <div class="publishBlock">
+                                    <div class="zc-s-q-tit">{$lang.on_input}<span class="moreWord" id="topicMoreWord">140</span>{$lang.word}</div>
+                                    <div class="zc-s-q-cont">
+                                        <textarea name="zc-submitTextarea" class="zc-submitTextarea" node-type="zc-submitTextarea" id="publishTopic" onkeyup="check_words_num(this,'topicMoreWord')"></textarea>
+                                    </div>
+                                    <div class="zc-s-q-foot">
+                                        <div class="zc-sq-oprate">
+                                            <div class="zc-sqo-submit" style="display: block;" id="login">
+                                                <input type="button" value="{$lang.lang_crowd}" class="common-btn" clstag="jr|keycount|zc_detail|zc_htfbht" id="repyTopBtn" style="cursor:pointer;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="topic_list">
+                                {$topic_list}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab_cont">
+                            <div id="backer_list">
+                            {$backer_list}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="details-r">
+                	<div class="box-promoters">
+                    	<div class="common-title">{$lang.project_Promoter}</div>
+                        <div class="promoters clearfix">
+                        	<div class="promoters-img"><a href="#" target="_blank"><img height="70" width="70" src="{$init.img}" alt=""></a></div>
+                            <div class="promoters-detail">
+                            	<div class="promoters-name">
+                                	<a href="#" target="_blank"><span class="fl">{$init.name}</span></a>
+                                    <!--<i class="icon-v"><div class="alt"></div></i>-->
+                                    <i class="icon-crown">
+                                    	<div class="alt"></div>
+                                        {foreach from=$init.logo item=logo}
+                                            <img src='{$logo.img}' title='{$logo.logo_name}'>
+                                        {/foreach}
+                                    </i>
+                                </div>
+                                <div class="promoters-title">{$init.intro}</div>
+                                <div class="promoters-num">
+                                    <div class="fl start"><span>{$lang.Launch}</span><span class="num">{$init.start_count}</span></div>
+                                    <div class="line"></div>
+                                    <div class="fl"><span>{$lang.Support}</span><span class="num">{$zong_zhichi}</span></div>
+                                </div>
+                                <div class="promoters-btns">
+                                	<!--<a href="javascript:;" id="msgBtn">发送私信</a>-->
+                                    <!--start 在线客服 bylu-->
+                                    {if $shop_information.is_dsc}
+                                    <a id="IM" onclick="openWin(this)" href="javascript:;" goods_id="{$goods.goods_id}" class="seller-btn"><i class="icon"></i>{$lang.Contact_us}</a>
+                                    {else}
+                                        {if $basic_info.kf_type eq 1}
+                                            <a href="http://www.taobao.com/webww/ww.php?ver=3&touid={$basic_info.kf_ww}&siteid=cntaobao&status=1&charset=utf-8" class="seller-btn" target="_blank"><i class="icon"></i>{$lang.con_cus_service}</a>
+                                        {else}
+                                            <a href="http://wpa.qq.com/msgrd?v=3&uin={$basic_info.kf_qq}&site=qq&menu=yes" class="seller-btn" target="_blank"><i class="icon"></i>{$lang.con_cus_service}</a>
+                                        {/if}
+                                    {/if}
+                                    <!--end 在线客服 bylu-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {foreach from=$goods_arr item=item}
+                    <div class="box-grade">
+                    	<div class="common-title">
+                        	<div class="t-price {if $item.shenyu_ren eq 0}t-delete{/if}">￥<span>{$item.price}</span></div>
+							{if $item.shenyu_ren eq 0}
+                            <div class="t-full"></div>
+                            <div class="t-arrow"></div>
+							{/if}
+                            <div class="t-people"><span>{$item.backer_num}</span>{$lang.bit_support}</div>
+                            <div class="clear"></div>
+                        </div>
+                        <div class="box-content" {if $item.shenyu_ren eq 0}style="display:none;"{/if}>
+                        	
+                        	<div class="box-limit">
+							{if $item.limit eq '-1'}
+                                <span class="limit-num">{$lang.Infinite_amount}</span>
+							{else}	
+                                <span class="limit-num">{$lang.Quota} <span>{$item.limit}</span>{$lang.bit} | {$lang.remaining} <span>{$item.shenyu_ren}</span>{$lang.bit}</span>
+							{/if}
+							</div>
+                            <p class="box-intro">{$item.content}</p>
+                            <div class="box-imglist">
+                            	<ul>
+                                	<li><img class="alertPic img-s" src="{$item.img}" width="80"></li>
+                                </ul>
+                            </div>
+                            <p class="box-item">{$lang.shipping_fee}：<span class="font-b">{if $item.yunfei eq 0}{$lang.Free_shipping}{else}{/if}</span></p>
+                            <p class="box-item">{$lang.zc_Prompt_one}：<span class="font-b">{$lang.zc_Prompt_two}<span class="font-red">{$item.return_time}</span>{$lang.Days}</span></p>
+                            <p class="box-btn">
+                            	{if $zhongchou.zc_status eq 0}
+                                <button type="button" class="common-btn" disabled="true">{$lang.Coming_soon}</button>
+                                {elseif $zhongchou.zc_status eq 1}
+									{if $item.shenyu_ren gt '0'||$item.limit eq '-1'}
+									<button type="button" class="common-btn" onclick="zc_goods(this)" gid="{$item.id}">{$lang.Support}￥{$item.price}</button>
+									{else}
+									<button type="button" class="common-btn-unuse" onclick="" gid="{$item.id}">{$lang.Support}￥{$item.price}</button>
+									{/if}
+                                {else}
+                                <button type="button" class="common-btn-unuse" disabled="true">{$lang.project_end}</button>
+                                {/if}
+                            </p>
+                        </div>
+                    </div>
+                    {/foreach}
+                    <div class="box-grade">
+                    	<div class="common-title">
+                            <div class="t-price">{$lang.Risk_description}</div>
+                        </div>
+                        <div class="box-content">
+                        	<p class="box-intro mt20 mb20">{$zhongchou.risk_instruction}</p>
+                        </div>
+                    </div>
+                    <div class="box-grade">
+                    	<div class="common-title">
+                            <div class="t-price">{$lang.history}</div>
+                            <div class="color-a5 t-hands"><a href="javascript:delete_zc_history()">{$lang.zc_clear}</a></div>
+                            <div class="clear"></div>
+                        </div>
+                        <div class="box-content">
+                        	<ul class="box-recent-list">
+							{foreach from=$history item=list}
+                            	<li><a href="crowdfunding.php?act=detail&id={$list.id}"><div class="recent-img"><img src="{$list.title_img}" /></div><div class="recent-p"><p>{$list.title}</p></div></a></li>
+							{/foreach}
+							</ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 增加详情页翻页 -->
+    <a href="javascript:void(0);" onclick="fn_prev()" class="goPages goPages-pre"></a>
+    <a href="javascript:void(0);" onclick="fn_next()" class="goPages goPages-next"></a>
+    <script type="text/javascript">
+		var zc_goods = function(obj){
+			var gid = $(obj).attr('gid');
+			window.location.href = 'crowdfunding.php?act=checkout&gid='+gid;
+		}
+		
+		//清空浏览历史 by wu
+		function delete_zc_history()
+		{
+			$.ajax({
+				type:'get',
+				url:'crowdfunding.php',
+				data:'act=delete_zc_history',
+				dataType:'json',
+				success:function(data){
+					if(data.error == 1)
+					{
+						$(".box-recent-list").html('');
+					}
+				}				
+			});
+		}
+		
+		//字数验证 by wu
+		function check_words_num(obj,select_jsId)
+		{
+			var words=$(obj).val();
+			var num=words.length;
+			if(num<=140)
+			{
+				$("#"+select_jsId).html(140-num);
+			}
+			else
+			{
+				$(obj).val(words.substr(0,140));
+			}
+		}
+	
+		//打开输入框 by wu
+		function open_area(obj,topic_id,type,parent_id)
+		{
+			var area=$(".topic-info-area[data-topicid="+topic_id+"]");
+			area.attr("data-type",type);
+			area.attr("data-parentid",parent_id);
+			area.toggle();
+			if(type==2)
+			{
+				var user_name=$("#topic_user_"+parent_id).html().replace("：","");
+				name_arr=user_name.split(json_languages.reply_comment);
+				area.find("textarea").attr("placeholder",json_languages.reply_comment+name_arr[0]);
+			}
+			else
+			{
+				area.find("textarea").attr("placeholder","");
+			}
+		}
+		
+		//评论回复 by wu | type 0:众筹,1:话题,2:回复
+		function post_topic(obj)
+		{
+			var topic_id=$(obj).parent("div").data("topicid");
+			var type=$(obj).parent("div").data("type");
+			var parent_id=$(obj).parent("div").data("parentid");
+			var topic_content=$(obj).siblings("textarea").val();
+			if(topic_content=="")
+			{	
+				alert(json_languages.Pleas_content);
+				return;
+			}
+			$.ajax({
+				type:'get',
+				url:'crowdfunding.php',
+				data:'act=post_topic&topic_id='+topic_id+'&type='+type+'&parent_id='+parent_id+'&topic_content='+topic_content,
+				dataType:'json',
+				success:post_success				
+			})	
+		}
+	
+		//发布话题 by wu
+		$("#repyTopBtn").click(function(){
+			var topic_content=$("#publishTopic").val();
+			if(topic_content=="")
+			{	
+				alert(json_languages.Pleas_content);
+				return;
+			}
+			else
+			{
+				$.ajax({
+					type:'post',
+					url:'crowdfunding.php',
+					data:'act=submit_topic&zcid={$smarty.get.id}&topic_content='+topic_content,
+					dataType:'json',
+					success:post_success
+				})
+			}
+		})
+		
+		function post_success(data){
+			if(data.error==9)
+			{
+				window.location.href = 'user.php';							
+			}
+			if(data.error==1)
+			{
+				alert(data.message);
+				//刷新列表
+				get_topic_list({$smarty.get.id},1);
+				//数量加1
+				var topic_num=parseInt($("#topicBtn").find(".tab-bubble").html());
+				$("#topicBtn").find(".tab-bubble").html(topic_num+1);
+			}		
+		}
+		
+	
+		//鼠标点击图片显示二维码 by wu
+		$(".i-wechart").click(function(){
+			$(this).next().show();
+		});
+		$(".code-close").click(function(){
+			$(this).parents(".code").hide();
+		});
+		
+		//关注点赞 by wu start
+		function hotClick(obj,zcid,type)
+		{
+			var focus_status=$('#a_focus').data('focus_status'); //关注状态
+			var prais_status=$('#a_prais').data('prais_status'); //点赞状态
+			if((focus_status==0 && type==1) || (prais_status==0 && type==2))
+			{
+				$.ajax({
+					type:'get',
+					url:'crowdfunding.php',
+					data:'act=statistical&zcid='+zcid+'&type='+type,
+					dataType:'json',
+					success:function(data){
+						if(data.error>0)
+						{
+							//关注
+							if(type==1)
+							{
+								//只有登陆用户才能关注
+								if(data.error==9)
+								{
+									//alert(data.message);
+									window.location.href = 'user.php';
+								}
+								if(data.error==2 || data.error==3)
+								{
+									focus_dialog();
+									$(obj).find('span').first().html(follow_yes);
+									if(data.error==2)
+									{
+										var numObj=$(obj).find('span').eq(1);
+										var numVal=numObj.html().match(/\d+/g);
+										numObj.html(numObj.html().replace(/\d+/g,parseInt(numVal)+1));
+										$('#a_focus').data('focus_status',1);
+									}									
+								}								
+							}	
+							//点赞							
+							if(type==2)
+							{				
+								if(data.error==4 || data.error==5)
+								{
+									$(obj).find('span').first().html(json_languages.Fabulous_yes);
+									if(data.error==4)
+									{
+										var numObj=$(obj).find('span').eq(1);
+										var numVal=numObj.html().match(/\d+/g);
+										numObj.html(numObj.html().replace(/\d+/g,parseInt(numVal)+1));
+										$('#a_prais').data('prais_status',1);  
+									}
+								}
+							}
+						}
+					}			
+				})	
+			}			
+		}
+		//关注点赞 by wu end
+		
+		//关注成功
+		function focus_dialog()
+		{		
+			var result = json_languages.collect_zc_success;
+			var content = '<div class="tip-box icon-box">' +'<span class="warn-icon m-icon"></span>' + '<div class="item-fore">' +'<h3 class="rem ftx-04">'+result+'</h3>' +'</div>' +'</div>';
+			pb({
+				id:'',
+				title:json_languages.follow_zc,
+				width:455,
+				height:58,
+				content:content, 	//调取内容
+				drag:false,
+				foot:false,
+			});
+		}
+	
+        $("#tabWrap .tab-name").click(function(){
+			var index = $(this).index();
+			var _this = $(this);
+			_this.addClass("current-now").siblings(".tab-name").removeClass("current-now");
+			_this.siblings(".tab-line").animate({"margin-left":(192*index)},300);
+			
+			$("#menu_con").find('.tab_cont').eq(index).addClass("tab-current").siblings(".tab_cont").removeClass("tab-current");
+		});
+
+        var d_id = "{$smarty.get.id}";
+        var n_id = parseInt(d_id)+1;
+        var p_id = parseInt(d_id)-1;
+        var fn_next = function(){
+            window.location.href = './crowdfunding.php?act=detail&id='+n_id;
+        }
+
+        var fn_prev = function(){
+            window.location.href = './crowdfunding.php?act=detail&id='+p_id;
+        }
+		
+		//展开收起
+		$(".t-arrow").on("click",function(){
+			if($(this).parents(".box-grade").hasClass("i-box")){
+				$(this).parents(".box-grade").removeClass("i-box");
+				$(this).parents(".box-grade").find(".box-content").hide();
+			}else{
+				$(this).parents(".box-grade").addClass("i-box");	
+				$(this).parents(".box-grade").find(".box-content").show();
+			}
+		});
+    </script>
+	<!-- {/if} -->
+	<!-- 众筹项目详情页 end -->	
+	
+	<!-- 众筹项目订单信息页 start -->
+    <!-- {if $action eq 'order'} -->
+    <div class="mt20">
+    	<div class="z_container">
+        	<div class="order_process">
+                <ul>
+                    <li class="active">
+                        {$lang.zc_order_input}
+                        <span class="order_behind_arrow order_arrow"></span>
+                        <span class="order_ahead_arrow order_arrow"></span>
+                    </li>
+                    <li>
+                        {$lang.zc_order_confirm}
+                        <span class="order_behind_arrow order_arrow"></span>
+                        <span class="order_ahead_arrow order_arrow"></span>
+                    </li>
+                    <li>
+                        {$lang.payment}
+                        <span class="order_behind_arrow order_arrow"></span>
+                        <span class="order_ahead_arrow order_arrow"></span>
+                    </li>
+                    <li>
+                        {$lang.complete}
+                        <span class="order_behind_arrow order_arrow"></span>
+                        <span class="order_ahead_arrow order_arrow"></span>
+                    </li>
+                </ul>
+            </div>
+            <div class="module_wrap mt20">
+            	<div class="common_tit"><h1 class="common_tit_name">{$g_title}</h1></div>
+                <div class="module_con">
+                	<div>
+                    	<div class="module_item">
+                            <dl>
+                                <dt>{$lang.Support_amount}：</dt>
+                                <dd><span class="f_red20">{$goods_arr.price}</span></dd>
+                            </dl>
+                            <dl>
+                                <dt>{$lang.shipping_fee}：</dt>
+                                <dd>{if $goods_arr.shipping_fee eq '0' }<span>{$lang.Free_shipping}</span>{else}{$goods_arr.shipping_fee}{/if}</dd>
+                            </dl>
+                            <dl>
+                                <dt>{$lang.Return_content}：</dt>
+                                <dd>{$goods_arr.content}</dd>
+                            </dl>
+                            <dl>
+                                <dt>{$lang.zc_invoice}：</dt>
+                                <dd>
+                                    <div class="bor_t_li">
+                                        <input type="radio" name="invoiceFlag" id="if0" value="0" onclick="changeInvoiceFlag();" checked="checked"> {$lang.zc_invoice_not}
+                                        <p>
+                                            <input type="radio" name="invoiceFlag" id="if1" value="1" onclick="newInvoiceTitle();"> {$lang.zc_invoice_need}
+                                        </p>
+                                    </div>
+                                    <div class="new_add pt10" style="display: none;" id="invoiceTitleDetail">
+                                        <dl style="padding-left: 62px;">
+                                            <dt><span class="f_red">*</span> {$lang.Invoice_header}：</dt>
+                                            <dd><input name="invoiceTitle" id="_invoiceTitle" type="text" class="inp145" value="{$lang.personal}"></dd>
+                                        </dl>
+                                    </div>
+                                </dd>
+                            </dl>
+                            <dl>
+                                <dt>{$lang.Remarks}：</dt>
+                                <dd><input name="_remarks" id="_remarks" type="text" placeholder="{$lang.zc_placeholder}" class="inp_remark"></dd>
+                            </dl>
+                        </div>
+                        <div class="module_item">
+                            <dl>
+                                <dt>{$lang.Consignee}：</dt>
+                                <dd>
+                                    <div class="write_repeat" id="showAddress" style="display: block;"><p>{$consignee.consignee} {if $consignee.mobile} {$consignee.mobile} {else} {$consignee.tel} {/if} <span style="color: #ff0000;">{$lang.zc_Remarks_one}</span></p><p>{if $consignee.address} {$consignee.address} {else} {$b.province}{$lang.province} {$b.city}{$lang.city} {$b.district} {/if} &nbsp;&nbsp;&nbsp;<a class="f_blue repeat" href="crowdfunding.php?act=consignee&gid={$goods_arr.id}">{$lang.modify}</a></p></div>
+                                </dd>
+                        	</dl>
+                		</div>
+                    </div>
+                    <div class="risk_tips">
+                        {$lang.zc_Remarks_two}
+                    </div>
+                    <div class="common_button">
+                        <form action="crowdfunding.php?act=done" method="post">
+                            <input type="hidden" name="country"  value="{$consignee.country}">
+                            <input type="hidden" name="province" value="{$consignee.province}">
+                            <input type="hidden" name="city" value="{$consignee.city}">
+                            <input type="hidden" name="district" value="{$consignee.district}">
+                            <input type="hidden" name="consignee" value="{$consignee.consignee}">
+                            <input type="hidden" name="address" value="{$consignee.address}">
+                            <input type="hidden" name="tel" value="{$consignee.tel}">
+                            <input type="hidden" name="mobile" value="{$consignee.mobile}">
+                            <input type="hidden" name="email" value="{$consignee.email}">
+                            <input type="hidden" name="best_time" value="{$consignee.best_time}">
+                            <input type="hidden" name="sign_building" value="{$consignee.sign_building}">
+                            <input type="hidden" id='liuyan' name="postscript" value="">
+                            <input type="hidden" name="goods_amount" value="{$goods_arr.price}">
+                            <input type="hidden" name="shipping_fee" value="{$goods_arr.yunfei}">
+                            <input type="hidden" name="order_amount" value="{$goods_arr.price}">
+                            <input type="hidden" name="huibao" value="{$goods_arr.content}">
+                            <input type="hidden" name="g_title" value="{$g_title}">
+                            <input type="hidden" name="xm_id" value="{$goods_arr.goods_id}">
+                            <input type="hidden" name="gid" value="{$smarty.get.gid}">
+                            <input type="submit" id="btn_sub" value="{$lang.lang_crowd_next_step}">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+	<script>
+		$('#_remarks').on('blur',function(){
+			$('#liuyan').val($(this).val());
+		})
+	</script>
+	<!-- {/if} -->
+	<!-- 众筹项目订单信息页 end -->	
+	
+	<!-- 众筹项目订单信息 start -->
+    <!-- {if $action eq 'checkout'} -->	
+    <div class="mt20">
+    	<div class="z_container">
+        	<div class="order_process">
+                <ul>
+                    <li class="active">
+                        {$lang.zc_order_input}
+                        <span class="order_behind_arrow order_arrow"></span>
+                        <span class="order_ahead_arrow order_arrow"></span>
+                    </li>
+                    <li>
+                        {$lang.zc_order_confirm}
+                        <span class="order_behind_arrow order_arrow"></span>
+                        <span class="order_ahead_arrow order_arrow"></span>
+                    </li>
+                    <li>
+                        {$lang.payment}
+                        <span class="order_behind_arrow order_arrow"></span>
+                        <span class="order_ahead_arrow order_arrow"></span>
+                    </li>
+                    <li>
+                        {$lang.complete}
+                        <span class="order_behind_arrow order_arrow"></span>
+                        <span class="order_ahead_arrow order_arrow"></span>
+                    </li>
+                </ul>
+            </div>
+            <div class="module_wrap mt20">
+            	<div class="common_tit"><h1 class="common_tit_name">{$g_title}</h1></div>
+                <div class="module_con">
+                	<div>
+                    	<div class="module_item">
+                            <dl>
+                                <dt>{$lang.Support_amount}：</dt>
+                                <dd><span class="f_red20">￥{$goods_arr.price}</span></dd>
+                            </dl>
+                            <dl>
+                                <dt>{$lang.shipping_fee}：</dt>
+                                <dd>{if $goods_arr.shipping_fee eq '0' }<span>{$lang.Free_shipping}</span>{else}{$goods_arr.shipping_fee}{/if}</dd>
+                            </dl>
+                            <dl>
+                                <dt>{$lang.Return_content}：</dt>
+                                <dd>{$goods_arr.content}</dd>
+                            </dl>
+                            <dl>
+                                <dt>{$lang.zc_invoice}：</dt>
+                                <dd>
+                                    <div class="bor_t_li">
+                                        <p><label><input type="radio" name="invoiceFlag" id="if0" value="0" onclick="changeInvoiceFlag();" checked="checked"> {$lang.zc_invoice_not}</label></p>
+                                        <p><label><input type="radio" name="invoiceFlag" id="if1" value="1" onclick="newInvoiceTitle();"> {$lang.zc_invoice_need}</label></p>
+                                    </div>
+                                    <div class="new_add pt10" style="display: none;" id="invoiceTitleDetail">
+                                        <dl>
+                                            <dt><span class="f_red">*</span> {$lang.Invoice_header}：</dt>
+                                            <dd><input name="invoiceTitle" id="_invoiceTitle" type="text" class="inp145" placeholder="{$lang.Invoice_header}"></dd>
+                                        </dl>
+                                    </div>
+                                </dd>
+                            </dl>
+                            <dl>
+                                <dt>{$lang.Remarks}：</dt>
+                                <dd><input name="_remarks" id="_remarks" type="text" placeholder="{$lang.zc_placeholder}" class="inp_remark"></dd>
+                            </dl>
+                        </div>
+                        <div class="module_item">
+                            <dl>
+                                <dt>{$lang.Consignee}：</dt>
+                                <dd>
+                                    <div class="write_repeat" id="showAddress">
+                                        <span>{$consignee.consignee}</span>
+                                        <span>{if $consignee.address}{$consignee.region}&nbsp;{$consignee.address}{else}{$lang.address_null}{/if}</span>
+                                        <span>{if $consignee.mobile}{$consignee.mobile}{else}{$consignee.tel}{/if}</span>
+                                        <span><a class="f_blue repeat" href="javascript:void(0);" id="editRepeat">{if $consignee.address}{$lang.edit_address}{else}{$lang.add_address}{/if}</a></span>
+                                    </div>
+                                    <div id="consignee-addr" class="zc_address">
+                                        <div class="consignee-addr">
+                                            <div class="consignee-cont">
+                                                <ul class="ui-switchable-panel-main">
+                                                    <!-- {foreach from=$user_address item=address} -->
+                                                    <li {if $consignee.address_id eq $address.address_id}class="item-selected"{/if} data-addressid="{$address.address_id}">
+                                                        <input type="radio" {if $consignee.address_id eq $address.address_id}checked="checked"{/if} class="ui-radio" name="consignee_radio" value="{$address.address_id}" id="radio_{$address.address_id}" class="hookbox" />
+                                                        <label class="ui-radio-label">
+                                                            <div class="name">{$address.consignee}</div>
+                                                            <div class="tel">{$address.mobile}</div>
+                                                            <div class="address">&nbsp; {$address.region} &nbsp; {$address.address}</div>
+                                                        </label>
+                                                        <div class="op-btns">
+                                                            {if $user_id > 0}
+                                                                <a href="javascript:void(0);" class="ftx-05 del-consignee" data-dialog="edit_address" data-id="{$address.address_id}">{$lang.edit}</a>
+                                                                <a href="javascript:void(0);" class="ftx-05 del-consignee" data-dialog="del_address" data-id="{$address.address_id}" >{$lang.drop}</a>
+                                                            {else}
+                                                                <a href="javascript:void(0);" class="ftx-05 del-consignee" data-dialog="edit_address">{$lang.edit}</a>
+                                                            {/if}
+                                                        </div>
+                                                    </li>
+                                                    <!-- {/foreach} -->
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="address-btns">
+                                        	<input id="addNewAddress" class="btn-normal" type="button" value="{$lang.add_address_zc}">
+											{if $consignee.address}
+                                            <input id="confirmAddress" class="btn-normal" type="button" value="{$lang.confirm_address_zc}">
+											{/if}
+                                        </div>
+                                	</div>
+                                </dd>
+                        	</dl>
+                		</div>
+                        <div class="module_item">
+                        	<dl class="order-prompt">
+                            	<dt>{$lang.Risk_description}：</dt>
+                                {$goods_arr.risk_instruction}
+                            </dl>
+                        </div>
+                    </div>
+                    <div class="common_button" id="common_button" >
+                        <form action="crowdfunding.php?act=done" method="post">
+                            <input type="hidden" name="country"  value="{$consignee.country}">
+                            <input type="hidden" name="province" value="{$consignee.province}">
+                            <input type="hidden" name="city" value="{$consignee.city}">
+                            <input type="hidden" name="district" value="{$consignee.district}">
+                            <input type="hidden" name="consignee" value="{$consignee.consignee}">
+                            <input type="hidden" name="address" value="{$consignee.address}">
+                            <input type="hidden" name="tel" value="{$consignee.tel}">
+                            <input type="hidden" name="mobile" value="{$consignee.mobile}">
+                            <input type="hidden" name="email" value="{$consignee.email}">
+                            <input type="hidden" name="best_time" value="{$consignee.best_time}">
+                            <input type="hidden" name="sign_building" value="{$consignee.sign_building}">
+                            <input type="hidden" id='liuyan' name="postscript" value="">
+                            <input type="hidden" name="goods_amount" value="{$goods_arr.price}">
+                            <input type="hidden" name="shipping_fee" value="{$goods_arr.yunfei}">
+                            <input type="hidden" name="order_amount" value="{$goods_arr.price}">
+                            <input type="hidden" name="huibao" value="{$goods_arr.content}">
+                            <input type="hidden" name="g_title" value="{$g_title}">
+                            <input type="hidden" name="xm_id" value="{$goods_arr.goods_id}">
+                            <input type="hidden" name="gid" value="{$smarty.get.gid}">
+                            <input type="submit" id="btn_sub" value="下一步">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+	<script>
+		$('#_remarks').on('blur',function(){
+			$('#liuyan').val($(this).val());
+		});
+		function newInvoiceTitle(){
+			$("#invoiceTitleDetail").show();
+			$("#invoiceFlag").val('1');
+		}
+		function changeInvoiceFlag(){
+			$("#invoiceTitleDetail").hide();
+			$("#invoiceFlag").val('0');
+		}
+		
+		$(".consignee-cont li").click(function(){
+			var address_id = $(this).data('addressid');
+			$(this).addClass("item-selected").siblings().removeClass("item-selected");
+			zc_Consignee(address_id);
+		});
+		
+		function zc_Consignee(address_id){
+			var consignee = document.getElementById('radio_' + address_id);
+			if(consignee){
+				consignee.checked = true;
+			}
+		}
+		
+		$(document).on("click","#editRepeat",function(){
+			var zc_address = $(".zc_address");
+			if(zc_address.is(":hidden")){
+				zc_address.show();
+			}else{
+				zc_address.hide();
+			}
+		});
+		
+		$(document).on('click',"#confirmAddress",function(){
+			var gid = {$smarty.get.gid};
+			var obj = document.getElementsByName("consignee_radio");
+			for(var i=0; i<obj.length; i ++){
+				if(obj[i].checked){
+					Ajax.call('crowdfunding.php?act=confirmAddress','consignee_id= '+obj[i].value +'&gid=' + gid , confirmAddressResponse, 'POST','JSON');	
+				}
+			}
+		});
+		
+		function confirmAddressResponse(result){
+			if(result.error == 0){
+				$("#showAddress").html(result.content);
+				$("#common_button").html(result.common);
+				$(".zc_address").css('display','none');
+				
+			}
+		};
+		
+		$(document).on('click',"#addNewAddress",function(){
+			var gid = {$smarty.get.gid};
+			Ajax.call('crowdfunding.php?act=add_Consignee','gid=' + gid , consigneeResponse, 'POST','JSON');	
+		});
+		 
+		//编辑删除地址
+		$(document).on('click',"*[data-dialog='edit_address']",function(){
+			var id = $(this).data("id");
+			Ajax.call('crowdfunding.php?act=add_Consignee','address_id='+id , consigneeResponse, 'POST','JSON');
+		});
+
+		function consigneeResponse(result){
+			 pb({
+				 id:"zcDig",
+				 title:json_languages.edit_address_zc,
+                 width:720,
+                 height:200,
+                 content:result.content,
+                 drag:false,
+                 foot:false
+			 });
+		 };		
+		
+		$(document).on('click',"*[data-dialog='del_address']",function(){
+			var gid = {$smarty.get.gid};
+			var address_id = $(this).data("id");
+			pb({
+				 id:"zcdelDig",
+				 title:json_languages.drop_address_zc,
+                 width:310,
+                 height:30,
+                 content:json_languages.drop_address_zc,
+                 drag:false,
+				 ok_title: json_languages.determine,
+				 cl_title: json_languages.cancel,
+				 onOk:function(){
+					Ajax.call('crowdfunding.php?act=delete_Consignee','address_id='+ address_id +'&gid=' + gid , del_ConsigneeResponse, 'POST','JSON'); 
+				 }
+			 });
+		});
+		
+		function del_ConsigneeResponse(result){
+
+		
+			$('#consignee-addr').html(result.content);
+
+			$('#common_button').html(result.common);
+			
+			$('#zcdelDig').remove();
+			
+			$('#pb-mask').remove();
+		
+			if(result.error == 2){
+				
+				window.location.href='crowdfunding.php?act=checkout&gid=' + result.gid;
+				
+			}
+		}
+	</script>
+	<!-- {/if} -->
+	<!-- 众筹项目订单信息 end -->		
+	
+	<!-- 众筹项目订单确认页 start -->
+    <!-- {if $action eq 'done'} -->	
+    <div class="mt20">
+    	<div class="z_container">
+        	<div class="order_process">
+                <ul>
+                    <li class="active">
+                        {$lang.zc_order_input}
+                        <span class="order_behind_arrow order_arrow"></span>
+                        <span class="order_ahead_arrow order_arrow"></span>
+                    </li>
+                    <li>
+                        {$lang.zc_order_confirm}
+                        <span class="order_behind_arrow order_arrow"></span>
+                        <span class="order_ahead_arrow order_arrow"></span>
+                    </li>
+                    <li>
+                        {$lang.payment}
+                        <span class="order_behind_arrow order_arrow"></span>
+                        <span class="order_ahead_arrow order_arrow"></span>
+                    </li>
+                    <li>
+                        {$lang.complete}
+                        <span class="order_behind_arrow order_arrow"></span>
+                        <span class="order_ahead_arrow order_arrow"></span>
+                    </li>
+                </ul>
+            </div>
+            <div class="module_wrap mt20">
+            	<div class="common_tit"><h1 class="common_tit_name icon_ok">{$lang.zc_order_success}：{$g_title}</h1></div>
+                <div class="module_con">
+                    <div class="module_item">
+                        <dl>
+                            <dt>{$lang.order_number}：</dt>
+                            <dd>{$order.order_sn}</dd>
+                        </dl>
+                        <dl>
+                            <dt>{$lang.Contacts}：</dt>
+                            <dd>{$order.consignee}</dd>
+                        </dl>
+                        <dl>
+                            <dt>{$lang.Contact_information}：</dt>
+                            <dd>{if $order.mobile} {$order.mobile} {else} {$order.tel} {/if}</dd>
+                        </dl>
+                        <dl>
+                            <dt>{$lang.Remarks}：</dt>
+                            <dd>{$order.postscript}</dd>
+                        </dl>
+                    </div>
+                    <div class="module_item">
+                        <dl>
+                            <dt>{$lang.consignee_info}：</dt>
+                            <dd>
+                                <div class="write_repeat">
+                                    <span>{$order.consignee}</span>
+                                    <span>{if $order.address}{$order.address}{else}{$b.province}省 {$b.city}市 {$b.district} {/if}</span>
+                                    <span>{if $order.mobile}{$order.mobile}{else}{$order.tel}{/if}</span>
+                                </div>
+                            </dd>
+        
+                        </dl>
+                    </div>
+                    <table border="0" cellspacing="0" cellpadding="0" class="table01 mt20">
+                        <thead>
+                        <tr><th>{$lang.project_name}</th>
+                        <th>{$lang.Return_content}</th>
+                        <th>{$lang.Support_amount}</th>
+                        <th>{$lang.shipping_fee}</th>
+                        </tr></thead>
+                        <tbody>
+                        <tr>
+                            <td><a target="_blank" href="crowdfunding.php?act=detail&id={$xm_id}">{$g_title}</a></td>
+                            <td>
+                                <div class="default_txt pr">
+                                    <div style="width:455px;">{$huibao}</div>
+                                </div>
+                            </td>
+                            <td><span class="f_red">￥{$order.goods_amount}</span></td>
+                            <td>￥{$order.shipping_fee}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="total930">
+                        <strong class="f_gery14">{$lang.Amount_payable}：</strong><span class="f_red28">￥{$order.order_amount}</span>
+                    </div>
+								
+                    <div class="common_button" style="width:235px;margin:0 auto;">
+                        <!--在线支付代码-->
+                        <div class="pay_more" style="width:900px;">
+                            <ul>
+                                {foreach from=$pay_online_button key=key item=vo}
+                                <li style="float: left;margin-right: 20px;" order_sn="{$order.order_sn}" flag="{$key}">{$vo}</li>
+                                {/foreach}
+                            </ul>
+                        </div>
+                        <!--在线支付代码-->	
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+	<script>
+		$('#zf').find('input').addClass('btn_zf');
+		$('#zf').find('input').val(Immediate_payment);
+	</script>
+	<!-- {/if} -->
+	<!-- 众筹项目订单确认页 end -->	
+
+	<!-- 众筹项目收货地址页面 start -->
+    <!-- {if $action eq 'consignee'} -->
+	<!-- #BeginLibraryItem "/library/page_header_flow.lbi" --><!-- #EndLibraryItem -->
+    <div class="flow_warp w">
+    <!-- 开始收货人信息填写界面 -->
+    {insert_scripts files='region.js,utils.js,shopping_flow.js'}
+    <script type="text/javascript">
+      region.isAdmin = false;
+      {foreach from=$lang.flow_js item=item key=key}
+      var {$key} = "{$item}";
+      {/foreach}
+
+      {literal}
+      onload = function() {
+        if (!document.all)
+        {
+          document.forms['theForm'].reset();
+        }
+      }
+      {/literal}
+    </script>
+    <!-- 如果有收货地址，循环显示用户的收获地址 -->
+    <!-- {foreach from=$consignee_list item=consignee key=sn} -->
+    <form action="crowdfunding.php" method="post" name="theForm" id="theForm" onsubmit="return checkConsignee(this)">
+    <!-- #BeginLibraryItem "/Library/zc_consignee.lbi" --><!-- #EndLibraryItem -->
+    </form>
+    <!-- {/foreach} -->
+    </div>
+	<!-- {/if} -->
+	<!-- 众筹项目收货地址页面 end -->		
+	
+	<!-- 众筹项目搜索页 start -->
+    <!-- {if $action eq 'xm'} -->
+    <div class="query-result">
+        <div class="query-condition">
+            <div class="search">
+                <div class="searchInput">
+                    <input type="text" class="searchtext s-placeholder" id="w" value="">
+                    <a href="javascript:;" id="sousuo" class="searchbtn">{$lang.search}</a>
+                </div>
+            </div>
+            <div class="query-list">
+                <div class="attr" style="border-bottom:none;">
+                    <div class="a-key">{$lang.category}：</div>
+                    <div class="a-values">
+                        <div class="v-fold v-list">
+                            <ul class="f-list f-left" id="parent_catagory">
+                                <li class="current"><a href="javascript:;" code="0">{$lang.all_attribute}</a></li>
+                                {foreach from=$cate_one item=item}
+                                    <li><a href="javascript:;" code="{$item.cat_id}" >{$item.cat_name}</a></li>
+                                {/foreach}
+                            </ul>
+                        </div>
+                        <div class="v-second-list">
+                            {foreach from=$cate_two item=res key=key}
+                                <ul class="s-list">
+                                    {foreach from=$res item=item}
+                                    <li><a name="category" parentid="{$key}" code="{$item.cat_id}" href="javascript:;">{$item.cat_name}</a></li>
+                                    {/foreach}
+                                </ul>
+                            {/foreach}
+                        </div>
+                    </div>
+                </div>
+                <div class="attr">
+                    <div class="a-key">{$lang.sort}：</div>
+                    <div class="a-values">
+                        <div class="v-fold v-order">
+                            <ul class="f-list" id="sort" code="zhtj">
+                                <li class="current">
+                                    <a href="javascript:;" code="zhtj">{$lang.Comprehensive_rec}</a>
+                                </li>
+                                <li>
+                                    <a href="javascript:;" code="zxsx">{$lang.on_line_new}</a>
+                                </li>
+                                <li>
+                                    <a href="javascript:;" code="jezg">{$lang.Maximum_amount}</a>
+                                </li>
+                                <li>
+                                    <a href="javascript:;" code="zczd">{$lang.Maximum_Support}</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="query-result-outer">
+            <ul>
+            {foreach from=$zc_arr item=item}
+            <li class="item-li">
+            	<a target="_blank" href="crowdfunding.php?act=detail&id={$item.id}" class="item-a"><img src="{$item.title_img}" width="280" height="220" class="item-img"></a>
+            	<h3 class="item-title"><a target="_blank" href="crowdfunding.php?act=detail&id={$item.id}">{$item.title}</a></h3>
+            	<div class="p-outer">
+                    <div class="p-bar">
+                        <div style="width: {$item.baifen_bi}%" class="p-bar-purple"></div>
+                    </div>
+                </div>
+                <div class="p-i-infos">
+                    <div class="fore1">
+                        <p class="num">{$item.baifen_bi}%</p>
+                        <p class="p-num">{$lang.reached}</p>
+                    </div>
+                    <div class="fore2">
+                        <p class="num">￥{$item.join_money}</p>
+                        <p class="p-num">{$lang.Raise}</p>
+                    </div>
+                    <div class="fore3">
+                        <p class="num">{$item.shenyu_time}{$lang.day}</p>
+                        <p class="p-num">{$lang.residual_time}</p>
+                    </div>
+                </div>
+            </li>
+            {/foreach}
+            </ul>
+        </div>
+        {if $page_arr}
+        <div id="page_div" class="zc_my_pages">
+            <a href="javascript:void(0)" class="syy current">{$lang.page_prev}</a>
+            {foreach from=$page_arr item=item key=key}
+            <a href="javascript:;" {if $key eq 0} class="current" {/if}>{$item}</a>
+            {/foreach}
+            <a href="javascript:;" class="xyy">{$lang.page_next}</a>
+        </div>
+        {/if}
+    </div>
+	<script type="text/javascript">
+	$('#parent_catagory li').on('click',function(){
+		$('.s-list a').removeClass('curr');
+		var code = $(this).find('a').attr('code');
+		var wenzi = $.trim($('#w').val());
+		if(code==0){
+			$.post('crowdfunding.php?act=search_quanbu',{code:code,wenzi:wenzi},function(data){
+				$('.query-result-outer').remove();
+				$('#page_div').remove();
+				$('.query-result').append(data);
+			},'json');
+		}else{
+			$.post('crowdfunding.php?act=search_cate',{code:code,wenzi:wenzi},function(data){
+				$('.query-result-outer').remove();
+				$('#page_div').remove();
+				$('.query-result').append(data);
+			},'json');
+		}
+	})
+
+	$('.s-list a').on('click',function(){
+		var code = $(this).attr('code');
+		var wenzi = $.trim($('#w').val());
+		$(this).parent().siblings().find('a').removeClass('curr');
+		$(this).addClass('curr');
+		$.post('crowdfunding.php?act=search_cate_child',{code:code,wenzi:wenzi},function(data){
+			$('.query-result-outer').remove();
+			$('#page_div').remove();
+			$('.query-result').append(data);
+		},'json');
+	})
+
+	$('body').on('click','#sort li',function(){
+		var wenzi = $.trim($('#w').val());
+		var sig = $(this).find('a').attr('code');
+		var pid = $('#parent_catagory').find('li[class=current]').children('a').attr('code');
+		var tid = $('.s-list').find('a[class=curr]').attr('code');
+
+		if(tid){
+			$.post('crowdfunding.php?act=search_paixu_tid',{id:tid,sig:sig,wenzi:wenzi},function(data){
+				$('.query-result-outer').remove();
+				$('#page_div').remove();
+				$('.query-result').append(data);
+			},'json');
+		}else{
+			if(pid==0){
+				$.post('crowdfunding.php?act=search_paixu_pid_zero',{id:pid,sig:sig,wenzi:wenzi},function(data){
+					$('.query-result-outer').remove();
+					$('#page_div').remove();
+					$('.query-result').append(data);
+				},'json');
+			}else{
+				$.post('crowdfunding.php?act=search_paixu_pid',{id:pid,sig:sig,wenzi:wenzi},function(data){
+					$('.query-result-outer').remove();
+					$('#page_div').remove();
+					$('.query-result').append(data);
+				},'json');
+			}
+		}
+	})
+
+
+	$('#sousuo').on('click',function(){
+		var wenzi = $.trim($('#w').val());
+		var sig = $('#sort').find('li[class=current]').find('a').attr('code');
+		var pid = $('#parent_catagory').find('li[class=current]').children('a').attr('code');
+		var tid = $('.s-list').find('a[class=curr]').attr('code');
+
+		if(tid){
+			$.post('crowdfunding.php?act=search_paixu_tid',{id:tid,sig:sig,wenzi:wenzi},function(data){
+					$('.query-result-outer').remove();
+					$('#page_div').remove();
+					$('.query-result').append(data);
+			},'json');
+		}else{
+			if(pid==0){
+				$.post('crowdfunding.php?act=search_paixu_pid_zero',{id:pid,sig:sig,wenzi:wenzi},function(data){
+					$('.query-result-outer').remove();
+					$('#page_div').remove();
+					$('.query-result').append(data);
+				},'json');
+			}else{
+				$.post('crowdfunding.php?act=search_paixu_pid',{id:pid,sig:sig,wenzi:wenzi},function(data){
+					$('.query-result-outer').remove();
+					$('#page_div').remove();
+					$('.query-result').append(data);
+				},'json');
+			}
+		}
+
+	})
+
+	$('body').on('click','#page_div a',function(){
+		var page = $("#page_div a[class='current']").text();
+		var last_page = $('#page_div a').last().prev().text();
+		var val = $(this).text();
+		var res_page = null;
+
+		if(page==val){
+			return false;
+		}
+
+		if(page==1 && val==page_prev){
+			return false;
+		}
+
+		if(page==last_page && val==page_next){
+			return false;
+		}
+
+		if(val==page_prev){
+			res_page = parseInt(page)-1;
+		}
+
+		if(val==page_next){
+			res_page = parseInt(page)+1;
+		}
+
+		if(val!=page_prev && val!=page_next){
+			res_page = $(this).text();
+		}
+
+		var wenzi = $.trim($('#w').val());
+		var sig = $('#sort').find('li[class=current]').find('a').attr('code');
+		var pid = $('#parent_catagory').find('li[class=current]').children('a').attr('code');
+		var tid = $('.s-list').find('a[class=curr]').attr('code');
+
+		if(tid){
+			$.post('crowdfunding.php?act=page_tid',{id:tid,sig:sig,wenzi:wenzi,page:res_page},function(data){
+					$('.query-result-outer').remove();
+					$('#page_div').remove();
+					$('.query-result').append(data);
+			},'json');
+		}else{
+			if(pid==0){
+				$.post('crowdfunding.php?act=page_pid_zero',{id:pid,sig:sig,wenzi:wenzi,page:res_page},function(data){
+					$('.query-result-outer').remove();
+					$('#page_div').remove();
+					$('.query-result').append(data);
+				},'json');
+			}else{
+				$.post('crowdfunding.php?act=page_pid',{id:pid,sig:sig,wenzi:wenzi,page:res_page},function(data){
+					$('.query-result-outer').remove();
+					$('#page_div').remove();
+					$('.query-result').append(data);
+				},'json');
+			}
+		}
+	});
+	</script>
+
+	<!-- {/if} -->
+	<!-- 众筹项目搜索页 end -->	
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.purebox.js"></script>
+
+    <!--@author-bylu start (众筹在线客服)-->
+    <script type="text/javascript">
+        function openWin(obj) {
+            var where_goods = "";
+			if($(obj).attr('goods_id')){
+				where_goods = '&goods_id=' + $(obj).attr('goods_id');
+			}
+			
+			var where_seller = "";
+			if($(obj).attr('ru_id')){
+				where_seller = '&ru_id=' + $(obj).attr('ru_id');
+			}
+	
+			if($(obj).attr('IM_type') != 'dsc'){
+				var where = where_goods + where_seller;
+			}else{
+				var where = '';
+			}
+			var url='online.php?act=service' + where                   //转向网页的地址;
+            var name='webcall';                         //网页名称，可为空;
+            var iWidth=700;                          //弹出窗口的宽度;
+            var iHeight=500;                         //弹出窗口的高度;
+            //获得窗口的垂直位置
+            var iTop = (window.screen.availHeight - 30 - iHeight) / 2;
+            //获得窗口的水平位置
+            var iLeft = (window.screen.availWidth - 10 - iWidth) / 2;
+            window.open(url, name, 'height=' + iHeight + ',,innerHeight=' + iHeight + ',width=' + iWidth + ',innerWidth=' + iWidth + ',top=' + iTop + ',left=' + iLeft + ',status=no,toolbar=no,menubar=no,location=no,resizable=no,scrollbars=0,titlebar=no');
+        }
+    	$(window).load(function(){
+			$("#footer").css({"z-index":666});
+		});
+    </script>
+    <!--@author-bylu end-->
+	
+	<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+</body>
+</html>

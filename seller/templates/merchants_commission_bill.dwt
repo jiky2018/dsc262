@@ -1,0 +1,139 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <form method="post" action="" name="listForm" onsubmit="return confirm(batch_drop_confirm);">
+                <div class="list-div" id="listDiv">
+					{/if}
+					<table class="ecsc-default-table goods-default-table mt20">	
+                    <thead>
+                    	<tr>
+                            <th width="7%">{$lang.record_id}</th>
+                            <th class="tl"><div class="pl10">金额</div></th>
+                            {if $is_dir}<th>分销金额</th>{/if}
+                            {if $filter.commission_model neq 1}<th class="tl">比例</th>{/if}
+                            <th>收取佣金</th>
+                            <th>本期应结</th>
+                            <th>未收货订单</th>
+                            <th class="tl">申请状态</th>
+                            <th width="15%" class="tc">{$lang.handler}</th>
+                    	</tr>
+                    </thead>
+                    <tbody>
+                    {foreach from=$bill_list item=bill name=nobill}
+                    <tr>
+                        <td class="bdr" rowspan="2">
+                        	<div class="number">{$bill.id}</div>
+                        </td>
+                        <td class="tl">
+                            <div class="tc_items pl10">
+                                <div class="item">订单金额：{$bill.format_order_amount}<em class="org2">(含运费)</em></div>
+                                <div class="item">运费金额：{$bill.format_shipping_amount}</div>
+                                <div class="item">退单金额：{$bill.format_return_amount}</div>
+                                <div class="item">冻结资金：{$bill.format_frozen_money}</div>
+                            </div>
+                        </td>
+                        {if $is_dir}
+                        <td>{$bill.format_drp_money}</td>
+                        {/if}
+                        {if $filter.commission_model neq 1}
+                        <td class="tl">
+                            <div class="tc_items">
+                                <div class="item">收取比例：{$bill.gain_proportion}%</div>
+                                <div class="item">应结比例：{$bill.should_proportion}%</div>
+                            </div>
+                        </td>
+                        {/if}
+                        <td>
+                            {if $bill.chargeoff_status neq 0 && $bill.model eq 0 && $filter.commission_model eq 1}
+                                <em class="red">佣金比例：{$bill.gain_proportion}%</em>
+                                <br/>
+                            {/if}
+                        	{$bill.format_gain_commission}<br/><em class="org2">(不含运费)</em>
+                        </td>
+                        <td>
+                            {if $bill.chargeoff_status neq 0 && $bill.model eq 0 && $filter.commission_model eq 1}
+                            <p><em class="red">佣金比例：{$bill.should_proportion}%</em></p>
+                            {/if}
+                            
+                            {if $bill.settle_accounts > 0}
+                            <p class="red"> + {$bill.should_amount}【总额】</p>
+                            <p class="red"> - {$bill.settle_accounts}【已结】</p>
+                            {/if}
+                            
+                            <p class="red">{if $bill.settle_accounts > 0}={/if}{$bill.format_should_amount}{if $bill.settle_accounts > 0}【实结】{/if}</p>
+                            <p><em class="org2">(含运费)</em></p>
+                        </td>
+						<td><a href="merchants_commission.php?act=bill_notake_order&bill_id={$bill.id}&seller_id={$bill.seller_id}&commission_model={$filter.commission_model}" title="{$lang.view}">{$bill.notake_order_count}</a></td>
+                      	<td class="tl">
+                            <div class="tc_items">
+                                <div class="item">出账状态：{if $bill.chargeoff_status eq 1}已出账{elseif $bill.chargeoff_status eq 2}账单结束<br/><em class="red">{$bill.format_settleaccounts_time}</em>{elseif $bill.chargeoff_status eq 3}关闭账单{else}未出账{/if}</div>
+                                <div class="item">申请状态：{if $bill.bill_apply eq 1}已申请{else}未申请{/if}</div>
+                            </div>
+                      	</td>
+                      	<td class="ecsc-table-handle">
+                            <span><a href="merchants_commission.php?act=bill_detail&bill_id={$bill.id}&seller_id={$filter.id}&proportion={$bill.proportion}&commission_model={if $bill.chargeoff_status neq 0 && $bill.model neq -1}{$bill.model}{else}{$filter.commission_model}{/if}" class="btn-orange"><i class="sc_icon_see"></i><p>账单明细</p></a></span>
+                            {if $bill.is_bill_freeze eq 1 && $bill.chargeoff_status neq 3 || $bill.chargeoff_status eq 2}
+                            <span><a href="merchants_commission.php?act=apply_for&bill_id={$bill.id}&seller_id={$filter.id}" class="btn-green"><i class="icon-edit"></i><p>申请结算</p></a></span>
+                            {/if}
+                      	</td>
+                    </tr>
+                    <tr class="row_header">
+                        <td colspan="10">
+                        	<div class="fl pl10 mr10">
+                                <em class="fl">账单编号：</em>
+                                <em class="fl">{$bill.bill_sn}</em>
+                                {if $bill.chargeoff_status neq 0 && $bill.model neq -1}
+                                <em class="red fl">({if $bill.model eq 1}{$lang.category_model}{else}{$lang.seller_model}{/if})</em>
+                                {/if}
+                            </div>
+                            <div class="fl">
+                            	{if $bill.bill_freeze_day && $bill.chargeoff_status neq 2}<span class="fl red mr10">冻结时间：{$bill.bill_freeze_day} 天</span>{/if}
+                                <span class="fl mr10">出账时间：{if $bill.format_chargeoff_time}{$bill.format_chargeoff_time}{else}<em class="red">未出账</em>{/if}</span>
+                                <span>开始时间：{$bill.format_start_time}&nbsp;&nbsp;&nbsp;&nbsp;结束时间：{$bill.format_end_time}</span>
+                            </div>
+                        </td>
+                    </tr>
+                    {foreachelse}
+                    <tr><td class="no-records" colspan="20">{$lang.no_records}</td></tr>
+                    {/foreach}
+                    </tbody>
+                  	</table>
+                 	{include file="page.dwt"}
+                	{if $full_page}
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript">
+	listTable.recordCount = {$record_count};
+	listTable.pageCount = {$page_count};
+	listTable.query = "commission_bill_query";
+	
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+	
+	{literal}
+	onload = function()
+	{
+	  startCheckOrder();
+	}
+	{/literal}
+</script>
+</body>
+</html>
+{/if}

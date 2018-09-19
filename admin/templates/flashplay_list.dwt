@@ -1,0 +1,147 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">促销 - {$ur_here}</div>
+        <div class="content">
+        	<div class="tabs_info">
+            	<ul>
+                    {foreach from=$group_list item=group key=group_key name="bar_group"}
+                    {if $group_key eq $current}
+                    <li {if $current eq 'sys'}class="curr"{/if}><a href="javascript:viod(0);">{$group.text}</a></li>
+                    {else}
+                    <li {if $current eq 'cus'}class="curr"{/if}><a href="javascript:viod(0);" onclick="javascript:location.href='{$group.url}';">{$group.text}</a></li>
+                    {/if}
+                    {/foreach}
+                </ul>
+            </div>			
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4><span id="explanationZoom" title="收起提示"></span></div>
+                <ul>
+                	<li>可从管理平台手动添加一名新会员，并填写相关信息。</li>
+                    <li>标识“<em>*</em>”的选项为必填项，其余为选填项。</li>
+                    <li>新增会员后可从会员列表中找到该条数据，并再次进行编辑操作，但该会员名称不可变。</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<!--商品列表-->
+                <div class="common-head">
+                    <div class="fl">
+                        <a href="{$action_link_special.href}"><div class="fbutton"><div class="add" title="{$action_link_special.text}"><span><i class="icon icon-plus"></i>{$action_link_special.text}</span></div></div></a>
+                    </div>				
+			
+                </div>
+                <div class="common-content">
+                	<div class="list-div" >
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                    <th width="32%"><div class="tDiv">{$lang.schp_imgsrc}</div></th>
+                                    <th width="20%"><div class="tDiv">{$lang.schp_imgurl}</div></th>
+                                    <th width="30%"><div class="tDiv">{$lang.schp_imgdesc}</div></th>
+                                    <th width="8%"><div class="tDiv">{$lang.schp_sort}</div></th>
+                                    <th width="10%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+				{foreach from=$playerdb item=item key=key}
+                            	<tr>
+                                    <td><div class="tDiv"><a href="{$item.src}" target="_blank">{$item.src}</a></div></td>
+				    <td><div class="tDiv"><a href="{$item.url}" target="_blank">{$item.url}</a></div></td>
+                                    <td><div class="tDiv">{$item.text}</div></td>
+                                    <td><div class="tDiv">{$item.sort}</div></td>
+                                    <td class="handle">
+                                        <div class="tDiv a2">
+                                            <a href="flashplay.php?act=edit&id={$key}" title="{$lang.edit}" class="btn_edit"><i class="icon icon-edit"></i>编辑</a>
+                                            <a href="flashplay.php?act=del&id={$key}" onclick="return check_del();" title="{$lang.trash_img}" class="btn_trash"><i class="icon icon-trash"></i>删除</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {foreachelse}
+                                <tr><td class="no-records"  colspan="20">{$lang.no_records}</td></tr>								
+                                {/foreach}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="list-div list-div-ad" style="margin-top:15px;">
+                        <table cellpadding="1" cellspacing="1">
+                            <tr>
+                              <th><strong>{$lang.flash_template}</strong></th>
+                            </tr>
+                            <tr>
+                                <td>
+                                        <div class="flash_items">
+                                    {foreach from=$flashtpls item=flashtpl}
+                                    <div class="item fl ml10">
+                                        <div class="title">
+                                          <span>{$flashtpl.name}</span>
+                                          {if $flashtpl.code eq $current_flashtpl}<span style="color:red;" id="current_theme">{$lang.current_theme}</span>{/if}
+                                        </div>
+                                        <div class="flash_img">
+                                          {if $flashtpl.screenshot}<img src="{$flashtpl.screenshot}" border="0" style="cursor:pointer" onclick="setupFlashTpl('{$flashtpl.code}', this)" />{/if}
+                                        </div>
+                                        <div class="desc">{$flashtpl.desc}</div>
+                                    </div>
+                                    {/foreach}
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <!--商品列表end-->
+            </div>
+		</div>
+	</div>
+         {include file ='library/pagefooter.lbi'}
+<script type="text/javascript">
+ function check_del()
+{
+  if (confirm('{$lang.trash_img_confirm}'))
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+
+
+/**
+ * 安装Flash样式模板
+ */
+function setupFlashTpl(tpl, obj)
+{
+    window.current_tpl_obj = obj;
+    if (confirm(setupConfirm))
+    {
+        Ajax.call('flashplay.php?is_ajax=1&act=install', 'flashtpl=' + tpl, setupFlashTplResponse, 'GET', 'JSON');
+    }
+}
+
+function setupFlashTplResponse(result)
+{
+    if (result.message.length > 0)
+    {
+        alert(result.message);
+    }
+
+    if (result.error == 0)
+    {
+        var tmp_obj = window.current_tpl_obj.parentNode.parentNode.previousSibling;
+        while (tmp_obj.nodeName.toLowerCase() != 'tr')
+        {
+            tmp_obj = tmp_obj.previousSibling;
+        }
+        tmp_obj = tmp_obj.getElementsByTagName('center');
+        tmp_obj[0].appendChild(document.getElementById('current_theme'));
+    }
+    
+}
+</script>
+</body>
+</html>

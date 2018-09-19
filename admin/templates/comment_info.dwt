@@ -1,0 +1,193 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$lang.goods_alt} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.info.0}</li>
+                    <li>{$lang.operation_prompt_content.info.1}</li>
+                </ul>
+            </div>
+
+            {if $send_fail}
+            <ul class="red2 mt10">
+                <li class="Start315">{$lang.mail_send_fail}</li>
+            </ul>
+            {/if}
+
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+                    	<div class="switch_info">
+                    	<div class="common-reply">
+                        	<div class="reply_item user_reply_item">
+                            	<div class="reply_item_div">
+                                	<div class="reply_label">&nbsp;</div>
+                                    <div class="reply_value">
+                                    	 <a href="mailto:{$msg.email}" class="blue"><b>{if $msg.user_name}{$msg.user_name}{else}{$lang.anonymous}{/if}</b></a>
+                                         <span>{$lang.comment}</span>
+                                         <a href="../goods.php?id={$msg.id_value}" target="_blank" class="blue"><b>{$id_value}</b></a>
+                                    </div>
+                                </div>
+                                <div class="reply_item_div">
+                                	<div class="reply_label">{$lang.content}：</div>
+                                    <div class="reply_value">
+                                    	<div class="msg_info">
+                                        	<div class="msg_desc">{$msg.content}</div>
+                                            <ul class="msg_img">
+                                            	<!--{foreach from=$msg.img_list item=item}-->
+                                                <li><img src="../{$item.img_thumb}" height="60"></li>
+                                                <!--{/foreach}-->
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="reply_item_div">
+                                	<div class="reply_label">{$lang.comment_data}：</div>
+                                    <div class="reply_value" style="line-height:28px;">
+                                    	<span class="time">{$msg.add_time}</span>
+                                        <span class="dengji">{$lang.comment_rank}:&nbsp;&nbsp;{$msg.comment_rank}</span>
+                                        <span class="ip">{$lang.ip_address}:&nbsp;&nbsp;{$msg.ip_address}</span>
+                                    </div>
+                                </div>
+                                {if $comment_edit_delete}
+                                <div class="reply_item_div">
+                                	<div class="reply_label">&nbsp;</div>
+                                    <div class="reply_value">
+                                        {if $msg.status eq "0"}
+                                        <input type="button" onclick="location.href='comment_manage.php?act=check&check=allow&id={$msg.comment_id}'" value="{$lang.allow}" class="button" />
+                                        {else}
+                                        <input type="button" onclick="location.href='comment_manage.php?act=check&check=forbid&id={$msg.comment_id}'" value="{$lang.forbid}" class="button" />
+                                        {/if}
+                                    </div>
+                                </div>
+                                {/if} 
+                            </div>
+                            {if $reply_info.content}
+                            <div class="reply_item admin_reply_item">
+                            	<div class="reply_item_div">
+                                	<div class="reply_label">&nbsp;</div>
+                                    <div class="reply_value">
+                                    	 {$lang.admin_user_name} <a href="mailto:{$msg.email}" class="blue"><b>{$reply_info.user_name}</b></a>
+                                         <span>{$lang.reply}</span>
+                                         <a href="mailto:{$msg.email}" class="blue"><b>{if $msg.user_name}{$msg.user_name}{else}{$lang.anonymous}{/if}</b></a>
+                                    </div>
+                                </div>
+                                <div class="reply_item_div">
+                                	<div class="reply_label">{$lang.reply_content}：</div>
+                                    <div class="reply_value">
+                                    	<div class="msg_info">
+                                        	<div class="msg_desc">{$reply_info.content}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="reply_item_div">
+                                	<div class="reply_label">{$lang.reply_data}：</div>
+                                    <div class="reply_value" style="line-height:28px;">
+                                    	<span class="time">{$reply_info.add_time}</span>
+                                        <span class="ip">{$lang.ip_address}:&nbsp;&nbsp;{$reply_info.ip_address}</span>
+                                    </div>
+                                </div>
+                            </div>    
+                            {/if}
+                        </div>
+                        {if $msg.comment_type lt 2}
+                        <form action="comment_manage.php?act=action" method="post" name="theForm" enctype="multipart/form-data" id="comment_manage_form">
+                            <div class="item">
+                                <div class="label">{$lang.user_name}：</div>
+                                <div class="label_value">
+                                    <input name="user_name" type="text" class="text text_readonly" {if $reply_info.user_name eq ""}value="{$admin_info.user_name}"{else} value="{$reply_info.user_name}"{/if} size="30" readonly="true" autocomplete="off" />
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.email}：</div>
+                                <div class="label_value">
+                                    <input name="email" type="text" class="text text_readonly" {if $reply_info.email eq ""}value="{$admin_info.email}"{else} value="{$reply_info.email}"{/if} size="30" readonly="true" autocomplete="off" />
+                                </div>
+                            </div>								
+                            <div class="item">
+                                <div class="label">{$lang.require_field}{$lang.reply_content}：</div>
+                                <div class="label_value">
+                                    <textarea name="content" cols="50" rows="4" wrap="VIRTUAL" class="textarea">{$reply_info.content}</textarea>
+                                	<div class="form_prompt"></div>
+                                </div>
+                            </div>
+                            {if $reply_info.content}
+                            <div class="item">
+                                <div class="label">&nbsp;</div>
+                                <div class="label_value">
+                                    {$lang.have_reply_content}
+                                </div>
+                            </div>
+                            {/if}
+                            <div class="item">
+                                <div class="label">&nbsp;</div>
+                                <div class="label_value">
+                                    <div class="checkbox_items">
+                                        <div class="checkbox_item">
+                                            <input type="checkbox" class="ui-checkbox" name="send_email_notice" id="send_email_notice_1" value="1"/>
+                                            <label for="send_email_notice_1" class="ui-label">{$lang.send_email_notice}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>								
+                            <div class="item">
+                                <div class="label">&nbsp;</div>
+                                <div class="label_value info_btn">
+                                    <input name="submit" type="submit" value="{$lang.button_submit}" class="button fl" id="submitBtn">
+                                    {if $reply_info.content}<input type="submit" name="remail" value="{$lang.remail}" class="button ml10 fl">{/if}
+                                    <input type="hidden" name="comment_id" value="{$msg.comment_id}">
+                                    <input type="hidden" name="comment_type" value="{$msg.comment_type}">
+                                    <input type="hidden" name="id_value" value="{$msg.id_value}">
+                                </div>
+                            </div>								
+                            <div class="item red">
+                                <div class="label red">&nbsp;</div>
+                                <div class="label_value">{$lang.be_careful}</div>
+                            </div>
+                        </form>
+                        {/if}
+                        </div>
+                    </div>
+                </div>
+            </div>
+		</div>
+    </div>
+ 	{include file ='library/pagefooter.lbi'}
+    {literal}
+    <script type="text/javascript">
+    $(function(){
+		//表单验证
+		$("#submitBtn").click(function(){
+			if($("#comment_manage_form").valid()){
+				$("#comment_manage_form").submit();
+			}
+		});
+	
+		$('#comment_manage_form').validate({
+			errorPlacement:function(error, element){
+				var error_div = element.parents('div.label_value').find('div.form_prompt');
+				element.parents('div.label_value').find(".notic").hide();
+				error_div.append(error);
+			},
+			rules:{
+				content :{
+					required : true
+				}
+			},
+			messages:{
+				content:{
+					 required : '<i class="icon icon-exclamation-sign"></i>'+no_content
+				}
+			}			
+		});
+	});
+    </script>
+    {/literal}
+</body>
+</html>

@@ -1,0 +1,89 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link2.href}" class="s-back">{$lang.back}</a>{$lang.seller} - {$ur_here}</div>
+        <div class="content">
+        	{include file="library/commission_tab.lbi"}
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.list.0}</li>
+                    <li>{$lang.operation_prompt_content.list.1}</li>
+               </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="common-head">
+                        <div class="fl">
+                            <a href="{$action_link.href}"><div class="fbutton"><div class="add" title="{$action_link.text}"><span><i class="icon icon-plus"></i>{$action_link.text}</span></div></div></a>
+                        </div>
+                    </div>
+                	<div class="list-div"  id="listDiv" >
+						<form method="post" action="" name="listForm" onsubmit="return confirm(batch_drop_confirm);">
+						{/if}
+                    	<table cellpadding="1" cellspacing="1">
+                        	<thead>
+                            	<tr>
+                                	<th width="15%"><div class="tDiv">{$lang.record_id}</div></th>
+                                    <th width="20%"><div class="tDiv">{$lang.percent_value}</div></th>
+									<th width="20%"><div class="tDiv">{$lang.sort_order}</div></th>
+									<th width="20%"><div class="tDiv">{$lang.add_time}</div></th>
+                                    <th width="25%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+							    {foreach from=$percent_list item=percent}
+								<tr>
+                                    <td><div class="tDiv">{$percent.percent_id}</div></td>
+                                    <td><div class="tDiv">{$percent.percent_value}%</div></td>
+                                    <td><div class="tDiv">{$percent.sort_order}</div></td>
+                                    <td><div class="tDiv">{$percent.add_time}</div></td>
+                                    <td class="handle">
+                                        <div class="tDiv a2">
+                                            <a href="merchants_percent.php?act=edit&id={$percent.percent_id}" title="{$lang.edit}" class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>
+                                            <a href="javascript:;" onclick="listTable.remove({$percent.percent_id}, '{$lang.drop_confirm}')" title="{$lang.remove}" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>
+                                        </div>
+                                    </td>
+								</tr>
+								{foreachelse}
+								<tr><td class="no-records"  colspan="5">{$lang.no_records}</td></tr>
+								{/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="12">
+                                    	<div class="list-page">
+                                            {include file="library/page.lbi"}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+						{if $full_page}
+						</form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input name="bill_seller" type="hidden" value="{$user_id|default:0}" />
+ 	{include file ='library/pagefooter.lbi'}
+</body>
+</html>
+<script type="text/javascript">
+//检查结算账单
+checkBill();
+
+//分页传值
+listTable.recordCount = {$record_count|default:0};
+listTable.pageCount = {$page_count|default:1};
+
+{foreach from=$filter item=item key=key}
+listTable.filter.{$key} = '{$item}';
+{/foreach}
+</script>
+{/if}

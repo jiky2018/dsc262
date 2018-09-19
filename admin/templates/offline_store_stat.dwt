@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$lang.08_members} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.stat.0}</li>
+                    <li>{$lang.operation_prompt_content.stat.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+                    	<form name="TimeInterval" action="offline_store.php" method="post" id="offline_store_stat">
+                        <div class="switch_info">
+                            <div class="items">
+                                <div class="item bor_bt_das pb20">
+                                    <div class="label">{$lang.start_end_date}：</div>
+                                    <div class="label_value">
+                                        <div class="text_time" id="text_time_start">
+                                            <input type="text" name="start_date" value="{$start_date}" id="start_time_id" class="text mr0" readonly />
+                                        </div>
+                                        <span class="bolang">&nbsp;&nbsp;~&nbsp;&nbsp;</span>
+                                        <div class="text_time" id="text_time_end">
+                                            <input type="text" name="end_date" value="{$end_date}" id="end_time_id" class="text" readonly />
+                                        </div>
+                                        <a href="javascript:void(0);" class="btn btn30 blue_btn_2" ectype="stats" id="submitBtn"><i class="icon icon-search"></i>{$lang.search_word}</a>
+                                    </div>
+                                </div>                               
+                                <div class="item">
+                                	<div class="label">{$lang.sale_total}：</div>
+                                    <div class="label_value">
+                                    	<div class="text_div mr70" id="total_fee"></div>
+                                        <div class="dl_div">
+                                        	<div class="dt_div">{$lang.sale_order_numbher}：</div>
+                                            <div class="dd_div" id="order_num"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </form>
+						<div class="list-div" id="list_div" style="position: relative">
+							<table cellpadding="0" cellspacing="0" border="0">
+								<thead>
+								<tr>
+									<th width="10%"><div class="tDiv">TOP 10</div></th>
+									<th width="15%"><div class="tDiv">{$lang.stores_name}</div></th>
+									<th width="30%"><div class="tDiv">{$lang.goods_name}</div></th>
+									<th width="10%"><div class="tDiv">{$lang.sale_goods_price}</div></th>
+									<th width="10%"><div class="tDiv">{$lang.sale_goods_total}</div></th>
+									<th width="15%"><div class="tDiv">{$lang.last_sale_time}</div></th>
+								</tr>
+								</thead>
+								<tbody>
+								{foreach from=$goods_sales_list item=vo}
+								<tr>
+									<td><div class="tDiv">{$smarty.foreach.stat.iteration}</div></td>
+									<td><div class="tDiv">{$vo.store_name}</div></td>
+									<td><div class="tDiv">{$vo.goods_name}</div></td>
+									<td><div class="tDiv">{$vo.goods_price}</div></td>
+									<td><div class="tDiv">{$vo.sales_num}</div></td>
+									<td><div class="tDiv">{$vo.last_sale_time}</div></td>
+								</tr>
+								{foreachelse}
+								<tr>
+									<td colspan="12" class="no_record"><div class="tDiv">{$lang.no_records}</div></td>
+								</tr>
+								{/foreach}
+								</tbody>
+							</table>			
+						</div>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+		//时间选择
+		var opts1 = {
+			'targetId':'start_time_id',//时间写入对象的id
+			'triggerId':['start_time_id'],//触发事件的对象id
+			'alignId':'text_time_start',//日历对齐对象
+			'format':'-',//时间格式 默认'YYYY-MM-DD HH:MM:SS'
+			'hms':'off',
+			'max':''
+		},opts2 = {
+			'targetId':'end_time_id',
+			'triggerId':['end_time_id'],
+			'alignId':'text_time_end',
+			'format':'-',
+			'hms':'off',
+			'max':''
+		}
+		xvDate(opts1);
+		xvDate(opts2);
+		
+		$(document).on('click',"a[ectype='stats']",function(){
+			var start_time = $('#start_time_id').val();
+			var end_time = $('#end_time_id').val();
+			var type = '{$type}';
+			$.jqueryAjax("offline_store.php", "act=stat_filter&start_time="+ start_time + "&end_time=" + end_time + '&type=' + type, function(data){
+				var content = data.content;
+				$('#list_div').html(content);
+				$('#order_num').html(data.order_num);
+				$('#total_fee').html(data.total_fee);
+			});
+		});
+    </script>
+</body>
+</html>

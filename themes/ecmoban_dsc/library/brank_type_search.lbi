@@ -1,0 +1,38 @@
+{if $brand_list}
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"> <!--申请品牌信息-->
+
+<div style="width:166px; border:1px #ccc solid; background:#FFF; padding:5px 0px 5px 5px;">
+    <ul>
+    	{foreach from=$brand_list item=brand}
+            {if $type}
+            	<li id="{$brand.brand_id}" rev='{$brand.brand_type|default:p_bran}' style="cursor:pointer" class="brandId">{$brand.brand_letter}</li>
+            {else}
+            	<li id="{$brand.brand_id}" rev='{$brand.brand_type|default:p_bran}' style="cursor:pointer" class="brandId">{$brand.brand_name}</li>
+            {/if}
+       	{/foreach}
+    </ul>
+</div>
+{/if}
+
+<script type="text/javascript">
+
+$(function(){
+	$('li.brandId').click(function(ev){
+		var brand_id = $(this).attr('id');
+		var rev = $(this).attr('rev');
+		
+		Ajax.call('merchants_steps.php', 'step=brandSearch_info&brand_id=' + brand_id + '&brand_type=' + rev, brandSearch_infoResponse, 'POST', 'JSON');
+	});
+});
+
+/**
+ * 接收返回的信息
+ */
+function brandSearch_infoResponse(res)
+{
+	$('#searchBrandZhInput').val(res.brand_name);
+	$('#searchBrandEnInput').val(res.brand_letter);
+	$("input[name='brandId']").val(res.brand_id);
+	$("input[name='search_brandType']").val(res.brand_type);
+}
+</script>

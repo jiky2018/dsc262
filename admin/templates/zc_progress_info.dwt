@@ -1,0 +1,96 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>众筹 - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content_common}</li>
+                    <li>注意上传图片的尺寸，以免出错。</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+                        <form action="zc_project.php?act={$state}" method="post" name="theForm" enctype="multipart/form-data">
+                            <div class="switch_info">
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}{$lang.zc_progress}：</div>
+                                    <div class="label_value">
+										<textarea name="progress" class="textarea h120">{$evolve.progress}</textarea>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.add_img}：</div>
+                                    <div class="label_value">
+										<div class="item">
+											<input type='file' name='img_0' class="file mt5" />
+											<span id='add_img' class="up" style="cursor:pointer;"></span>
+											<span id='minus_img' class="down" style="display:none; cursor:pointer;"></span>
+										</div>
+										{if $evolve.img}<div class="bf100 zc_dimg fl">{foreach from=$evolve.img item=item key=key}<div class="img_item fl"><img src="../{$item}" width="60" height="60"><i class="icon icon-trash" onclick="deleteImage(this, 'progress', {$id}, {$key})"></i></div>{/foreach}</div>{/if}
+										<label class="blue_label ml0">{$lang.zc_progress_note}</label>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="label_value info_btn">
+										<input type="submit" class='button' value="{$lang.button_submit}" />
+										<input type="reset" class='button button_reset' value="{$lang.button_reset}" />
+										<input type='hidden' name='item_id' value='{$item_id}' />
+										<input type='hidden' name='id' value='{$id}' />
+                                    </div>
+                                </div>								
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+    </div>
+ {include file ='library/pagefooter.lbi'}
+	{literal}
+	<script>
+		var add_img = document.getElementById('add_img');
+		var num = 0;
+		document.body.onselectstart = function(){return false;}  //不能选中，避免出现蓝色背景条
+		add_img.onclick = function(){
+			var length = $('#add_img').parent().find('input').length;
+			var imglength = $('#add_img').parents(".item").next().find("img").length;
+			if(length >= (10-imglength)){
+				alert("最多可以上传10张图片");
+				return false;
+			}
+			if(length>0){
+				$('#minus_img').show();
+			}
+			var input = document.createElement('input');
+			var br = document.createElement('br');
+			num += 1;
+			input.type = 'file';
+			input.name = 'img_'+num;
+			input.className = 'mb10';
+			this.parentNode.appendChild(br);
+			this.parentNode.appendChild(input);
+		}
+		
+		$('#minus_img').click(function(){
+			var length = $('#add_img').parent().find('input').length;
+			if(length <= 1){
+				return false;
+			}
+			$('#add_img').parent().find('input').last().prev().remove();
+			$('#add_img').parent().find('input').last().remove();
+			
+			if(length <= 2){
+				$('#minus_img').hide();
+			}
+		});
+	</script>
+	{/literal}
+</body>
+</html>

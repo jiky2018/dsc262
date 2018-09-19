@@ -1,0 +1,106 @@
+{include file="seller_pageheader"}
+
+{include file="seller_nave_header"}
+
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file="seller_menu_left"}
+
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+            {include file="seller_nave_header_title"}
+                <div class="wrapper-right of" >
+                    <div class="tabmenu">
+                        <ul class="tab ">
+                            <li><a href="{url('article_edit_news')}">多图文{if $id}编辑 {else}添加 {/if}</a></li>
+                        </ul>
+                    </div>
+                    <div class="explanation" id="explanation">
+                        <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4></div>
+                        <ul>
+                            <li>图文消息个数，限制为8条以内，如果图文数超过8，微信则将会无响应。</li>
+                            <li>同时建议实际应用当中一条多图文消息条数最多为4条，发送后的显示效果最佳（正好为一个手机屏幕的高度）</li>
+                        </ul>
+                    </div>
+
+                    <div class="wrapper-list mt20" >
+                      <form action="{url('article_edit_news')}" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
+                        <div class="account-setting ecsc-form-goods">
+                            <dl>
+                                <dt>选择图文信息：</dt>
+                                <dd>
+                                    <div class="label_value info_btn" style="margin-top:0;">
+                                        <a class="sc-btn sc-blueBg-btn btn30 fancybox_article fancybox.iframe" href="{url('articles_list')}">选择图文信息</a>
+                                        <a class="sc-btn sc-blue-btn btn30 delete_confirm" href="javascript:;"  data-href="{url('article_news_del', array('id'=>$id))}'}">清空重选</a>
+                                    </div>
+                                </dd>
+                            </dl>
+                            <dl>
+                                <dt>图文信息：</dt>
+                                <dd>
+                                    <div class="picture-list ajax-data" >
+                                        {if $articles}
+                                        {foreach $articles as $k=>$v}
+                                            {if $k == 0}
+                                            <div class="article">
+                                                <input type="hidden" name="article[]" value="{$v['id']}" />
+                                                <p>{date('Y年m月d日', $v['add_time'])}</p>
+                                                <div class="cover"><img src="{$v['file']}" /><span>{$v['title']}</span></div>
+                                            </div>
+                                            {else}
+                                            <div class="article_list">
+                                                <input type="hidden" name="article[]" value="{$v['id']}" />
+                                                <span>{$v['title']}</span>
+                                                <img src="{$v['file']}" width="78" height="78" class="pull-right" />
+                                            </div>
+                                            {/if}
+                                        {/foreach}
+                                        {/if}
+                                    </div>
+                                </dd>
+                            </dl>
+                            <dl>
+                                <dt>排序：</dt>
+                                <dd>
+                                <input type="text" name="sort" class="text" value="{$sort}" />
+                                </dd>
+                            </dl>
+                            <dl>
+                                <dt>&nbsp;</dt>
+                                <dd class="button_info">
+                                    <input type="hidden" name="id" value="{$id}" />
+                                    <input type="submit" value="{$lang['button_submit']}" class="sc-btn sc-blueBg-btn btn35" />
+                                    <input type="reset" value="{$lang['button_reset']}" class="sc-btn sc-blue-btn btn35" />
+                                </dd>
+                            </dl>
+                        </div>
+                      </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+$(function(){
+
+  // 重定义弹出框
+  $(".fancybox_article").fancybox({
+    afterClose : function() {
+        sessionStorage.removeItem("article_ids"); // 关闭弹窗时 清空 sessionStorage article_ids
+    },
+    width   : '60%',
+    height    : '60%',
+    closeBtn  : true,
+    title       : ''
+  });
+
+});
+</script>
+{include file="seller_pagefooter"}
+</body>
+</html>
+

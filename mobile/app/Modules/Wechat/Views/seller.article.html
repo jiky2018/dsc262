@@ -1,0 +1,123 @@
+{include file="seller_pageheader"}
+
+{include file="seller_nave_header"}
+
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file="seller_menu_left"}
+
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+            {include file="seller_nave_header_title"}
+                <div class="wrapper-right of" >
+                    <div class="tabmenu">
+                        <ul class="tab">
+                            <li class="active"><a href="{url('article')}">图文素材</a></li>
+                            <li><a href="{url('picture')}">图片</a></li>
+                            <li><a href="{url('voice')}">语音</a></li>
+                            <li><a href="{url('video')}">视频</a></li>
+                        </ul>
+                    </div>
+                    <div class="explanation" id="explanation">
+                        <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4></div>
+                        <ul>
+                            <li>图文素材：分为单图文、多图文素材。支持图片，语音，视频素材。</li>
+                            <li>单图文素材添加好之后，即可将多条单图文素材组合成为一条多图文素材。</li>
+                            <li>★ 注意事项：单图文素材如果经过修改，则多图文素材需要重新组合。</li>
+                        </ul>
+                    </div>
+                    <div class="tab-content">
+                        <div class="tab-pane active">
+                            <!-- 单图文 -->
+                            <div class="common-head mt20">
+                                <div class="fl mb20">
+                                    <a href="{url('article_edit')}" class="sc-btn sc-blue-btn"><span><i class="fa fa-plus"></i>图文添加</span></a>
+                                </div>
+                            </div>
+                            <div class="clear"></div>
+                            <div class="wrapper-list " style="overflow:hidden">
+                                <ul>
+                                {foreach $list as $key=>$val}
+                                {if empty($val['article_id'])}
+                                    <li class="picture-add" style="">
+                                        <div class="picture-add-top">
+                                            <h3>{$val['title']}</h3>
+                                            <p>{date('Y年m月d日', $val['add_time'])}</p>
+                                            <img src="{$val['file']}" alt="" />
+                                            <span>{$val['content']}</span>
+                                        </div>
+                                        <div class="operate">
+                                            <a href="{url('article_edit', array('id'=>$val['id']))}" title="编辑" class=""><span class="glyphicon glyphicon-pencil"></span></a>
+                                            {if $val['is_prize'] == 1}
+                                            <a href="javascript:;" title="禁止删除" class="">
+                                            {else}
+                                            <a href="javascript:;" data-href="{url('article_del', array('id'=>$val['id']))}'}" title="删除" class="delete_confirm">
+                                            {/if}
+                                            <span class="glyphicon glyphicon-trash"></span></a>
+                                        </div>
+                                    </li>
+                                {/if}
+                                {if ($key+1) % 4 == 0}
+                                </ul>
+                                <ul>
+                                {/if}
+                                {/foreach}
+
+                                </ul>
+                            </div>
+                            <div class="clear"></div>
+                            <!-- 多图文 -->
+                            <div class="common-head mt20">
+                                <div class="fl mb20">
+                                    <a href="{url('article_edit_news')}" class="sc-btn sc-blue-btn""><span><i class="fa fa-plus"></i>多图文添加</span></a>
+                                </div>
+                            </div>
+                            <div class="clear"></div>
+                            <div class="wrapper-list" style="overflow:hidden">
+                                <ul>
+                                {foreach $list as $key=>$val}
+                                {if $val['article_id']}
+                                    <li class="picture-list">
+                                        {foreach $val['articles'] as $k=>$v}
+                                        {if $k == 0}
+                                        <div class="article">
+                                            <p>{date('Y年m月d日', $v['add_time'])}</p>
+                                            <div class="cover"><img src="{$v['file']}" /><span>{$v['title']}</span></div>
+                                        </div>
+                                        {else}
+                                        <div class="article_list">
+                                            <span>{$v['title']}</span>
+                                            <img src="{$v['file']}" width="78" height="78" class="pull-right" />
+                                        </div>
+                                        {/if}
+                                        {/foreach}
+
+                                        <div class="operate">
+                                            <a href="{url('article_edit_news', array('id'=>$val['id']))}" title="编辑" class=""><span class="glyphicon glyphicon-pencil"></span></a>
+
+                                            <a href="javascript:;" data-href="{url('article_del', array('id'=>$val['id']))}'}" title="删除" class="delete_confirm"><span class="glyphicon glyphicon-trash"></span></a>
+                                        </div>
+                                    </li>
+                                {/if}
+                                {if ($key+1) % 4 == 0}
+                                </ul>
+                                <ul>
+                                {/if}
+                                {/foreach}
+                                </ul>
+                            </div>
+                        </div>
+
+                        {include file="seller_pageview"}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{include file="seller_pagefooter"}
+</body>
+</html>

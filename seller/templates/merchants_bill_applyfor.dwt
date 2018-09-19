@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+{include file ='library/seller_html_head.lbi'}
+</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+				{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                
+                <div class="explanation clear" id="explanation">
+                    <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4></div>
+                    <ul>
+                    	<li>温馨提示：账单申请只能申请一次，请慎重操作</li>
+                    </ul>
+                </div>
+                
+                <div class="ecsc-form-goods">
+                <form method="post" action="merchants_commission.php" name="listForm" id="submitForm">
+                <div class="wrapper-list">
+                	<dl>
+                    	<dt>账单编号：</dt>
+                        <dd id="seller_money" class="txtline red">{$bill.bill_sn}</dd>
+                    </dl>
+                    <dl>
+                    	<dt>账单时间：</dt>
+                        <dd class="txtline">{$bill.format_start_time} ～ {$bill.format_end_time}</dd>
+                    </dl>
+                    <dl>
+                    	<dt>订单金额：</dt>
+                        <dd id="seller_money" class="txtline">{$bill.format_order_amount}</dd>
+                    </dl>
+                    <dl>
+                    	<dt>运费金额：</dt>
+                        <dd class="txtline">{$bill.format_shipping_amount}</dd>
+                    </dl>
+                    <dl>
+                    	<dt>退单金额：</dt>
+                        <dd class="txtline red">
+                        	<em class="org2">{$bill.format_return_fee}</em> + <em class="org2">{$bill.format_shipping_fee}</em> =
+                        	<em class="org2">{$bill.format_return_amount}</em>&nbsp;&nbsp;&nbsp;&nbsp;<em class="notic">（备注：退单金额 + 退运费 = 退单金额）</em>
+                        </dd>
+                    </dl>
+                    <dl>
+                    	<dt>收取比例：</dt>
+                        <dd class="txtline">{$bill.gain_proportion}%</dd>
+                    </dl>
+                    <dl>
+                    	<dt>收取佣金：</dt>
+                        <dd class="txtline red">{$bill.format_gain_commission}</dd>
+                    </dl>
+                    <dl>
+                    	<dt>应结比例：</dt>
+                        <dd class="txtline">{$bill.should_proportion}%</dd>
+                    </dl>
+                    <dl>
+                    	<dt>本期应结：</dt>
+                        <dd class="txtline red">
+                        	{if $bill.settle_accounts > 0}{$bill.should_amount}【总额】 - {$bill.settle_accounts}【已结】 = {/if}{$bill.format_should_amount}{if $bill.settle_accounts > 0}【实结】{/if}
+                        </dd>
+                    </dl>
+                    {if $bill.frozen_money}
+                    <dl>
+                    	<dt>冻结金额：</dt>
+                        <dd class="txtline red">{$bill.format_frozen_money}</dd>
+                    </dl>
+                    {/if}
+                    {if $bill.frozen_data}
+                    <dl>
+                    	<dt>已设置冻结天数：</dt>
+                        <dd class="txtline red">{$bill.frozen_data} 天</dd>
+                    </dl>
+                    {/if}
+                    <dl>
+                    	<dt>出账状态：</dt>
+                        <dd class="txtline">
+                        	{if $bill.chargeoff_status eq 1}
+                                已出账
+                            {elseif $bill.chargeoff_status eq 2}
+                                账单结束
+                                <br/>
+                                {$bill.format_settleaccounts_time}
+                            {elseif $bill.chargeoff_status eq 3}
+                                关闭账单
+                            {else}
+                                未出账
+                            {/if}
+                        </dd>
+                    </dl>
+                    <dl>
+                    	<dt>出账时间：</dt>
+                        <dd class="txtline">{$bill.format_chargeoff_time}</dd>
+                    </dl>
+                    
+                    <dl>
+                    	<dt>申请状态：</dt>
+                        <dd class="txtline">
+                        	{if $bill.bill_apply eq 1}
+                            	已申请
+                            {else}
+                            	未申请
+                            {/if}
+                        </dd>
+                    </dl>
+                    {if $bill.apply_time}
+                    <dl>
+                    	<dt>申请时间：</dt>
+                        <dd class="txtline">{$bill.format_apply_time}</dd>
+                    </dl>
+                    {/if}
+                    <dl>
+                    	<dt>账单描述：</dt>
+                        <dd class="txtline">
+                        	{if $bill.bill_apply eq 1}
+                            	<span><textarea class="textarea" name="apply_note" style=" background:#FFF" disabled>{$bill.apply_note}</textarea></span>
+                            {else}
+                                <textarea name="apply_note" cols="50" rows="10" class="textarea"></textarea>
+                                <div class="notic">请填写您要结算账单的描述说明内容</div>
+                            {/if}
+                        </dd>
+                    </dl>
+                    <dl>
+                    	<dt>审核状态：</dt>
+                        <dd class="txtline red" style="font-size:14px;">
+                        	{if $bill.check_status eq 1}
+                            	同意结账
+                            {elseif $bill.check_status eq 2}
+                            	拒绝结账
+                            {else}
+                            	待处理    
+                            {/if}
+                        </dd>
+                    </dl>
+                    {if $bill.check_status eq 2 && $bill.reject_note}
+                    <dl>
+                    	<dt>拒绝账单理由：</dt>
+                        <dd class="txtline">
+                        	<textarea class="textarea" name="reject_note" style=" background:#FFF" disabled>{$bill.reject_note}</textarea>
+                        </dd>
+                    </dl>
+                    {/if}
+                    {if $bill.bill_apply eq 0}
+                    <dl class="button_info">
+                    	<dt>&nbsp;</dt>
+                        <dd>
+                        	<input name="query" type="submit" class="sc-btn sc-blueBg-btn btn35" id="query" value="{$lang.button_submit}" />
+                            <input name="reset" type="reset" class="sc-btn btn35 sc-blue-btn" value="{$lang.button_reset}" />
+                            <input type="hidden" name="bill_id" value="{$bill.id}"/>
+                            <input type="hidden" name="seller_id" value="{$bill.seller_id}"/>
+                            <input type="hidden" name="act" value="{$form_act}"/>
+                            <input type="hidden" name="submit_act" value="1"/>
+                        </dd>
+                    </dl>
+                    {/if}
+                </div>
+                </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript">
+$(function(){
+	//避免表单重复提交
+	var btn = document.getElementById("query");
+
+	btn.onclick = function(){     
+		//验证表单重复提交
+		if(checkSubmit() == true){
+			$(this).parents("form").submit();
+		}else{
+			return false;
+		}
+	};
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>移动应用 - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content_common}</li>
+                    <li>此快捷菜单的图片标准宽度为：120px 标准高度为：120px</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+                        <form action="ecjia_mobile_toutiao.php" method="post" name="theForm" enctype="multipart/form-data" id="mobile_app_form" >
+                            <div class="switch_info" id="conent_area">
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}头条标题：</div>
+                                    <div class="label_value">
+                                        <input type='text' name='title'  value="{$toutiao_info.title}" class="text" autocomplete="off" />
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">标签：</div>
+                                    <div class="label_value">
+                                        <input type='text' name='tag'  value="{$toutiao_info.tag}" class="text" autocomplete="off" />
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">头条内容：</div>
+                                    <div class="label_value">
+                                        <textarea class="textarea" name="description" id="description">{$toutiao_info.description}</textarea>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}头条图片：</div>
+                                    <div class="label_value">
+                                    	<div class="type-file-box">
+                                            <input type="button" name="button" id="button" class="type-file-button" value="" />
+                                            <input type="file" class="type-file-file" id="app_file_img" name="app_file_img" data-state="imgfile" size="30" hidefocus="true" value="" />
+                                            {if $toutiao_info.image}
+                                            <span class="show">
+                                                <a href="../{$toutiao_info.image}" target="_blank" class="nyroModal"><i class="icon icon-picture" data-tooltipimg="../{$toutiao_info.image}" ectype="tooltip" title="tooltip"></i></a>
+                                            </span>
+                                            {/if}
+                                            <input type="text" name="textfile" class="type-file-text" id="textfield" autocomplete="off" readonly />
+                                        </div>
+                                        <div class="form_prompt"></div>
+                                        <div class="notic m20" id="AdCodeImg">{$lang.ad_code_img}</div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">头条链接：</div>
+                                    <div class="label_value">
+                                        <input type="text" name="content_url" class="text" value="{if $toutiao_info.content_url neq ''}{$toutiao_info.content_url|escape}{else}http://{/if}" autocomplete="off" /><div class="notic m20">{$lang.ad_name_notic2}</div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">是否开启：</div>
+                                    <div class="label_value">
+                                        <div class="checkbox_items">
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="status" id="sex_0" value="1" {if $toutiao_info.status eq 1} checked="true" {/if}  />
+                                                <label for="sex_0" class="ui-radio-label">{$lang.yes}</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="status" id="sex_1" value="0" {if $toutiao_info.status eq 0} checked="true" {/if}  />
+                                                <label for="sex_1" class="ui-radio-label">{$lang.no}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">菜单排序：</div>
+                                    <div class="label_value">
+                                        <input type="text" name="sort_order" class="text" value="{$toutiao_info.sort_order}" autocomplete="off" />
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="label_value info_btn">
+                                        <input type="submit" name="submit" value="{$lang.button_submit}" class="button mr10" id="submitBtn" />
+                                        <input type="hidden" name="act" value="{$form_action}" />
+                                        <input type="hidden" name="id" value="{$toutiao_info.id}" />
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+    </div>
+ 	{include file ='library/pagefooter.lbi'}
+    
+    <script type="text/javascript">
+		$(function(){
+			//点击查看图片
+			$('.nyroModal').nyroModal();
+			
+			//表单验证
+			$("#submitBtn").click(function(){
+				if($("#mobile_app_form").valid()){
+					$("#mobile_app_form").submit();
+				}
+			});
+		
+			$('#mobile_app_form').validate({
+				errorPlacement:function(error, element){
+					var error_div = element.parents('div.label_value').find('div.form_prompt');
+					element.parents('div.label_value').find(".notic").hide();
+					error_div.append(error);
+				},
+				rules:{
+					title :{
+						required : true
+					}
+				},
+				messages:{
+					title:{
+						 required : '<i class="icon icon-exclamation-sign"></i>'+'标题不可为空'
+					}
+				}			
+			});
+		});
+    </script>     
+</body>
+</html>

@@ -1,0 +1,648 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="favourable.php?act=list" class="s-back">{$lang.back}</a>{$lang.promotion} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content_common}</li>
+                    <li>{$lang.operation_prompt_content.info.0}</li>
+                    <li>{$lang.operation_prompt_content.info.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+						<form method="post" action="favourable.php" name="theForm" enctype="multipart/form-data" id="favourable_form">
+                            <div class="switch_info">
+                                <div class="items">
+                                    <div class="item">
+                                        <div class="label">{$lang.require_field}{$lang.label_act_name}</div>
+                                        <div class="label_value">
+										{if $favourable.userFav_type eq 0 || $priv_ru}
+                                        	<input type="text" name="act_name" id="act_name" class="text" value="{$favourable.act_name}" autocomplete="off" />
+                                            <div class="form_prompt"></div>
+										{else}
+											<div class="red_text">{$favourable.act_name}</div>
+										{/if}
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.require_field}{$lang.label_start_end_time}</div>
+                                        <div class="label_value text_time">
+                                        	<input type="text" class="text mr0" name="start_time" id="start_time" value="{$favourable.start_time}" autocomplete="off" />
+                                            <span class="bolang">&nbsp;&nbsp;~&nbsp;&nbsp;</span>
+                                            <input type="text" class="text" name="end_time" id="end_time" value="{$favourable.end_time}" autocomplete="off" />
+                                        	<div class="form_prompt"></div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.upload_image}：</div>
+                                        <div class="label_value">
+                                            <div class="type-file-box">
+                                                <input type="button" name="button" id="button" class="type-file-button" value="" />
+                                                <input type="file" class="type-file-file" id="activity_thumb" name="activity_thumb" data-state="imgfile" size="30" hidefocus="true" value="" autocomplete="off" />
+                                                {if $favourable.activity_thumb neq ""}
+                                                <span class="show">
+                                                    <a href="../{$favourable.activity_thumb}" target="_blank" class="nyroModal"><i class="icon icon-picture" data-tooltipimg="../{$favourable.activity_thumb}" ectype="tooltip" title="tooltip"></i></a>
+                                                </span>
+                                                {/if}
+                                                <input type="text" name="textfile" class="type-file-text" id="textfield" {if $favourable.activity_thumb neq ""}value="../{$favourable.activity_thumb}"{/if} autocomplete="off" readonly />
+                                            </div>
+										</div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.require_field}{$lang.label_user_rank}</div>
+                                        <div class="label_value">
+                                            <div class="checkbox_items">
+                                            {foreach from=$user_rank_list item=user_rank}
+                                                {if $favourable.userFav_type eq 0 || $priv_ru}
+                                                    <div class="checkbox_item">
+                                                        <input type="checkbox" class="ui-checkbox" name="user_rank[]" value="{$user_rank.rank_id}" id="user_rank_{$user_rank.rank_id}" {if $user_rank.checked}checked="true"{/if} autocomplete="off" {if $user_rank.rank_id eq 0}required{/if} />
+                                                        <label for="user_rank_{$user_rank.rank_id}" class="ui-label">{$user_rank.rank_name}</label>
+                                                    </div>
+                                                {else}
+                                                    <div class="red_text">{if $user_rank.checked}{$user_rank.rank_name}&nbsp;{/if}</div>
+                                                {/if}  
+                                            {/foreach}
+                                            <div class="form_prompt"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+									{if $priv_ru}
+                                    <div class="item">
+                                        <div class="label">{$lang.use_type}：</div>
+                                        <div class="label_value">
+                                       		<div id="userFav_type" class="imitate_select select_w320">
+                                              <div class="cite">{$lang.autonomous_use}</div>
+                                              {if !($is_rs || $favourable.rs_id)}
+                                              <ul>
+                                                 <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.autonomous_use}</a></li>
+                                                 <li><a href="javascript:;" data-value="1" class="ftx-01">{$lang.general_audience}</a></li>
+                                              </ul>
+                                              {/if}
+                                              <input name="userFav_type" type="hidden" value="{$favourable.userFav_type|default:0}" id="userFav_type_val" autocomplete="off" />
+                                            </div>
+                                            {if $region_store_enabled}<input type="button" class="btn btn30 blue_btn fl mr10" value="{$lang.set_use_range}" ectype="setupUseRange" autocomplete="off" />{/if}
+                                        </div>
+                                    </div>
+								    {else}
+									  {if $favourable.userFav_type}
+                                        <div class="item">
+                                            <div class="label">{$lang.use_type}：</div>
+                                            <div class="label_value">{$lang.general_audience}</div>
+                                        </div>
+									  {/if}
+								    {/if}
+                                    <div class="item">
+                                        <div class="label">{$lang.require_field}{$lang.label_act_range}</div>
+                                        <div class="label_value">
+										{if $favourable.userFav_type eq 0 || $priv_ru}
+										<div id="act_range" class="imitate_select select_w320">
+										  <div class="cite">{$lang.please_select}</div>
+										  <ul>
+											 <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.far_all}</a></li>
+											 <li><a href="javascript:;" data-value="1" class="ftx-01">{$lang.far_category}</a></li>
+											 <li><a href="javascript:;" data-value="2" class="ftx-01">{$lang.far_brand}</a></li>
+											 <li><a href="javascript:;" data-value="3" class="ftx-01">{$lang.far_goods}</a></li>
+										  </ul>
+										  <input name="act_range" type="hidden" value="{$favourable.act_range}" id="act_range_val" autocomplete="off">
+                                        </div>
+										<div class="notic">{$lang.favourable_fw}</div>
+                                        <div class="form_prompt"></div>
+										<div id="range-div" class="range-content mt10" data-goodsIds="{$favourable.act_range_ext}">
+                                        	<div class="checkbox_items">
+											{foreach from=$act_range_ext item=item}
+												<div class="checkbox_item">
+                                                    <input name="act_range_ext[]" type="checkbox" class="ui-checkbox" value="{$item.id}" id="checkbox_{$item.id}" checked="checked" autocomplete="off" />
+                                                    <label for="checkbox_{$item.id}" class="ui-label">{$item.name}</label>
+												</div>
+											{/foreach}
+                                            </div>
+										</div>
+                                        <input type="hidden" name="setgoodsid" value="{$favourable.act_range_ext}" class="ignore" />
+										{else}
+										<div class="red_text">
+											{if $favourable.act_range eq 0}{$lang.far_all}{/if}
+											{if $favourable.act_range eq 1}{$lang.far_category}{/if}
+											{if $favourable.act_range eq 2}{$lang.far_brand}{/if}
+											{if $favourable.act_range eq 3}{$lang.far_goods}{/if}
+										</div>
+										{/if}      
+                                        </div>
+                                    </div>
+									{if $favourable.userFav_type eq 0 || $priv_ru}
+                                    <div class="item" id="range_search"{if $favourable.act_range eq 0} style="display:none"{/if}>
+                                        <div class="label">{$lang.label_search_and_add}：</div>
+                                        <div class="label_value">
+											<div ectype="search_goodsDiv"{if $favourable.act_range neq 3} style="display:none"{/if}>
+												<input type="button" class="btn btn30 blue_btn fl mr10" value="{$lang.set_goods}" data-diffeseller="1" ectype="setupGroupGoods" data-pbtype="favourable" data-pbmode="setgoods_content" autocomplete="off" />
+											</div>
+											<div ectype="search_by_other" {if $favourable.act_range eq 3} style="display:none"{/if}>
+												<input name="keyword" type="text" class="text w100 mr10" id="keyword" autocomplete="off" />
+												<input name="search" type="button" id="search" value="{$lang.button_search}" class="btn btn30 blue_btn fl mr10" onclick="searchItem()" autocomplete="off" />
+												<div class="imitate_select select_w320" id="result">
+													<div class="cite">{$lang.please_select}</div>
+													<ul>
+														<li class="li_not">{$lang.please_search_goods}</li>
+													</ul>
+													<input name="result_val" type="hidden" value="" id="result_val" autocomplete="off"/>
+												</div>
+												<input type="button" name="add_range" value="{$lang.add}" class="btn btn30 blue_btn fl mr10" onclick="addRange()" autocomplete="off" />
+											</div>
+										</div>
+                                    </div>
+									{/if}
+                                    <div class="item">
+                                        <div class="label">{$lang.require_field}{$lang.label_min_amount}</div>
+                                        <div class="label_value">
+											{if $favourable.userFav_type eq 0 || $priv_ru}
+											<input name="min_amount" type="text" class="text" id="min_amount" value="{$favourable.min_amount}" autocomplete="off" />
+											<div class="form_prompt"></div>
+                                            {else}
+											<div class="red_text">{$favourable.min_amount}</div>
+											{/if}
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.require_field}{$lang.label_max_amount}</div>
+                                        <div class="label_value">
+											{if $favourable.userFav_type eq 0 || $priv_ru}
+											<input name="max_amount" type="text" class="text" id="max_amount" value="{$favourable.max_amount}" autocomplete="off" />
+                                            <div class="notic">{$lang.notice_max_amount}</div>
+                                            <div class="form_prompt"></div>
+											{else}
+											<div class="red_text">{$favourable.max_amount}</div>
+											{/if}
+										</div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.label_act_type}</div>
+										{if $favourable.userFav_type eq 0 || $priv_ru}
+                                        <div class="label_value">
+											<div id="act_type" class="imitate_select select_w320">
+											  <div class="cite">{$lang.please_select}</div>
+											  <ul>
+												 <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.fat_goods}</a></li>
+												 <li><a href="javascript:;" data-value="1" class="ftx-01">{$lang.fat_price}</a></li>
+												 <li><a href="javascript:;" data-value="2" class="ftx-01">{$lang.fat_discount}</a></li>
+											  </ul>
+                                              <input name="act_type" type="hidden" value="{$favourable.act_type}" id="act_type_val" autocomplete="off" />
+											</div>
+											<input name="act_type_ext" type="text" class="text text_2" id="act_type_ext" value="{$favourable.act_type_ext|default:1}" size="10" autocomplete="off" />
+                                            <p class="fl bf100">
+                                                <label class="blue_label ml0" id="NoticeActType">{$lang.notice_act_type}</label>
+                                            </p>
+										</div>
+										{else}
+										<div class="red_text">
+											{if $favourable.act_type eq 0}{$lang.fat_goods}{/if}
+											{if $favourable.act_type eq 1}{$lang.fat_price}{/if}
+											{if $favourable.act_type eq 2}{$lang.fat_discount}{/if}
+											{if $favourable.act_type neq 0}&nbsp;&nbsp;{$favourable.act_type_ext}{/if}
+										</div>
+										{/if}
+                                    </div>
+
+								    {if $favourable.userFav_type eq 0 || $priv_ru}
+                                    <div class="item" id="type_search"{if $favourable.act_type neq 0} style="display:none"{/if}>
+                                        <div class="label">{$lang.label_search_and_add_gift}：</div>
+                                        <div class="label_value">
+											<input name="keyword1" type="text" class="text w100 mr10 mb10" id="keyword1" autocomplete="off" />
+											<input name="search1" type="button" id="search1" value="{$lang.button_search}" class="btn btn30 blue_btn fl mr10" onclick="searchItem1()" autocomplete="off" />
+											<div id="result1" class="imitate_select select_w320">
+											  <div class="cite">{$lang.please_select}</div>
+											  <ul class="upward">
+												<li class="li_not">{$lang.please_search_goods}</li>
+											  </ul>
+											  <input name="result1" type="hidden" value="" autocomplete="off" />
+											</div>	
+											<input name="add_gift" type="button" class="btn btn30 blue_btn fl mr10" id="add_gift" onclick="addGift()" value="{$lang.add}" autocomplete="off" />
+										</div>
+                                    </div>
+								    {/if}
+									<div class="item" id="gift-table-item" {if !$favourable.gift}style="display:none;"{/if}>
+                                        <div class="label">&nbsp;</div>
+                                        <div class="value gift-value">
+                                        <table id="gift-table" class="table_div">
+                                        	{if $favourable.gift}
+                                            <tbody>
+                                                <tr>
+                                                    <td class="th">{$lang.js_languages.gift}</td>
+                                                    <td class="th">{$lang.js_languages.price}</td>
+                                                </tr>
+                                                {foreach from=$favourable.gift item=goods key=key}
+                                                <tr>
+                                                    <td>
+                                                        {if $favourable.userFav_type eq 0 || $priv_ru}
+                                                        	<div class="checkbox_item">
+                                                            <input type="checkbox" class="ui-checkbox" name="gift_id[{$key}]" id="gift_id[{$key}]" value="{$goods.id}" checked="checked" autocomplete="off" />
+                                                            <label for="gift_id[{$key}]" class="ui-label">{$goods.name}</label>
+                                                            </div>
+                                                        {/if}
+                                                    </td>
+                                                    <td>
+                                                        {if $favourable.userFav_type eq 0 || $priv_ru}
+                                                        <input name="gift_price[{$key}]" type="text" class="text w60 mr0 tc" value="{$goods.price}" size="10" autocomplete="off" />
+                                                        <input name="gift_name[{$key}]" type="hidden" value="{$goods.name}" autocomplete="off" />
+                                                        {else}
+                                                        <div class="red_text">{$goods.price}</div>
+                                                        {/if}
+                                                    </td>
+                                                </tr>
+                                                {/foreach}
+                                            </tbody>
+                                            {/if}
+                                        </table>
+                                        </div>
+                                    </div>
+                                    {if $form_action eq 'update' && ($favourable.user_id neq 0 || $favourable.rs_id) && !$favourable.can_not_audit}
+                                    <div class="item">
+                                        <div class="label">{$lang.adopt_status}：</div>
+                                        <div class="label_value">
+											<div class="checkbox_items" ectype="general_audit_status">
+												<div class="checkbox_item"> 
+													<input name="review_status" type="radio" class="ui-radio" value="1" id="review_status_1" {if $favourable.review_status eq 1}checked="checked"{/if} autocomplete="off" />
+													<label for="review_status_1" class="ui-radio-label">{$lang.not_audited}</label>
+												</div>
+												<div class="checkbox_item"> 
+													<input name="review_status" type="radio" class="ui-radio" value="2" id="review_status_2" {if $favourable.review_status eq 2}checked="checked"{/if} autocomplete="off" />
+													<label for="review_status_2" class="ui-radio-label">{$lang.audited_not_adopt}</label>
+												</div>
+                                                <div class="checkbox_item"> 
+													<input name="review_status" type="radio" class="ui-radio" value="3" id="review_status_3" {if $favourable.review_status eq 3}checked="checked"{/if} autocomplete="off" />
+													<label for="review_status_3" class="ui-radio-label">{$lang.audited_yes_adopt}</label>
+												</div>
+											</div>
+                                        </div>
+                                    </div>			
+									<div class="item {if $favourable.review_status neq 2}hide{/if}" id="review_content">
+										<div class="label">{$lang.adopt_reply}：</div>
+										<div class="value">
+											<textarea name="review_content" class="textarea h100">{$favourable.review_content}</textarea>
+										</div>
+									</div>
+                                    {/if}
+                                    <div class="item">
+                                        <div class="label">&nbsp;</div>
+                                        <div class="label_value info_btn">
+											<input type="submit" class="button" value="{$lang.button_submit}" id="submitBtn" />
+											<input type="reset" class="button button_reset" value="{$lang.button_reset}" />
+											<input type="hidden" name="act" value="{$form_action}" />
+											<input type="hidden" name="id" value="{$favourable.act_id}" />    
+											<input type="hidden" name="ru_id" value="{$favourable.user_id}" />
+                                            <input type="hidden" name="ext_ids" value="{$favourable.userFav_type_ext}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+	//表单验证
+	$(function(){
+		$("#submitBtn").click(function(){
+			if($("#favourable_form").valid()){
+				$("#favourable_form").submit();
+			}
+		});
+	
+		$('#favourable_form').validate({
+			errorPlacement: function(error, element){
+				var error_div = element.parents('div.label_value').find('div.form_prompt');
+				element.parents('div.label_value').find(".notic").hide();
+				error_div.append(error);
+			},
+			ignore:".ignore",
+			rules : {
+				act_name : {
+					required : true
+				},
+				min_amount : {
+					required : true,
+					number : true
+				},
+				max_amount : {
+					required : true,
+					number : true
+				},
+				start_time :{
+					required : true
+				},
+				end_time :{
+					required : true,
+					compareDate:"#start_time",
+				},
+				'user_rank[]':{
+					required : true
+				},
+				setgoodsid :{
+					required : true
+				}
+			},
+			messages : {
+				act_name : {
+					required : '<i class="icon icon-exclamation-sign"></i>'+act_name_not_null
+				},
+				min_amount : {
+					required : '<i class="icon icon-exclamation-sign"></i>'+min_amount_null,
+					number : '<i class="icon icon-exclamation-sign"></i>'+min_amount_not_number
+				},
+				max_amount : {
+					required : '<i class="icon icon-exclamation-sign"></i>'+max_amount_null,
+					number : '<i class="icon icon-exclamation-sign"></i>'+max_amount_not_number
+				},
+				start_time :{
+					required : '<i class="icon icon-exclamation-sign"></i>'+start_data_notnull
+				},
+				end_time :{
+					required : '<i class="icon icon-exclamation-sign"></i>'+end_data_notnull,
+					compareDate:'<i class="icon icon-exclamation-sign"></i>'+data_invalid_gt
+				},
+				'user_rank[]' :{
+					required : '<i class="icon icon-exclamation-sign"></i>{$lang.pls_set_user_rank}',
+				},
+				setgoodsid :{
+					required : '<i class="icon icon-exclamation-sign"></i>{$lang.pls_set_act_range}',
+				}
+			},
+			onfocusout:function(element,event){
+				//实时去除结束时间是否大于开始时间验证
+				var name = $(element).attr("name");
+				
+				if(name == "end_time"){
+					var endDate = $(element).val();
+					var startDate = $(element).siblings("input[name='start_time']").val();
+					
+					var date1 = new Date(Date.parse(startDate.replace(/-/g, "/")));
+					var date2 = new Date(Date.parse(endDate.replace(/-/g, "/")));
+					
+					if(date1 > date2){
+						$(element).removeClass("error");
+						$(element).siblings(".form_prompt").html("");
+					}
+				}
+			}
+		});
+		
+		$('.nyroModal').nyroModal();
+		
+		$(".range-content").perfectScrollbar("destroy");
+		$(".range-content").perfectScrollbar();
+	});
+	
+	$.divselect("#act_range","#act_range_val",function(obj){
+		$("#range-div").html('');
+		$("#result").find(".cite").html("{$lang.please_select}");
+		var val = obj.data("value");
+		
+		if(val != 0){
+			$("#range_search").show();
+			if(val == 3){
+				$("*[ectype='search_goodsDiv']").show();
+				$("*[ectype='search_by_other']").hide();
+				$("#range-div").siblings("input[name='setgoodsid']").removeClass("ignore");
+			}else{
+				$("*[ectype='search_goodsDiv']").hide();
+				$("*[ectype='search_by_other']").show();
+				$("#range-div").siblings("input[name='setgoodsid']").addClass("ignore");
+			}
+		}else{
+			$("#range-div").siblings("input[name='setgoodsid']").addClass("ignore");
+			$("#range_search").hide();
+		}
+	});
+		
+	$.divselect("#act_type","#act_type_val",function(obj){
+		var val = obj.data("value");
+		if(val == 0){
+			$("#type_search").show();
+			$("input[name='act_type_ext']").val('1');
+		}else if(val == 1){
+			$("#gift-table").html("");
+			$("#type_search").hide();
+			$("input[name='act_type_ext']").val('0');
+		}else if(val == 2){
+			$("#gift-table").html("");
+			$("#type_search").hide();	
+			$("input[name='act_type_ext']").val('99');			
+		}
+	});
+{if $region_store_enabled}	
+	/* 设置使用范围 */
+	$.divselect("#userFav_type","#userFav_type_val",function(obj){
+		var val = obj.data("value");
+		if(val == 1){
+			$("*[ectype='setupUseRange']").hide();
+		}else{
+			$("*[ectype='setupUseRange']").show();
+		}
+	});
+
+
+    if($("input[name='userFav_type']").val() != 0){
+        $("*[ectype='setupUseRange']").hide();
+    }
+
+	$(document).on("click","*[ectype='setupUseRange']",function(){
+		{if $form_action eq 'update'}
+			var ext = "rs_id=" + {$favourable.rs_id};
+		{else}
+			var ext = "";
+		{/if}
+		Ajax.call('favourable.php?act=set_use_range', ext , function(data){
+			goods_visual_desc('{$lang.set_use_range}',600,data.content,function(){});
+		}, 'POST', 'JSON');
+	});	
+{/if}
+	//搜索优惠范围 以下商品或者以下品牌
+	function searchItem(){
+		var filter = new Object;
+		filter.keyword  = document.forms['theForm'].elements['keyword'].value;
+		filter.act_range = document.forms['theForm'].elements['act_range'].value;
+		filter.ru_id  = '{$favourable.user_id}';
+		if (filter.act_range == 0){
+			alert(all_need_not_search);
+			return;
+		}
+		
+		Ajax.call('favourable.php?is_ajax=1&act=search', filter, searchResponse, 'GET', 'JSON');
+	}
+
+	function searchResponse(result){
+		if(result.error == '1' && result.message != ''){
+			alert(result.message);
+			return;
+		}
+		
+		$("#result").children("ul").find("li").remove();  
+		
+		/* 创建 options */
+		var goods = result.content;
+		
+		if(goods){
+			for (i = 0; i < goods.length; i++){
+				$("#result").find("ul").append("<li><a href='javascript:;' data-value='"+goods[i].id+"' class='ftx-01'>"+goods[i].name+"</a></li>")
+			}
+			$("#result").find("ul").show();
+		}
+		return;
+	}
+	
+	//添加优惠范围
+	function addRange(){
+		var selRange = document.forms['theForm'].elements['act_range'];
+		if (selRange.value == 0){
+			alert(all_need_not_search);
+			return;
+		}
+		
+		var selResult = document.getElementById('result_val');
+		if(selResult.value == 0){
+			alert(pls_search);
+			return;
+		}
+		
+		var id = selResult.value;
+		var name = $("#result div").text();
+		// 检查是否已经存在
+		var exists = false;
+		var eles = document.forms['theForm'].elements;
+		
+		for (var i = 0; i < eles.length; i++){
+			if(eles[i].type=="checkbox" && eles[i].name.substr(0, 13) == 'act_range_ext'){
+				if(eles[i].value == id){
+					exists = true;
+					alert(range_exists);
+					break;
+				}
+			}
+		}
+	
+		//创建checkbox
+		if(!exists){
+			var html = '<div class="checkbox_item"><input name="act_range_ext[]" type="checkbox" class="ui-checkbox" value="' + id + '" id="checkbox_'+id+'" checked="checked" /><label for="checkbox_'+id+'" class="ui-label">' + name + '</label></div>';
+			document.getElementById('range-div').innerHTML += html;
+		}
+	}
+
+	//搜索赠品
+	function searchItem1(){
+		if (document.forms['theForm'].elements['act_type'].value == 1){
+			alert(price_need_not_search);
+			return;
+		}
+		var filter = new Object;
+		filter.keyword  = document.forms['theForm'].elements['keyword1'].value;
+		filter.ru_id  = '{$favourable.user_id}';
+		filter.act_range = 3;
+		Ajax.call('favourable.php?is_ajax=1&act=search', filter, searchResponse1, 'GET', 'JSON');
+	}
+
+	function searchResponse1(result){
+		if(result.error == '1' && result.message != ''){
+			alert(result.message);
+			return;
+		}
+	
+		$("#result1").children("ul").find("li").remove();
+	
+		/* 创建 options */
+		var goods = result.content;
+		if(goods){
+			for (i = 0; i < goods.length; i++){
+				$("#result1").find("ul").append("<li><a href='javascript:;' data-value='"+goods[i].id+"' class='ftx-01'>"+goods[i].name+"</a></li>")
+			}
+			$("#result1").find("ul").show();
+		}
+	
+		return;
+	}
+	
+	//添加赠品
+	function addGift(){ 
+		var selType = document.forms['theForm'].elements['act_type'];
+		if (selType.value == 1)
+		{
+			alert(price_need_not_search);
+			return;
+		}
+		var selResult = $("#result1");
+		if (selResult.find("input[name='result1']").val() == 0)
+		{
+			alert(pls_search);
+			return;
+		}
+		var id = selResult.find("input[name='result1']").val();
+		var name = selResult.find(".cite").text();
+		
+		// 检查是否已经存在
+		var exists = false;
+		var eles = document.forms['theForm'].elements;
+		for (var i = 0; i < eles.length; i++)
+		{
+			if (eles[i].type=="checkbox" && eles[i].name.substr(0, 7) == 'gift_id')
+			{
+				if (eles[i].value == id)
+				{
+					exists = true;
+					alert(range_exists);
+					break;
+				}
+			}
+		}
+		// 创建checkbox
+		if (!exists)
+		{
+		$("#gift-table-item").show();
+		var table = document.getElementById('gift-table');
+		if (table.rows.length == 0)
+		{
+			var row = table.insertRow(-1);
+			var cell = row.insertCell(-1);
+			cell.className='th';
+			cell.align = 'center';
+			cell.innerHTML = gift;
+			var cell = row.insertCell(-1);
+			cell.className='th';
+			cell.align = 'center';
+			cell.innerHTML = price;
+		}
+		var row = table.insertRow(-1);
+		var cell = row.insertCell(-1);
+		cell.innerHTML = '<div class="checkbox_item"><input name="gift_id[]" id="gift_id'+id+'" type="checkbox" class="ui-checkbox" value="' + id + '" checked="checked" /><label for="gift_id'+id+'" class="ui-label">' + name+'</label></div>';
+		var cell = row.insertCell(-1);
+		cell.align = 'center';
+		cell.innerHTML = '<input name="gift_price[]" type="text" class="text w60 mr0 tc" value="0" size="10" />' +
+						 '<input name="gift_name[]" type="hidden" value="' + name + '" />';
+		}
+	}
+	
+	//时间选择
+	var opts1 = {
+		'targetId':'start_time',//时间写入对象的id
+		'triggerId':['start_time'],//触发事件的对象id
+		'alignId':'start_time',//日历对齐对象
+		'format':'-',//时间格式 默认'YYYY-MM-DD HH:MM:SS'
+		'min':'' //最小时间
+	},opts2 = {
+		'targetId':'end_time',
+		'triggerId':['end_time'],
+		'alignId':'end_time',
+		'format':'-',
+		'min':''
+	}
+	xvDate(opts1);
+	xvDate(opts2);
+    </script>
+</body>
+</html>

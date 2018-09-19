@@ -1,0 +1,120 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{if $type eq 1}手机{else}广告{/if} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit">
+					<i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span>
+                    {if $open eq 1}
+                        {if !$type}
+                        <div class="view-case">
+                        <div class="view-case-tit"><i></i>{$lang.view_tutorials}</div>
+                            <div class="view-case-info">
+                                <a href="http://help.ecmoban.com/article-6893.html" target="_blank">商城广告设置操作说明</a>
+                            </div>
+                        </div>
+                        {/if}
+                    {/if}				
+				</div>
+                <ul>
+                	<li>展示网站所有的广告位置。</li>
+                    <li>点击查看可查看广告位置相关广告位的广告。</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<div class="common-head">
+                    	{if $action_link}
+                    	<div class="fl">
+                            <a href="{$action_link.href}"><div class="fbutton"><div class="add" title="{$action_link.text}"><span><i class="icon icon-plus"></i>{$action_link.text}</span></div></div></a>
+                        </div>
+                        {/if}
+                        <div class="refresh">
+                        <div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                        <div class="refresh_span">{$lang.refresh} - {$lang.total_data}{$record_count}{$lang.data}</div>
+                    </div>
+                     <form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+                        <div class="search">
+                            <div class="input">
+                                <input type="text" name="keyword" class="text nofocus" placeholder="{$lang.position_name}" autocomplete="off" />
+                                <input type="submit" value="" class="not_btn" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="common-content">
+                	<div class="list-div"  id="listDiv">
+                        {/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                    <th width="20%"><div class="tDiv">{$lang.position_name}</div></th>
+                                    <th width="12%"><div class="tDiv">{$lang.goods_steps_name}</div></th>
+                                    <th width="8%"><div class="tDiv">{$lang.posit_width}</div></th>
+                                    <th width="8%"><div class="tDiv">{$lang.posit_height}</div></th>
+                                    <th width="18%"><div class="tDiv">{$lang.position_model}</div></th>
+                                    <th width="19%"><div class="tDiv">{$lang.position_desc}</div></th>
+                                    <th width="15%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {foreach from=$position_list item=list}
+                            	<tr>
+                                    <td><div class="tDiv">{$list.position_name|escape:html}</div></td>
+                                    {if $list.is_public eq 1}
+                                        {if $priv_ru eq 1}
+                                        <td><div class="tDiv"><font style="color:#F60;">公共</font></div></td>
+                                        {/if}
+                                    {else}
+                                        {if $priv_ru eq 1}
+                                        <td><div class="tDiv">{if $list.user_name}<font style="color:#F00;">{$list.user_name}</font>{else}<font class="blue">自营</font>{/if}</div></td>
+                                        {/if}
+                                    {/if}   
+                                    <td><div class="tDiv">{$list.ad_width}</div></td>
+                                    <td><div class="tDiv">{$list.ad_height}</div></td>
+                                    <td><div class="tDiv">{$list.position_model}</div></td>
+                                    <td><div class="tDiv">{$list.position_desc|escape:html}</div></td>
+                                    <td class="handle">
+                                        <div class="tDiv a3">
+                                            <a href="{if $type eq 1}touch_ads.php{else}ads.php{/if}?act=list&pid={$list.position_id}" title="{$lang.view}{$lang.ad_content}" class="btn_see"><i class="sc_icon sc_icon_see"></i>{$lang.view}</a>
+                                            <a href="{if $type eq 1}touch_ad_position.php{else}ad_position.php{/if}?act=edit&id={$list.position_id}" title="{$lang.edit}" class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>
+                                            <a href="javascript:;" onclick="listTable.remove({$list.position_id}, '{$lang.drop_confirm}')" title="{$lang.remove}" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {foreachelse}
+                                    <tr><td class="no-records" colspan="12">{$lang.no_records}</td></tr>
+                                {/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="12">
+                                    	<div class="list-page">
+                                            {include file="library/page.lbi"}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        {if $full_page}
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+ 	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+	
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+    </script>
+</body>
+</html>
+{/if}

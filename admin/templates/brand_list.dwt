@@ -1,0 +1,140 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.goods_alt} - {$ur_here}</div>
+        <div class="content">
+        	<div class="tabs_info">
+            	<ul>
+                    <li {if $menu_select.current eq '06_goods_brand_list'}class="curr"{/if}><a href="brand.php?act=list">{$lang.06_goods_brand_list}</a></li>
+                    <li {if $menu_select.current eq '07_merchants_brand'}class="curr"{/if}><a href="merchants_brand.php?act=list">{$lang.07_merchants_brand}</a></li>
+                </ul>
+            </div>			
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.list.0}</li>
+                    <li>{$lang.operation_prompt_content.list.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-head">
+                    <div class="fl">
+                    	<a href="brand.php?act=add"><div class="fbutton"><div class="add" title="{$lang.07_brand_add}"><span><i class="icon icon-plus"></i>{$lang.07_brand_add}</span></div></div></a>
+                        <a href="brand.php?act=create_brand_letter"><div class="fbutton"><div class="add" title="{$lang.generate_brand_first_char}"><span><i class="icon icon-plus"></i>{$lang.generate_brand_first_char}</span></div></div></a>
+                    </div>				
+                    <div class="refresh">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+					<div class="search">
+                    	<form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+                    	<div class="input">
+                        	<input type="text" name="brand_name" class="text nofocus" placeholder="{$lang.brand_name}" autocomplete="off">
+                            <input type="submit" class="btn" name="secrch_btn" ectype="secrch_btn" value="" />
+                        </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="common-content">
+                	<div class="list-div" id="listDiv">
+						{/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                	<th width="5%"><div class="tDiv">{$lang.record_id}</div></th>
+                                    <th width="12%"><div class="tDiv">{$lang.brand_name_cn}</div></th>
+                                    <th width="12%"><div class="tDiv">{$lang.brand_name_en}</div></th>
+                                    <th width="12%"><div class="tDiv">{$lang.brand_first_char}</div></th>
+                                    <th width="8%"><div class="tDiv">{$lang.brand_img}</div></th>
+                                    <!--<th width="15%"><div class="tDiv">{$lang.site_url}</div></th>-->
+                                    <th width="20%"><div class="tDiv">{$lang.brand_desc}</div></th>
+                                    <th width="6%"><div class="tDiv">{$lang.sort_order}</div></th>
+                                    <th width="6%"><div class="tDiv">{$lang.lab_intro}</div></th>
+                                    <th width="6%"><div class="tDiv">{$lang.is_show}</div></th>
+                                    <th width="10%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+								{foreach from=$brand_list item=brand}
+                            	<tr>
+                                    <td><div class="tDiv">{$brand.brand_id}</div></td>
+									<td>
+                                        <div class="tDiv">
+                                            <span onclick="javascript:listTable.edit(this, 'edit_brand_name', {$brand.brand_id})">{$brand.brand_name|escape:html}</span>
+                                        </div>
+                                    </td>
+									<td><div class="tDiv">{$brand.brand_letter|escape:html}</div></td>
+									<td><div class="tDiv">{$brand.brand_first_char|escape:html}</div></td>
+                                    <td>
+                                    <div class="tDiv">
+                                    	<span class="show">
+                                            <a href="{if $brand.brand_logo}{$brand.brand_logo}{else}images/default/brand_logo_default.jpg{/if}" class="nyroModal"><i class="icon icon-picture" data-tooltipimg="{if $brand.brand_logo}{$brand.brand_logo}{else}images/default/brand_logo_default.jpg{/if}" ectype="tooltip" title="tooltip"></i></a>
+                                        </span>
+                                    </div>
+                                    </td>
+									<!--<td><div class="tDiv"><p class="ellipsis w200">{$brand.site_url}</p></div></td>-->
+									<td><div class="tDiv">{$brand.brand_desc|truncate:36}</div></td>
+									<td><div class="tDiv"><input name="sort_order" class="text w40" value="{$brand.sort_order}" onkeyup="listTable.editInput(this, 'edit_sort_order',{$brand.brand_id} )" type="text"></div></td>
+                                    <td>
+                                        <div class="tDiv">
+                                            <div class="switch {if $brand.is_recommend}active{/if}" title="{if $brand.is_recommend}是{else}否{/if}" onclick="listTable.switchBt(this, 'toggle_recommend', {$brand.brand_id})">
+                                                <div class="circle"></div>
+                                            </div>
+                                            <input type="hidden" value="0" name="">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="tDiv">
+                                            <div class="switch {if $brand.is_show}active{/if}" title="{if $brand.is_show}是{else}否{/if}" onclick="listTable.switchBt(this, 'toggle_show', {$brand.brand_id})">
+                                                <div class="circle"></div>
+                                            </div>
+                                            <input type="hidden" value="0" name="">
+                                        </div>
+                                    </td>                               
+                                    <td class="handle">
+                                        <div class="tDiv a2">
+                                            <a href="brand.php?act=edit&id={$brand.brand_id}" class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>
+                                            <a href="javascript:;" onclick="listTable.remove({$brand.brand_id}, '{$lang.drop_confirm}')" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>
+                                        </div>
+                                    </td>
+                                </tr>
+								{foreachelse}
+								<tr><td class="no-records"  colspan="20">{$lang.no_records}</td></tr>								
+								{/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                	<td colspan="12">
+                                        <div class="list-page">
+                                           {include file="library/page.lbi"}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+						{if $full_page}
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+    {include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+	
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+	
+	$(function(){
+		$('.nyroModal').nyroModal();
+	})	
+	</script>
+</body>
+</html>
+{/if}

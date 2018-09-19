@@ -1,0 +1,102 @@
+{include file="page_header"}
+<div class="con">
+	<header class="dis-box header-menu n-header-menu new-goods-nav ts-5" style="position: static;">
+		<h3 class="box-flex">
+        <nav class="n-goods-shop-list-nav box-flex swiper-container-horizontal ">
+			<ul class="swiper-wrapper  dis-box text-c">
+				<li class="div1 box-flex swiper-slide position-rel swiper-slide-active" category="1">
+					<a class="product-div-link" href="{url('team/goods/index', array('id'=>$goods_id))}"></a>商品</li>
+				<li class="div3 box-flex swiper-slide active position-rel swiper-slide-next" category="3">
+					<a class="product-div-link" href="{url('team/goods/info', array('id'=>$goods_id))}"></a>详情</li>
+				<li class="div4 box-flex swiper-slide position-rel" category="4">
+					<a class="product-div-link" href="{url('team/goods/comment', array('id'=>$goods_id))}"></a>评论</li>
+			</ul>
+		</nav>
+		</h3>
+	</header>
+		<div id="n-goods" class="goods-info of-hidden ect-tab j-goods-info j-ect-tab ts-3" style="padding-top:0">
+			<div class="hd j-tab-title tab-title b-color-f of-hidden">
+				<ul class="dis-box">
+					<li class="box-flex active">商品详情</li>
+					<li class="box-flex">规格参数</li>
+				</ul>
+			</div>
+			<div id="j-tab-con" class="m-top1px tab-con ">
+				<div class="swiper-wrapper">
+					<section class="swiper-slide ">
+						{if $goods_desc}
+						<div class="padding-all n-goods-detail b-color-f">
+							{$goods_desc}
+						</div>
+						{else}
+						<div class="no-div-raise flow-no-cart">
+                            <i class="iconfont icon-biaoqingleiben"></i>
+                            <p>亲，此处没有内容～！</p>
+                        </div>
+						{/if}
+					</section>
+					<section class="swiper-slide goods-info-attr">
+                        {if $properties}
+                        {foreach $properties as $key=>$property_group}
+                        <li class="of-hidden"><span class="fl">{$key}</span></li>
+                            {foreach $property_group as $property}
+                            <li class="of-hidden"><span class="fl">{$property.name}</span><span class="fr">{$property.value}</span></li>
+                            {/foreach}
+                        {/foreach}
+                        {else}
+                        <div class="no-div-raise flow-no-cart">
+                            <i class="iconfont icon-biaoqingleiben"></i>
+                            <p>亲，此处没有内容～！</p>
+                        </div>
+                        {/if}
+					</section>
+					</div>
+				</div>
+			</div>
+		</div>
+	<div class="goods-scoll-bg"></div>
+	{include file="team_nav"}
+		<script type="text/javascript">
+			/*切换*/
+			var tabsSwiper = new Swiper('#j-tab-con', {
+				speed: 100,
+				noSwiping: true,
+				autoHeight: true,
+				onSlideChangeStart: function() {
+					$(".j-tab-title .active").removeClass('active')
+					$(".j-tab-title li").eq(tabsSwiper.activeIndex).addClass('active')
+				}
+			})
+			$(".j-tab-title li").on('touchstart mousedown', function(e) {
+				e.preventDefault()
+				$(".j-tab-title .active").removeClass('active')
+				$(this).addClass('active')
+				tabsSwiper.slideTo($(this).index())
+			})
+			$(".j-tab-title li").click(function(e) {
+				e.preventDefault()
+			})
+			$('.shopping-list-nav li').on('click', function(e) {
+					var category = $(this).attr('category');
+					var index = $(".shopping-list-nav li").index(this);
+					$(this).siblings().removeClass("active");
+					$('.shopping-abs .swiper-slide a').removeClass("active");
+
+					$(".div" + category).addClass("active");
+
+					swiper_nav.slideTo(index, 1000, false); //切换到第一个slide，速度为1秒
+
+					infinite.onload('where=' + category + '&type=1');
+					var swiper = new Swiper('.j-g-s-p-con', {
+						scrollbarHide: true,
+						slidesPerView: 'auto',
+						centeredSlides: false,
+						grabCursor: true
+
+					});
+			})
+
+		</script>
+	</body>
+
+</html>

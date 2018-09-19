@@ -1,0 +1,100 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.11_system} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit">
+					<i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span>
+                    {if $open eq 1}
+                    <div class="view-case">
+                    	<div class="view-case-tit"><i></i>{$lang.view_tutorials}</div>
+                        <div class="view-case-info">
+                        	<a href="http://help.ecmoban.com/article-6873.html" target="_blank">{$lang.tutorials_bonus_list_one}</a>
+                        </div>
+                    </div>			
+                    {/if}	
+				</div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.list.0}</li>
+                    <li>{$lang.operation_prompt_content.list.1}</li>
+                    <li>{$lang.operation_prompt_content.list.2}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                	<div class="list-div" id="listDiv">
+                    	<table class="table_layout">
+                            <thead>
+                            	<tr>
+                                    <th width="10%"><div class="tDiv">{$lang.payment_name}</div></th>
+                                    <th width="40%"><div class="tDiv">{$lang.payment_desc}</div></th>
+                                    <th width="5%"><div class="tDiv">&nbsp;</div></th>
+                                    <th width="5%"><div class="tDiv">&nbsp;</div></th>
+                                    <th width="15%"><div class="tDiv">{$lang.short_pay_fee}</div></th>
+                                    <th width="10%"><div class="tDiv tc">{$lang.sort_order}</div></th>
+                                    <th width="15%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {foreach from=$modules item=module}
+                                 {if $module.code neq "tenpayc2c" && $module.code neq "epay"}
+                            	<tr>
+                                    <td><div class="tDiv">{$module.name}</div></td>
+                                    <td><div class="tDiv">{$module.desc|nl2br}</div></td>
+                                    <td><div class="tDiv">&nbsp;</div></td>
+                                    <td><div class="tDiv">&nbsp;</div></td>
+                                    <td><div class="tDiv">{if $module.is_cod}{$lang.decide_by_ship}{else}{$module.pay_fee}{/if}</div></td>
+                                    <td><div class="tDiv tc">{if $module.install == 1} <input class="text w50 tc fn" style="margin-right:0px;" onblur="listTable.editInput(this, 'edit_pay_order', '{$module.code}' );" autocomplete="off" value="{$module.pay_order}" type="text"> {else} &nbsp; {/if} </div></td>
+                                    <td class="handle">
+                                        <div class="tDiv a3">
+                                            {if $module.install == "1"}
+                                                {if $module.code eq "tenpay"}
+                                                    <a href="javascript:confirm_redirect(lang_removeconfirm, 'payment.php?act=uninstall&code={$module.code}')" class="btn_see"><i class="sc_icon sc_icon_see"></i>{$lang.uninstall}{$lang.tenpay}</a>
+                                                    <a href="payment.php?act=edit&code={$module.code}" class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a><br />
+                                                    {if $tenpayc2c.install eq "1"}<a href="javascript:confirm_redirect(lang_removeconfirm, 'payment.php?act=uninstall&code=tenpayc2c')" class="btn_see"><i class="sc_icon sc_icon_see"></i>{$lang.uninstall}{$lang.tenpayc2c}</a>
+                                                        <a href="payment.php?act=edit&code=tenpayc2c" class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>
+                                                    {else}
+                                                        <a href="payment.php?act=install&code=tenpayc2c" class="btn_inst"><i class="sc_icon sc_icon_inst"></i>{$lang.install}{$lang.tenpayc2c}</a>
+                                                    {/if}
+                                                {else}
+                                                    <a href="javascript:confirm_redirect(lang_removeconfirm, 'payment.php?act=uninstall&code={$module.code}')" class="btn_trash"><i class="icon icon-trash"></i>{$lang.uninstall}</a>
+                                                    <a href="payment.php?act=edit&code={$module.code}"class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>
+                                                {/if}
+                                            {else}
+                                                {if $module.code eq "tenpay"}
+                                                    <a href="payment.php?act=install&code={$module.code}" class="btn_inst"><i class="sc_icon sc_icon_inst"></i>{$lang.install}{$lang.tenpay}</a>
+                                                    {if $tenpayc2c.install eq "1"}
+                                                        <a href="javascript:confirm_redirect(lang_removeconfirm, 'payment.php?act=uninstall&code=tenpayc2c')" class="btn_trash"><i class="icon icon-trash"></i>{$lang.uninstall}{$lang.tenpayc2c}</a>
+                                                        <a href="payment.php?act=edit&code=tenpayc2c"class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>
+                                                    {else}
+                                                        <a href="payment.php?act=install&code=tenpayc2c" class="btn_inst"><i class="sc_icon sc_icon_inst"></i>{$lang.install}{$lang.tenpayc2c}</a>
+                                                    {/if}
+                                                {else}
+                                                <a href="payment.php?act=install&code={$module.code}" class="btn_inst"><i class="sc_icon sc_icon_inst"></i>{$lang.install}</a>
+                                                {/if}
+                                            {/if}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {/if}
+                                {foreachelse}
+                                    <tr><td class="no-records" colspan="12">{$lang.no_records}</td></tr>
+                                {/foreach}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+ 	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+		//列表导航栏设置下路选项
+    	$(".ps-container").perfectScrollbar();
+    </script>     
+</body>
+</html>

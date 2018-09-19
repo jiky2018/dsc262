@@ -1,0 +1,234 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">移动应用 - {$ur_here}</div>
+		<div class="content">
+        	<div class="tabs_info">
+            	<ul>
+                    <li class="curr"><a href="javascript:void(0);">基本信息</a></li>
+                </ul>
+            </div>
+            <div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content_common}</li>
+                    <li>推送消息相关信息设置，请谨慎填写信息。</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="mian-info">
+                    <form action="ecjia_push_config.php" method="post" enctype="multipart/form-data" name="push_config_form" id="push_config_form">
+                        <div class="switch_info">
+                            <div class="item">
+                                <div class="label">{$lang.require_field}&nbsp;应用名称：</div>
+                                <div class="label_value">
+                                    <input type="text" name="app_name" class="text" value="{$app_name|escape}" autocomplete="off" id="app_name"/>
+                                    <div class="notic1">仅限于Android应用接收消息通知时提示</div>
+                                    <div class="form_prompt"></div>
+                                </div>
+                            </div>
+                            <div class="item shop_closed" data-val="116">
+                                <div class="label">推送环境：</div>
+                                <div class="label_value">
+                                    <div class="checkbox_items">
+                                        <div class="checkbox_item">
+                                            <input type="radio" name="app_push_development" class="ui-radio evnet_shop_closed" id="app_push_development_0" value="0" {if !$app_push_development}checked="true"{/if}>
+                                            <label for="app_push_development_0" class="ui-radio-label">生产环境</label>
+                                        </div>
+                                        <div class="checkbox_item">
+                                            <input type="radio" name="app_push_development" class="ui-radio evnet_shop_closed" id="app_push_development_1" value="1" {if $app_push_development eq 1}checked="true"{/if}>
+                                            <label for="app_push_development_1" class="ui-radio-label">开发环境</label>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="notic">App上线运行请务必切换置生产环境</div> -->
+                                </div>
+                            </div>
+                            <div class="item shop_closed" data-val="116">
+                                <div class="label">客户下单：</div>
+                                <div class="label_value">
+                                    <div class="checkbox_items">
+                                        <div class="checkbox_item">
+                                            <input type="radio" name="push_order_placed" class="ui-radio evnet_shop_closed" id="push_order_placed_0" value="0" {if !$push_order_placed}checked="true"{/if}>
+                                            <label for="push_order_placed_0" class="ui-radio-label">不推送 </label>
+                                        </div>
+                                        <div class="checkbox_item">
+                                            <input type="radio" name="push_order_placed" class="ui-radio evnet_shop_closed" id="push_order_placed_1" value="1" {if $push_order_placed eq 1}checked="true"{/if}>
+                                            <label for="push_order_placed_1" class="ui-radio-label">推送</label>
+                                        </div>
+                                    </div>
+                                    <div class="notic">客户下订单时是否给商家推送消息</div>
+                                </div>
+                                <div class="move_div" style="margin-left: 500px;">
+                                    <div class="move_left" style="width: 200px;">
+                                        <h4>可选应用</h4>
+                                        <div class="move_info">
+                                            <div class="move_list ps-container ps-active-y" id="source_select">
+                                                <ul>
+                                                {foreach from=$app_list item=app_list key=key}
+                                                <li><i class="sc_icon sc_icon_ok"></i><a href="javascript:;" data-value="{$app_list.app_id}" class="ftx-01">{$app_list.app_name}</a><input type="hidden" name="user_search[]" value="{$app_list.app_id}"></li>
+                                                {/foreach}
+                                                </ul> 
+                                            <div class="ps-scrollbar-x-rail" style="width: 692px; display: none; left: 0px; bottom: -97px;"><div class="ps-scrollbar-x" style="left: 0px; width: 0px;"></div></div><div class="ps-scrollbar-y-rail" style="top: 100px; height: 250px; display: inherit; right: 0px;"><div class="ps-scrollbar-y" style="top: 10px; height: 25px;"></div></div></div>
+                                        </div>
+                                        <div class="move_handle">
+                                            <a href="javascript:void(0);" class="btn btn25 moveAll" ectype="moveAll">{$lang.check_all}</a>
+                                            <a href="javascript:void(0);" onclick="addGoods()" class="btn btn25 red_btn" ectype="sub">{$lang.button_submit_alt}</a>
+                                        </div>
+                                    </div>
+                                    <div class="move_middle">
+                                        <div class="move_point" onclick="addGoods()"></div>
+                                    </div>
+                                    <div class="move_right" style="width: 200px;">
+                                        <h4>使用应用名称</h4>
+                                        <div class="move_info">
+                                            <div class="move_list ps-container" id="target_select">
+                                                <ul>
+                                                    {if $push_order_placed_apps}
+                                                    {foreach from=$push_order_placed_apps item=ads_list key=key}
+                                                    <li><i class="sc_icon sc_icon_no"></i><a href="javascript:void(0);">{$ads_list.app_name}</a><input type="hidden" name="push_order_placed_apps[]" value="{$ads_list.app_id}"></li>
+                                                    {/foreach}
+                                                    {/if}
+                                                </ul>                                           
+                                                <div class="ps-scrollbar-x-rail" style="width: 692px; display: none; left: 0px; bottom: 3px;">
+                                                    <div class="ps-scrollbar-x" style="left: 0px; width: 0px;"></div>
+                                                </div>
+                                                <div class="ps-scrollbar-y-rail" style="top: 0px; height: 250px; display: none; right: 0px;">
+                                                    <div class="ps-scrollbar-y" style="top: 0px; height: 0px;"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="move_handle">
+                                            <a href="javascript:void(0);" class="btn btn25 moveAll" ectype="moveAll">{$lang.check_all}</a><a href="javascript:void(0);" onclick="delGoods()" class="btn btn25 btn_red">{$lang.remove}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item shop_closed" data-val="116">
+                                <div class="label">客户付款：</div>
+                                <div class="label_value">
+                                    <div class="checkbox_items">
+                                        <div class="checkbox_item">
+                                            <input type="radio" name="push_order_payed" class="ui-radio evnet_shop_closed" id="push_order_payed_0" value="0" {if !$push_order_payed}checked="true"{/if}>
+                                            <label for="push_order_payed_0" class="ui-radio-label">不推送</label>
+                                        </div>
+                                        <div class="checkbox_item">
+                                            <input type="radio" name="push_order_payed" class="ui-radio evnet_shop_closed" id="push_order_payed_1" value="1" {if $push_order_payed eq 1}checked="true"{/if}>
+                                            <label for="push_order_payed_1" class="ui-radio-label">推送</label>
+                                        </div>
+                                    </div>
+                                    <div class="notic">客户付款时是否给商家推送消息</div>
+                                </div>
+                            </div>
+                            <div class="item shop_closed" data-val="116">
+                                <div class="label">商家发货：</div>
+                                <div class="label_value">
+                                    <div class="checkbox_items">
+                                        <div class="checkbox_item">
+                                            <input type="radio" name="push_order_shipped" class="ui-radio evnet_shop_closed" id="push_order_shipped_0" value="0" {if !$push_order_shipped}checked="true"{/if}>
+                                            <label for="push_order_shipped_0" class="ui-radio-label">不推送</label>
+                                        </div>
+                                        <div class="checkbox_item">
+                                            <input type="radio" name="push_order_shipped" class="ui-radio evnet_shop_closed" id="push_order_shipped_1" value="1" {if $push_order_shipped eq 1}checked="true"{/if}>
+                                            <label for="push_order_shipped_1" class="ui-radio-label">推送</label>
+                                        </div>
+                                    </div>
+                                    <div class="notic">商家发货时是否给客户推送消息</div>
+                                </div>
+                            </div>
+                            <div class="item shop_closed" data-val="116">
+                                <div class="label">用户注册：</div>
+                                <div class="label_value">
+                                    <div class="checkbox_items">
+                                        <div class="checkbox_item">
+                                            <input type="radio" name="push_user_signin" class="ui-radio evnet_shop_closed" id="push_user_signin_0" value="0" {if !$push_user_signin}checked="true"{/if}>
+                                            <label for="push_user_signin_0" class="ui-radio-label">不推送</label>
+                                        </div>
+                                        <div class="checkbox_item">
+                                            <input type="radio" name="push_user_signin" class="ui-radio evnet_shop_closed" id="push_user_signin_1" value="1" {if $push_user_signin eq 1}checked="true"{/if}>
+                                            <label for="push_user_signin_1" class="ui-radio-label">推送</label>
+                                        </div>
+                                    </div>
+                                    <div class="notic">用户注册时是否给客户推送消息</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="info_btn info_btn_bf100 button-info-item0" id="info_btn_bf100">
+                            <div class="label">&nbsp;</div>
+                            <div class="value">
+                                <input type="submit" name="submit" value="{$lang.button_submit}" class="button mr10" id="submitBtn" />
+                                <input type="hidden" name="act" value="{$form_action}" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <style type="text/css">
+		.button-info-item0,.button-info-item3{ text-align:left;}
+    	.button-info-item0 .label,.button-info-item3 .label{ width:30%; padding-right:9px;}
+    </style>
+    {include file ='library/pagefooter.lbi'}
+    
+    <script type="text/javascript" src="js/region.js"></script>
+	<script type="text/javascript">
+        $("#submitBtn").click(function(){
+            if($("#push_config_form").valid()){
+                $("#push_config_form").submit();
+            }
+        });
+
+        $('#push_config_form').validate({
+            errorPlacement:function(error, element){
+                var error_div = element.parents('div.label_value').find('div.form_prompt');
+                element.parents('div.label_value').find(".notic").hide();
+                error_div.append(error);
+            },
+            rules : {
+                app_name : {
+                    required : true
+                }
+            },
+            messages : {
+                app_name : {
+                    required : '<i class="icon icon-exclamation-sign"></i>'+'应用名称不可为空'
+                }
+            }
+        });
+
+        function addGoods()
+        {
+            var step = $("#source_select").parents(".step[ectype=filter]:first");
+            $("#source_select").find("li").each(function(){
+                if($(this).attr("class") == 'current'){
+                    var user = $(this).text();
+                    var user_id = $(this).find("input").val();
+                    var exists = false;
+                    $("#target_select").find("li").each(function(){
+                        if($(this).find("input").val() == user_id){
+                            exists = true;
+                            return false;
+                        }
+                    })
+                    if(exists == false){
+                        $("#target_select").children("ul").append("<li><i class='sc_icon sc_icon_no'></i><a href='javascript:void(0);'>"+user+"</a><input type='hidden' name='push_order_placed_apps[]' value='"+user_id+"'></li>")        
+                    }
+                }
+            });       
+            step.find(".move_left .move_list, .move_all .move_list").perfectScrollbar();
+        }
+    
+        function delGoods()
+        {
+            $("#target_select").find("li").each(function(){
+                if($(this).attr("class") == 'current'){
+                    $(this).remove();
+                }
+            });
+        }
+    </script>
+</body>
+</html>

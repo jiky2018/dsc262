@@ -1,0 +1,87 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="clear"></div>
+                <form method="POST" action="" name="listForm">
+                    <div class="list-div" id="listDiv">
+                        {/if}
+                        <table class="ecsc-default-table">
+                        	<thead>
+                            <tr>
+                                <th>{$lang.record_id}</th>
+                                <th>{$lang.order_sn}</th>
+                                <th>{$lang.admin_log}</th>
+                                <th>{$lang.settlement_state}</th>
+                                <th>{$lang.addtime}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {foreach from=$gift_gard_log item=list}
+                            <tr>
+                                <td class="first-cell" align="center">
+                                    {$list.id|escape:html}
+                                </td>
+                                <td class="first-cell" align="center">
+                                    {$list.gift_sn|escape:html}
+                                </td>
+                                <td class="first-cell" align="center">
+                                    {$list.user_name|escape:html}
+                                </td>
+                                <td class="first-cell" align="center">
+                                    {$list.delivery_status|escape:html}
+                                </td>
+                                <td class="first-cell" align="center">
+                                    {$list.add_time|escape:html}
+                                </td>
+                            </tr>
+                            {foreachelse}
+                            <tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+                            {/foreach}
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="8">{include file="page.dwt"}</td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                        {if $full_page}
+                    </div>
+                </form>					
+                <!--end-->
+                
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<!--start-->
+<script type="text/javascript" language="JavaScript">
+	listTable.recordCount = {$record_count};
+	listTable.pageCount = {$page_count};
+	listTable.id = {$order_id};
+	listTable.query = "Ajax_handle_log";
+    {foreach from = $filter item = item key = key}
+    	listTable.filter.{$key} = '{$item}';
+    {/foreach}
+    {literal}
+    onload = function()
+    {
+    // 开始检查订单
+    startCheckOrder();
+    }
+</script>
+<!--end-->
+</body>
+</html>
+{/if}

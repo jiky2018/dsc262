@@ -1,0 +1,215 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="search-info">
+                    <div class="search-form">
+                        <form action="javascript:searchActivity()" name="searchForm">
+                        	<div id="status" class="imitate_select select_w145">
+                                <div class="cite">{$lang.adopt_status}</div>
+                                <ul>
+                                    <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.adopt_status}</a></li>
+                                    <li><a href="javascript:;" data-value="1" class="ftx-01">{$lang.not_audited}</a></li>
+                                    <li><a href="javascript:;" data-value="2" class="ftx-01">{$lang.audited_not_adopt}</a></li>
+                                    <li><a href="javascript:;" data-value="3" class="ftx-01">{$lang.audited_yes_adopt}</a></li>
+                                </ul>
+                                <input name="review_status" type="hidden" value="0"/>
+                            </div>
+                            <div class="imitate_select select_w120">
+								<div class="cite">{$lang.use_type}</div>
+								<ul>
+									<li><a href="javascript:;" data-value="1,2,3,4" class="ftx-01">{$lang.use_type}</a></li>
+									<li><a href="javascript:;" data-value="1" class="ftx-01">{$lang.coupons_type_01}</a></li>
+									<li><a href="javascript:;" data-value="2" class="ftx-01">{$lang.coupons_type_02}</a></li>
+									<li><a href="javascript:;" data-value="3" class="ftx-01">{$lang.coupons_type_03}</a></li>
+									<li><a href="javascript:;" data-value="4" class="ftx-01">{$lang.coupons_type_04}</a></li>
+								</ul>
+								<input name="cou_type" type="hidden" value="1,2,3,4" id="">
+							</div>
+                            <div class="search-key">
+                                <input type="text" name="cou_name" size="30" class="text text_2" placeholder="优惠券名称"/>
+                                <input type="submit" value="{$lang.button_search}" class="submit" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="list-div" id="listDiv">
+                    {/if}
+                    <table class="ecsc-default-table">
+                    	<thead>
+                        <tr>
+                            <th width="6%">编号</th>
+                            <th width="15%" class="tl">优惠劵名称</th>
+                            <th width="8%">类型</th>
+                            <th width="8%">使用门槛(元)</th>
+                            <th width="8%">面值(元)</th>
+                            <th width="8%">总发行数(张)</th>
+                            <th width="8%">有效期</th>
+                            <th width="8%">已过期</th>
+                            <th width="10%">{$lang.adopt_status}</th>
+                            <th width="21%">{$lang.handle}</th>
+						</tr>
+                        </thead>
+                        <tbody>
+                        {foreach from=$cou_list item=vo}
+                        <tr>
+                            <td>{$vo.cou_id}</td>
+                            <td class="tl">{$vo.cou_name}</td>
+                            <td {if $vo.type eq 5} title='{$vo.free_value_name}' data-toggle="tooltip"{/if}>{$vo.cou_type}</td>
+                            <td>{$vo.cou_man}</td>
+                            <td>{$vo.cou_money}</td>
+                            <td>{$vo.cou_total}</td>
+                            <td>{$vo.cou_start_time}至<br />{$vo.cou_end_time}</td>
+                            <td>{$vo.cou_is_time}</td>
+                            <td class="audit_status">
+                                {if $vo.review_status eq 1}
+                                <font class="org2">{$lang.not_audited}</font>
+                                {elseif $vo.review_status eq 2}
+                                <font class="red">{$lang.audited_not_adopt}</font>
+                                <i class="tip yellow" title="{$vo.review_content}">{$lang.prompt}</i>
+                                {elseif $vo.review_status eq 3}
+                                <font class="green">{$lang.audited_yes_adopt}</font>
+                                {/if}
+                            </td>
+                            <td class="ecsc-table-handle tr">
+                                {if $vo.type eq 3 || $vo.type eq 4 || $vo.type eq 5}
+                                <span id="clip_container"><a href="javascript:void(0);" data-url="{$url}coupons.php?act=coupons_info&id={$vo.cou_id}" class="btn-green" id="clip_button" ectype="clip_button"><i class="icon icon-copy"></i><p>{$lang.copy_url}</p></a></span>
+                                {/if}
+                            	<span><a href="coupons.php?act=coupons_list&cou_id={$vo.cou_id}" title="{$lang.view}" class="btn-orange"><i class="icon sc_icon_see"></i><p>{$lang.view}</p></a></span>
+                                <span><a href="coupons.php?act=edit&cou_id={$vo.cou_id}" title="{$lang.edit}" class="btn-green"><i class="icon icon-edit"></i><p>{$lang.edit}</p></a></span>
+                                <span><a href="javascript:void(0);" onclick="coupons_del({$vo.cou_id})" title="{$lang.drop}" class="btn-red"><i class="icon icon-trash"></i><p>{$lang.drop}</p></a></span>
+                            </td>
+                        </tr>
+                        {foreachelse}
+                        <tr><td class="no-records" colspan="12">{$lang.no_records}</td></tr>
+                        {/foreach}
+                        </tbody>
+                        <tfoot>
+                        	<tr><td colspan="20">{include file="page.dwt"}</td></tr>
+                        </tfoot>
+                    </table>
+                    {if $full_page}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<div id="content" class="hide">
+    <div class="ysc-coupon-dialog">
+        <h2>{$lang.coupons_add_title}</h2>
+        <ul class="ysc-coupon-list">
+            <li>
+                <a href="coupons.php?act=add&type=register" class="clearfix">
+                    <div class="ysc-ticket ysc-ticket-red">
+                        <i class="qIcon zhuce"></i>
+                        <span>{$lang.coupons_type_01}</span>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="coupons.php?act=add&type=buy" class="clearfix">
+                    <div class="ysc-ticket ysc-ticket-blue">
+                        <i class="qIcon gouwuche"></i>
+                        <span>{$lang.coupons_type_02}</span>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="coupons.php?act=add&type=all" class="clearfix">
+                    <div class="ysc-ticket ysc-ticket-green">
+                        <i class="qIcon house"></i>
+                        <span>{$lang.coupons_type_03}</span>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="coupons.php?act=add&type=member" class="clearfix">
+                    <div class="ysc-ticket ysc-ticket-yellow">
+                        <i class="qIcon renzhengyonghu"></i>
+                        <span>{$lang.coupons_type_04}</span>
+                    </div>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+<script type="text/javascript" src="../seller/js/jquery.purebox.js"></script>
+<script type="text/javascript">
+
+    $(function(){
+        $("#actionSpan").click(function(){
+            var content = $("#content").html();
+            pb({
+                id:"dialog",
+                title:"添加优惠券",
+                content:content,
+                width:600,
+                height:360,
+                drag:false,
+                foot:false
+            });
+        });
+    });
+
+
+<!--
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+
+  {literal}
+  onload = function()
+  {
+     // 开始检查订单
+     startCheckOrder();
+  }
+  
+
+  /**
+   * 搜索优惠活动
+   */
+  function searchActivity()
+  {
+      var cou_type = Utils.trim(document.forms['searchForm'].elements['cou_type'].value);
+      var cou_name = Utils.trim(document.forms['searchForm'].elements['cou_name'].value);
+	  var review_status = Utils.trim(document.forms['searchForm'].elements['review_status'].value);
+      listTable.filter['cou_type'] = cou_type;
+      listTable.filter['cou_name'] = cou_name;
+	  listTable.filter['review_status'] = review_status;
+      listTable.filter['page'] = 1;
+      listTable.loadList("favourable_list");
+  }
+  {/literal}
+//-->
+
+function coupons_del(cou_id){
+    if(confirm('确定删除吗?'))
+        $.get('coupons.php?act=remove_coupons', { cou_id:cou_id }, function (data) { if(data=='ok')location.href=location.href;else alert('删除失败!') });
+}
+
+//修改秒杀排序;
+$(function(){
+    $('.cou_order').change(function(){
+        var cou_order=$(this).val();
+        var cou_id=$(this).attr('cou_id');
+        $.get('coupons.php?act=change_order', { cou_id:cou_id,cou_order:cou_order }, function (data) { if(data=='ok')alert('修改成功') });
+    })
+})
+</script>
+</body>
+</html>
+{/if}

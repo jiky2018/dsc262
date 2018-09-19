@@ -1,0 +1,158 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="search-info">
+                    <div class="search-form">
+                      <form action="javascript:searchPackage()" name="searchForm">
+                      	<div id="status" class="imitate_select select_w145">
+                            <div class="cite">{$lang.adopt_status}</div>
+                            <ul>
+                                <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.adopt_status}</a></li>
+                                <li><a href="javascript:;" data-value="1" class="ftx-01">{$lang.not_audited}</a></li>
+                                <li><a href="javascript:;" data-value="2" class="ftx-01">{$lang.audited_not_adopt}</a></li>
+                                <li><a href="javascript:;" data-value="3" class="ftx-01">{$lang.audited_yes_adopt}</a></li>
+                            </ul>
+                            <input name="review_status" type="hidden" value="0"/>
+                        </div>
+                        <div class="search-key">
+                            <input type="text" name="keyword" class="text text_2" placeholder="{$lang.package_name}" /> 
+                            <input type="submit" value="{$lang.button_search}" class="submit" />
+                        </div>
+                      </form>
+                    </div>
+                </div>
+                <form method="post" action="" name="listForm">
+                <div class="list-div" id="listDiv">
+                {/if}
+                <table class="ecsc-default-table">
+                	<thead>
+                    <tr>
+                      <th width="8%"><a href="javascript:listTable.sort('act_id'); ">{$lang.record_id}</a><div class="img">{$sort_act_id}</div></th>
+                      <th width="35%" class="tl"><a href="javascript:listTable.sort('package_name'); ">{$lang.package_name}</a><div class="img">{$sort_package_name}</div></th>
+                      <th width="18%"><a href="javascript:listTable.sort('start_time'); ">{$lang.start_time}</a><div class="img">{$sort_start_time}</div></th>
+                      <th width="18%"><a href="javascript:listTable.sort('end_time'); ">{$lang.end_time}</a><div class="img">{$sort_end_time}</div></th>
+                      <th width="10%">{$lang.adopt_status}</th>
+                      <th width="12%">{$lang.handler}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                      {foreach from=$package_list item=package}
+                      <tr>
+                        <td>{$package.act_id}</td>
+                        <td class="tl"><span onclick="listTable.edit(this, 'edit_package_name', {$package.act_id})">{$package.package_name}</span></td>
+                        <td>{$package.start_time}</td>
+                        <td>{$package.end_time}</td>
+                        <td class="audit_status">
+                            {if $package.review_status eq 1}
+                            <font class="org2">{$lang.not_audited}</font>
+                            {elseif $package.review_status eq 2}
+                            <font class="red">{$lang.audited_not_adopt}</font>
+                            <i class="tip yellow" title="{$package.review_content}">{$lang.prompt}</i>
+                            {elseif $package.review_status eq 3}
+                            <font class="green">{$lang.audited_yes_adopt}</font>
+                            {/if}
+                        </td>
+                        <td class="ecsc-table-handle tr">
+                          <span><a href="package.php?act=edit&amp;id={$package.act_id}" title="{$lang.edit}" class="btn-green"><i class="icon icon-edit"></i><p>{$lang.edit}</p></a></span>
+                          <span><a href="javascript:;" onclick="listTable.remove({$package.act_id},'{$lang.drop_confirm}')" title="{$lang.drop}" class="btn-red"><i class="icon icon-trash"></i><p>{$lang.drop}</p></a></span>
+                        </td>
+                      </tr>
+                      {foreachelse}
+                      <tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+                      {/foreach}
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                          <td colspan="20">
+                          {include file="page.dwt"}
+                          </td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                  {if $full_page}
+                </div>
+              </form>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript">
+
+
+
+
+
+
+<!--
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+
+  {literal}
+  onload = function()
+  {
+      // 开始检查订单
+      startCheckOrder();
+  }
+  
+  {if $priv_ru eq 1}
+  function get_store_search(val){
+    if(val == 1){
+      document.forms['searchForm'].elements['merchant_id'].style.display = '';
+      document.forms['searchForm'].elements['store_keyword'].style.display = 'none';
+      document.forms['searchForm'].elements['store_type'].style.display = 'none';
+    }else if(val == 2){
+      document.forms['searchForm'].elements['merchant_id'].style.display = 'none';
+      document.forms['searchForm'].elements['store_keyword'].style.display = '';
+      document.forms['searchForm'].elements['store_type'].style.display = 'none';
+    }else if(val == 3){
+      document.forms['searchForm'].elements['merchant_id'].style.display = 'none';
+      document.forms['searchForm'].elements['store_keyword'].style.display = '';
+      document.forms['searchForm'].elements['store_type'].style.display = '';
+    }else{
+      document.forms['searchForm'].elements['merchant_id'].style.display = 'none';
+      document.forms['searchForm'].elements['store_keyword'].style.display = 'none';
+      document.forms['searchForm'].elements['store_type'].style.display = 'none';
+    }
+  }
+  {/if}
+
+  /**
+   * 搜索礼包
+   */
+  function searchPackage()
+  {
+    
+    {if $priv_ru eq 1}
+    listTable.filter['store_search'] = Utils.trim(document.forms['searchForm'].elements['store_search'].value);
+    listTable.filter['merchant_id'] = Utils.trim(document.forms['searchForm'].elements['merchant_id'].value);
+    listTable.filter['store_keyword'] = Utils.trim(document.forms['searchForm'].elements['store_keyword'].value);
+    listTable.filter['store_type'] = Utils.trim(document.forms['searchForm'].elements['store_type'].value);
+    {/if}
+    
+    var keyword = Utils.trim(document.forms['searchForm'].elements['keyword'].value);
+    listTable.filter.keywords = keyword;
+    listTable.filter.page = 1;
+    listTable.loadList();
+  }
+  {/literal}
+//-->
+</script>
+</body>
+</html>
+{/if}

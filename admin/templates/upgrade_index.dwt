@@ -1,0 +1,100 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+<body class="iframe_body">
+  <div class="warpper">
+    <div class="title">{$lang.11_system} - {$ur_here}</div>
+    <div class="content"> 
+      <div class="explanation" id="explanation">
+          <div class="ex_tit">
+            <i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span>
+            {if $open eq 1}
+            <div class="view-case">
+              <div class="view-case-tit"><i></i>{$lang.view_tutorials}</div>
+                <div class="view-case-info">
+                  <a href="http://help.ecmoban.com/article-6896.html" target="_blank">{$lang.tutorials_bonus_list_one}</a>
+                </div>
+            </div>      
+            {/if} 
+          </div>
+          <ul>
+            <li>{$lang.upgrade_notice}</li>
+          </ul>
+      </div>
+      <div class="flexilist">
+        <form method="post" action="upgrade.php?act=init" onsubmit="return checkcover()" >
+
+        <div class="common-content">
+          <div class="list-div" id="listDiv">
+            {/if}
+            <table cellpadding="0" cellspacing="0" border="0">
+            <thead>
+              <tr>
+                <th width="33%" style="text-align:center;">{$lang.currentversion}</th>
+                <th width="33%" style="text-align:center;">{$lang.updatetime}</th>
+                <th width="33%" style="text-align:center;">{$lang.new_version}</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td align="center">{$ecs_version}</td>
+                <td align="center">{$ecs_release}</td>
+                <td align="center">{$last_version}</td>
+              </tr> 
+              </tbody>                          
+            </table>
+            {if $patch}
+            <table class="table table-hover ectouch-table" style="border:1px #ddd solid; margin-bottom:10px;margin-top:20px; display:none;">
+                <tr>
+                  <th style="text-align:center;">{$lang.updatelist}</td>
+                </tr>
+                {foreach from=$patch item=keyword key=k}
+                <tr>
+                  <td align="center">{$keyword}</td>
+                </tr>
+                {/foreach}
+            </table>
+            {/if}
+            {if $already_new neq 1}
+            <div style="text-align:center; padding: 24px 0;">
+            <input name="cover" id="cover" type="checkbox" value="1" />
+            <label for="cover"><font color="red">{$lang.covertemplate}</font></label>
+            </div>
+            <div class="tDiv info_btn tc">
+            {if $is_writable}
+                <input name="dosubmit" type="submit" id="dosubmit" value="{$lang.begin_upgrade}" class="button fn"  />
+            {else}
+                <input name="reset" type="reset" value="{$lang.permission_error}" class="button fn"  />
+            {/if}
+            </div>
+            {/if}
+            {if $full_page}
+          </div>
+        </div>
+      </div>
+      </form>     
+    </div>
+  </div>
+    {include file ='library/pagefooter.lbi'}
+    <script type="text/javascript" language="JavaScript">
+    listTable.recordCount = {$record_count|default:0};
+    listTable.pageCount = {$page_count|default:1};
+    
+    {foreach from=$filter item=item key=key}
+    listTable.filter.{$key} = '{$item}';
+    {/foreach}
+    
+    </script>
+    <script type="text/javascript">
+    function checkcover(){
+      var checkbox = document.getElementById('cover');
+      if(checkbox.checked == false){
+        alert('{$lang.checkcover}');
+        return false;
+      }
+    }
+    </script>
+</body>
+</html>
+{/if}

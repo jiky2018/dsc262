@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="Description" content="{$description}" />
+{if $auto_redirect}
+<meta http-equiv="refresh" content="3;URL={$message.href}" />
+{/if}
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable --><!-- TemplateBeginEditable name="head" --><!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<link rel="icon" href="animated_favicon.gif" type="image/gif" />
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/base.css" />
+<link href="{$ecs_css_path}" rel="stylesheet" type="text/css" />
+{* 包含脚本文件 *}
+{insert_scripts files='jquery-1.9.1.min.js,jquery.json.js,transport_jquery.js'}
+{insert_scripts files='common.js,global.js,utils.js,compare.js,jd_choose.js'}
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/sc_common.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.yomi.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/rotate3di.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/scroll_city.js"></script>
+<style>.suspension{ display:none;}</style>
+<!-- #BeginLibraryItem "/library/js_languages.lbi" --><!-- #EndLibraryItem -->
+</head>
+<body>
+<!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
+
+<!--当前位置 start-->
+<div class="w1200">
+    <div class="nch-breadcrumb-layout">
+        <div class="nch-breadcrumb w1200" id="ur_here">
+            <!-- #BeginLibraryItem "/library/ur_here.lbi" --><!-- #EndLibraryItem -->
+        </div>
+    </div>      
+</div>
+<!--当前位置 end-->
+
+<!--优惠活动列表 Begin-->
+<div class="w1200 clearfix">
+	<div class="activity-list">
+        {foreach from=$activity_list item=list key=key}
+        <div class="zp" id="{if $key eq 0}zp{elseif $key eq 1}jm{elseif $key eq 2}mj{/if}">
+            <h1>{$list.activity_name}</h1>
+                {foreach from=$list.activity_list item=activity key=akey name=noactivity}
+                	<div class="activity-item">
+                        <div class="left">
+                            <div class="title" title="{$activity.act_name}"><em>{$lang.activity_txt}{$smarty.foreach.noactivity.iteration}：</em>{$activity.act_name}</div>
+                            <div class="time"><em>{$lang.activity_time}：</em>&nbsp;{$activity.start_time} ~ {$activity.end_time}</div>
+                            <div class="activity-shuxing">
+                                <div class="shang">{$lang.label_min_amount}{$activity.min_amount}</div>
+                                <div class="xia">{$lang.label_max_amount}{if $activity.max_amount eq 0}{$lang.not}{else}{$activity.max_amount}{/if}</div>
+                            </div>
+                            <div class="activity-shuxing">{$lang.label_user_rank}{foreach from=$activity.user_rank item=rank}{$rank}&nbsp;{/foreach}</div>
+                            <div class="activity-shuxing">{$lang.label_act_range}
+                            {$activity.act_range}
+                            {if $activity.act_range_ext && $activity.act_range_type neq 3} 
+                                <em class="box_red">
+                                    (
+                                    {foreach from=$activity.act_range_ext item=range_ext}
+                                        {$range_ext.name}&nbsp;
+                                    {/foreach}
+                                    )
+                                </em>
+                            {/if}
+                            {if $activity.act_range_type eq 3}
+                            	<em class="open" id="open_range_{$activity.act_id}" onclick="get_open({$activity.act_id}, 0, 'range')">{$lang.open}</em>
+                            {/if}
+                            </div>
+                            <div class="activity-shuxing">{$lang.label_act_type}{$activity.act_type}&nbsp;{$activity.act_type_ext}
+                            {if $activity.actType eq 0}
+                            	<em class="open" id="open_gift_{$activity.act_id}" onclick="get_open({$activity.act_id}, 1, 'gift')">{$lang.open}</em>
+                            {/if}
+                            </div>
+                            <a href="{if $activity.user_id}{$activity.shop_url}{/if}" class="activity-btn">{$activity.shop_name}</a>
+                            <!--<button type="button" {if $activity.user_id}onclick="location.href='{$activity.shop_url}'"{/if}>{$activity.shop_name}</button>-->
+                        </div>
+                        <div class="right"><img src="{if $activity.activity_thumb}{$activity.activity_thumb}{else}images/noactivity.png{/if}" width="610" height="233"></div>
+                        <i class="icon"></i>
+                    </div>
+
+                    {if $activity.actType eq 0 || $activity.act_range_type eq 3}
+                    <div class="pro_goods wrapper_pro" id="pro_range_{$activity.act_id}">
+                        
+                    </div>
+                    <div class="pro_goods wrapper_pro" id="pro_gift_{$activity.act_id}">
+                        
+                    </div>
+                    {/if}
+                {/foreach}
+        </div>
+        {/foreach}
+    </div>
+    <!--右侧导航 Begin-->
+    <div class="activity-right">
+        <div class="activity-tabs">
+            <div class="activity-tab current">
+                <div class="fang">{$lang.fat_goods}</div>
+                <div class="vel"></div>
+            </div>
+            <div class="activity-tab">
+                <div class="fang">{$lang.fat_price}</div>
+                <div class="vel"></div>
+            </div>
+            <div class="activity-tab">
+                <div class="fang">{$lang.fat_discount}</div>
+                <div class="vel"></div>
+            </div>
+            <div class="activity-top back_top">
+                <i></i>
+            </div>
+        </div>
+    </div>
+    <!--右侧导航 End-->
+</div>    
+<!--优惠活动列表 End-->
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+</body>
+
+<script type="text/javascript">
+$(function(){
+	function jScroll(){
+		var tabs = $(".activity-tabs");
+		var listItem = $(".activity-list").find(".zp")
+		var diTop = parseInt($(document.body).outerHeight())-parseInt($(window).height());
+		tabs.find(".activity-tab").on("click",function(){
+			var $this = $(this);
+			var index = $this.index();
+			var top = parseInt(listItem.eq(index).offset().top);
+			$("body,html").stop().animate({scrollTop:top});
+		});
+		$(window).scroll(function(){
+			var top = $(document).scrollTop();
+			var itemTop = parseInt($(".activity-list").offset().top);
+			if(top >= itemTop){
+				tabs.css({'top':37,'position':'fixed'});
+			}else{
+				tabs.css({'top':37,'position':'absolute'});
+			}
+			for(var i=0;i<listItem.length;i++){
+				var listItemTop =  parseInt(listItem.eq(i).offset().top);
+				if(top >= listItemTop-200){
+					tabs.find(".activity-tab").eq(i).addClass("current").siblings().removeClass("current");
+				}
+			}
+		});
+	}
+	jScroll();
+    $(".back_top").click(function(){ //当点击标签的时候,使用animate在200毫秒的时间内,滚到顶部
+    	$("html,body").animate({scrollTop:"0px"},200);
+    });
+});
+			
+function get_open(act_id, type, idname){
+  
+  if($('#pro_' + idname + '_' + act_id).is(':hidden')){
+	  
+	  Ajax.call('activity.php', 'act=rang_gift_list&act_id=' + act_id + '&type=' + type + '&idname=' + idname, activityResponse, 'GET', 'JSON');
+	  
+	$('#open_' + idname + '_' + act_id).html('{$lang.stop}');
+	$('#open_' + idname + '_' + act_id).parents(".activity-item").addClass("curr");
+	$('#pro_' + idname + '_' + act_id).css('display','block');
+  }else{
+	$('#open_' + idname + '_'  + act_id).html('{$lang.open}');
+	$('#open_' + idname + '_' + act_id).parents(".activity-item").removeClass("curr");
+	$('#pro_' + idname + '_' + act_id).css('display','none');
+  }
+}		
+
+function activityResponse(res){
+	$('#pro_' + res.name + '_' + res.act_id).html('');
+	$('#pro_' + res.name + '_' + res.act_id).css('display','none');
+	$('#open_' + res.name + '_'  + res.act_id).html('{$lang.open}');
+	$('#pro_' + res.idname + '_' + res.act_id).html(res.content);
+}	 	  
+</script>
+</html>

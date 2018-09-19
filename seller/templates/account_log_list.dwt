@@ -1,0 +1,100 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+{include file ='library/seller_html_head.lbi'}
+</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+				{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                
+                {/if}
+                <div class="list-div mt10" id="listDiv">
+                  <table class="ecsc-default-table">
+                  	<thead>
+                    <tr>
+                      <th width="15%">{$lang.title_change_time}</th>
+                      <th width="40%">{$lang.title_change_desc}</th>
+                      <th width="15%">{$lang.title_balance}</th>
+                      <th width="15%">{$lang.title_frozen_money}</th>
+                      <th width="15%">{$lang.surplus_type}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {foreach from=$log_list item=log name=nolog}
+                    <tr>
+                      <td class="left">{$log.change_time}</td>
+                      <td align="center">{$log.change_desc}</td>
+                      <td align="center">
+                           {if $log.user_money gt 0}
+                                            <span style="color:#0000FF">+{$log.user_money}</span>
+                                        {elseif $log.user_money lt 0}
+                                            <span style="color:#FF0000">{$log.user_money}</span>
+                                        {else}
+                                            {$log.user_money}
+                                        {/if}
+                      </td>
+                      <td align="center">
+                          {if $log.frozen_money gt 0}
+                                <span style="color:#0000FF">+{$log.frozen_money}</span>
+                            {elseif $log.frozen_money lt 0}
+                                <span style="color:#FF0000">{$log.frozen_money}</span>
+                            {else}
+                                {$log.frozen_money}
+                            {/if}
+                      </td>
+                      <td align="center">
+                          {if $log.change_type eq 0}
+                          提现
+                          {elseif $log.change_type eq 1}
+                          充值
+                          {elseif $log.change_type eq 2}
+                          结算
+                          {elseif $log.change_type eq 3}
+                          管理员调节
+                          {elseif $log.change_type eq 4}
+                          解冻
+                          {else}
+                          其他
+                          {/if}
+                      </td>
+                    </tr>
+                    {foreachelse}
+                    <tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+                    {/foreach}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="10">{include file="page.dwt"}</td>
+                        </tr>
+                    </tfoot>
+                  </table>
+                </div>
+                {if $full_page}
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript">
+listTable.recordCount = {$record_count};
+listTable.pageCount = {$page_count};
+
+{foreach from=$filter item=item key=key}
+listTable.filter.{$key} = '{$item}';
+{/foreach}
+
+$(function(){
+	$('.nyroModalWzs').nyroModal();
+});
+</script>
+</body>
+</html>
+{/if}

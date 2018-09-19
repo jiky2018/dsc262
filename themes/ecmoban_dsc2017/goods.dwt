@@ -1,0 +1,1309 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<!-- #BeginLibraryItem "/library/js_languages_new.lbi" --><!-- #EndLibraryItem -->
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/css/goods_fitting.css" />
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/css/suggest.css" />
+<link rel="stylesheet" type="text/css" href="../js/calendar/calendar.min.css" />
+<link rel="stylesheet" type="text/css" href="../js/perfect-scrollbar/perfect-scrollbar.min.css" />
+</head>
+
+<body>
+    <!-- #BeginLibraryItem "/library/page_header_common.lbi" --><!-- #EndLibraryItem -->
+    <div class="full-main-n">
+        <div class="w w1200 relative">
+        <!-- #BeginLibraryItem "/library/ur_here.lbi" --><!-- #EndLibraryItem -->
+        </div>
+    </div>
+    <div class="container">
+    	<div class="w w1200">
+            <div class="product-info mt20">
+                <!-- #BeginLibraryItem "/library/goods_gallery.lbi" --><!-- #EndLibraryItem -->
+                <div class="product-wrap{if $goods.user_id} product-wrap-min{/if}">
+                    <form action="javascript:addToCart({$goods.goods_id})" method="post" name="ECS_FORMBUY" id="ECS_FORMBUY" >
+                		<div class="name">{$goods.goods_style_name}</div>
+                        <!--{if $goods.goods_brief}-->
+                        <div class="newp">{$goods.goods_brief}</div>
+                        <!--{/if}-->
+                        <!--{if $goods.gmt_end_time}-->
+                        <div class="activity-title" {if $promo_count >1} style="display:none;"{/if}>
+                            <div class="activity-type"><i class="icon icon-promotion"></i>促销时间</div>
+                            <div class="sk-time-cd">
+                                <div class="sk-cd-tit">距结束</div>
+                                <div class="cd-time" ectype="time" data-time="{$goods.promote_end_time}">
+                                    <div class="days">00</div>
+                                    <span class="split">:</span>
+                                    <div class="hours">00</div>
+                                    <span class="split">:</span>
+                                    <div class="minutes">00</div>
+                                    <span class="split">:</span>
+                                    <div class="seconds">00</div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--{/if}-->
+                        <div class="summary">
+                            <div class="summary-price-wrap">
+                                <div class="s-p-w-wrap">
+                                    <div class="summary-item si-shop-price">
+                                        <div class="si-tit">{if $goods.gmt_end_time}促 销 价{else}商 城 价{/if}</div>
+                                        <div class="si-warp">
+                                            <strong class="shop-price" id="ECS_SHOPPRICE" ectype="SHOP_PRICE"></strong>
+                                            <span class="price-notify" data-userid="{$user_id}" data-goodsid="{$goods.goods_id}" ectype="priceNotify">{$lang.price_notice}</span>
+                                        </div>
+                                    </div>
+                                    <!--{if $cfg.show_marketprice}-->
+                                    <div class="summary-item si-market-price">
+                                        <div class="si-tit">市 场 价</div>
+                                        <div class="si-warp"><div class="m-price" id="ECS_MARKETPRICE"></div></div>
+                                    </div>
+                                    <!--{/if}-->
+                                    <div class="si-info">
+                                        <div class="si-cumulative">{$lang.Cumulative_evaluation}<em>{$comment_all.allmen}</em></div>
+                                        <div class="si-cumulative">{$lang.Cumulative_Sales}<em>{$goods.sales_volume}</em></div>
+                                    </div>
+                                    <!--{if $two_code}-->
+                                    <div class="si-phone-code">
+                                        <div class="qrcode-wrap">
+                                            <div class="qrcode_tit">{$lang.summary_phone}<i class="iconfont icon-qr-code"></i></div>
+                                            <div class="qrcode_pop">
+                                                <div class="mobile-qrcode"><img src="{$weixin_img_url}" alt="{$lang.two_code}" title="{$weixin_img_text}" width="175"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--{/if}-->
+                                    <!--{if $goods_coupons}-->
+                                    <div class="summary-item si-coupon">
+                                        <div class="si-tit">领 券</div>
+                                        <div class="si-warp">
+                                            <!--{foreach from=$goods_coupons item=vo}-->
+                                            <a class="J-open-tb" href="#none" data-goodsid="{$goods_id}">
+                                                <div class="quan-item"><i class="i-left"></i>满{$vo.cou_man}减{$vo.cou_money}<i class="i-right"></i></div>
+                                            </a>
+                                            <!--{/foreach}-->
+                                        </div>
+                                    </div>
+                                    <!--{/if}-->
+
+                                    <!-- {if $promotion || $goods.consumption} -->
+                                    <div class="summary-item si-promotion"{if $promo_count >2} ectype="view-prom"{/if}{if $promo_count <2} style="height:24px;"{/if}>
+                                        <div class="si-tit">促 销</div>
+                                        <div class="si-warp">
+                                            <div class="prom-items">
+                                                <!-- {foreach from=$promotion item=item key=key name=nopromotion} -->
+                                                <!-- {if $item.type eq "favourable"} -->
+                                                <div class="prom-item">
+                                                    {if $item.act_type eq 0}
+                                                    <em class="prom-tip">{$lang.With_a_gift}</em>
+                                                    {elseif $item.act_type eq 1}
+                                                    <em class="prom-tip">{$lang.Stand_minus}</em>
+                                                    {elseif $item.act_type eq 2}
+                                                    <em class="prom-tip">{$lang.discount}</em>
+                                                    {/if}
+                                                    {$item.act_name}
+                                                </div>
+                                                <!-- {elseif $item.type eq "group_buy"} -->
+                                                <div class="prom-item">
+                                                    <a href="{$item.url}" title="{$lang.group_buy}" class="prom-tip" title="{$lang.group_buy}">{$lang.group_buy}</a>
+                                                </div>
+                                                <!-- {elseif $item.type eq "auction"} -->
+                                                <div class="prom-item">
+                                                    <a href="auction.php" title="{$lang.auction}" class="prom-tip" title="{$lang.auction}">{$lang.auction}</a>
+                                                </div>
+                                                <!-- {elseif $item.type eq "snatch"} -->
+                                                <div class="prom-item">
+                                                    <a href="{$item.url}" title="{$lang.snatch}" class="prom-tip" title="{$lang.snatch}">{$lang.snatch}</a>
+                                                </div>
+                                                <!-- {/if} -->
+                                                <!-- {/foreach} -->
+                                                <!-- {if $goods.consumption} -->
+                                                <div class="prom-item">
+                                                    <a href="javascript:;" class="prom-tip" title="{$lang.Full_reduction}">{$lang.Full_reduction}</a>
+                                                    <em class="h1_red" title="{foreach from=$goods.consumption item=con name=nocon}{$lang.man}{$con.cfull}{$lang.minus}{$con.creduce}{if !$smarty.foreach.nocon.last}，{/if}{/foreach}">{foreach from=$goods.consumption item=con name=nocon}{$lang.man}{$con.cfull}{$lang.minus}{$con.creduce}{if !$smarty.foreach.nocon.last}，{/if}{/foreach}</em>
+                                                </div>
+                                                <!-- {/if} -->
+                                            </div>
+                                            <!--{if $promo_count >2}-->
+                                            <div class="view-all-promotions">
+                                                <span class="prom-sum">共<em class="prom-number">{$promo_count}</em>项促销</span>
+                                                <i class="iconfont icon-down"></i>
+                                            </div>
+                                            <!-- {/if} -->
+                                        </div>
+                                    </div>
+                                    <!-- {/if} -->
+                                    <div class="clear"></div>
+                                </div>
+                            </div>
+                            <div class="summary-basic-info">
+                                <!--{if $volume_price_list } 商品优惠阶梯价格-->
+                                <div class="summary-item is-ladder">
+                                    <div class="si-tit">{$lang.Preferential_steps}</div>
+                                    <div class="si-warp">
+                                        <a href="javascript:void(0);" class="link-red" ectype="view_priceLadder">{$lang.View_price_ladder}</a>
+                                        <dl class="priceLadder" ectype="priceLadder">
+                                            <dt>
+                                                <span>{$lang.number_to}</span>
+                                                <span>{$lang.preferences_price}</span>
+                                            </dt>
+                                            <!-- {foreach from=$volume_price_list item=price_list key=price_key} -->
+                                            <dd>
+                                                <span>{$price_list.number}</span>
+                                                <span>{$price_list.format_price}</span>
+                                            </dd>
+                                            <!-- {/foreach} -->
+                                        </dl>
+                                    </div>
+                                </div>
+                                <!-- {/if} -->
+
+                                <!--{if $rank_prices && $cfg.show_rank_price && !$goods.gmt_end_time} 显示等级价格-->
+                                <div class="summary-item is-ladder">
+                                    <div class="si-tit">{$lang.rank_prices}</div>
+                                    <div class="si-warp">
+                                        <a href="javascript:void(0);" class="link-red" ectype="view_priceLadder">{$lang.View_price_ladder}</a>
+                                        <dl class="priceLadder goods_rank_prices" ectype="priceLadder">
+                                            <dt>
+                                                <span>{$lang.rank}</span>
+                                                <span>{$lang.prices}</span>
+                                            </dt>
+                                            <!-- {foreach from=$rank_prices item=rank key=price_key} -->
+                                            <dd>
+                                                <span>{$rank.rank_name}</span>
+                                                <span>{$rank.price}</span>
+                                            </dd>
+                                            <!-- {/foreach} -->
+                                        </dl>
+                                    </div>
+                                </div>
+                                <!-- {/if} -->
+
+                                <div class="summary-item is-stock">
+                                    <div class="si-tit">配送</div>
+                                    <div class="si-warp">
+                                        <span class="initial-area">
+                                            {if $adress.city}
+                                                {$adress.city}
+                                            {else}
+                                                {$basic_info.city}
+                                            {/if}
+                                        </span>
+                                        <span>至</span>
+                                        <div class="store-selector">
+                                            <div class="text-select" id="area_address" ectype="areaSelect"></div>
+                                        </div>
+                                        <div class="store-warehouse">
+                                            <div class="store-warehouse-info"></div>
+                                            <div id="isHas_warehouse_num" class="store-prompt"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="summary-item is-service">
+                                    <div class="si-tit">服务</div>
+                                    <div class="si-warp">
+                                        <div class="fl">
+                                        {if $goods.user_id > 0}
+                                            由 <a href="{$goods.store_url}" class="link-red" target="_blank">{$goods.rz_shopName}</a> 发货并提供售后服务
+                                        {else}
+                                            由 <a href="javascript:void(0)" class="link-red">{$goods.rz_shopName}</a> 发货并提供售后服务
+                                        {/if}
+                                        </div>
+                                        <div class="fl pl10" id="user_area_shipping"></div>
+                                    </div>
+                                </div>
+                                <!-- {if $cfg.show_brand && $goods.user_id && $goods.goods_brand} 显示商品品牌-->
+                                <div class="summary-item is-brand">
+                                    <div class="si-tit">品牌</div>
+                                    <div class="si-warp"><a href="{$goods.goods_brand_url}" target="_blank">{$goods.goods_brand}</a></div>
+                                </div>
+                                <!-- {/if} -->
+                                <!-- {if $cfg.use_integral} 购买此商品可使用积分-->
+                                <div class="summary-item is-integral">
+                                    <div class="si-tit">可用积分</div>
+                                    <div class="si-warp">可用 <span class="integral">{$goods.integral}</span></div>
+                                </div>
+                                <!-- {/if} -->
+                                <!-- {if $goods.give_integral && $cfg.show_give_integral} 购买此商品可获得的消费积分-->
+                                <div class="summary-item is-integral">
+                                    <div class="si-tit">赠送积分</div>
+                                    <div class="si-warp"><span class="integral">{$goods.give_integral}</span></div>
+                                </div>
+                                <!-- {/if} -->
+                                <!-- {if $goods.goods_extends.is_reality || $goods.goods_extends.is_return || $goods.goods_extends.is_fast} -->
+                                <div class="summary-item">
+                                    <div class="si-tit">承诺</div>
+                                    <div class="si-warp">
+                                        <ul class="tips-list">
+                                            {if $goods.goods_extends.is_reality}<li class="choose-item choose-zp"><i class="iconfont icon-zheng"></i>{$lang.is_reality}</li>{/if}
+                                            {if $goods.goods_extends.is_return}<li class="choose-item choose-bt"><i class="iconfont icon-money"></i>{$lang.is_return}</li>{/if}
+                                            {if $goods.goods_extends.is_fast}<li class="choose-item choose-ss"><i class="iconfont icon-light"></i>{$lang.is_fast}</li>{/if}
+                                        </ul>
+                                    </div>
+                                </div>
+                                <!-- {/if} -->
+                                <!-- {if $goods.is_xiangou eq 1&& $xiangou eq 1} 商品限购数量-->
+                                <div class="summary-item is-xiangou">
+                                    <div class="si-tit">限购</div>
+                                    <div class="si-warp">
+                                        <em id="restrict_amount" ectype="restrictNumber" data-value="{$goods.xiangou_num}">{$goods.xiangou_num}</em>
+                                        <span>{if $goods.goods_unit}{$goods.goods_unit}{elseif $goods.measure_unit}{$goods.measure_unit}{/if}</span>
+                                        <span>（{$lang.Already_buy}：<em id="orderG_number" ectype="orderGNumber" data-value="{$orderG_number|default:0}">{$orderG_number|default:0}</em>{if $goods.goods_unit}{$goods.goods_unit}{elseif $goods.measure_unit}{$goods.measure_unit}{/if}）</span>
+                                    </div>
+                                </div>
+                                <!-- {/if} -->
+                                <!-- {if $area_position_list && $goods.store_count > 0} 门店自提-->
+                                <div class="summary-item is-since" ectype="list-store-pick">
+                                    <div class="si-tit">自提</div>
+                                    <div class="si-warp">
+                                        <a href="javascript:void(0);" ectype="seller_store" class="link-red"><i class="iconfont icon-store-alt"></i>选择门店</a>
+                                        <span class="ml10">请选择有货的门店，上门自提</span>
+                                    </div>
+                                </div>
+                                <!-- {/if} -->
+                                
+                                <!-- {if $specification} -->
+                                <!-- {foreach from=$specification item=spec key=spec_key} -->
+                                <!-- {if $spec.values} -->
+                                <div class="summary-item is-attr goods_info_attr" ectype="is-attr" data-type="<!-- {if $spec.attr_type eq 1} -->radio<!-- {else} -->checkbox<!-- {/if} -->">
+                                    <div class="si-tit">{$spec.name}</div>
+                                    <!-- {if $cfg.goodsattr_style eq 1} -->
+                                    <div class="si-warp">
+                                        <ul>
+                                            <!-- {foreach from=$spec.values item=value key=key name=attrvalues} -->
+                                            {if $spec.is_checked > 0}
+                                            <li class="item{if $value.checked eq 1} selected{/if}" data-name="{$value.id}">
+                                                <b></b>
+                                                <a href="{if $value.img_site}{$value.img_site}{else}javascript:void(0);{/if}">
+                                                    {if $value.img_flie}
+                                                    <img src="{$value.img_flie}" width="24" height="24" />
+                                                    {/if}
+                                                    <i>{$value.label}</i>
+                                                    <input id="spec_value_{$value.id}" type="{if $spec.attr_type eq 2}checkbox{else}radio{/if}" data-attrtype="{if $spec.attr_type eq 2}2{else}1{/if}" name="spec_{$spec_key}" value="{$value.id}" autocomplete="off" class="hide" />
+                                                    {if $value.checked eq 1}
+                                                    <script type="text/javascript">
+                                                        $(function(){
+															$("#spec_value_{$value.id}").prop("checked", true);
+                                                        });
+                                                    </script>
+                                                    {/if}
+                                                </a>
+                                            </li>
+                                            {else}
+                                            <li class="item {if $key eq 0} selected{/if}" data-name="{$value.id}">
+                                                <b></b>
+                                                <a href="javascript:void(0);" name="{$value.id}" class="noimg">
+                                                    <i>{$value.label}</i>
+                                                    <input id="spec_value_{$value.id}" type="{if $spec.attr_type eq 2}checkbox{else}radio{/if}" data-attrtype="{if $spec.attr_type eq 2}2{else}1{/if}" name="spec_{$spec_key}" value="{$value.id}" autocomplete="off" class="hide" /></a>
+                                                    {if $key eq 0}
+                                                    <script type="text/javascript">
+                                                        $(function(){
+                                                            $("#spec_value_{$value.id}").prop("checked", true);
+                                                        });
+                                                    </script>
+                                                    {/if}
+                                                </a>
+                                            </li>
+                                            {/if}
+                                            <!-- {/foreach} -->
+                                        </ul>
+                                    </div>
+                                    <!-- {else} 列表下拉-->
+                                    ...
+                                    <!-- {/if} -->
+                                    <input type="hidden" name="spec_list" value="{$spec_key}" data-spectype="{if $spec.attr_type eq 1}attr-radio{else}attr-check{/if}" />
+                                </div>
+                                <!-- {/if} -->
+                                <!-- {/foreach} -->
+                                <!-- {/if} -->
+
+                                <!-- {if $stages} 白条分期-->
+                                <div class="summary-item is-ious" ectype="is-ious">
+                                    <div class="si-tit">白条</div>
+                                    <div class="si-warp">
+                                        <!-- {foreach from=$stages item=vo key=k} -->
+                                        <!-- {if $k eq 1} -->
+                                        <div class="item" data-value="{$k}">
+                                            <b></b>
+                                            <a href="javascript:void(0);"><i>{$lang.noFree_30}</i></a>
+                                            <div class="baitiao-tips">
+                                                <span>{$lang.nofree}</span>
+                                            </div>
+                                        </div>
+                                        <!-- {else} -->
+                                        <div class="item" data-value="{$k}">
+                                            <b></b>
+                                            <a href="javascript:void(0);"><i>￥{$vo.stages_one_price}×{$k}{$lang.qi}</i></a>
+                                            <div class="baitiao-tips">
+                                                <span>{$lang.free_desc}{$goods.stages_rate}%，￥{$vo.stages_one_price}×{$k}{$lang.qi}</span>
+                                            </div>
+                                        </div>
+                                        <!-- {/if} -->
+                                        <!-- {/foreach} -->
+                                        <div class="bt-info-tips">
+                                            <a href="javascript:void(0);"><i class="question"></i></a>
+                                            <div class="tips">
+                                                <div class="sprite-arrow"></div>
+                                                <div class="content">
+                                                    <p>1､实际分期金额及手续费以白条剩余额度及收银台优惠为准</p>
+                                                    <p>2､什么是白条分期？<br>白条分期是商城推出的一种“先消费，后付款”的全新支付方式。使用白条进行付款，可以享受最长30天的延后付款期或最长24期的分期付款方式。</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" name="stages_qishu" value=""/>
+                                    </div>
+                                </div>
+                                <!-- {/if} -->
+                                <div class="summary-item is-number">
+                                    <div class="si-tit">数量</div>
+                                    <div class="si-warp">
+                                        <div class="amount-warp">
+                                            <input class="text buy-num" ectype="quantity" value="1" name="number" defaultnumber="1">
+                                            <div class="a-btn">
+                                                <a href="javascript:void(0);" class="btn-add" ectype="btnAdd"><i class="iconfont icon-up"></i></a>
+                                                <a href="javascript:void(0);" class="btn-reduce btn-disabled" ectype="btnReduce"><i class="iconfont icon-down"></i></a>
+                                                <input type="hidden" name="perNumber" id="perNumber" ectype="perNumber" value="0">
+                                                <input type="hidden" name="perMinNumber" id="perMinNumber" ectype="perMinNumber" value="1">
+                                            </div>
+                                            <input name="confirm_type" id="confirm_type" type="hidden" value="3" />
+                                        </div>
+                                        <!-- {if $cfg.show_goodsnumber} 商品库存-->
+                                        <span>{$lang.goods_inventory}&nbsp;<em id="goods_attr_num" ectype="goods_attr_num"></em>&nbsp;{if $goods.goods_unit}{$goods.goods_unit}{else}{$goods.measure_unit}{/if}</span>
+                                        <!-- {/if} -->
+                                    </div>
+                                </div>
+                                <div class="clear"></div>
+                            </div>
+                            <div class="choose-btns{if !$area_position_list || $goods.store_count <= 0 || !$stages || $goods.is_on_sale eq 0 } ml60{/if} clearfix">
+                                {if $shop_close eq 0 && $goods.user_id neq 0}
+                                	<a class="btn-invalid" href="javascript:void(0);">此店铺已关闭</a>
+                                {else}
+                                    {if $goods.is_alone_sale eq 0}
+                                    <a href="category.php?id=347" class="btn-buynow">查看类似商品</a>
+                                    {else}
+                                        {if $goods.review_status <= 2 || $goods.is_on_sale eq 0}
+                                            <a id="sold_out" class="btn-invalid" href="javascript:void(0);">此商品已下架</a>
+                                        {else}
+                                            {if $goods_area eq 1}
+                                                <a href="{if $user_id <= 0 && $one_step_buy}#none{else}javascript:bool=0;addToCart({$goods.goods_id}){/if}" data-type="{$one_step_buy}" class="btn-buynow" ectype="btn-buynow">立即购买</a>
+                                                {if !$one_step_buy}
+                                                    <a href="javascript:bool=0;addToCartShowDiv({$goods.goods_id})" class="btn-append" ectype="btn-append"><i class="iconfont icon-carts"></i>{$lang.btn_add_to_cart}</a>
+                                                {/if}
+                                                <!--分期购按钮 start-->
+                                                {if $stages}
+                                                    <a href="javascript:void(0);" class="btn-baitiao" ectype="byStages">{$lang.Installment_purchase}</a>
+                                                {/if}
+                                                <!--分期购按钮 end-->
+                                            {else}
+                                            <a id="no_addToCart" class="btn-invalid btn_disabled" href="javascript:void(0);">暂时无货</a>
+                                            {/if}
+                                        {/if}
+                                    {/if}
+                                {/if}
+                                <!-- {if $area_position_list && $goods.store_count > 0} 门店 -->
+                                <input type="hidden" name="ru_id" value="{$goods.user_id}">
+                                <a href="javascript:void(0);" class="btn-since" ectype="btn-store-pick">{$lang.btn_store_pick}</a>
+                                <!-- {/if} 门店 -->
+                            </div>
+                            <!-- {if $goods.goods_tag} -->
+                            <div class="summary-basic-info">
+                                <div class="summary-item is-service">
+                                    <div class="si-tit">服务承诺</div>
+                                    <div class="si-warp">
+                                        <!-- {foreach from=$goods.goods_tag item=tag} -->
+                                        <span class="tary">{$tag}</span>
+                                        <!-- {/foreach} -->
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- {/if} -->
+                            <!--{if !$goods.goods_extends.is_return || $goods.is_alone_sale eq 0}-->
+                            <div class="summary-basic-info">
+                                <div class="summary-item is-service">
+                                    <div class="si-tit">温馨提示</div>
+                                    <div class="si-warp gray">
+                                        <!--{if $goods.is_alone_sale eq 0}-->
+                                        <p>·该商品不支持单独销售</p>
+                                        <!--{/if}-->
+                                        <!--{if !$goods.goods_extends.is_return}-->
+                                        <p>·不支持退换货服务</p>
+                                        <!--{/if}-->
+                                    </div>
+                                </div>
+                            </div>
+                            <!--{/if}-->
+                    	</div>
+                        <input type="hidden" value="{$goods.goods_id}" name="goods_id" />
+                        <input type="hidden" value="{$goods_id}" id="good_id" name="good_id" />
+                        <input type="hidden" value="{$smarty.session.user_id}" id="user_id" name="user_id"/>
+                        <input type="hidden" value="{$area.street_list|default:0}" name="street_list" />
+                        <input type="hidden" value="{$xiangou}" name="restrictShop" ectype="restrictShop" />
+                        <input type="hidden" value="{$cfg.add_shop_price}" name="add_shop_price" ectype="add_shop_price" />
+                    </form>
+                </div>
+                {if !$goods.user_id}
+                <div class="track" id="see_more_goods">
+
+                </div>
+                {else}
+                <div class="seller-pop">
+                    <div class="seller-logo">
+                    	{if $goods.shopinfo.brand_thumb}
+                            <a href="{$goods.store_url}" target="_blank"><img src="{$goods.shopinfo.brand_thumb}" /></a>
+                        {else}
+                            <a href="{$goods.goods_brand_url}" target="_blank">{$goods.goods_brand}</a>
+                        {/if}
+                    </div>
+                    <div class="seller-info">
+                    	<a href="{$goods.store_url}" title="{$goods.rz_shopName}" target="_blank" class="name">{$goods.rz_shopName}</a>
+                        {if $shop_information.is_IM eq 1 || $shop_information.is_dsc}
+                            <a id="IM" href="javascript:;" onclick="openWin(this)" ru_id="{$goods.user_id}" goods_id="{$goods.goods_id}"><i class="icon i-kefu"></i></a>
+                        {else}
+                            {if $basic_info.kf_type eq 1}
+                                <a href="http://www.taobao.com/webww/ww.php?ver=3&touid={$basic_info.kf_ww}&siteid=cntaobao&status=1&charset=utf-8" target="_blank"><i class="icon i-kefu"></i></a>
+                            {else}
+                                <a href="http://wpa.qq.com/msgrd?v=3&uin={$basic_info.kf_qq}&site=qq&menu=yes" target="_blank"><i class="icon i-kefu"></i></a>
+                            {/if}
+                        {/if}
+                    </div>
+                    {if $goods.shopinfo.self_run}
+                    <div class="seller-sr">{$lang.platform_self}</div>
+                    {/if}
+                    <div class="seller-pop-box">
+                    	<div class="s-score">
+                            <span class="score-icon"><span class="score-icon-bg" style="width:{$merch_cmt.cmt.all_zconments.allReview}%;"></span></span>
+                            <span>{$merch_cmt.cmt.all_zconments.score}</span>
+                            <i class="iconfont icon-down"></i>
+                        </div>
+                        <div class="g-s-parts">
+                            <div class="parts-item parts-goods">
+                                <span class="col1">商品评价</span>
+                                <span class="col2 {if $merch_cmt.cmt.commentRank.zconments.is_status eq 1}ftx-01{elseif $merch_cmt.cmt.commentRank.zconments.is_status eq 2}average{else}ftx-02{/if}">{$merch_cmt.cmt.commentRank.zconments.score}<i class="iconfont icon-arrow-{if $merch_cmt.cmt.commentRank.zconments.is_status eq 1}up{elseif $merch_cmt.cmt.commentRank.zconments.is_status eq 2}average{else}down{/if}"></i></span>
+                            </div>
+                            <div class="parts-item parts-goods">
+                                <span class="col1">服务态度</span>
+                                <span class="col2 {if $merch_cmt.cmt.commentServer.zconments.is_status eq 1}ftx-01{elseif $merch_cmt.cmt.commentServer.zconments.is_status eq 2}average{else}ftx-02{/if}">{$merch_cmt.cmt.commentServer.zconments.score}<i class="iconfont icon-arrow-{if $merch_cmt.cmt.commentServer.zconments.is_status eq 1}up{elseif $merch_cmt.cmt.commentServer.zconments.is_status eq 2}average{else}down{/if}"></i></span>
+                            </div>
+                            <div class="parts-item parts-goods">
+                                <span class="col1">发货速度</span>
+                                <span class="col2 {if $merch_cmt.cmt.commentDelivery.zconments.is_status eq 1}ftx-01{elseif $merch_cmt.cmt.commentDelivery.zconments.is_status eq 2}average{else}ftx-02{/if}">{$merch_cmt.cmt.commentDelivery.zconments.score}<i class="iconfont icon-arrow-{if $merch_cmt.cmt.commentDelivery.zconments.is_status eq 1}up{elseif $merch_cmt.cmt.commentDelivery.zconments.is_status eq 2}average{else}down{/if}"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="seller-item">
+                    	<a href="javascript:void(0);" ectype="collect_store" data-type='goods' data-value='{"userid":{$user_id},"storeid":{$goods.user_id}}' class="gz-store" data-url="{$goods.goods_url}"></a>
+                        <a href="{$goods.store_url}" class="store-home"><i class="iconfont icon-home-store"></i>店铺</a>
+                        <input type="hidden" name="error" value="{$goods.error}" id="error"/>
+                    </div>
+                    <div class="seller-tel"><i class="iconfont icon-tel"></i>{if $shop_information.kf_tel}{$shop_information.kf_tel}{else}暂无联系方式{/if}</div>
+                </div>
+                {/if}
+                <div class="clear"></div>
+            </div>
+            <!-- #BeginLibraryItem "/library/goods_fittings.lbi" --><!-- #EndLibraryItem -->
+            <div class="goods-main-layout">
+            	<div class="g-m-left">
+                    <!-- #BeginLibraryItem "/library/goods_merchants.lbi" --><!-- #EndLibraryItem -->
+                    <!--{if $basic_info.kf_type eq 1} 多客服-->
+                        <!--{if $basic_info.kf_ww_all}-->
+                        <div class="g-main service_list">
+                            <div class="mt"><h3>{$lang.store_Customer_service}</h3></div>
+                            <div class="mc">
+                                <ul>
+                                    {foreach from=$basic_info.kf_ww_all  item=kf_ww}
+                                    <li><a href="http://www.taobao.com/webww/ww.php?ver=3&touid={$kf_ww.1}&siteid=cntaobao&status=1&charset=utf-8" target="_blank"><i class="icon_service_ww"></i><span>{$kf_ww.0}</span></a></li>
+                                    {/foreach}
+                                </ul>
+                            </div>
+                        </div>
+                        <!--{/if}-->
+                    <!--{else}-->
+                        <!--{if $basic_info.kf_qq_all}-->
+                        <div class="g-main service_list">
+                            <div class="mt"><h3>{$lang.store_Customer_service}</h3></div>
+                            <div class="mc">
+                                <ul>
+                                    {foreach from=$basic_info.kf_qq_all  item=kf_qq}
+                                        <li class="service_qq"><a href="http://wpa.qq.com/msgrd?v=3&uin={$kf_qq.1}&site=qq&menu=yes" target="_blank"><i class="icon i-kefu"></i><span>{$kf_qq.0}</span></a></li>
+                                    {/foreach}
+                                </ul>
+                            </div>
+                        </div>
+                        <!--{/if}-->
+                    <!--{/if}-->
+
+                    <!-- {if $goods_store_cat} 店内分类-->
+                    <div class="g-main g-store-cate">
+                    	<div class="mt">
+                            <h3>店内分类</h3>
+                        </div>
+                        <div class="mc">
+                            <div class="g-s-cate-warp">
+                                <!-- {foreach from=$goods_store_cat item=cat key=key} -->
+                            	<dl{if $cat.cat_id} ectype="cateOpen"{else} class="hover"{/if}>
+                                    <dt><i class="icon"></i><a href="{$cat.url}" target="_blank">{$cat.name}</a></dt>
+                                    {if $cat.cat_id}
+                                    <dd>
+                                        <!-- {foreach from=$cat.cat_id item=cat key=key name=nocat} -->
+                                    	<a href="{$cat.url}" class="a-item" target="_blank">&gt; {$cat.name}</a>
+                                        <!-- {/foreach} -->
+                                    </dd>
+                                    {/if}
+                                </dl>
+                                <!-- {/foreach} -->
+                            </div>
+                        </div>
+                    </div>
+                    <!-- {/if} -->
+
+                    <!-- {if $goods_related_cat} 相关分类-->
+                    <div class="g-main">
+                    	<div class="mt">
+                            <h3>相关分类</h3>
+                        </div>
+                        <div class="mc">
+                            <div class="mc-warp">
+                            	<div class="items">
+                                    <!--{foreach from=$goods_related_cat item=cat name=cat}-->
+                                    <!--{if $smarty.foreach.cat.iteration lt 11}-->
+                                    <div class="item"><a href="{$cat.url}" target="_blank">{$cat.cat_name}</a></div>
+                                    <!--{/if}-->
+                                    <!--{/foreach}-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- {/if} -->
+
+                    <!--{if $goods_brand} 同类其他品牌-->
+                    <div class="g-main">
+                    	<div class="mt">
+                            <h3>同类其他品牌</h3>
+                        </div>
+                        <div class="mc">
+                            <div class="mc-warp">
+                            	<div class="items">
+                                    <!--{foreach from=$goods_brand item=brand}-->
+                                    <div class="item"><a href="{$brand.url}" target="_blank">{$brand.brand_name}</a></div>
+                                    <!--{/foreach}-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--{/if}-->
+
+                    <!-- TemplateBeginEditable name="左边区域（关联文章）" -->
+                    <!-- #BeginLibraryItem "/library/goods_article.lbi" -->
+                    <!-- #EndLibraryItem -->
+                    <!-- TemplateEndEditable -->
+
+                    <!--{if $new_goods || $best_goods || $hot_goods} 新品、热销、精品排行-->
+                    <div class="g-main g-rank">
+                        <div class="mc">
+                            <ul class="mc-tab" ectype="rankMcTab">
+                            	<!--{if $new_goods}<li class="curr">新品</li>{/if}-->
+                                <!--{if $best_goods}<li>推荐</li>{/if}-->
+                                <!--{if $hot_goods}<li>热销</li>{/if}-->
+                            </ul>
+                        	<div class="mc-content">
+                                    <!-- TemplateBeginEditable name="新品排行" -->
+                                    <!-- #BeginLibraryItem "/library/recommend_new_goods.lbi" -->
+                                    <!-- {if $new_goods} -->
+                                    <div class="mc-main" style="display:block;">
+                                        <div class="mcm-left">
+                                            <div class="spirit"></div>
+                                            <!--{foreach from=$new_goods item=goods name=new}-->
+                                            <div class="rank-number rank-number{$smarty.foreach.new.iteration}">{$smarty.foreach.new.iteration}</div>
+                                            <!--{/foreach}-->
+                                        </div>
+                                        <div class="mcm-right">
+                                            <ul>
+                                                <!--{foreach from=$new_goods item=goods name=new}-->
+                                                <li>
+                                                    <div class="p-img"><a href="{$goods.url}" title="{$goods.name|escape:html}"><img src="{$goods.thumb}" width="130" height="130"></a></div>
+                                                    <div class="p-name"><a href="{$goods.url}" title="{$goods.name|escape:html}">{$goods.short_style_name}</a></div>
+                                                    <div class="p-price">
+                                                        {if $goods.promote_price neq ''}
+                                                            {$goods.promote_price}
+                                                        {else}
+                                                            {$goods.shop_price}
+                                                        {/if}
+                                                    </div>
+                                                </li>
+                                                <!--{/foreach}-->
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <!-- {/if} -->
+                                    <!-- #EndLibraryItem -->
+                                    <!-- TemplateEndEditable -->
+                                    <!-- TemplateBeginEditable name="精品排行" -->
+                                    <!-- #BeginLibraryItem "/library/recommend_best_goods.lbi" -->
+
+
+                                    <!-- {if $best_goods} -->
+                                    <div class="mc-main" style="display:block;">
+                                        <div class="mcm-left">
+                                            <div class="spirit"></div>
+                                            <!--{foreach from=$best_goods item=goods name=best}-->
+                                            <div class="rank-number rank-number{$smarty.foreach.best.iteration}">{$smarty.foreach.best.iteration}</div>
+                                            <!--{/foreach}-->
+                                        </div>
+                                        <div class="mcm-right">
+                                            <ul>
+                                                <!--{foreach from=$best_goods item=goods name=best}-->
+                                                <li>
+                                                    <div class="p-img"><a href="{$goods.url}" title="{$goods.name|escape:html}"><img src="{$goods.thumb}" width="130" height="130"></a></div>
+                                                    <div class="p-name"><a href="{$goods.url}" title="{$goods.name|escape:html}">{$goods.short_style_name}</a></div>
+                                                    <div class="p-price">
+                                                        {if $goods.promote_price neq ''}
+                                                                {$goods.promote_price}
+                                                        {else}
+                                                                {$goods.shop_price}
+                                                        {/if}
+                                                    </div>
+                                                </li>
+                                                <!--{/foreach}-->
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <!-- {/if} -->
+                                    <!-- #EndLibraryItem -->
+                                    <!-- TemplateEndEditable -->
+                                    <!-- TemplateBeginEditable name="热销排行" -->
+                                    <!-- #BeginLibraryItem "/library/recommend_hot_goods.lbi" -->
+
+
+                                    <!-- {if $hot_goods} -->
+                                    <div class="mc-main" style="display:block;">
+                                        <div class="mcm-left">
+                                            <div class="spirit"></div>
+                                            <!--{foreach from=$hot_goods item=goods name=hot}-->
+                                            <div class="rank-number rank-number{$smarty.foreach.hot.iteration}">{$smarty.foreach.hot.iteration}</div>
+                                            <!--{/foreach}-->
+                                        </div>
+                                        <div class="mcm-right">
+                                            <ul>
+                                                <!--{foreach from=$hot_goods item=goods name=hot}-->
+                                                <li>
+                                                    <div class="p-img"><a href="{$goods.url}" title="{$goods.name|escape:html}"><img src="{$goods.thumb}" width="130" height="130"></a></div>
+                                                    <div class="p-name"><a href="{$goods.url}" title="{$goods.name|escape:html}">{$goods.short_style_name}</a></div>
+                                                    <div class="p-price">
+                                                        {if $goods.promote_price neq ''}
+                                                            {$goods.promote_price}
+                                                        {else}
+                                                            {$goods.shop_price}
+                                                        {/if}
+                                                    </div>
+                                                </li>
+                                                <!--{/foreach}-->
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <!-- {/if} -->
+                                    <!-- #EndLibraryItem -->
+                                    <!-- TemplateEndEditable -->
+                                </div>
+                            </div>
+                        </div>
+                    <!--{/if}-->
+
+                    <!-- 浏览历史记录 -->
+                    {insert name='history_goods' goods_id=0 warehouse_id=$region_id area_id=$area_id}
+
+                    <!-- TemplateBeginEditable name="左边区域（关联商品）" -->
+                    <!-- #BeginLibraryItem "/library/goods_related.lbi" -->
+                    <!-- #EndLibraryItem -->
+                    <!-- TemplateEndEditable -->
+                </div>
+                <div class="g-m-detail">
+                	<div class="gm-tabbox" ectype="gm-tabs">
+                    	<ul class="gm-tab">
+                            <li class="curr" ectype="gm-tab-item">商品详情</li>
+                            <!-- {if $properties} --><li ectype="gm-tab-item-spec">规格参数</li><!--{/if}-->
+                            <li ectype="gm-tab-item">用户评论（<em class="ReviewsCount">{$comment_all.allmen}</em>）</li>
+                            <li ectype="gm-tab-item">网友讨论圈</li>
+                        </ul>
+                        <div class="extra">
+                        	<div class="item">
+								<!--{if $two_code}-->
+                                <div class="si-phone-code">
+                                    <div class="qrcode-wrap">
+                                        <div class="qrcode_tit">{$lang.summary_phone}<i class="iconfont icon-qr-code"></i></div>
+                                        <div class="qrcode_pop">
+                                            <div class="mobile-qrcode"><img src="{$weixin_img_url}" alt="{$lang.two_code}" title="{$weixin_img_text}" width="175"></div>
+                                        </div>
+                                    </div>
+                                </div>
+								<!--{/if}-->
+                            	<div class="inner">
+                                	<a href="javascript:void(0)" class="btn sc-redBg-btn" id="btn-anchor" ectype="tb-tab-anchor">{$lang.btn_add_to_cart}</a>
+                                	<div class="tb-popsku">
+                                    	<span class="arrow-top"></span>
+                                        <div class="tb-popsku-content">
+                                        	<div class="tb-list">
+                                            	<div class="tb-label">价格：</div>
+                                                <div class="tb-value"><strong class="shop-price" ectype="SHOP_PRICE"></strong></div>
+                                            </div>
+                                            <!-- {foreach from=$specification item=spec key=spec_key} -->
+                                            <!-- {if $spec.values} -->
+                                            <div class="tb-list is-attr goods_info_attr" ectype="is-attr" data-type="<!-- {if $spec.attr_type eq 1} -->radio<!-- {else} -->checkbox<!-- {/if} -->">
+                                                <div class="tb-label">{$spec.name}:</div>
+                                                <!-- {if $cfg.goodsattr_style eq 1} -->
+                                                <div class="tb-value">
+                                                    <ul>
+                                                    <!-- {foreach from=$spec.values item=value key=key name=attrvalues} -->
+                                                    {if $spec.is_checked > 0}
+                                                    <li class="item{if $value.checked eq 1} selected{/if}" data-name="{$value.id}">
+                                                        <b></b>
+                                                        <a href="{if $value.img_site}{$value.img_site}{else}javascript:void(0);{/if}"{if $value.img_site} target="_blank"{/if}>
+                                                            {if $value.img_flie}
+                                                            <img src="{$value.img_flie}" width="24" height="24" />
+                                                            {/if}
+                                                            <i>{$value.label}</i>
+                                                            <input id="spec_value_{$value.id}" type="{if $spec.attr_type eq 2}checkbox{else}radio{/if}" data-attrtype="{if $spec.attr_type eq 2}2{else}1{/if}" name="spec_{$spec_key}" value="{$value.id}" class="hide" autocomplete="off" />
+                                                            {if $value.checked eq 1}
+                                                            <script type="text/javascript">
+                                                                $(function(){
+                                                                    $("#spec_value_{$value.id}").prop("checked", true);
+                                                                });
+                                                            </script>
+                                                            {/if}
+                                                        </a>
+                                                    </li>
+                                                    {else}
+                                                    <li class="item {if $key eq 0} selected{/if}" data-name="{$value.id}">
+                                                        <b></b>
+                                                        <a href="javascript:void(0);" name="{$value.id}" class="noimg">
+                                                            <i>{$value.label}</i>
+                                                            <input id="spec_value_{$value.id}" type="{if $spec.attr_type eq 2}checkbox{else}radio{/if}" data-attrtype="{if $spec.attr_type eq 2}2{else}1{/if}" name="spec_{$spec_key}" value="{$value.id}" autocomplete="off" class="hide" /></a>
+                                                            {if $key eq 0}
+                                                            <script type="text/javascript">
+                                                                $(function(){
+                                                                    $("#spec_value_{$value.id}").prop("checked", true);
+                                                                });
+                                                            </script>
+                                                            {/if}
+                                                        </a>
+                                                    </li>
+                                                    {/if}
+                                                    <!-- {/foreach} -->
+                                                    </ul>
+                                                </div>
+                                                <!-- {else} 列表下拉-->
+                                                ...
+                                                <!-- {/if} -->
+                                                <input type="hidden" name="spec_list" value="{$spec_key}" data-spectype="{if $spec.attr_type eq 1}attr-radio{else}attr-check{/if}" />
+                                            </div>
+                                            <!-- {/if} -->
+                                            <!-- {/foreach} -->
+                                        	<div class="tb-list">
+                                            	<div class="tb-label">数量：</div>
+												<div class="tb-value">
+													<div class="amount-warp">
+														<input class="text buy-num" ectype="quantity" value="1" name="number" defaultnumber="1">
+														<div class="a-btn">
+															<a href="javascript:void(0);" class="btn-add" ectype="btnAdd"><i class="iconfont icon-up"></i></a>
+															<a href="javascript:void(0);" class="btn-reduce btn-disabled" ectype="btnReduce"><i class="iconfont icon-down"></i></a>
+														</div>
+														<input name="confirm_type" id="confirm_type" type="hidden" value="3" />
+													</div>
+													<span class="lh30 ml10">{$lang.goods_inventory}&nbsp;<em ectype="goods_attr_num"></em>&nbsp;{if $goods.goods_unit}{$goods.goods_unit}{else}{$goods.measure_unit}{/if}</span>
+												</div>
+											</div>
+                                            <div class="tb-list">
+                                            	<div class="tb-label">&nbsp;</div>
+                                                <div class="tb-value">
+													<a href="javascript:bool=0;addToCartShowDiv({$goods.goods_id})" class="cz-btn cz-btn-true" ectype="btn-append">确定</a>
+                                                    <a href="javascript:void(0);" class="cz-btn cz-btn-false" ectype="tb-cancel">取消</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="gm-tab-qp-bort" ectype="qp-bort"></div>
+                    </div>
+                    <div class="gm-floors" ectype="gm-floors">
+                        <div class="gm-f-item gm-f-details" ectype="gm-item">
+                            <div class="gm-title">
+                                <h3>商品详情</h3>
+                            </div>
+                            <div class="goods-para-list">
+                                <dl class="goods-para">
+                                    <dd class="column"><span>{$lang.goods_name}：{$goods.goods_name|escape:html}</span></dd>
+                                    <dd class="column"><span>{$lang.Commodity_number}：{$goods.goods_sn}</span></dd>
+                                    <dd class="column"><span>{$lang.seller_store}：<a href="{$goods.store_url}" title="{$goods.rz_shopName}" target="_blank">{$goods.rz_shopName}</a></span></dd>
+                                    <!-- {if $cfg.show_goodsweight} 商品重量-->
+                                    <dd class="column"><span>{$lang.weight}：{$goods.goods_weight}</span></dd>
+                                    <!-- {/if} -->
+                                    <!-- {if $cfg.show_addtime} 上架时间-->
+                                    <dd class="column"><span>{$lang.add_time}{$goods.add_time}</span></dd>
+                                    <!-- {/if} -->
+                                </dl>
+
+                                <!-- {if $properties} -->
+                                <dl class="goods-para">
+                                    <!-- {foreach from=$properties item=property_group key=key} -->
+                                    <!-- {foreach from=$property_group item=property name=noproperty} -->
+                                    <!-- {if $smarty.foreach.noproperty.iteration lt 13} -->
+                                    <dd class="column"><span title="{$property.value}">{$property.name|escape:html}：{$property.value}</span></dd>
+                                    <!-- {/if} -->
+                                    <!-- {/foreach}-->
+                                    <!-- {/foreach}-->
+                                </dl>
+                                <!-- {/if} -->
+                                <!-- {if $extend_info} -->
+                                <dl class="goods-para">
+                                    <!-- {foreach from=$extend_info item=info key=key} -->
+                                    <dd class="column"><span title="{$info|escape:html}">{$key}：{$info|escape:html}</span></dd>
+                                    <!-- {/foreach}-->
+                                </dl>
+                                <!-- {/if} -->
+                                <!-- {if $properties} -->
+                                <p class="more-par">
+                                    <a href="javascript:void(0);" ectype="product-detail" class="ftx-05">更多参数>></a>
+                                </p>
+                                <!--{/if}-->
+                            </div>
+
+                            {$goods.goods_desc}
+                        </div>
+                        <!-- {if $properties} -->
+                        <div class="gm-f-item gm-f-parameter" ectype="gm-item" id="product-detail" style="display:none;">
+                            <div class="gm-title">
+                                <h3>规格参数</h3>
+                            </div>
+                            <div class="Ptable">
+                                <!-- {foreach from=$properties item=property_group key=key} -->
+                                <div class="Ptable-item">
+                                    <h3>{$key}</h3>
+                                    <dl>
+                                        <!-- {foreach from=$property_group item=property} -->
+                                        <dt>{$property.name|escape:html}</dt>
+                                        <dd title="{$property.value}">{$property.value}</dd>
+                                        <!-- {/foreach}-->
+                                    </dl>
+                                </div>
+                                <!-- {/foreach}-->
+                            </div>
+                        </div>
+                        <!-- {/if} -->
+                        <div class="gm-f-item gm-f-comment" ectype="gm-item">
+                            <div class="gm-title">
+                                <h3>评论晒单</h3>
+                                {* DSC 提醒您：动态载入goods_comment_title.lbi，显示首页分类小广告 *}{insert name='goods_comment_title' goods_id=$goods.goods_id}
+                            </div>
+                            <div class="gm-warp">
+                                <div class="praise-rate-warp">
+                                    <div class="rate">
+                                        <strong>{$comment_all.goodReview}</strong>
+                                        <span class="rate-span">
+                                            <span class="tit">好评率</span>
+                                            <span class="bf">%</span>
+                                        </span>
+                                    </div>
+                                    <div class="actor-new">
+                                        {if $goods.impression_list}
+                                        <dl>
+                                            <dd ectype="comment_tag" data-type="1"><span class="red">全部</span></dd>
+                                            <!--{foreach from=$goods.impression_list item=tag}-->
+                                            <dd ectype="comment_tag"><span>{$tag.txt}</span>({$tag.num})</dd>
+                                            <!--{/foreach}-->
+                                        </dl>
+                                        {else}
+                                        <div class="not_impression">此商品还没有设置买家印象，陪我一起等下嘛~</div>
+                                        {/if}
+                                    </div>
+                                </div>
+                                <div class="com-list-main">
+                                <!-- #BeginLibraryItem "/library/comments.lbi" --> <!-- #EndLibraryItem -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="gm-f-item gm-f-tiezi" ectype="gm-item">
+                            {* DSC 提醒您：动态载入goods_discuss_title.lbi，显示首页分类小广告 *}{insert name='goods_discuss_title' goods_id=$goods.goods_id}
+                            <div class="table" id='discuss_list_ECS_COMMENT'></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="clear"></div>
+                <div class="rection" id="guess_goods_love">
+                </div>
+            </div>
+        </div>
+
+        <div class="hidden">
+            <!--降价通知-->
+            <div id="notify_box" class="hide">
+                <div class="sale-notice">
+                    <div class="prompt">{$lang.price_notice_desc}</div>
+                    <div class="user-form foreg-form">
+                        <div class="form-row">
+                            <div class="form-label"><em class="red">*</em>{$lang.Price_below}：</div>
+                            <div class="form-value">
+                                <input type="text" id="price-notice" name="price-notice" class="form-input w120 fl">
+                                <div class="notic">{$lang.Price_below_one}</div>
+                                <div class="error"></div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-label"><em class="red">*</em>{$lang.label_mobile}</div>
+                            <div class="form-value">
+                                <input type="text" class="form-input" id="cellphone" name="cellphone">
+                                <div class="error"></div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-label"><em class="red">*</em>{$lang.website_email}：</div>
+                            <div class="form-value">
+                                <input type="text" class="form-input" id="user_email_notice" name="email">
+                                <div class="error"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--- 弹出层stop -->
+            <div class="ecsc-cart-popup" id="addtocartdialog">
+                <div class="loading-mask"></div>
+                <div class="loading">
+                    <div class="center_pop_txt">
+                        <div class="title"><h3>{$lang.Prompt}</h3><a href="javascript:loadingClose();" title="{$lang.close}" class="loading-x">X</a></div>
+                    </div>
+                    <div class="btns">
+                        <a href="flow.php" class="ecsc-btn-mini ecsc-btn-orange">{$lang.go_pay}</a>
+                        <a href="javascript:loadingClose();" class="ecsc-btn-mini">{$lang.go_shopping}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- @authro guan start	添加对比文件 start -->
+		<!-- #BeginLibraryItem "/library/duibi.lbi" --><!-- #EndLibraryItem -->
+        <!-- @authro guan start	添加对比文件 end -->
+
+        <!-- #BeginLibraryItem "/library/goods_fittings_cnt.lbi" --><!-- #EndLibraryItem -->
+    </div>
+
+    {* DSC 提醒您：动态载入user_menu_position.lbi，显示首页分类小广告 *}{insert name='user_menu_position'}
+
+    <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+
+    {insert_scripts files='jquery.SuperSlide.2.1.1.js,jquery.yomi.js,common.js,compare.js,cart_common.js,warehouse_area.js,magiczoomplus.js,cart_quick_links.js'}
+    <script type="text/javascript" src="../js/calendar.php?lang={$cfg_lang}"></script>
+	<script type="text/javascript" src="../js/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+	<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/dsc-common.js"></script>
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.purebox.js"></script>
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/region.js"></script>
+	<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/goodsFittings.js"></script>
+
+	<script type="text/javascript">
+
+	//商品详情
+	goods_desc_floor();
+
+	//商品相册小图滚动
+	$(".spec-list").slide({mainCell:".spec-items ul",effect:"left",trigger:"click",pnLoop:false,autoPage:true,scroll:1,vis:5,prevCell:".spec-prev",nextCell:".spec-next"});
+
+	//右侧看了又看上下滚动
+	$(".track_warp").slide({mainCell:".track-con ul",effect:"top",pnLoop:false,autoPlay:false,autoPage:true,prevCell:".sprite-up",nextCell:".sprite-down",vis:3});
+
+	//商品搭配切换
+	$(".combo-inner").slide({titCell:".tab-nav li",mainCell:".tab-content",titOnClassName:"curr",trigger:"click"});
+
+	//商品搭配 多个商品滚动切换
+	$(".combo-items").slide({mainCell:".combo-items-warp ul",effect:"left",pnLoop:false,autoPlay:false,autoPage:true,prevCell:".o-prev",nextCell:".o-next",vis:4});
+
+	//左侧新品 热销 推荐排行切换
+	$(".g-rank").slide({titCell:".mc-tab li",mainCell:".mc-content",titOnClassName:"curr",trigger:"click"});
+
+	<!-- {if $goods.gmt_end_time} -->
+	//促销价格倒计时
+	$(".cd-time").each(function(){
+		$(this).yomi();
+	});
+	<!-- {/if} -->
+
+	//全局变量
+	var seller_id = {$goods.user_id|default:0};
+	var goods_id = {$goods_id|default:0};
+	var goodsId = {$goods_id|default:0};
+	var goodsattr_style = {$cfg.goodsattr_style|default:1};
+	var gmt_end_time = {$promote_end_time|default:0};
+	var now_time = {$now_time};
+	var isReturn = false;
+	$(function(){
+
+		{if $see_more_goods}
+		seeMoreGoods();
+		{/if}
+
+		if(seller_id > 0){
+			goods_collect_store(seller_id);
+		}
+
+		guessGoodsLove();
+
+		//对比默认加载
+		Compare.init();
+	});
+
+	/******************************************* js方法 start***********************************************/
+
+	var add_shop_price = $("*[ectype='add_shop_price']").val();
+
+	/* 点击可选属性或改变数量时修改商品价格的函数 */
+	function changePrice(onload){
+		var qty = $("*[ectype='quantity']").val();
+		var goods_attr_id = '';
+		var goods_attr = '';
+		var attr_id = '';
+		var attr = '';
+		var region_id = $(":input[name='region_id']").val();
+		var area_id = $(":input[name='area_id']").val();
+
+		if(!region_id){
+		   region_id = {$region_id|default:0};
+	   }
+
+	   if(!area_id){
+		   area_id = {$area_id|default:0};
+	   }
+
+		goods_attr_id = getSelectedAttributes(document.forms['ECS_FORMBUY']);
+
+		if(onload != 'onload'){
+			if(add_shop_price == 0){
+				attr_id = getSelectedAttributesGroup(document.forms['ECS_FORMBUY']);
+				goods_attr = '&goods_attr=' + attr_id;
+			}
+			Ajax.call('goods.php', 'act=price&id=' + goodsId + '&attr=' + goods_attr_id + goods_attr + '&number=' + qty + '&warehouse_id=' + region_id + '&area_id=' + area_id, changePriceResponse, 'GET', 'JSON');
+		}else{
+			attr = '&attr=' + goods_attr_id;
+			Ajax.call('goods.php', 'act=price&id=' + goodsId + attr + '&number=' + qty + '&warehouse_id=' + region_id + '&area_id=' + area_id + '&onload=' + onload, changePriceResponse, 'GET', 'JSON');
+		}
+	}
+
+	/* 接收返回的信息 回调函数 */
+	function changePriceResponse(res){
+		if(res.err_msg.length > 0){
+			pbDialog(res.err_msg," ",0,450,80,50);
+		}else{
+			//商品条形码
+			if($("#bar_code").length > 0){
+				if(res.bar_code){
+					$("#bar_code").html(res.bar_code);
+					$("#bar_code").parents(".bar_code").removeClass("hide");
+				}else{
+					$("#bar_code").parents(".bar_code").addClass("hide");
+				}
+			}
+
+			$("#cost-price").html(res.marketPrice_amount);
+
+			//更新库存
+			if($("*[ectype='goods_attr_num']").length > 0){
+				$("*[ectype='goods_attr_num']").html(res.attr_number);
+				$("*[ectype='perNumber']").val(res.attr_number);
+			}
+
+			//更新已购买数量
+			if($("#orderG_number").length > 0){
+				$("#orderG_number").html(res.orderG_number);
+			}
+
+			if($("#ECS_SHOPPRICE").length > 0){
+				//市场价
+				if($("#ECS_MARKETPRICE").length > 0){
+					$("#ECS_MARKETPRICE").html(res.result_market);
+				}
+
+				//商品价格
+				if(res.onload == 'onload'){
+					$("*[ectype='SHOP_PRICE']").html(res.result);
+				}else{
+					if(add_shop_price == 1){
+						$("*[ectype='SHOP_PRICE']").html(res.result);
+					}else{
+						if(res.show_goods == 1){
+							$("*[ectype='SHOP_PRICE']").html(res.spec_price);
+						}else{
+							$("*[ectype='SHOP_PRICE']").html(res.result);
+						}
+					}
+				}
+		                if(add_shop_price == 0 && res.goods_rank_prices){
+		                    $(".goods_rank_prices").html(res.goods_rank_prices);
+		                }
+				//搭配 套餐价
+				var combo_shop = document.getElementsByName('combo_shopPrice[]');
+				var combo_mark = document.getElementsByName('combo_markPrice[]');
+
+				for(var i=0; i<combo_shop.length; i++){
+					combo_shop[i].innerHTML = res.shop_price;
+				}
+
+				for(var i=0; i<combo_mark.length; i++){
+					combo_mark[i].innerHTML = res.market_price;
+				}
+			}
+
+			if(res.err_no == 2){
+				$("#isHas_warehouse_num").html(json_languages.shiping_prompt);
+			}else{
+				var isHas;
+				var is_shipping = Number($("#is_shipping").val());
+
+				if($("#isHas_warehouse_num").length > 0){
+					if((res.attr_number > 0) && (res.attr_number > 0 || res.original_spec_price == res.original_shop_price) && ({$goods.is_on_sale|default:0} != 0 || is_shipping == 1)){
+						$("a[ectype='btn-append']").attr('href','javascript:addToCartShowDiv({$goods.goods_id})').removeClass('btn_disabled');
+						$("a[ectype='btn-buynow']").attr('href','{if $user_id <= 0 && $one_step_buy}#none{else}javascript:addToCart({$goods.goods_id}){/if}').removeClass('btn_disabled');
+						$("a[ectype='byStages']").removeClass('btn_disabled');
+						$('a').remove('#quehuo');
+						isHas = '<strong>'+json_languages.Have_goods+'</strong>，'+json_languages.Deliver_back_order;
+
+						$("a[ectype='btn-buynow']").show();
+						$("a[ectype='btn-append']").show();
+						$("a[ectype='byStages']").show();
+					}else{
+						isHas = '<strong>'+json_languages.No_goods+'</strong>，'+json_languages.goods_over;
+
+						$("a[ectype='btn-buynow']").attr('href','javascript:void(0)').addClass('btn_disabled');
+						$("a[ectype='btn-append']").attr('href','javascript:void(0)').addClass('btn_disabled');
+						$("a[ectype='byStages']").addClass('btn_disabled');
+
+						{if $goods.review_status >= 3}
+							if(!document.getElementById('quehuo')){
+								if({$goods.is_on_sale|default:0} != 0 || is_shipping == 1){
+									$("a[ectype='btn-buynow']").hide();
+									$("a[ectype='btn-append']").hide();
+									$("a[ectype='byStages']").hide();
+									$('.choose-btns').append('<a id="quehuo" class="btn-buynow" href="javascript:addToCart({$goods.goods_id});">暂时缺货</a>');
+								}
+							}
+						{/if}
+					}
+
+					if(res.store_type == 1){
+						$("[ectype='btn-store-pick']").show();
+						$("[ectype='list-store-pick']").show();
+					}else{
+						$("[ectype='btn-store-pick']").hide();
+						$("[ectype='list-store-pick']").hide();
+					}
+					if(is_shipping == 0){
+						//商品没有选择运费模板或者没有设置固定运费时，提示不支持配送
+						var freight_info = $("#user_area_shipping").find("*[ectype='freight_info_span']");
+						if(freight_info.length < 1){
+							$("#user_area_shipping").html("<span class='gary'>[ "+ json_languages.shiping_prompt+" ]</span>");
+						}
+					}
+
+					$("#isHas_warehouse_num").html(isHas);
+				}
+			}
+
+			if(res.fittings_interval){
+				for(var i=0; i<res.fittings_interval.length; i++){
+					$("#m_goods_" + res.fittings_interval[i].groupId).html(res.fittings_interval[i].fittings_minMax);
+					$("#m_goods_save_" + res.fittings_interval[i].groupId).html(res.fittings_interval[i].save_minMaxPrice);
+					$("#m_goods_reference_" + res.fittings_interval[i].groupId).html(res.fittings_interval[i].market_minMax);
+				}
+			}
+
+			if(res.onload == 'onload'){
+				$("*[ectype='SHOP_PRICE']").html(res.result);
+			}
+
+			if(add_shop_price == 1){
+				$(".ECS_fittings_interval").html(res.shop_price);
+			}else{
+				if(res.show_goods == 1){
+					$(".ECS_fittings_interval").html(res.spec_price);
+				}else{
+					$(".ECS_fittings_interval").html(res.shop_price);
+				}
+			}
+
+			//更新白条分期购每期的价格 start
+			if(res.stages){
+				var i = 0;
+				$.each(res.stages,function(k,v){
+					if(k!=1) {
+						$('#chooseStages dd strong').eq(i).html('￥' + v + '×' + k + qi);
+						$('#chooseStages dd strong').eq(i).next('span').html(free_desc+'{$goods.stages_rate}%，￥' + v + '×' + k + qi);
+					}
+					i++;
+				});
+			}
+		}
+
+		isReturn = true;
+
+		if(res.onload == "onload"){
+			quantity();
+		}
+	}
+
+	/* 商品看了又看 start */
+	function seeMoreGoods(){
+
+		var region_id = $(":input[name='region_id']").val();
+		var area_id = $(":input[name='area_id']").val();
+
+		if(!region_id){
+		   region_id = {$region_id|default:0};
+	   }
+
+	   if(!area_id){
+		   area_id = {$area_id|default:0};
+	   }
+
+		Ajax.call('ajax_dialog.php', 'act=see_more_goods&goods_id=' + goodsId + '&cat_id=' + {$goods.cat_id|default:0} + '&seller_id=' + {$goods.user_id|default:0} + '&warehouse_id=' + region_id + '&area_id=' + area_id, seeMoreResponse, 'GET', 'JSON');
+	}
+
+	function seeMoreResponse(res){
+		$("#see_more_goods").html(res.content);
+
+		//右侧看了又看上下滚动
+		$(".track_warp").slide({mainCell:".track-con ul",effect:"top",pnLoop:false,autoPlay:false,autoPage:true,prevCell:".sprite-up",nextCell:".sprite-down",vis:3});
+	}
+	/* 商品看了又看 end */
+
+	/* 商品猜你喜欢 start */
+	function guessGoodsLove(){
+		var region_id = $(":input[name='region_id']").val();
+		var area_id = $(":input[name='area_id']").val();
+
+		if(!region_id){
+		   region_id = {$region_id|default:0};
+	   }
+
+	   if(!area_id){
+		   area_id = {$area_id|default:0};
+	   }
+
+		Ajax.call('ajax_dialog.php', 'act=guess_goods_love&goods_id=' + goodsId + '&warehouse_id=' + region_id + '&area_id=' + area_id, guessGoodsLoveResponse, 'GET', 'JSON');
+	}
+
+	function guessGoodsLoveResponse(res){
+		$("#guess_goods_love").html(res.content);
+	}
+	/* 商品猜你喜欢 end */
+
+	/******************************************* js方法 end***********************************************/
+	</script>
+    {* DSC 提醒您：动态载入goods_delivery_area_js.lbi，显示首页分类小广告 *}{insert name='goods_delivery_area_js' area=$area}
+</body>
+</html>

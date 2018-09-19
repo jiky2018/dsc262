@@ -1,0 +1,147 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+		<div class="title">
+        	{if $parent_id > 0}
+            <a href="category_store.php?act=list&parent_id={$parent_id}&back_level={$level}" class="s-back">{$lang.back}</a>
+            {/if}
+            {$lang.goods_alt} - {$ur_here}
+        </div>
+        <div class="content">
+        	<div class="tabs_info">
+            	<ul>
+                    <li {if $menu_select.current eq '03_category_list'}class="curr"{/if}><a href="category.php?act=list">{$lang.03_category_list}</a></li>
+                    <li {if $menu_select.current eq '03_store_category_list'}class="curr"{/if}><a href="category_store.php?act=list">{$lang.03_store_category_list}</a></li>
+                </ul>
+            </div>		
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.list.0}</li>
+                    <li>{$lang.operation_prompt_content.list.1}</li>
+                    <li>{$lang.operation_prompt_content.list.2}</li>
+                    <li>{$lang.operation_prompt_content.list.4}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                {if $cat_belongs neq 1}
+                <div class="common-head">
+                    <div class="fl">
+                    	<a href="category_store.php?act=category_separate"><div class="fbutton"><div class="add" title="分离平台分类"><span><i class="icon icon-plus"></i>分离平台分类</span></div></div></a>
+                    </div>
+                </div>
+                {/if}
+                <div class="common-content">
+                	<div class="list-div" id="listDiv">
+                    {/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                	<th width="8%"><div class="tDiv">{$lang.level_alt}({$cat_level}{$lang.level})</div></th>
+                                	<th width="12%"><div class="tDiv">{$lang.cat_name}</div></th>
+									<th width="13%"><div class="tDiv">{$lang.goods_steps_name}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.goods_number}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.measure_unit}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.nav}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.is_show}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.short_grade}</div></th>
+                                    <th width="5%"><div class="tDiv">{$lang.sort_order}</div></th>
+                                    <th width="12%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+								{foreach from=$cat_info item=cat}
+                            	<tr>
+                                	<td>
+                                    	<div class="tDiv first_setup">
+                                        	<div class="setup_span">
+                                            	<em><i class="icon icon-cog"></i>{$lang.setup}<i class="arrow"></i></em>
+                                                {if $level lt 2}
+                                                <ul>
+                                                    <li><a href="category_store.php?act=list&parent_id={$cat.cat_id}&level={$level}">{$lang.view_next_level}</a></li>
+                                                </ul>
+                                                {/if}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><div class="tDiv"><a href="goods.php?act=list&cat_id={$cat.cat_id}&cat_type=seller" class="ftx-01">{$cat.cat_name}</a></div></td>
+									<td><div class="tDiv"><font class="red">{$cat.user_name}</font></div></td>
+                                    <td><div class="tDiv">{$cat.goods_num}</div></td>
+                                    <td><div class="tDiv"><input type="text" name="measure_unit" class="text w40" value="{$cat.measure_unit}" onkeyup="listTable.editInput(this, 'edit_measure_unit', {$cat.cat_id})"/></div></td>
+                                    <td>
+                                    	<div class="tDiv">
+                                        	<div class="switch {if $cat.show_in_nav}active{/if}" title="{if $cat.show_in_nav}{$lang.yes}{else}{$lang.no}{/if}" onclick="listTable.switchBt(this, 'toggle_show_in_nav', {$cat.cat_id})">
+                                            	<div class="circle"></div>
+                                            </div>
+                                            <input type="hidden" value="0" name="">
+                                        </div>
+                                    </td>
+                                    <td>
+                                    	<div class="tDiv">
+                                        	<div class="switch {if $cat.is_show}active{/if}" title="{if $cat.is_show}{$lang.yes}{else}{$lang.no}{/if}" onclick="listTable.switchBt(this, 'toggle_is_show', {$cat.cat_id})">
+                                            	<div class="circle"></div>
+                                            </div>
+                                            <input type="hidden" value="0" name="">
+                                        </div>
+                                    </td>
+                                    <td><div class="tDiv"><input type="text" name="grade" class="text w40" value="{$cat.grade}" onkeyup="listTable.editInput(this, 'edit_grade', {$cat.cat_id})"/></div></td>
+                                    <td><div class="tDiv"><input type="text" name="sort_order" class="text w40" value="{$cat.sort_order}" onkeyup="listTable.editInput(this, 'edit_sort_order', {$cat.cat_id})" autocomplete="off" /></div></td>
+                                    <td class="handle">
+                                        <div class="tDiv a2">
+                                            <a href="category_store.php?act=edit&amp;cat_id={$cat.cat_id}" class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>
+                                            <a href="javascript:remove_cat({$cat.cat_id},{$cat.level});" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>
+                                        </div>
+                                    </td>
+                                </tr>
+								{foreachelse}
+								<tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+								{/foreach}
+                            </tbody> 
+							<tfoot>
+                            	<tr>
+                                	<td colspan="12">
+                                    	<div class="tDiv">
+                                            <div class="list-page">
+                                               {include file="library/page.lbi"}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>      
+                        {if $full_page}      
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+   	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+	
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+	
+	function remove_cat(cat_id,level){
+		if (confirm(is_delete_info)) {
+		   Ajax.call('category_store.php?is_ajax=1&act=remove', "cat_id="+cat_id+"&level="+level, remove_catResponse, "GET", "JSON");
+		}
+	}
+
+	function remove_catResponse(result){
+		if(result.error == 2){
+			alert(result.massege);
+		}else{
+			window.location.reload();
+		}
+	}	
+	</script>
+</body>
+</html>
+{/if}

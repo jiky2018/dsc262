@@ -1,0 +1,136 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="search-info">
+                	<div class="search-form">	
+                        <form action="javascript:searchComment()" name="searchForm">
+                            <div class="search-key">
+                                <input type="text" name="keyword" class="text text_2" placeholder="{$lang.search_comment}" />
+                                <input type='hidden' name='dis_id' value="{$dis_id}"/>
+                                <input type="submit" class="submit" value="{$lang.button_search}" />
+                            </div>
+                        </form>
+                	</div>
+                </div>
+                <form method="POST" action="discuss_circle.php" name="listForm" onsubmit="return confirm_bath()">
+                <div class="list-div" id="listDiv">
+                {/if}
+
+                <table class="ecsc-default-table">
+                  <thead>
+                  <tr>
+                    <th width="8%">
+                        <div class="first_all">
+                            <input onclick='listTable.selectAll(this, "checkboxes")' type="checkbox" id="all" class="ui-checkbox">
+                            <label class="ui-label" for="all">{$lang.record_id}</label>
+                        </div>  	
+                    </th>
+                    <th width="17%" class="tl">{$lang.user_name}</th>
+                    <th width="35%" class="tl">{$lang.reply_centent}</th>
+                    <th width="15%" class="tl">{$lang.quote_name}</th>
+                    <th width="15%">{$lang.discuss_time}{$sort_ip_address}</th>
+                    <th width="10%">{$lang.handler}</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {foreach from=$reply_list item=list}
+                  <tr>
+                    <td><div class="first_all"><input value="{$list.dis_id}" name="checkboxes[]" type="checkbox" id="checkbox_{$list.dis_id}" class="ui-checkbox"><label class="ui-label" for="checkbox_{$list.dis_id}">{$list.dis_id}</label></div></td>
+                    <td class="tl">{$list.user_name}</td>
+                    <td class="tl"><span class="activity_name w300">{$list.dis_text}</span></td>
+                    <td class="tl">{if $list.quote_id}{$list.quote_name}{else}{$lang.this_text}{/if}</td>
+                    <td>{$list.add_time}</td>
+                    <td class="ecsc-table-handle">
+                      <span class="mr0"><a href="javascript:" onclick="listTable.remove({$list.dis_id}, '{$lang.drop_reply_confirm}')" class="btn-red"><i class="icon icon-trash"></i><p>{$lang.drop}</p></a></span>
+                    </td>
+                  </tr>
+                  {foreachelse}
+                  <tr><td class="no-records" colspan="6">{$lang.no_records}</td></tr>
+                  {/foreach}
+                  </tbody>
+                  <tfoot>
+                  	<tr>
+                      <td colspan="6" class="td_border">
+                          <div class="shenhe">
+                              <input type="hidden" name="dis_id" value="{$dis_id}" />
+                              <input type="hidden" name="act" value="batch_drop" />
+                              <input type="hidden" name="sel_action" value="remove" />
+                              <input type="submit" name="drop" id="btnSubmit" value="{$lang.drop}" class="sc-btn btn_disabled" disabled="true" />
+                          </div>
+                      </td>
+                    </tr>
+                    <tr>
+                    	<td colspan="6">{include file="page.dwt"}</td>
+                    </tr>
+                  </tfoot>
+                </table>
+                {if $full_page}
+                </div>
+                <!-- end comment list -->
+                </form>					
+                <!--end-->
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<!--start-->
+<script type="text/javascript">
+<!--
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+  
+  cfm = new Object();
+  cfm['remove'] = '{$lang.cfm_remove}';
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+
+  {literal}
+  onload = function()
+  {   
+	  listTable.query = "discuss_reply_query";
+  }
+
+
+  function searchComment()
+  {
+      listTable.filter['id'] = Utils.trim(document.forms['searchForm'].elements['dis_id'].value);
+      var keyword = Utils.trim(document.forms['searchForm'].elements['keyword'].value);
+      if (keyword.length > 0)
+      {
+        listTable.filter['keywords'] = keyword;
+        listTable.filter.page = 1;
+        listTable.loadList();
+      }
+      else
+      {
+          document.forms['searchForm'].elements['keyword'].focus();
+      }
+  }
+  {/literal}
+
+  function confirm_bath()
+  {
+    var action = document.forms['listForm'].elements['sel_action'].value;
+
+    return confirm(cfm[action]);
+  }
+//-->
+</script>
+<!--end-->
+</body>
+</html>
+{/if}

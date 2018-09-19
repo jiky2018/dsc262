@@ -1,0 +1,807 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<link rel="icon" href="animated_favicon.gif" type="image/gif" />
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/base.css" />
+<link href="{$ecs_css_path}" rel="stylesheet" type="text/css" />
+<link href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/select.css" rel="stylesheet" type="text/css" />
+<link href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/area_stock.css" rel="stylesheet" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS|{$page_title}" href="{$feed_url}" />
+<link rel="stylesheet" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/purebox.css">
+{* 包含脚本文件 *}
+{insert_scripts files='jquery-1.9.1.min.js,jquery.json.js,transport_jquery.js,cart_common.js'}
+{insert_scripts files='common.js,global.js,utils.js,compare.js,jd_choose.js,warehouse_area.js'}
+
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/sc_memake.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/sc_common.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.tabso_yeso.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/rotate3di.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/scroll_city.js"></script>
+
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/magiczoomplus.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/floor.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.yomi.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/notLogin.js"></script>
+<!-- #BeginLibraryItem "/library/js_languages.lbi" --><!-- #EndLibraryItem -->
+</head>
+
+<body class="group-goods">
+
+{if $area_htmlType neq 'goods' && $area_htmlType neq 'exchange' && $area_htmlType neq 'presale' && $area_htmlType neq 'group_buy' }
+    {insert_scripts files='warehouse_area.js'}
+{else}
+    {insert_scripts files='warehouse.js'}
+{/if}
+    
+<!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
+
+<div class="nch-breadcrumb-layout">
+    <div class="nch-breadcrumb w1200" id="ur_here">
+        <!-- #BeginLibraryItem "/library/ur_here.lbi" --><!-- #EndLibraryItem -->
+    </div>
+</div>
+<div id="p-box">
+    <div class="w1200">
+        <div class="product-intro shared-goods">
+            <!-- #BeginLibraryItem "/library/goods_gallery.lbi" --><!-- #EndLibraryItem -->
+            <div class="m-item-inner">
+                <div class="itemInfo itemInfo-wrap">
+                    <form action="group_buy.php?act=buy" method="post" name="ECS_FORMBUY" id="ECS_FORMBUY">
+                        <div class="name">
+                            <h1>{$group_buy.goods_name|escape:html}</h1>
+                        </div>
+                        <div class="top-cd-banner">
+                        	<div class="act-type"><i></i>{$lang.Group_purchase}<span>{$lang.Group_purchase_title}</span></div>
+                            <div class="time-remain">
+                            	<i class="time-remain-icon"></i>
+                                <div class="time" data-time="{$group_buy.end_time}">
+                                <!-- {if $goods.is_end eq 1 || $orderG_number gt $group_buy.restrict_amount || $orderG_number eq $group_buy.restrict_amount} -->
+                                    <i>{$lang.end_time}：</i><i>{$group_buy.end_time}</i>
+                                <!-- {else} -->
+                                    <i>{$lang.residual_time}：</i><span class="days">00</span><i>{$lang.day}</i><span class="hours">00</span><i>{$lang.hour_two}</i><span class="minutes">00</span><i>{$lang.minutes}</i><span class="seconds">00</span><i>{$lang.seconds}</i>
+                                <!-- {/if} -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="summary">
+                            <div class="summary-price-wrap">
+                            	<div class="summary-info">
+                                	<div id="comment-count" class="comment-count">{$lang.Sales_count}<a href="#comment">{$group_buy.valid_goods}</a></div>
+                                    <div id="comment-number" class="comment-count">{$lang.Collection_count}<a href="#comment">{$goods.collect_count}</a></div>
+                                </div>
+                                <div class="summary-price">
+                                	<div class="dt">{$lang.group_buy_price}：</div>
+                                	<div class="dd"><span class="price"><em>￥</em>{$group_buy.price_ladder.0.price}</span></div>
+                                </div>
+                                <div class="summary-price">
+                                	<div class="dt">{$lang.market_prices}：</div>
+                                	<div class="dd"><span class="m-price"><em>￥</em>{$group_buy.market_price}</span></div>
+                                </div>
+                                <!-- {if $group_buy.deposit > 0} 保证金额-->
+                                <div class="summary-price">
+                                    <div class="dt">{$lang.Bond}：</div>
+                                    <div class="dd">{$group_buy.formated_deposit}</div>
+                                </div>
+                                <!--{/if}-->
+                            </div>
+                        </div>
+                        <div class="choose p-choose-wrap">
+                        	<div class="summary-stock">
+                            	<div class="dt">{$lang.Distribution}：</div>
+                                <div class="dd" style="overflow:inherit">
+                                    <div class="store-selector">
+                                        <div class="text-select" id="area_address">
+                                        </div>
+    								</div>
+                                    <div class="store-warehouse">
+                                    	<div class="store-warehouse-info"></div>
+                                        <div id="isHas_warehouse_num" class="store-prompt"></div>
+                                    </div>
+                                </div>
+                                <input type="hidden" value="{$region_id}" id="region_id" name="region_id">
+                                <input type="hidden" value="{$area_id}" id="area_id" name="area_id">
+                            </div>
+                        	
+                            <!-- {foreach from=$specification item=spec key=spec_key} -->
+                            {if $spec.values}
+                            <div class="choose-version <!-- {if $spec.attr_type eq 1} -->attr-radio<!-- {else} -->attr-check<!-- {/if} --> li">
+                                <div class="dt">{$spec.name}：</div>
+                                    <!-- {if $cfg.goodsattr_style eq 1} -->
+                                        <div class="dd">
+                                            {if $spec.is_checked > 0}
+                                            <ul>
+                                            <!-- {foreach from=$spec.values item=value key=key name=attrvalues} -->  
+                                            <li class="item {if $value.checked eq 1}selected{/if} ">
+                                                <b></b>
+                                                <a rev="{$value.img_site}" name="{$value.id}" title="{$value.format_price|abs}" href="javascript:;">
+                                                    {if $value.img_flie}
+                                                    <img src="{$value.img_flie}" width="25" height="25" /> 
+                                                    {/if}
+                                                    {$value.label}
+                                                    <input style="display:none" id="spec_value_{$value.id}" type="radio" name="spec_{$spec_key}" value="{$value.id}" {if $value.checked eq 1}checked="checked"{/if} />
+                                                </a>
+                                            </li>
+                                            <!-- {/foreach} -->
+                                            </ul>
+                                            {else}
+                                            <ul>
+                                            <!-- {foreach from=$spec.values item=value key=key name=attrvalues} -->
+                                            <li class="item {if $key eq 0}selected{/if}">
+                                                <b></b>
+                                                <a href="javascript:;" name="{$value.id}" title="{$value.format_price|abs}" class="noimg">
+                                                    {$value.label}
+                                                    <input style="display:none" id="spec_value_{$value.id}" type="radio" name="spec_{$spec_key}" value="{$value.id}" {if $key eq 0}checked="checked"{/if} />
+                                                </a>
+                                            </li>
+                                            <!-- {/foreach} -->
+                                            </ul>
+                                            {/if}
+                                        </div>
+                                        <input type="hidden" name="spec_list" value="{$key}" />    
+                                    <!-- {else} 列表下拉-->
+                                        <!-- {if $spec.attr_type eq 1} -->
+                                        <!-- {/if} -->
+                                    <!-- {/if} -->  
+                            </div>
+                            {/if}
+                            <!-- {/foreach} -->
+
+                            {if $group_buy.restrict_amount}
+                            <div class="choose-xgNum li">
+                                <div class="dt">{$lang.gb_restrict_amount}</div>
+                                <div class="dd"><em id="restrict_amount">{$group_buy.restrict_amount}</em>&nbsp;{if $goods.goods_unit}{$goods.goods_unit}{else}{$goods.measure_unit}{/if} (已购买：{$orderG_number|default:0}&nbsp;&nbsp;{if $goods.goods_unit}{$goods.goods_unit}{else}{$goods.measure_unit}{/if})</div>
+                            </div>
+                            {/if}
+
+                            <div class="choose-num choose-xznum li">
+                                <div class="dt">{$lang.gs_number}：</div>
+                                <div class="dd">
+                                    <a class="btn-reduce" href="javascript:;">-</a>
+                                    <input class="text buy-num" id="quantity" name="number" value="1">
+                                    <input type="hidden" id="perNumber" value="1000">
+                                    <input type="hidden" id="perMinNumber" value="1">
+                                    <input type="hidden" name="group_buy_id" value="{$group_buy.group_buy_id}" />
+                                    <a class="btn-add" href="javascript:;">+</a>
+                                    <span><font style="font-size:12px;" id="goods_attr_num">{$goods.measure_unit}</font> &nbsp;{if $goods.goods_unit}{$goods.goods_unit}{else}{$goods.measure_unit}{/if}</span>
+                                </div>
+                            </div>
+                            <div class="choose-btns">
+                             <!-- {if $goods.is_end eq 1 || ($orderG_number gt $group_buy.restrict_amount && $group_buy.restrict_amount gt 0) || ($orderG_number eq $group_buy.restrict_amount &&  $group_buy.restrict_amount gt 0)} -->
+                            <a href="javascript:void(0);" class="btn-append btn-end">{$lang.Group_purchase_end}</a>
+                            <!-- {else} -->
+                                <a href="javascript:void(0);" class="btn-append btn-group-buy">{$lang.Group_purchase_now}</a>
+                            <!-- {/if} -->
+                            </div>
+                        </div>
+                        <div class="ncs-key fl">
+                            <div class="ncs-btn">
+                                <input name="warehouse_id" value="{$region_id}" type="hidden" />
+                                <input name="area_id" value="{$area_id}" type="hidden" />
+                                <input type="hidden" value="{$goods.goods_id}" id="good_id" name="good_id">
+                                <input name="goods_spec" type="hidden" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- #BeginLibraryItem "/library/goods_merchants.lbi" --><!-- #EndLibraryItem -->
+        </div>
+    </div>
+</div>
+<div class="w1200 shared-goods">
+    <div class="ecsc-goods-layout">
+        <div class="ecsc-layout-210">
+            <div id="browse-browse-pop" class="m groupBuy_hiy">
+                <div class="mt">
+                    <ul class="ecsc-tabs">
+                        <li class="first on">{$lang.see_to_see}</li>
+                        <li class="last">{$lang.Buy_and_buy}</li>
+                    </ul>
+                </div>
+                <div class="mc">
+                    <ul>
+                    <!-- {foreach from=$look_top item=look_top name=looktop} -->
+                        <li{if $smarty.foreach.looktop.last} class="last"{/if}>
+                            <div class="p-img"><a href="group_buy.php?act=view&id={$look_top.act_id}" target="_blank"><img src="{$look_top.goods_thumb}" width="172" height="172"></a></div>
+                            <div class="p-price">{$look_top.ext_info.cur_price}</div>
+                            <div class="p-num">{$lang.Sold}：{$look_top.sales_volume}</div>
+                        </li>
+                        <!-- {/foreach} -->
+                    </ul>
+                    <ul style="display:none;">
+                        <!-- {foreach from=$buy_top item=buy_top name=buytop} -->
+                        <li {if $smarty.foreach.buytop.last} class="last"{/if}>
+                            <div class="p-img"><a href="group_buy.php?act=view&id={$buy_top.act_id}" target="_blank"><img src="{$buy_top.goods_thumb}" width="172" height="172"></a></div>
+                            <div class="p-price">{$buy_top.ext_info.cur_price}</div>
+                            <div class="p-num">{$lang.Sold}：{$buy_top.sales_volume}</div>
+                        </li>
+                        <!-- {/foreach} -->
+                    </ul>
+                </div>
+            </div>
+            <!-- {if $group_list|@count neq 0 } 判断热卖团购是否为空-->
+            <div class="history">
+                <div class="mt">
+                    <h2>{$lang.hot_group_purchase}</h2>
+                    <a href="javascript:void(0);" class="ec-huan"><i class="icon"></i>{$lang.Change_set}</a>
+                </div>
+                <div class="mc">
+                    <ul>
+                    <!--{foreach from=$group_list item=group_buy key=key name=no}-->
+                    <!-- {if $smarty.foreach.no.iteration lte 5} -->
+                        <li>
+                            <div class="item">
+                                <div class="p-img"><a href="group_buy.php?act=view&id={$group_buy.act_id}" target="_blank"><img src="{$group_buy.goods_thumb}" width="72" height="72" /></a></div>
+                                <div class="p-name"><a href="group_buy.php?act=view&id={$group_buy.act_id}" target="_blank">{$group_buy.goods_name}</a></div>
+                                <div class="p-price">{$group_buy.cur_price}</div>
+                            </div>
+                        </li>
+                    <!-- {/if} -->
+                    <!--{/foreach}-->
+                    </ul>
+                    <ul>
+                    <!--{foreach from=$group_list item=group_buy key=key name=no1}-->
+                    <!-- {if $smarty.foreach.no1.iteration gt 5 and $smarty.foreach.no1.iteration lte 10} -->
+                        <li>
+                            <div class="item">
+                                <div class="p-img"><a href="group_buy.php?act=view&id={$group_buy.act_id}" target="_blank"><img src="{$group_buy.goods_thumb}" width="72" height="72" /></a></div>
+                                <div class="p-name"><a href="group_buy.php?act=view&id={$group_buy.act_id}" target="_blank">{$group_buy.goods_name}</a></div>
+                                <div class="p-price">{$group_buy.cur_price}</div>
+                            </div>
+                        </li>
+                    <!-- {/if} -->
+                    <!--{/foreach}-->
+                    </ul>
+                </div>
+            </div>
+            <!-- {/if} -->
+        </div>
+        <div class="ecsc-goods-main">
+            <div class="other-group">
+                <h1>{$lang.store_other_group}</h1>
+                <div class="plist-wrap">
+                    <div class="p-list-wrap">
+                        <ul>
+                        {foreach from=$merchant_group_goods item=merchant_group_goods}
+                            <li> 
+                                <div class="item">
+                                    <div class="p-img"><a href="group_buy.php?act=view&id={$merchant_group_goods.act_id}" target="_blank"><img src="{$merchant_group_goods.goods_thumb}" width="148" height="148"/></a></div>
+                                    <div class="p-name"><a href="group_buy.php?act=view&id={$merchant_group_goods.act_id}" target="_blank">{$merchant_group_goods.act_name}</a></div>
+                                    <div class="p-price">{$merchant_group_goods.shop_price}</div>
+                                    <div class="p-num">{$lang.Sold}：{$merchant_group_goods.sales_volume}</div>
+                                </div>
+                            </li>
+                        {/foreach}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ecsc-single-desc desc">
+                <div class="goods-detail-title goods-detail-mt">
+                    <ul class="tabs">
+                        <li class="tab_item first current">{$lang.details_order}</li>
+                        <li class="tab_item">{$lang.introduce_pic}</li>
+                        <li class="tab_item">{$lang.evaluate_user}</li>
+                    </ul>
+                </div>
+                <div class="floors">
+                    <div class="ecsc-goods-item fment">
+                    <div class="panel">
+                        <div class="panel-mt">{$lang.details_order}</div>
+                        <div class="panel-mc">
+                        <!-- {foreach from=$properties item=property_group key=key} -->
+                        <!-- {foreach from=$property_group item=property} -->
+                            <div class="item">{$property.name|escape:html}：{$property.value}</div>
+                            <!-- {/foreach}-->
+                        <!-- {/foreach}-->
+                        {$group_buy.group_buy_desc}
+                        </div>
+                    </div>
+                </div>
+                <div class="ecsc-goods-item fment">
+                <div class="panel">
+                    <div class="panel-mt">{$lang.introduce_pic}</div>
+                    <div class="panel-mc">
+                        <div class="item">{$group_buy.goods_desc}</div>
+                    </div>
+                </div>
+                </div>
+                    <div class="ecsc-goods-item last fment">
+                    <div class="panel">
+                        <div class="panel-mt borderBottom1">{$lang.evaluate_user}<a href="user.php?act=comment_list" class="btn-comment" target="_blank">{$lang.captcha_comment}</a></div>
+                        <div class="panel-mc">
+                            <div class="overview-detail">
+                                <div class="rate">
+                                    <strong>{$comment_all.goodReview}<span>%</span></strong>
+                                    <span class="hp">{$lang.Rate_praise}</span>
+                                </div>
+                                <div class="percent">
+                                    <dl>
+                                        <dt>{$lang.Rate}<span>({$comment_all.goodReview}%)</span></dt>
+                                        <dd><div style="width: {$comment_all.goodReview}px;"></div></dd>
+                                    </dl>
+                                    <dl>
+                                        <dt>{$lang.zhong_p}<span>({$comment_all.middlReview}%)</span></dt>
+                                        <dd><div style="width: {$comment_all.middlReview}px;"></div></dd>
+                                    </dl>
+                                    <dl>
+                                        <dt>{$lang.Bad}<span>({$comment_all.badReview}%)</span></dt>
+                                        <dd><div style="width: {$comment_all.badReview}px;"></div></dd>
+                                    </dl>
+                                </div>
+                                <!--{if $goods.impression_list}-->
+                                <div class="actor-new">
+                                    <dl>
+                                        <dt>{$lang.Buyer_impression}：</dt>
+                                        <dd class="p-bfc">
+                                            <!--{foreach from=$goods.impression_list item=tag}-->
+                                            <p class="conmm-tags"><span>{$tag.txt}</span><em>({$tag.num})</em></p>
+                                            <!--{/foreach}-->
+                                        </dd>
+                                    </dl>
+                                </div>
+                                <!--{/if}-->
+                            </div>
+                            <div class="comments-list">
+                                {* DSC 提醒您：动态载入goods_comment_title.lbi，显示首页分类小广告 *}{insert name='goods_comment_title' goods_id=$goods.goods_id}
+                                <div class="ratelist-content">
+                                    <!-- #BeginLibraryItem "/library/comments.lbi" --> {insert_scripts files='transport_jquery.js,utils.js'}
+                                    <div id="ECS_COMMENT"> {* DSC 提醒您：动态载入comments_list.lbi，显示评论列表和评论表单 *}
+                                        {insert name='comments' type=$type id=$id}
+                                    </div>
+                                    <!-- #EndLibraryItem --> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+             </div>
+             <!-- {if $history_goods} -->
+            <div class="ecsc-goods-love">
+                <div class="ec-title"><h3>{$lang.guess_love}</h3></div>
+                <div class="clearance-content">
+                    <div class="clearance-content-right">
+                        <ul>
+                        <!--{foreach from=$history_goods item=goods name=his_goods}-->
+                            <!-- {if $smarty.foreach.his_goods.iteration <= 4} -->
+                                <li>
+                                    <div class="p-img"><a href="{$goods.url}" target="_blank"><img src="{$goods.goods_thumb}" width="124" height="124"></a></div>
+                                    <div class="p-name"><a href="{$goods.url}" target="_blank">{$goods.short_name}</a></div>
+                                    <div class="p-price">
+                                        <!-- {if $releated_goods_data.promote_price neq ''} -->
+                                            {$goods.formated_promote_price}
+                                        <!-- {else} -->
+                                            {$goods.shop_price}
+                                        <!-- {/if} -->
+                                    </div>
+                                    <div class="original-price">{$goods.market_price}</div>
+                                    <a href="{$goods.url}" target="_blank" class="btn6">{$lang.go_see} ></a>
+                                </li>
+                                <!-- {/if} -->
+                            <!-- {/foreach} -->
+                        </ul>
+                    </div>
+                    <!-- {if $related_goods} -->
+                    <div class="clearance-content-left">
+                    <!--{foreach from=$related_goods item=goods name=rel_goods}-->
+                        <!-- {if $smarty.foreach.rel_goods.iteration <= 2} -->
+                            <div class="slider-desc">
+                                <div class="desc-left"><a href="{$goods.url}" target="_blank"><img src="{$goods.goods_thumb}" width="108" height="108"></a></div>
+                                <div class="desc-right">
+                                    <div class="p-name"><a href="{$goods.url}" target="_blank">{$goods.short_name}</a></div>
+                                    <div class="p-price">
+                                        <!-- {if $releated_goods_data.promote_price neq ''} -->
+                                            {$goods.formated_promote_price}
+                                        <!-- {else} -->
+                                            {$goods.shop_price}
+                                        <!-- {/if} -->
+                                    </div>
+                                    <div class="original-price">{$goods.market_price}</div>
+                                    <a href="{$goods.url}" target="_blank" class="btn6">{$lang.go_see} ></a>
+                                </div>
+                            </div>
+                        <!-- {/if} -->
+                    <!-- {/foreach} -->
+                    </div>
+                    <!-- {/if} -->
+                </div>
+            </div>  
+            <!-- {/if}  -->
+        </div>
+    </div>
+</div>
+<!-- #BeginLibraryItem "/library/common_html.lbi" --><!-- #EndLibraryItem -->
+
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.purebox.js"></script>
+<script type="text/javascript">
+$(".ecsc-tabs").tabso({ cntSelect:".mc",tabEvent:"click",tabStyle:"normal",onStyle:"on"});
+$(".spec-list").slide({mainCell:".spec-items ul",effect:"left",trigger:"click",pnLoop:false,autoPage:true,scroll:1,vis:5});
+$(".history").slide({mainCell:".mc",effect:"fold",autoPlay:false,prevCell:".ec-huan"});
+$(".ecsc-single-desc").jfloor(43,0);
+$(".time").each(function(){
+    $(this).yomi();
+});
+</script>
+
+<!--[if lte IE 7]>
+<script type="text/javascript">
+    $(function(){
+        $(".groupBuy_hiy .mc .p-num").css("display","none");
+    });
+</script>
+<![endif]-->
+
+<!-- 属性选择 -->
+<script type="text/javascript">
+var goods_id = {$goods.goods_id};
+var goodsId = {$goods.goods_id};
+
+onload = function()
+{
+  try
+  {
+	changePrice();
+	goods_delivery_area();
+    onload_leftTime();
+  }
+  catch (e)
+  {}
+}
+<!-- {/literal} -->
+function changeAtt(t) {
+    $(t).parent().parent().find("a").removeClass("cattsel");
+    $(t).parent().parent().find("input:checked").prop("checked", false);
+    $(t).find(":radio").prop("checked", true);
+    $(t).addClass("cattsel");
+    a = '';
+    $(".sp-txt_A .cattsel").each(function(i){
+        a+= ' '+$.trim($(this).text());
+    });
+
+    $("#selAttr").text(a);
+    changePrice();
+}
+
+function goods_delivery_area(){
+	var area = new Object();
+
+	area.province_id = {$area.province_id|default:0};
+	area.city_id = {$area.city_id|default:0};
+	area.district_id = {$area.district_id|default:0};
+	area.goods_id = {$area.goods_id|default:0};
+	area.user_id = {$area.user_id|default:0};
+	area.region_id = {$area.region_id|default:0};
+	area.area_id = {$area.area_id|default:0};
+	area.merchant_id = {$area.merchant_id|default:0};
+	Ajax.call('ajax_dialog.php?act=goods_delivery_area', 'area=' + $.toJSON(area), goods_delivery_areaResponse, 'POST', 'JSON'); 
+}
+
+function goods_delivery_areaResponse(result){
+	$("#area_address").html(result.content);
+	$(".store-warehouse-info").html(result.warehouse_content);
+}
+
+function get_url(t){
+    if(t.rev != ''){
+        location.href = t.rev;
+    }else{
+         var spec_value = $(t).find("input:checked").val();
+         Ajax.call('goods.php?act=getInfo', 'id='+goods_id+'&attr_id='+spec_value,getImgUrl,'POST', 'JSON');
+    }
+}
+
+function getImgUrl(result)
+{
+    if(result.t_img != ''){
+        $('#Zoomer').attr({ href:"" +result.t_img+ "" });
+        $('#J_prodImg').attr({ href:"" +result.t_img+ "", src:"" +result.t_img+ "" });
+        $('.MagicBoxShadow').eq(0).find('img').eq(0).attr({ src:"" +result.t_img+ "" });
+        $('.MagicThumb-expanded').find('img').attr({ src:"" +result.t_img+ "" });
+    }
+}
+
+$('.dd_s').click(function(){
+    var evaluate = document.getElementById('evaluate-detail');
+    
+    if(evaluate.style.display == 'none'){
+        evaluate.style.display = 'block';
+        $(this).removeClass('fold');
+    }else{
+        evaluate.style.display = 'none';
+        $(this).addClass('fold');
+    }
+})  
+
+/**
+ * 点选可选属性或改变数量时修改商品价格的函数
+ */
+function changePrice()
+{
+  var attr = getSelectedAttributes(document.forms['ECS_FORMBUY']);
+  var qty = document.forms['ECS_FORMBUY'].elements['number'].value;
+  $("input[name='goods_spec']").val(attr);
+ 
+  Ajax.call('group_buy.php', 'act=price&id=' + goodsId + '&attr=' + attr + '&number=' + qty + '&warehouse_id=' + {$region_id|default:0} + '&area_id=' + {$area_id|default:0}, changePriceResponse, 'GET', 'JSON');
+}
+
+/**
+ * 接收返回的信息
+ */
+function changePriceResponse(res)
+{
+  if (res.err_msg.length > 0)
+  {
+    alert(res.err_msg);
+  }
+  else
+  {
+    document.forms['ECS_FORMBUY'].elements['number'].value = res.qty;
+    //ecmoban模板堂 --zhuo satrt
+    if (document.getElementById('goods_attr_num'))
+    {
+      document.getElementById('goods_attr_num').innerHTML = res.attr_number;  
+	  document.getElementById('perNumber').value = res.attr_number;  
+	 
+	  	if(res.err_no == 2){
+			$('#isHas_warehouse_num').html(shiping_prompt);
+		}else{
+			if (document.getElementById('isHas_warehouse_num')){
+			  var isHas;
+			  if(res.attr_number > 0){
+				  isHas = '<strong>'+json_languages.Have_goods+'</strong>，'+json_languages.Deliver_back_order;
+			  }else{
+				  isHas = '<strong>'+json_languages.No_goods+'</strong>，'+json_languages.goods_over;
+			  }
+
+			  $('#isHas_warehouse_num').html(isHas);
+			}
+		}
+    }
+  }
+}
+
+//数量选择
+function quantity(){
+	$(".btn-reduce").click(function(){
+		var quantity = Number($("#quantity").val());
+		var perNumber = Number($("#perNumber").val());
+		var perMinNumber = Number($("#perMinNumber").val());
+		var restrict_amount = $('#restrict_amount').html();
+	
+		if(quantity>perMinNumber){
+			quantity-=1;
+			$("#quantity").val(quantity);
+		}else{
+			$("#quantity").val(perMinNumber);
+		}
+	});
+	
+	$(".btn-add").click(function(){
+		var quantity = Number($("#quantity").val());
+		var perNumber = Number($("#perNumber").val());
+		var perMinNumber = Number($("#perMinNumber").val());
+		var restrict_amount =Number($('#restrict_amount').html());
+		var goods_number = Number($('#goods_attr_num').html());
+		var message;
+		var err = true;
+		var cssType = true;
+		
+		quantity+=1;
+		if(goods_number == 0 || quantity > goods_number){
+			var message = json_languages.Stock_goods_null;
+			var divId = 'flow_add_cart';
+			dialogPrompt(divId,message);
+			quantity = 1;
+            return false;
+		}else{
+			//限购
+			if(restrict_amount > 0){
+				
+				var orderG_number = {$orderG_number} + quantity;
+				if ({$orderG_number} > 0 && {$orderG_number} >= restrict_amount){
+					  message = json_languages.Already_buy+'{$orderG_number}'+json_languages.Already_buy_two;
+					  quantity = 1;
+					  err = false;
+					  cssType = false;
+				}else if({$orderG_number} > 0 && orderG_number > restrict_amount){
+					  var buy_num = restrict_amount - {$orderG_number};
+					  message = json_languages.Already_buy+'{$orderG_number}'+json_languages.Already_buy_three + buy_num + json_languages.jian;
+					  quantity = buy_num;
+					  err = false;
+				}else if(quantity > restrict_amount){
+					  message = json_languages.Purchase_quantity;
+					  quantity = restrict_amount;
+					  err = false;
+				}
+				
+				if(err == false){
+					var add_cart_divId = 'flow_add_cart';
+					var content = '<div id="flow_add_cart">' + 
+										'<div class="tip-box icon-box">' +
+											'<span class="warn-icon m-icon"></span>' + 
+											'<div class="item-fore">' +
+												'<h3 class="rem ftx-04">' + message + '</h3>' +
+											'</div>' +
+										'</div>' +
+									'</div>';
+					pb({
+						id:add_cart_divId,
+						title:json_languages.title,
+						width:455,
+						height:58,
+						content:content, 	//调取内容
+						drag:false,
+						foot:false
+					});
+					
+					if(cssType == false){
+						$('#' + add_cart_divId + ' .tip-box').css({
+							'width' : '250px'
+						});
+						
+						$('#' + add_cart_divId + ' .tip-box h3').css({
+							'line-height' : '20px',
+							'padding-top' : '5px',
+							'font-size'	  : '14px'	
+						});
+						
+						$('#' + add_cart_divId + ' .item-fore').css({
+							'height' : '68px'
+						});
+					}else{
+						$('#' + add_cart_divId + ' .item-fore .rem').css({
+							'padding-top' : '11px'
+						});
+					}
+				}
+			}
+		}
+			
+		$("#quantity").val(quantity);
+	});
+	
+	$('.buy-num').change(function(){
+		var quantity = Number($(this).val());
+		var perNumber = Number($("#perNumber").val());
+		var perMinNumber = Number($("#perMinNumber").val());
+		var restrict_amount = $('#restrict_amount').html();
+		var err = true;
+		var cssType = true;
+		
+		if(restrict_amount > 0){
+		
+			var orderG_number = {$orderG_number} + quantity;
+			
+			if({$orderG_number} > 0 && {$orderG_number} >= restrict_amount){
+				  var message = json_languages.Already_buy+'{$orderG_number}'+json_languages.Already_buy_two;
+				  quantity = 1;
+				  err = false;
+				  cssType = false;
+			}else if ({$orderG_number} > 0 && orderG_number > restrict_amount){
+				  var buy_num = restrict_amount - {$orderG_number};
+				  message =  json_languages.Already_buy+'{$orderG_number}'+json_languages.Already_buy_three + buy_num + json_languages.jian;
+				  quantity = buy_num;
+				  err = false;
+			}else if(quantity > restrict_amount){
+				  var message = json_languages.Purchase_quantity;
+				  quantity = restrict_amount;
+				  err = false;
+			}
+			
+			if(err == false){
+				var add_cart_divId = 'flow_add_cart';
+				var content = '<div id="flow_add_cart">' + 
+									'<div class="tip-box icon-box">' +
+										'<span class="warn-icon m-icon"></span>' + 
+										'<div class="item-fore">' +
+											'<h3 class="rem ftx-04">' + message + '</h3>' +
+										'</div>' +
+									'</div>' +
+								'</div>';
+				pb({
+					id:add_cart_divId,
+					title:json_languages.title,
+					width:455,
+					height:58,
+					content:content, 	//调取内容
+					drag:false,
+					foot:false
+				});
+				
+				if(cssType == false){
+					$('#' + add_cart_divId + ' .tip-box').css({
+						'width' : '250px'
+					});
+					
+					$('#' + add_cart_divId + ' .tip-box h3').css({
+						'line-height' : '20px',
+						'padding-top' : '5px',
+						'font-size'	  : '14px'	
+					});
+					
+					$('#' + add_cart_divId + ' .item-fore').css({
+						'height' : '68px'
+					});
+				}else{
+					$('#' + add_cart_divId + ' .item-fore .rem').css({
+						'padding-top' : '11px'
+					});
+				}
+			}
+		}
+		
+		$("#quantity").val(quantity);
+	});
+}
+quantity();
+
+//未登录团购弹出登录框
+$('.btn-group-buy').click(function(){
+	var user_id = Number({$user_id});
+	var quantity = Number($("#quantity").val());
+	var goods_number =Number( $('#goods_attr_num').html());
+	if(user_id > 0){
+		 if(goods_number == 0 || quantity > goods_number){
+			var message = json_languages.Stock_goods_null;
+			var divId = 'flow_add_cart';
+			dialogPrompt(divId,message);
+			return false;
+		 }else{
+			 $("form[name='ECS_FORMBUY']").submit();
+		 }
+		
+	}else{
+		var back_url = "group_buy.php?act=view&id=" + {$group_buy.group_buy_id};
+		$.notLogin("get_ajax_content.php?act=get_login_dialog",back_url);
+		return false;
+	}
+});
+</script>
+
+
+<!--@author-bylu start (团购)-->
+<script type="text/javascript">
+    function openWin(obj) {
+        var where_goods = "";
+		if($(obj).attr('goods_id')){
+			where_goods = '&goods_id=' + $(obj).attr('goods_id');
+		}
+		
+		var where_seller = "";
+		if($(obj).attr('ru_id')){
+			where_seller = '&ru_id=' + $(obj).attr('ru_id');
+		}
+
+		if($(obj).attr('IM_type') != 'dsc'){
+			var where = where_goods + where_seller;
+		}else{
+			var where = '';
+		}
+		var url='online.php?act=service' + where                   //转向网页的地址;
+        var name='webcall';                         //网页名称，可为空;
+        var iWidth=700;                          //弹出窗口的宽度;
+        var iHeight=500;                         //弹出窗口的高度;
+        //获得窗口的垂直位置
+        var iTop = (window.screen.availHeight - 30 - iHeight) / 2;
+        //获得窗口的水平位置
+        var iLeft = (window.screen.availWidth - 10 - iWidth) / 2;
+        window.open(url, name, 'height=' + iHeight + ',,innerHeight=' + iHeight + ',width=' + iWidth + ',innerWidth=' + iWidth + ',top=' + iTop + ',left=' + iLeft + ',status=no,toolbar=no,menubar=no,location=no,resizable=no,scrollbars=0,titlebar=no');
+    }
+</script>
+<!--@author-bylu end-->
+
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<!-- #BeginLibraryItem "/library/js_languages_new.lbi" --><!-- #EndLibraryItem -->
+</head>
+
+<body>
+    <!-- #BeginLibraryItem "/library/page_header_seckill.lbi" --><!-- #EndLibraryItem -->
+    <div class="content">
+		{* DSC 提醒您：动态载入seckill_top_ad.lbi，显示首页达人专区小广告 *}{insert name='get_adv_child' ad_arr=$seckill_top_ad}
+        <div class="seckill-main">
+            <div class="w w1200">
+            	<div class="seckill-hot-goods">
+                	<div class="seckill-time-tabs" ectype="seckillTab">
+                    	<ul>
+							{foreach from=$seckill_list item=tb name=sec}
+							{if $smarty.foreach.sec.index lt 5}
+                        	<li {if !$tb.is_end && $tb.status}class="curr"{/if}{if $smarty.foreach.sec.total == 5} style="width:20%;"{/if}>
+                                <strong>{if $tb.tomorrow}明日  {/if}{$tb.title}</strong>
+                                <div class="time" ectype="time" data-time="{if !$tb.is_end && !$tb.status}{$tb.begin_time_formated}{elseif !$tb.is_end && $tb.status}{$tb.end_time_formated}{/if}">
+									{if !$tb.is_end && !$tb.status}
+									<span>距开始</span>
+                                    <span class="hours">15</span>
+                                    <em>:</em>
+                                    <span class="minutes">40</span>
+                                    <em>:</em>
+                                    <span class="seconds">10</span>									
+									{elseif !$tb.is_end && $tb.status}
+									<span>距结束</span>
+                                    <span class="hours">15</span>
+                                    <em>:</em>
+                                    <span class="minutes">40</span>
+                                    <em>:</em>
+                                    <span class="seconds">10</span>
+									{else}
+									<span>已结束</span>
+									{/if}                                   
+                                </div>
+								{if !$tb.is_end && !$tb.status}
+								<i>即将开始</i>
+								{elseif !$tb.is_end && $tb.status}
+								<i>进行中</i>
+								{else}
+								<i>已结束</i>
+								{/if}  
+                            </li>
+							{/if}
+							{/foreach}
+                        </ul>
+                    </div>
+					<div class="seckill-warp">
+					{foreach from=$seckill_list item=tb name=sec}
+					{if $smarty.foreach.sec.index lt 5}
+                    	<ul class="gb-index-list clearfix" {if !(!$tb.is_end && $tb.status)}style="display:none;"{/if}>
+							{foreach from=$tb.goods item=goods}
+                        	<li class="mod-shadow-card">
+                            	<div class="p-img"><a href="{$goods.url}" target="_blank"><img src="{$goods.goods_thumb}"></a></div>
+                                <div class="p-name"><a href="{$goods.url}" title="{$goods.goods_name|escape:html}" target="_blank">{$goods.goods_name}</a></div>
+                                <div class="p-lie clearfix">
+                                	<div class="p-pirce">{$goods.sec_price_formated}</div>
+                                    <div class="p-del"><del>{$goods.market_price_formated}</del></div>
+                                </div>
+                                <div class="p-number clearfix">
+                                	<span>已售{$goods.percent}%</span>
+                                    <div class="timebar"><i style="width:{$goods.percent}%;"></i></div>
+                                </div>
+								{if !$tb.is_end && !$tb.status}
+                                <a href="javascript:;" ectype="collSecGoods" data-id="{$goods.id}" class="btn {if $goods.is_remind}sc-redBg-btn{else}sc-greenBg-btn{/if}">
+                                {if $goods.is_remind}取消提醒{else}提醒我{/if}
+                                </a>
+								{elseif !$tb.is_end && $tb.status}
+                                {if $goods.sec_num le 0}
+                                <a href="javascript:;" class="btn sc-redBg-btn">已抢完</a>
+                                {else}
+                                <a href="{$goods.url}"  target="_blank" class="btn sc-redBg-btn">
+								立即购买
+								</a>
+                                {/if}                   
+								{else}
+                                <a href="{$goods.url}"  target="_blank" class="btn sc-redBg-btn">
+								已结束
+                                </a> 
+								{/if} 	
+                            </li>
+							{/foreach}
+                        </ul>
+					{/if}
+					{/foreach}
+					</div>
+                </div>
+			<!-- #BeginLibraryItem "/library/recommend_goods.lbi" --><!-- #EndLibraryItem -->
+            </div>
+        </div>
+    </div>
+    <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+    {insert_scripts files='jquery.SuperSlide.2.1.1.js,jquery.yomi.js'}
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/dsc-common.js"></script>
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.purebox.js"></script>
+    <script type="text/javascript">
+	$(function(){
+		$("*[ectype='time']").each(function(){
+			$(this).yomi();
+		});
+		
+		$("*[ectype='seckillTab'] li").on("click",function(){
+			var index = $(this).index();
+			$(this).addClass("curr").siblings().removeClass("curr");
+			
+			$(".seckill-warp").find("ul").eq(index).show().siblings().hide();
+			
+		});
+	}); 
+    </script>
+</body>
+</html>

@@ -1,0 +1,393 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+            	{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="explanation clear" id="explanation">
+                    <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4></div>
+                    <ul>
+                    	<li>温馨提示：提交操作将会重新审核，请慎重提交确定。</li>
+                    </ul>
+                </div>
+                <div class="ecsc-form-goods">
+                	<form action="bonus.php" method="post" name="theForm" enctype="multipart/form-data" id="bonus_form">
+                    <div class="wrapper-list border1">
+                        <dl>
+                            <dt>{$lang.require_field}&nbsp;{$lang.type_name}：</dt>
+                            <dd>
+                                {if $bonus_arr.usebonus_type eq 0 || $priv_ru}
+                                <input type='text' name='type_name' maxlength="30" value="{$bonus_arr.type_name}" size='20' class="text" />    
+                                {else}
+                                <div class="red_text">{$bonus_arr.type_name}</div>
+                                {/if}
+								<div class="form_prompt"></div>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt>{$lang.require_field}&nbsp;{$lang.type_money}：</dt>
+                            <dd>
+                                {if $bonus_arr.usebonus_type eq 0 || $priv_ru}
+                                <input type="text" name="type_money" value="{$bonus_arr.type_money}" size="20" class="text" />
+                                {else}
+                                <div class="red_text fl">{$bonus_arr.type_money}</div>
+                                {/if}
+								<div class="form_prompt"></div>
+                                <div class="notic">{$lang.type_money_notic}</div>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt>{$lang.require_field}&nbsp;{$lang.min_goods_amount}：</dt>
+                            <dd>
+                                {if $bonus_arr.usebonus_type eq 0 || $priv_ru}
+                                <input name="min_goods_amount" type="text" id="min_goods_amount" value="{$bonus_arr.min_goods_amount}" size="20" class="text" />
+                                {else}
+                                <div class="red_text fl">{$bonus_arr.min_goods_amount}</div>
+                                {/if}
+								<div class="form_prompt"></div>
+                                <div class="notic">{$lang.notice_min_goods_amount}</div>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt>{$lang.send_method}：</dt>
+                            <dd>
+                                {if $bonus_arr.usebonus_type eq 0 || $priv_ru}
+                                    <div class="checkbox_items">
+                                        <div class="checkbox_item">
+                                        	<input type="radio" name="send_type" value="0" id="send_type_0" {if $bonus_arr.send_type eq 0} checked="true" {/if} onClick="showunit(0)" class="ui-radio" />
+                                        	<label for="send_type_0" class="ui-radio-label">{$lang.send_by[0]}</label>
+                                        </div>
+                                        <div class="checkbox_item">
+                                            <input type="radio" name="send_type" value="1" id="send_type_1" {if $bonus_arr.send_type eq 1} checked="true" {/if} onClick="showunit(1)" class="ui-radio" />
+                                            <label for="send_type_1" class="ui-radio-label">{$lang.send_by[1]}</label>
+                                        </div>
+                                        <div class="checkbox_item">
+                                            <input type="radio" name="send_type" value="2" id="send_type_2" {if $bonus_arr.send_type eq 2} checked="true" {/if} onClick="showunit(2)" class="ui-radio" />
+                                            <label for="send_type_2" class="ui-radio-label">{$lang.send_by[2]}</label>
+                                        </div>
+                                        <div class="checkbox_item">
+                                            <input type="radio" name="send_type" value="3" id="send_type_3" {if $bonus_arr.send_type eq 3} checked="true" {/if} onClick="showunit(3)" class="ui-radio" />
+                                            <label for="send_type_3" class="ui-radio-label">{$lang.send_by[3]}</label>
+                                        </div>
+                                        <div class="checkbox_item">
+                                            <input type="radio" name="send_type" value="4" id="send_type_4" {if $bonus_arr.send_type eq 4} checked="true" {/if} onClick="showunit(4)" class="ui-radio" />
+                                            <label for="send_type_4" class="ui-radio-label">{$lang.send_by[4]}</label>
+                                        </div>
+                                    </div>
+                                {else}
+                                    <div class="red_text">
+                                        {if $bonus_arr.send_type eq 0}{$lang.send_by[0]}{/if}
+                                        {if $bonus_arr.send_type eq 1}{$lang.send_by[1]}{/if}
+                                        {if $bonus_arr.send_type eq 2}{$lang.send_by[2]}{/if}
+                                        {if $bonus_arr.send_type eq 3}{$lang.send_by[3]}{/if}
+                                    </div>
+                                {/if}
+                            </dd>
+                        </dl>
+                        <dl class="order_lower" style="display:none">
+                            <dt>{$lang.min_amount}：</dt>
+                            <dd>
+                                {if $bonus_arr.usebonus_type eq 0 || $priv_ru}
+                                <input name="min_amount" type="text" id="min_amount" value="{$bonus_arr.min_amount}" size="20" class="text" />
+                                {else}
+                                <div class="red_text">{$bonus_arr.min_amount}</div>
+                                {/if}
+                                <div class="notic">{$lang.order_min_money_notic}</div>
+                            </dd>
+                        </dl>
+                        <dl class="order_lower11 hide" style="display:none">
+                            <dt>{$lang.max_amount}：</dt>
+                            <dd>
+                                {if $bonus_arr.usebonus_type eq 0 || $priv_ru}
+                                <input name="max_amount" type="text" id="max_amount" value="{$bonus_arr.max_amount}" size="20" class="text" />
+                                {else}
+                                <div class="red_text">{$bonus_arr.max_amount}</div>
+                                {/if}
+                                <div class="notic">{$lang.order_max_money_notic}</div>
+                            </dd>
+                        </dl>
+                        {if $priv_ru}
+                        <dl>
+                            <dt>{$lang.use_type}：</dt>
+                            <dd>
+                                <select name="usebonus_type" class="select">
+                                  <option value="0" {if $bonus_arr.usebonus_type eq 0}selected="selected"{/if}>{$lang.autonomous_use}</option>
+                                    <option value="1" {if $bonus_arr.usebonus_type eq 1}selected="selected"{/if}>{$lang.general_audience}</option>
+                                </select>
+                            </dd>
+                        </dl>
+                        {else}
+                            {if $bonus_arr.usebonus_type}
+                                <dl>
+                                    <dt>{$lang.use_type}：</dt>
+                                    <dd><div class="red_text">{$lang.general_audience}</div></dd>
+                                </dl>
+                            {/if}
+                        {/if}
+                        <dl id="qizhi">
+                            <dt>{$lang.require_field}&nbsp;{$lang.start_enddate}：</dt>
+                            <dd>
+                                <div class="text_time" id="text_time1">
+                                {if $bonus_arr.usebonus_type eq 0 || $priv_ru}
+                                    <input name="send_start_date" type="text" class="text" id="send_start_date" size="22" value='{$bonus_arr.send_start_date}' readonly="readonly" />
+                                {else}
+                                <div class="red_text">{$bonus_arr.send_start_date}</div>
+                                {/if}
+                                </div>
+                                <span class="bolang">&nbsp;&nbsp;~&nbsp;&nbsp;</span>
+                                <div class="text_time" id="text_time2">
+                                {if $bonus_arr.usebonus_type eq 0 || $priv_ru}
+                                  <input name="send_end_date" type="text" class="text" id="send_end_date" size="22" value='{$bonus_arr.send_end_date}' readonly="readonly" />
+                                {else}
+                                  <div class="red_text">{$bonus_arr.send_end_date}</div>
+                                {/if}
+                                </div>
+                                <div class="form_prompt"></div>
+                                <div class="notic">{$lang.send_startdate_notic}</div>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt>{$lang.use_start_enddate}：</dt>
+                            <dd>
+                                <div class="text_time" id="text_time3">
+                                    {if $bonus_arr.usebonus_type eq 0 || $priv_ru}
+                                        <input name="use_start_date" type="text" class="text" id="use_start_date" size="22" value='{$bonus_arr.use_start_date}' readonly="readonly" />
+                                    {else}
+                                        <div class="red_text">{$bonus_arr.use_start_date}</div>
+                                    {/if}
+                                </div>
+                                <span class="bolang">&nbsp;&nbsp;~&nbsp;&nbsp;</span>
+                                <div class="text_time" id="text_time4">
+                                    {if $bonus_arr.usebonus_type eq 0 || $priv_ru}
+                                        <input name="use_end_date" type="text" class="text" id="use_end_date" size="22" value='{$bonus_arr.use_end_date}' readonly="readonly" />
+                                    {else}
+                                        <div class="red_text">{$bonus_arr.use_end_date}</div>
+                                    {/if}
+                                </div>
+                                <div class="form_prompt"></div>
+                              	<div class="notic">{$lang.use_startdate_notic}</div>
+                            </dd>
+                        </dl>
+                        {if $bonus_arr.type_id}
+                        <dl>
+                            <dt>{$lang.adopt_status}：</dt>
+                            <dd>
+                                <div class="checkbox_items">
+                                    <div class="checkbox_item">
+                                        {if $bonus_arr.review_status eq 1}
+                                            {$lang.not_audited}
+                                        {elseif $bonus_arr.review_status eq 2}
+                                            {$lang.audited_not_adopt}
+                                        {elseif $bonus_arr.review_status eq 3}
+                                            {$lang.audited_yes_adopt}
+                                        {/if}
+                                    </div>
+                                </div>
+                            </dd>
+                        </dl>
+                            {if $bonus_arr.review_status eq 2}
+                            <dl>
+                                <dt>{$lang.adopt_reply}：</dt>
+                                <dd>
+                                    <textarea name="review_content" cols="40" rows="3" class="textarea red" disabled="disabled" style="background:#FFF;">{$bonus_arr.review_content}</textarea>
+                                </dd>
+                            </dl>
+                            {/if}
+                        {/if}
+                            
+                        {if $bonus_arr.usebonus_type eq 0 || $priv_ru}
+                        <dl class="button_info">
+                        	<dt>&nbsp;</dt>
+                            <dd>
+                                <input type="submit" value="{$lang.button_submit}" class="sc-btn sc-blueBg-btn btn35" id="submitBtn" />
+                                <input type="reset" value="{$lang.button_reset}" class="sc-btn btn35 sc-blue-btn" />
+                                <input type="hidden" name="act" value="{$form_act}" />
+                                <input type="hidden" name="type_id" value="{$bonus_arr.type_id}" />
+                            </dd>
+                        </dl>
+                        {/if}
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript">
+	$(function(){
+		//红包类型切换
+		$("input[name='send_type']").click(function(){
+			var value = $(this).val();
+			showunit(value);
+		});
+		
+		{if !$bonus_arr.send_type}
+		$(":input[name='send_type']").prop("checked", false);
+		$(":input[name='send_type']").eq(0).prop("checked", true);
+		{/if}
+		
+		//表单验证
+		$("#submitBtn").click(function(){
+			if($("#bonus_form").valid()){
+				$("#bonus_form").submit();
+			}
+		});
+	
+		$('#bonus_form').validate({
+			errorPlacement:function(error, element){
+				var error_div = element.parents('dl').find('div.form_prompt');
+				//element.parents('dl').find(".notic").hide();
+				error_div.append(error);
+			},
+			rules:{
+				type_name :{
+					required : true
+				},
+				type_money:{
+					required : true,
+					number:true
+				},
+				min_goods_amount :{
+					required : true,
+					number:true
+				},
+				send_end_date:{
+					compareDate:"#send_start_date"	
+				},
+                use_end_date : {
+                    compareDate:"#use_start_date"
+                }
+			},
+			messages:{
+				type_name:{
+					 required : '<i class="icon icon-exclamation-sign"></i>'+type_name_empty
+				},
+				type_money:{
+					required : '<i class="icon icon-exclamation-sign"></i>'+type_money_empty,
+					number:'<i class="icon icon-exclamation-sign"></i>'+type_money_isnumber
+				},
+				send_end_date:{
+					compareDate : '<i class="icon icon-exclamation-sign"></i>'+data_invalid_gt
+				},
+                use_start_date :{
+                    required : '<i class="icon icon-exclamation-sign"></i>'+start_data_notnull
+                },
+                use_end_date :{
+                    required : '<i class="icon icon-exclamation-sign"></i>'+end_data_notnull,
+                    compareDate:'<i class="icon icon-exclamation-sign"></i>'+data_invalid_gt
+                }
+			},
+			onfocusout:function(element,event){
+				//实时去除结束时间是否大于开始时间验证
+				var name = $(element).attr("name");
+				
+				if(name == "send_end_date"){
+					var endDate = $(element).val();
+					var startDate = $(element).parents("dd").find("input[name='send_start_date']").val();
+					
+					var date1 = new Date(Date.parse(startDate.replace(/-/g, "/")));
+					var date2 = new Date(Date.parse(endDate.replace(/-/g, "/")));
+					
+					if(date1 > date2){
+						$(element).removeClass("error");
+						$(element).parents("dd").find(".form_prompt").html("");
+					}
+				}else if(name == "use_end_date"){
+					var endDate = $(element).val();
+					var startDate = $(element).parents("dd").find("input[name='use_start_date']").val();
+					
+					var date1 = new Date(Date.parse(startDate.replace(/-/g, "/")));
+					var date2 = new Date(Date.parse(endDate.replace(/-/g, "/")));
+					
+					if(date1 > date2){
+						$(element).removeClass("error");
+						$(element).parents("dd").find(".form_prompt").html("");
+					}
+				}
+			}		
+		});
+	});	
+	
+	onload = function()
+	{
+		{/literal}
+		get_value = '{$bonus_arr.send_type}';
+		{literal}
+		showunit(get_value)
+		// 开始检查订单
+		startCheckOrder();
+		
+		{if !$bonus_arr.send_type}
+		$(":input[name='send_type']").prop("checked", false);
+		$(":input[name='send_type']").eq(0).prop("checked", true);
+		{/if}
+	}
+	/* 红包类型按订单金额发放时才填写 */
+	function gObj(obj)
+	{
+		var theObj;
+		if (document.getElementById)
+		{
+			if(typeof obj=="string") {
+				return document.getElementById(obj);
+			}else{
+				return obj.style;
+			}
+		}
+		return null;
+	}
+	
+	function showunit(get_value)
+	{
+		if(get_value != 1 && get_value != 2){
+			$('#qizhi').hide();
+		}else{
+			$('#qizhi').show();
+		}
+		
+		if(get_value == 2){
+			$(".order_lower").show();
+		}else{
+			$(".order_lower").hide();
+		}
+		
+		return;
+	}
+
+	//日期选择插件调用start sunle
+	var opts1 = {
+		'targetId':'send_start_date',//时间写入对象的id
+		'triggerId':['send_start_date'],//触发事件的对象id
+		'alignId':'text_time1',//日历对齐对象
+		'format':'-'//时间格式 默认'YYYY-MM-DD HH:MM:SS'
+	},opts2 = {
+		'targetId':'send_end_date',
+		'triggerId':['send_end_date'],
+		'alignId':'text_time2',
+		'format':'-'
+	},opts3 = {
+		'targetId':'use_start_date',
+		'triggerId':['use_start_date'],
+		'alignId':'text_time3',
+		'format':'-'
+	},opts4 = {
+		'targetId':'use_end_date',
+		'triggerId':['use_end_date'],
+		'alignId':'text_time4',
+		'format':'-'
+	}
+	xvDate(opts1);
+	xvDate(opts2);
+	xvDate(opts3);
+	xvDate(opts4);
+	//日期选择插件调用end sunle
+</script>
+</body>
+</html>

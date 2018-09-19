@@ -1,0 +1,124 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="search-info">
+                    <div class="search-form">
+                        <form action="javascript:searchSnatch()" name="searchForm">
+                            <div class="search-key">
+                                <input type="text" name="keyword" class="text text_2" placeholder="序列号/联系人/联系电话" />                    
+                                <input type="submit" value="{$lang.button_search}" class="submit" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <form method="POST" action="gift_gard.php?act=batch&bonus_type={$smarty.get.bonus_type}" name="listForm">
+                <div class="list-div" id="listDiv">
+                {/if}
+                <table class="ecsc-default-table">
+                    <thead>
+                        <tr>
+                        <th width="8%"><div class="first_all"><input onclick='listTable.selectAll(this, "checkboxes")' type="checkbox" id="all" class="ui-checkbox"><label for="all" class="ui-label">{$lang.record_id}</label></div></th>
+                        <th width="10%" class="tl">{$lang.gift_sn}</th>
+                        <th width="24%" class="tl">{$lang.gift_goods_name}</th>
+                        <th width="20%" class="tl">{$lang.address}</th>
+                        <th width="10%">{$lang.gift_user_name}</th>
+                        <th width="8%">{$lang.confirm_ship}</th>
+                        <th width="10%">{$lang.status}</th>
+                        <th width="10%">{$lang.handler}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    {foreach from=$bonus_list item=bonus}
+                    <tr>
+                      <td class="first_td_checkbox"><div class="first_all"><input value="{$bonus.gift_gard_id}" name="checkboxes[]" type="checkbox" id="checkbox_{$bonus.gift_gard_id}" class="ui-checkbox"><label for="checkbox_{$bonus.gift_gard_id}" class="ui-label">{$bonus.gift_gard_id}</label></div></td>
+                      <td class="tl">{$bonus.gift_sn}</td>
+                      <td class="tl"><a target="_blank" href="../goods.php?id={$bonus.goods_id}">{$bonus.goods_name}</a></td>
+                      <td class="tl">
+                      	<p>{$bonus.address}</p>
+                      	<p>{$lang.consignee_name}：{$bonus.consignee_name}</p>
+                        <p>联系方式：{$bonus.mobile}</p>
+                      </td>
+                      <td>{if $bonus.user_name}{$bonus.user_name}{else}匿名用户{/if}</td>
+                      <td><img src="images/{if $bonus.status eq 2 || $bonus.status eq 3}yes{else}no{/if}.png" /></td>
+                      <td>{if $bonus.status eq 1}已提货,未发货{elseif $bonus.status eq 2}已提货,已发货{elseif $bonus.status eq 3}已完成{else}未提货{/if}</td>
+                      <td>
+                      	{if $bonus.status neq 2 && $bonus.status neq 3}
+                        <a href="javascript:;" class="btn_edit mr10"  onclick="listTable.remove({$bonus.gift_gard_id}, '{if $bonus.status eq 2}此订单已发货，您确定取消发货吗？{elseif $bonus.status eq 1}确定发货吗？{elseif $bonus.status eq 3}此订单已完成，不能修改发货状态{/if}', 'confirm_ship')">发货</a>
+                        {/if}
+                        <a href="gift_gard.php?act=handle_log&id={$bonus.gift_gard_id}" class="blue">{$lang.handle_log}</a>
+                      </td>
+                    </tr>
+                    {foreachelse}
+                    <tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+                    {/foreach}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="20">
+                            {include file="page.dwt"}
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+
+                {if $full_page}
+            </div>
+            </form>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript">
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+  listTable.query = "query_take";
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+
+  {literal}
+  onload = function()
+  {
+    startCheckOrder();
+    document.forms['listForm'].reset();
+  }
+  
+  {if $priv_ru eq 1}
+  function get_store_search(val){
+    if(val == 1){
+      document.forms['searchForm'].elements['merchant_id'].style.display = '';
+      document.forms['searchForm'].elements['store_keyword'].style.display = 'none';
+      document.forms['searchForm'].elements['store_type'].style.display = 'none';
+    }else if(val == 2){
+      document.forms['searchForm'].elements['merchant_id'].style.display = 'none';
+      document.forms['searchForm'].elements['store_keyword'].style.display = '';
+      document.forms['searchForm'].elements['store_type'].style.display = 'none';
+    }else if(val == 3){
+      document.forms['searchForm'].elements['merchant_id'].style.display = 'none';
+      document.forms['searchForm'].elements['store_keyword'].style.display = '';
+      document.forms['searchForm'].elements['store_type'].style.display = '';
+    }else{
+      document.forms['searchForm'].elements['merchant_id'].style.display = 'none';
+      document.forms['searchForm'].elements['store_keyword'].style.display = 'none';
+      document.forms['searchForm'].elements['store_type'].style.display = 'none';
+    }
+  }
+  {/if}
+  {/literal}
+</script>
+</body>
+</html>
+{/if}

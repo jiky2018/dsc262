@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<!-- #BeginLibraryItem "/library/js_languages_new.lbi" --><!-- #EndLibraryItem -->
+</head>
+
+<body class="package-content">
+    <!-- #BeginLibraryItem "/library/page_header_common.lbi" --><!-- #EndLibraryItem -->
+    <div class="content">
+        <div class="w w1200">
+            <!-- #BeginLibraryItem "/library/ur_here.lbi" --><!-- #EndLibraryItem -->
+            <!-- {if $list} -->
+            <ul class="package-list clearfix">
+                <!-- {foreach from=$list item=val name=package} -->
+                <li class="list-item">
+                    <div class="cover">
+                        <img src="{$val.activity_thumb}" alt="">
+                        <span class="intro">{$val.act_name}</span>
+                    </div>
+                    <div class="info">
+                        <div class="info-p clearfix">
+                            <div class="fl">商品数量：<b class="red">{$val.package_number|default:1}件</b></div>
+                            <div class="fr">活动时间：{$val.start_time} ～ {$val.end_time}</div>
+                        </div>
+                        <div class="info-slide clearfix">
+                            <a href="javascript:;" class="prev"></a>
+                            <a href="javascript:;" class="next"></a>
+                            <div class="bd">
+                                <ul>
+                                    <!-- {foreach from=$val.goods_list item=goods name=nogoods} -->
+                                    <li{if $smarty.foreach.nogoods.first} class="g_first"{/if}{if $smarty.foreach.nogoods.last} class="g_last"{/if}>
+                                        <a href="{$goods.url}" class="img"><img src="{$goods.goods_thumb}" alt="{$goods.goods_name}"></a>
+                                        <div class="price">{$goods.rank_price} X {$goods.goods_number}</div>
+                                    </li>
+                                    <!-- {/foreach} -->
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="info-btn-wp">
+                            <div class="fl">
+                                <span class="price">{$val.package_price}</span>
+                                <del>{$val.package_amounte}</del>
+                            </div>
+                            <div class="fr">
+                                <a href="javascript:addPackageToCart({$val.act_id})" class="pack-btn">{$lang.button_buy} &gt;</a>
+                                <span class="red">省{$val.saving}</span>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <!-- {/foreach} -->
+            </ul>
+            <!--{else}-->
+                <div class="no_records">
+                    <i class="no_icon_two"></i>
+                    <div class="no_info">
+                        <h3>{$lang.information_null}</h3>
+                    </div>
+                </div>
+            <!-- {/if} -->
+        </div>
+    </div>
+    <div class="hidden">
+    <input name="confirm_type" id="confirm_type" type="hidden" value="3" />
+    <input name="warehouse_id" id="warehouse_id" type="hidden" value="{$region_id}" />
+    <input name="area_id" id="area_id" type="hidden" value="{$area_id}" />
+    </div>
+    {* DSC 提醒您：动态载入user_menu_position.lbi，显示首页分类小广告 *}{insert name='user_menu_position'}
+    <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+    
+    {insert_scripts files='jquery.SuperSlide.2.1.1.js,common.js,parabola.js,cart_common.js,cart_quick_links.js'}
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/dsc-common.js"></script>
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.purebox.js"></script>
+    <script type="text/javascript">
+	$(function(){
+		//礼包商品左右滚动
+		$(".package-list .info-slide").slide({effect: "left",vis: 4,scroll: 4,autoPage: true,mainCell: ".bd ul"});
+	});	
+    </script>
+</body>
+</html>

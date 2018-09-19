@@ -1,0 +1,198 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<div class="form comt-box">
+    <div class="item">
+        <span class="label"><em>*</em>{$lang.score}：</span>
+        <div class="fl">
+            <span class="commstar" id="p_rate">
+                <a href="javascript:;" class="star1 {if $item.comment.comment_rank == 1}select{/if}">1</a>
+                <a href="javascript:;" class="star2 {if $item.comment.comment_rank == 2}select{/if}">2</a>
+                <a href="javascript:;" class="star3 {if $item.comment.comment_rank == 3}select{/if}">3</a>
+                <a href="javascript:;" class="star4 {if $item.comment.comment_rank == 4}select{/if}">4</a>
+                <a href="javascript:;" class="star5 {if $item.comment.comment_rank == 5}select{/if}">5</a>
+            </span>
+            <input type="hidden" name="comment_rank" value="{$item.comment.comment_rank}"/>
+            <div class="hide scoreerror-err">
+                <span class="comt-error">{$lang.Pleas_mark}</span>
+            </div>
+        </div>
+    </div>
+    <div class="item">
+        <span class="label"><em>*</em>{$lang.Experience}：</span>
+        <div class="fl">
+            <div class="summary-cont-box {if $sign eq 0 || $item.comment.goods_tag}summary-cont{/if}">
+            	<!--{if $item.impression_list && !$item.comment.goods_tag && $sign < 2}-->
+                <div class="sumy-tags hide" style="display:block;">
+                    <div class="tags-list">
+                        <div class="tag-item">
+                            <!--{foreach from=$item.impression_list item=impression name=impression}-->
+                            <a class="tag-txt old-tag{if $smarty.foreach.impression.first} tag-txt-selected{/if}" href="javascript:void(0);" data-val="{$impression}" data-recid="{$item.rec_id}">{$impression}</a>
+                            <!--{/foreach}-->
+                            <input type="hidden" name="impression" id="impression" value="{$item.impression_list.0}" />
+                        </div>
+                    </div>
+                </div>  
+                <input type="hidden" name="is_impression" id="is_impression" value="1" />
+                <!--{else}-->
+                <input type="hidden" name="is_impression" id="is_impression" value="0" />
+                <!--{/if}-->
+                
+                {if $item.comment.content eq ''}
+                <div class="sumy-area">
+                    <textarea name="content" class="area area01" cols="30" rows="10" placeholder="{$lang.Experience_one}"></textarea>
+                    <div class="area-count">{$lang.Experience_two}</div>
+                </div> 
+                {else}
+                <!--{if $item.comment.goods_tag}-->
+                <div class="sumy-tags">
+                	<!--{foreach from=$item.comment.goods_tag item=tag}-->
+                	<a class="tag-txt tag-txt-selected" href="javascript:void(0);">{$tag}</a>
+                    <!--{/foreach}-->
+                </div>
+                <!--{/if}-->
+                <div class="sumy-area-txt">{$item.comment.content}</div>
+                {/if}
+            </div>
+            <div class="mt10 hide content-err">
+                <span class="comt-error"></span>
+            </div>
+        </div>
+    </div>
+    <div class="item">
+        <span class="label">{$lang.single_comment}：</span>
+        <div class="fl">
+            <div class="upload-img-box">
+                <div class="img-lists">
+                    <ul class="img-list-ul" ectype="imglist">
+                        <!-- {foreach from=$item.comment.img_list item=img} -->
+                        <li><img width="60" height="60" alt="" src="{$img.img_thumb}"><div class="del hide"><em value="{$lang.drop}">X</em></div></li>
+                        <!--{/foreach}-->
+                        
+                        <!--{if $item.comment.img_list}-->
+						<script>
+                        $(".img-list-ul li").click(function(){
+                            var src = $(this).find("img").attr("src");
+                            var imgbigBox = $(this).parents(".upload-img-box").find(".img-bigbox");
+                            var height = imgbigBox.find("img").height();
+                            imgbigBox.find("img").attr("src",src);
+                            imgbigBox.find("img").css({"margin-top":(350-height)/2})
+                        });
+                        </script>
+                        <!--{/if}-->
+                    </ul>
+                    <!--{if !$item.comment.img_list}-->
+						<div class="upload-btn">
+                            <div id="file_upload{$smarty.foreach.foo.iteration}" class="uploadify">
+                                <a href="javascript:void(0);" id="uploadbutton" class="uploadify-button"><span class="uploadify-button-text"><b></b></span></a>
+                            </div>
+                        </div>
+                    <!--{/if}-->
+                </div>
+                <!--{if !$item.comment.img_list}-->
+                <div class="img-utips">
+                    <span><em ectype="num">0</em>/<em ectype="img_number">10</em></span>
+                </div>
+                <!--{/if}-->
+                <div class="clear"></div>
+                <div class="img-bigbox" style="display:<!--{if !$item.comment.img_list}-->none<!--{/if}-->;">
+                    <!--{if $item.comment.img_list}-->
+                    <!-- {foreach from=$item.comment.img_list item=img key=key} -->
+                    {if $key eq 0}
+                    <img data-lazy-img="done" src="{$img.comment_img}" height="350">
+                    {/if}
+                    <!--{/foreach}-->
+                    <!--{else}-->
+                    <img data-lazy-img="done" src="" height="350">
+                    <!--{/if}-->
+                    <!--{if !$item.comment.img_list}-->
+                    <span class="img-del delete_commentImg">{$lang.drop_pic}</span>
+                    <!--{/if}-->
+                </div>
+                <input name='order_id' type='hidden' value='{$item.order_id}' />
+                <input name='goods_id' type='hidden' value='{$item.goods_id}' />
+            </div>
+        </div>
+    </div>
+    
+    <!--{if !$item.comment.img_list}-->
+    <!--{if $enabled_captcha}-->
+    <div class="item">
+        <span class="label">{$lang.comment_captcha}：</span>
+        <div class="fl">
+        	<div>
+            
+            <input type="text" name="captcha" value="" class="yzm" />
+            <img src="captcha_verify.php?captcha=is_user_comment&identify={$item.rec_id}&height=28&font_size=14&{$rand}" alt="captcha" onClick="this.src='captcha_verify.php?captcha=is_user_comment&identify={$item.rec_id}&height=30&font_size=14&'+Math.random()" class="captcha">
+        	</div>
+            <div class="mt10 hide captcha-err" style=" width:600px; float:left;">
+                <span class="comt-error"></span>
+            </div>
+        </div>
+    </div>
+    <!--{/if}-->
+    <div class="item">
+        <span class="label">&nbsp;</span>
+        <div class="fl">
+            <input name='rec_id' type='hidden' value='{$item.rec_id}' />
+        	<input name='sign' type='hidden' value='{$sign}' />
+          <a href="javascript:void(0);" class="pingjia_form" data-commentid="{if $item.comment.comment_id == ''}0{else}{$item.comment.comment_id}{/if}" style="height:18px;">{$lang.submit_comment}</a>
+        </div>
+    </div>
+	<!--{/if}-->
+</div>
+<script type="text/javascript">
+	var uploader_gallery = new plupload.Uploader({//创建实例的构造方法
+		runtimes: 'html5,flash,silverlight,html4', //上传插件初始化选用那种方式的优先级顺序
+		browse_button: 'uploadbutton', // 上传按钮
+		url: "comment.php?act=ajax_return_images&order_id={$item.order_id}&rec_id={$item.rec_id}&goods_id={$item.goods_id}&userId={$user_id}&sessid={$sessid}", //远程上传地址
+		filters: {
+			max_file_size: '2mb', //最大上传文件大小（格式100b, 10kb, 10mb, 1gb）
+			mime_types: [//允许文件上传类型
+				{title: "files", extensions: "bmp,gif,jpg,png,jpeg"}
+			]
+		},
+		multi_selection: true, //true:ctrl多文件上传, false 单文件上传
+		init: {
+		   FilesAdded: function(up, files) { //文件上传前
+			   var len = $("*[ectype='imglist'] li").length;
+				plupload.each(files, function(file){
+					//遍历文件
+					len ++;
+				});
+				if(len > 10){
+					pbDialog("最多只能上传10张图片","",0);
+				}else{
+					//开始上传 单张循环上传
+					var img_number = 10 - Number(len);
+					$("*[ectype='num']").html(len);
+					$("*[ectype='ima_number']").html(img_number);
+					submitBtn();
+				}
+			},
+			FileUploaded: function(up, file, info) { //文件上传成功的时候触发
+				var data = eval("(" + info.response + ")");
+				if(data.error > 0){
+					pbDialog(msg,"",0);
+					return;
+				}else{
+					$("*[ectype='imglist']").html(data.content);
+				}
+			},
+			UploadComplete:function(up,file){
+				//所有文件上传成功时触发	
+			},
+			Error: function(up, err){
+				//上传出错的时候触发
+				pbDialog(err.message,"",0);
+			}
+		}
+	});
+	
+	uploader_gallery.init();
+	
+	function submitBtn(){
+		//设置传参
+		uploader_gallery.setOption("multipart_params");
+		//开始控件
+		uploader_gallery.start();
+	};
+</script>

@@ -1,0 +1,244 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="exchange_goods.php?act=list" class="s-back">{$lang.back}</a>{$lang.promotion} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content_common}</li>
+                    <li>{$lang.operation_prompt_content.info.0}</li>
+                    <li>{$lang.operation_prompt_content.info.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+						<form  action="exchange_goods.php" method="post" name="theForm" id="exchange_goods_form">
+                            <div class="switch_info">
+                                {if $form_action neq 'update'}
+                            	<div class="goods_search_div bor_bt_das">
+                                    <div class="search_select">
+                                        <div class="categorySelect">
+                                            <div class="selection">
+                                                <input type="text" name="category_name" id="category_name" class="text w250 valid" value="{$lang.select_cat}" autocomplete="off" readonly data-filter="cat_name" />
+                                                <input type="hidden" name="category_id" id="category_id" value="0" data-filter="cat_id" />
+                                            </div>
+                                            <div class="select-container" style="display:none;">
+                                                {include file="library/filter_category.lbi"}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="search_select">
+                                        <div class="brandSelect">
+                                            <div class="selection">
+                                                <input type="text" name="brand_name" id="brand_name" class="text w120 valid" {$lang.select_barnd} autocomplete="off" readonly data-filter="brand_name" />
+                                                <input type="hidden" name="brand_id" id="brand_id" value="0" data-filter="brand_id" />
+                                            </div>
+                                            <div class="brand-select-container" style="display:none;">
+                                                {include file="library/filter_brand.lbi"}
+                                            </div>
+                                        </div>                            
+                                    </div>
+                                    <input type="hidden" name="ru_id" value="{$ru_id}" />
+                                    <input type="text" name="keywords" class="text w150" placeholder={$lang.input_keywords} data-filter="keywords" autocomplete="off" />
+                                    <a href="javascript:void(0);" class="btn btn30" ectype="search" onclick="searchGoods()"><i class="icon icon-search"></i>{$lang.search_word}</a>
+                                </div>
+                                {/if}
+                                <div class="items">
+                                    <div class="item">
+                                        <div class="label">{$lang.require_field}{$lang.goodsid}：</div>
+                                        <div class="label_value">
+                                            {if $form_action neq 'update'}
+                                       		<div id="goods_id" class="imitate_select select_w320">
+                                              <div class="cite">{if $goods.goods_id}{$goods.goods_name}{else}{$lang.please_select}{/if}</div>
+                                              <ul>
+                                              	{if !$goods.goods_id}<li class="li_not">{$lang.please_search_goods}</li>{/if}
+                                              </ul>
+                                              <input name="goods_id" type="hidden" value="{$goods.goods_id}" id="goods_id_val">
+                                            </div>
+											<div class="notic">{$lang.notice_goodsid}</div>
+                                            <div class="form_prompt"></div>
+                                            {else}
+                                            {$goods.goods_name}
+                                            <input name="goods_id" type="hidden" value="{$goods.goods_id}" id="goods_id_val">
+                                            {/if}
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.require_field}{$lang.integral}：</div>
+                                        <div class="label_value">
+											<input type="text" class="text" name="exchange_integral" value="{$goods.exchange_integral}" autocomplete="off" />
+											<div class="notic">{$lang.notice_integral}</div>
+                                            <div class="form_prompt"></div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.require_field}{$lang.market_integral}：</div>
+                                        <div class="label_value">
+											<input type="text" class="text" name="market_integral" value="{$goods.market_integral}" autocomplete="off" />
+											<div class="notic">{$lang.notice_market_integral}</div>
+                                            <div class="form_prompt"></div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.is_exchange}：</div>
+                                        <div class="label_value">
+											<div class="checkbox_items">
+												<div class="checkbox_item"> 
+													<input name="is_exchange" type="radio" class="ui-radio" value="0" id="is_exchange_0"{if $goods.is_exchange eq 0||$goods.is_exchange eq ''}checked="checked"{/if} />
+													<label for="is_exchange_0" class="ui-radio-label">{$lang.no}</label>
+												</div>
+												<div class="checkbox_item"> 
+													<input name="is_exchange" type="radio" class="ui-radio" value="1" id="is_exchange_1" {if $goods.is_exchange}checked="checked"{/if} />
+													<label for="is_exchange_1" class="ui-radio-label">{$lang.yes}</label>
+												</div>
+											</div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.is_hot}：</div>
+                                        <div class="label_value">
+											<div class="checkbox_items">
+												<div class="checkbox_item"> 
+													<input name="is_hot" type="radio" class="ui-radio" value="0" id="is_hot_0" {if $goods.is_hot eq 0||$goods.is_hot eq ''}checked="checked"{/if} />
+													<label for="is_hot_0" class="ui-radio-label">{$lang.no}</label>
+												</div>
+												<div class="checkbox_item"> 
+													<input name="is_hot" type="radio" class="ui-radio" value="1" id="is_hot_1" {if $goods.is_hot}checked="checked"{/if} />
+													<label for="is_hot_1" class="ui-radio-label">{$lang.yes}</label>
+												</div>
+											</div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.is_best}：</div>
+                                        <div class="label_value">
+											<div class="checkbox_items">
+												<div class="checkbox_item"> 
+													<input name="is_best" type="radio" class="ui-radio" value="0" id="is_best_0" {if $goods.is_best eq 0||$goods.is_best eq ''}checked="checked"{/if} />
+													<label for="is_best_0" class="ui-radio-label">{$lang.no}</label>
+												</div>
+												<div class="checkbox_item"> 
+													<input name="is_best" type="radio" class="ui-radio" value="1" id="is_best_1" {if $goods.is_best}checked="checked"{/if} />
+													<label for="is_best_1" class="ui-radio-label">{$lang.yes}</label>
+												</div>
+											</div>
+                                        </div>
+                                    </div>
+                                    {if $form_action eq 'update' && $goods.user_id neq 0}
+                                    <div class="item">
+                                        <div class="label">{$lang.adopt_status}：</div>
+                                        <div class="label_value">
+											<div class="checkbox_items" ectype="general_audit_status">
+												<div class="checkbox_item"> 
+													<input name="review_status" type="radio" class="ui-radio" value="1" id="review_status_1" {if $goods.review_status eq 1}checked="checked"{/if} />
+													<label for="review_status_1" class="ui-radio-label">{$lang.not_audited}</label>
+												</div>
+												<div class="checkbox_item"> 
+													<input name="review_status" type="radio" class="ui-radio" value="2" id="review_status_2" {if $goods.review_status eq 2}checked="checked"{/if} />
+													<label for="review_status_2" class="ui-radio-label">{$lang.audited_not_adopt}</label>
+												</div>
+                                                <div class="checkbox_item"> 
+													<input name="review_status" type="radio" class="ui-radio" value="3" id="review_status_3" {if $goods.review_status eq 3}checked="checked"{/if} />
+													<label for="review_status_3" class="ui-radio-label">{$lang.audited_yes_adopt}</label>
+												</div>
+											</div>
+                                        </div>
+                                    </div>			
+									<div class="item {if $goods.review_status neq 2}hide{/if}" id="review_content">
+										<div class="label">{$lang.adopt_reply}：</div>
+										<div class="value">
+											<textarea name="review_content" class="textarea h100">{$goods.review_content}</textarea>
+										</div>
+									</div>
+                                    {/if}
+                                    <div class="item">
+                                        <div class="label">&nbsp;</div>
+                                        <div class="label_value info_btn">
+											<input type="hidden" name="act" value="{$form_action}" />
+											<input type="submit" value="{$lang.button_submit}" class="button" id="submitBtn" />
+											<input type="reset" value="{$lang.button_reset}" class="button button_reset" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+ 	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+	//表单验证
+	$(function(){
+		$("#submitBtn").click(function(){
+			if($("#exchange_goods_form").valid()){
+				$("#exchange_goods_form").submit();
+			}
+		});
+	
+		$('#exchange_goods_form').validate({
+			errorPlacement: function(error, element){
+				var error_div = element.parents('div.label_value').find('div.form_prompt');
+				element.parents('div.label_value').find(".notic").hide();
+				error_div.append(error);
+			},
+			ignore:'.ignore',
+			rules : {
+				goods_id : {
+					required : true,
+					min:1
+				},
+				exchange_integral : {
+					required : true,
+					digits : true
+				}
+			},
+			messages : {
+				goods_id : {
+					required : '<i class="icon icon-exclamation-sign"></i>'+no_goods_id,
+					min : '<i class="icon icon-exclamation-sign"></i>'+no_goods_id
+				},
+				exchange_integral : {
+					required : '<i class="icon icon-exclamation-sign"></i>'+invalid_exchange_integral,
+					digits : '<i class="icon icon-exclamation-sign"></i>'+invalid_exchange_integral
+				}
+			}
+		});
+	});
+
+	function searchGoods(){
+		var filter = new Object;
+		filter.cat_id   = document.forms['theForm'].elements['category_id'].value;
+		filter.brand_id = document.forms['theForm'].elements['brand_id'].value;
+		filter.keyword  = document.forms['theForm'].elements['keywords'].value;
+		filter.ru_id 	= document.forms['theForm'].elements['ru_id'].value;
+	
+		Ajax.call('exchange_goods.php?is_ajax=1&act=search_goods', filter, searchGoodsResponse, 'GET', 'JSON')	
+	}
+	
+	function searchGoodsResponse(result){
+		if(result.error == 0){
+			$("#goods_id").find("li").remove();
+			var goods = result.content;
+		
+			if(goods){
+				for(i = 0; i < goods.length; i++){
+					$("#goods_id").children("ul").append("<li><a href='javascript:;' data-value='"+goods[i].goods_id+"' class='ftx-01'>"+goods[i].goods_name+"</a><input type='hidden' name='user_search[]' value='"+goods[i].value+"'></li>")			
+				}
+				$("#goods_id").children("ul").show();
+			}
+		}
+		
+		if(result.message.length > 0){
+			alert(result.message);
+		}
+	}
+    </script>
+</body>
+</html>

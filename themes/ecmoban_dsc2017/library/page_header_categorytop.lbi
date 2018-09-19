@@ -1,0 +1,290 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<div class="site-nav" id="site-nav">
+    <div class="w w1200">
+        <div class="fl">	
+            {* DSC 提醒您：根据用户id来调用header_region_style.lbi显示不同的界面  *}{insert name='header_region'}
+            <div class="txt-info" id="ECS_MEMBERZONE">
+                {* DSC 提醒您：根据用户id来调用member_info.lbi显示不同的界面  *}{insert name='member_info'}	
+            </div>
+        </div>
+        <ul class="quick-menu fr">
+            <!--{if $navigator_list.top}-->
+            <!-- {foreach name=nav_top_list from=$navigator_list.top item=nav key=key} -->
+            <!--{if $smarty.foreach.nav_top_list.index < 4}-->
+            <li>
+            	<div class="dt"><a href="{$nav.url}" {if $nav.opennew}target="_blank"{/if}>{$nav.name}</a></div>
+            </li>
+            <li class="spacer"></li>
+            <!--{/if}-->
+            <!-- {/foreach} -->
+            <!-- {/if} -->
+            <!--{if $navigator_list.top}-->
+            <li class="li_dorpdown" data-ectype="dorpdown">
+                <div class="dt dsc-cm">{$lang.Site_navigation}<i class="iconfont icon-down"></i></div>
+                <div class="dd dorpdown-layer">
+                    <dl class="fore1">
+                        <dt>特色主题</dt>
+                        <dd>
+                            <!-- {foreach name=nav_top_list from=$top_cat_list item=topc_cats key=key} -->
+                                <!--{if $smarty.foreach.nav_top_list.index < 3}-->
+                                    <div class="item"><a href="{$topc_cats.url}" target="_blank">{$topc_cats.cat_alias_name}</a></div>
+                                <!--{/if}-->
+                            <!-- {/foreach} -->
+                        </dd>
+                    </dl>
+                    <dl class="fore2">
+                        <dt>促销活动</dt>
+                        <dd>
+                            <!-- {foreach name=nav_top_list from=$navigator_list.top item=nav key=key} -->
+                                <!--{if $smarty.foreach.nav_top_list.index >= 4}-->
+                                    <div class="item"><a href="{$nav.url}"{if $nav.opennew} target="_blank"{/if}>{$nav.name}</a></div>
+                                <!--{/if}-->
+                            <!-- {/foreach} -->
+                        </dd>
+                    </dl>
+                </div>
+            </li>
+            <!-- {/if} -->
+        </ul>
+    </div>
+</div>
+<div class="header">
+    <div class="w w1200">
+        <div class="logo">
+            <div class="logoImg"><a href="{$url_index}"><img src="images/logo.gif" /></a></div>
+            <div class="logoAdv"><a href="{$url_merchants}"><img src="images/ecsc-join.gif" /></a></div>
+        </div>
+        <div class="dsc-search">
+            <div class="form">
+                <form id="searchForm" name="searchForm" method="get" action="search.php" onSubmit="return checkSearchForm()" class="search-form">
+                    <input autocomplete="off" onKeyUp="lookup(this.value);" name="keywords" type="text" id="keyword" value="{if $search_keywords}{$search_keywords}{else}{insert name='rand_keyword'}{/if}" class="search-text"/>
+                    <input type="hidden" name="store_search_cmt" value="{$search_type|default:0}">
+                    <button type="submit" class="button button-goods" onclick="checkstore_search_cmt(0)">搜商品</button>
+                    <button type="submit" class="button button-store" onclick="checkstore_search_cmt(1)">搜店铺</button>
+                </form>
+                {if $searchkeywords}
+                <ul class="keyword">
+                {foreach from=$searchkeywords item=val}
+                <li><a href="search.php?keywords={$val|escape:url}" target="_blank">{$val}</a></li>
+                {/foreach}
+                </ul>
+                {/if}
+                <!-- @Author guan 搜索栏提示 start -->
+                <div class="suggestions_box" id="suggestions" style="display:none;">
+                    <div class="suggestions_list" id="auto_suggestions_list">
+                        &nbsp;
+                    </div>
+                </div>
+                <!-- @Author guan 搜索栏提示 end -->
+            </div>
+        </div>
+        <div class="shopCart" data-ectype="dorpdown" id="ECS_CARTINFO" data-carteveval="0">
+            {* DSC 提醒您：根据用户id来调用cart_info.lbi显示不同的界面  *}{insert name='cart_info'}
+        </div>
+    </div>
+</div>
+<!--{if $cate_info.top_style_tpl eq 1 || $suffix == 'backup_tpl_1'}-->
+<div class="nav dsc-zoom">
+	<div class="w w1200">
+		<div class="categorys">
+			<div class="categorys-type"><a href="javascript:;">{if $enableTem}{$enableTem}{else}{$cate_info.cat_name}{/if}</a></div>
+			<div class="categorys-tab-content">
+				<div class="categorys-items" ectype="items">
+					<!--{foreach from=$categories_child item=cat name=child}-->
+					<div class="categorys-item" ectype="item" data-catid="{$cat.id}" data-eveval="0">
+						<div class="item-content">
+							<i class="iconfont icon-right"></i>
+							<div class="categorys-title">
+								<strong><a href="{$cat.url}" target="_blank">{$cat.name|escape:html}</a></strong>
+								<span>
+                                    <!--{foreach from=$cat.cat_id item=child name=no}-->
+                                    <!--{if $smarty.foreach.no.index<6}-->
+                                    <a href="{$child.url}" target="_blank">{$child.name|escape:html}</a>
+                                    <!--{/if}-->
+                                    <!--{/foreach}-->
+								</span>
+							</div>
+						</div>
+						<div class="categorys-items-layer" ectype="cateLayer">
+							<div class="catetop-layer-con clearfix">
+								<h3><a href="javascript:;">{$cat.name|escape:html}</a></h3>
+								<ul class="cate-list">
+									{foreach from=$cat.cat_id item=child name=no}
+									<li><a href="{$child.url}">{$child.name|escape:html}</a></li>
+									{/foreach}
+								</ul>
+								<ul class="cate-logo" ectype="subitems_{$cat.id}">
+								</ul>
+							</div>
+						</div>
+					</div>
+					<!-- {/foreach} -->
+				</div>
+			</div>
+		</div>
+        {if $nav_page && $nav_page neq 'undefined'}
+        {$nav_page}
+        {else}
+		<div class="nav-main">
+			<ul class="navitems">
+                <li><a href="../index.php" {if $navigator_list.config.index eq 1}class="curr"{/if}>{$lang.home}</a></li>
+                <!-- {foreach name=nav_middle_list from=$navigator_list.middle item=nav} -->
+                <li><a href="{$nav.url}" {if $nav.active eq 1}class="curr"{/if} {if $nav.opennew}target="_blank"{/if}>{$nav.name}</a></li>
+                <!-- {/foreach} -->
+			</ul>
+		</div>
+        {/if}
+	</div>
+</div>
+<!--{elseif $cate_info.top_style_tpl eq 2 || $suffix == 'backup_tpl_2'}-->
+<div class="nav dsc-zoom">
+    <div class="w w1200">
+        <div class="categorys">
+            <div class="categorys-type"><a href="javascript:;">{if $enableTem}{$enableTem}{else}{$cate_info.cat_name}{/if}</a></div>
+            <div class="categorys-tab-content">
+                <div class="categorys-items" ectype="items">
+                    <!--{foreach from=$categories_child item=cat name=child}-->
+                    <div class="categorys-item" ectype="item" data-catid="{$cat.id}">
+                        <div class="item-content">
+                            <div class="categorys-title">
+                                <strong><a href="{$cat.url}" target="_blank">{$cat.name|escape:html}</a></strong>
+                                <span>
+                                    <!--{foreach from=$cat.cat_id item=child name=no}-->
+                                    <!--{if $smarty.foreach.no.index<3}-->
+                                    <a href="{$child.url}" target="_blank">{$child.name|escape:html}</a>
+                                    <!--{/if}-->
+                                    <!--{/foreach}-->
+                                </span>
+                            </div>
+                        </div>
+                        <div class="categorys-items-layer">
+                            <div class="catetop-layer-con clearfix">
+                                <h3>{$cat.name|escape:html}</h3>
+                                <ul class="cate-list">
+                                    <!--{foreach from=$cat.cat_id item=child name=no}-->
+                                    <li><a href="{$child.url}" target="_blank">{$child.name|escape:html}</a></li>
+                                    <!--{/foreach}-->
+                                </ul>
+                            </div>
+                            {* ECSHOP 提醒您：动态载入cate_layer_right.lbi，显示全部分类小广告 *}{insert name='get_adv_child' ad_arr=$cat.cate_layer_elec_row id=$cat.id}
+                        </div>
+                    </div>
+                    <!--{/foreach}-->
+                </div>
+            </div>
+        </div>
+        {if $nav_page && $nav_page neq 'undefined'}
+        {$nav_page}
+        {else}
+        <div class="nav-main" id="nav">
+            <ul class="navitems">
+                <li><a href="../index.php"{if $navigator_list.config.index eq 1} class="curr"{/if}>{$lang.home}</a></li>
+                <!-- {foreach name=nav_middle_list from=$navigator_list.middle item=nav} -->
+                <li><a href="{$nav.url}"{if $nav.active eq 1} class="curr"{/if} {if $nav.opennew}target="_blank"{/if}>{$nav.name}</a></li>
+                <!-- {/foreach} -->
+            </ul>
+        </div>
+        {/if}
+    </div>
+</div>  
+<!--{elseif $cate_info.top_style_tpl eq 3 || $suffix == 'backup_tpl_3'}-->
+<div class="nav dsc-zoom">
+	<div class="w w1200">
+		<div class="categorys">
+			<div class="categorys-type"><a href="javascript:;">{if $enableTem}{$enableTem}{else}{$cate_info.cat_name}{/if}</a></div>
+			<div class="categorys-tab-content">
+				<div class="categorys-items" ectype="items">
+				<!--{foreach from=$categories_child item=cat name=child}-->
+					<div class="categorys-item" ectype="item" data-catid="{$cat.id}">
+						<div class="item-content">
+							<!--{if $cat.style_icon eq 'other'}-->
+                            {if $cat.cat_icon}<div class="icon-other"><img src="{$cat.cat_icon}" alt="分类图标"></div>{/if}
+							<!--{else}-->
+                            <i class="iconfont icon-{$cat.style_icon}"></i>
+							<!--{/if}-->							
+							<div class="categorys-title">
+								<strong><a href="{$cat.url}" target="_blank">{$cat.name|escape:html}</a></strong>
+								<span>
+                                    <!--{foreach from=$cat.cat_id item=child name=no}-->
+                                    <!--{if $smarty.foreach.no.index<3}-->
+                                    <a href="{$child.url}" target="_blank">{$child.name|escape:html}</a>
+                                    <!--{/if}-->
+                                    <!--{/foreach}-->
+								</span>
+							</div>
+						</div>
+						<div class="categorys-items-layer">
+							<div class="catetop-layer-con clearfix">
+								<ul class="cate-list">
+                                    <!--{foreach from=$cat.cat_id item=child name=no}-->
+                                    <li><a href="{$child.url}" target="_blank">{$child.name|escape:html}</a></li>
+                                    <!--{/foreach}-->
+								</ul>
+								{* ECSHOP 提醒您：动态载入cate_layer_right.lbi，显示全部分类小广告 *}{insert name='get_adv_child' ad_arr=$cat.cate_layer_elec_row id=$cat.id}
+							</div>
+						</div>
+					</div>
+					<!--{/foreach}-->
+				</div>			
+			</div>
+		</div>
+        {if $nav_page && $nav_page neq 'undefined'}
+        {$nav_page}
+        {else}
+		<div class="nav-main" id="nav">
+			<ul class="navitems">
+                <li><a href="../index.php" {if $navigator_list.config.index eq 1}class="curr"{/if}>{$lang.home}</a></li>
+                <!-- {foreach name=nav_middle_list from=$navigator_list.middle item=nav} -->
+                <li><a href="{$nav.url}" {if $nav.active eq 1}class="curr"{/if} {if $nav.opennew}target="_blank"{/if}>{$nav.name}</a></li>
+                <!-- {/foreach} -->
+			</ul>
+		</div>
+        {/if}
+	</div>
+</div>
+<!--{else}-->
+<div class="nav dsc-zoom">
+	<div class="w w1200">
+		<div class="categorys">
+			<div class="categorys-type"><a href="javascript:;" target="_blank"><i class="iconfont icon-liebiao"></i>{if $enableTem}{$enableTem}{else}{$cate_info.cat_name}{/if}</a></div>
+			<div class="categorys-tab-content">
+				<div class="categorys-items" ectype="items">
+					<!--{foreach from=$categories_child item=cat name=child}-->
+					<div class="categorys-item" ectype="item" data-defa="1" data-catid="{$cat.id}" data-eveval="0">
+						<div class="item-content">
+							<div class="categorys-title">
+								<strong><a href="{$cat.url}" target="_blank">{$cat.name|escape:html}</a></strong>
+							</div>
+						</div>
+						<div class="categorys-items-layer" ectype="cateLayer">
+							<div class="catetop-layer-con clearfix">
+                            	<div class="tit">{$cat.name|escape:html}</div>
+								<ul class="cate-list">
+                                    <!--{foreach from=$cat.cat_id item=child name=no}-->
+                                    <li><a href="{$child.url}" target="_blank">{$child.name|escape:html}</a></li>
+                                    <!--{/foreach}-->
+								</ul>
+                                <div class="brand-list" ectype="subitems_{$cat.id}">
+                                </div>
+							</div>
+						</div>
+					</div>
+					<!--{/foreach}-->
+				</div>
+			</div>
+		</div>
+        {if $nav_page && $nav_page neq 'undefined'}
+        {$nav_page}
+        {else}
+		<div class="nav-main">
+			<ul class="navitems">
+                <li><a href="../index.php"{if $navigator_list.config.index eq 1} class="curr"{/if}>{$lang.home}</a></li>
+                <!-- {foreach name=nav_middle_list from=$navigator_list.middle item=nav} -->
+                <li><a href="{$nav.url}"{if $nav.active eq 1} class="curr"{/if}{if $nav.opennew} target="_blank"{/if}>{$nav.name}</a></li>
+                <!-- {/foreach} -->
+			</ul>
+		</div>
+        {/if}
+	</div>
+</div>
+<!--{/if}-->

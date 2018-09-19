@@ -1,0 +1,100 @@
+{include file="seller_pageheader"}
+
+{include file="seller_nave_header"}
+
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file="seller_menu_left"}
+
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+            {include file="seller_nave_header_title"}
+                <div class="wrapper-right of">
+                    <div class="tabmenu">
+                        <ul class="tab">
+                            <li role="presentation" class="active"><a href="#home" role="tab" data-toggle="tab">{$lang['qrcode']}</a></li>
+                        </ul>
+                    </div>
+                    <div class="explanation" id="explanation">
+                        <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4></div>
+                        <ul>
+                            <li>二维码：即渠道二维码。可生成临时二维码或永久二维码 用于线下某些场景展示，让用户扫描关注，效果类似关注微信公众号。</li>
+                            <li>临时二维码，是有过期时间的，最长可以设置为在二维码生成后的30天（即2592000秒）后过期，但能够生成较多数量。临时二维码主要用于帐号绑定等不要求二维码永久保存的业务场景</li>
+                            <li>永久二维码，是无过期时间的，但数量较少（目前为最多10万个）。永久二维码主要用于适用于帐号绑定、用户来源统计等场景。</li>
+                            <li>应用场景值ID，临时二维码时为32位非0整型，永久二维码时最大值为100000（目前参数只支持1--100000），请从小大到依次填写</li>
+                        </ul>
+                    </div>
+                    <div class="common-head mt20">
+                        <div class="fl mb20">
+                            <a href="{url('qrcode_edit')}" class="sc-btn sc-blue-btn fancybox "><i class="fa fa-plus"></i>{$lang['add'].$lang['qrcode']}</a>
+                        </div>
+                    </div>
+                    <div class="wrapper-content">
+                        <div class="list-div" id="listDiv">
+                            <table class="ecsc-default-table goods-default-table mt20">
+                                <thead>
+                                <tr>
+                                    <th width="15%">{$lang['qrcode_scene_value']}</th>
+                                    <th width="10%">{$lang['qrcode_type']}</th>
+                                    <th width="20%">{$lang['qrcode_function']}</th>
+                                    <th width="5%">{$lang['sort_order']}</th>
+                                    <th >{$lang['handler']}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {if $list}
+                                {foreach $list as $key=>$val}
+                                <tr>
+                                    <td>{$val['scene_id']}</td>
+                                    <td>{if $val['type'] == 0}{$lang['qrcode_short']}{else}{$lang['qrcode_forever']}{/if}</td>
+                                    <td>{$val['function']}</td>
+                                    <td>{$val['sort']}</td>
+                                    <td class="handle">
+                                        <div class="tDiv a3">
+                                            <a href="{url('qrcode_get', array('id'=>$val['id']))}" class="btn_region fancybox fancybox.iframe getqr"><i class="fa fa-qrcode"></i>{$lang['qrcode_get']}</a>
+
+                                            {if $val['status'] == 1}
+                                            <a href="{url('qrcode_edit', array('id'=>$val['id'],'status'=> 0))}" class="btn_trash"><i class="fa fa-toggle-on"></i>已{$lang['enabled']}</a>
+                                            {else}
+                                            <a href="{url('qrcode_edit', array('id'=>$val['id'],'status'=> 1))}" class="btn_trash"><i class="fa fa-toggle-off"></i>已{$lang['disabled']}</a>
+                                            {/if}
+
+                                            <a href="javascript:;" data-href="{url('qrcode_del', array('id'=>$val['id']))}'}" class="btn_trash delete_confirm"><i class="fa fa-trash-o"></i>{$lang['drop']}</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {/foreach}
+                                {else}
+                                <tr><td class="no-records" colspan="5">没有找到任何记录</td></tr>
+                                {/if}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {include file="seller_pageview"}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+$(function(){
+    $(".getqr").click(function(){
+        var url = $(this).attr("href");
+        $.get(url, '', function(data){
+            if(data.status <= 0 ){
+                layer.msg(data.msg);
+                $.fancybox.close();
+                return false;
+            }
+        }, 'json');
+    });
+})
+</script>
+
+{include file="seller_pagefooter"}
+</body>
+</html>

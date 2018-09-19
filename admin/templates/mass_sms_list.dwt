@@ -1,0 +1,113 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.08_members} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit">
+					<i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span>
+                    {if $open eq 1}
+                        {if !$ads_type}
+                        <div class="view-case">
+                            <div class="view-case-tit"><i></i>{$lang.view_tutorials}</div>
+                            <div class="view-case-info">
+                                <a href="http://help.ecmoban.com/article-6893.html" target="_blank">{$lang.tutorials_bonus_list_one}</a>
+                            </div>
+                        </div>
+                        {/if}	
+                    {/if}				
+				</div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.list.0}</li>
+                    <li>{$lang.operation_prompt_content.list.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<div class="common-head">
+                   	{if $action_link}
+                    <div class="fl">
+                        <a href="{$action_link.href}"><div class="fbutton"><div class="add" title="{$action_link.text}"><span><i class="icon icon-plus"></i>{$action_link.text}</span></div></div></a>
+                    </div>
+                    {/if}
+                    <div class="refresh{if !$action_link} ml0{/if}">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+                </div>
+                <div class="common-content">
+                	<div class="list-div"  id="listDiv">
+                        {/if}
+                        <table cellpadding="0" cellspacing="0" border="0">
+                            <thead>
+                                <tr>
+                                    <th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars"></label></div></th>
+                                    <th width="5%"><div class="tDiv">{$lang.record_id}</div></th>
+                                    {if $sms_type gt 0}
+                                    <th width="12%"><div class="tDiv">{$lang.sign_name}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.sms_cdoe}</div></th>
+                                    {/if}
+                                    <th width="25%"><div class="tDiv">{$lang.temp_content}</div></th>
+                                    <th width="15%"><div class="tDiv">{$lang.add_time}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.send_out_result}</div></th>
+                                    <th width="20%" class="handle">{$lang.handler}</div></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {foreach from=$mass_sms item=note}
+                                <tr>
+                                    <td class="sign"><div class="tDiv"><input type="checkbox" name="checkboxes[]" value="{$note.id}" class="checkbox" id="checkbox_{$note.id}" /><label for="checkbox_{$note.id}" class="checkbox_stars"></label></div></td>
+                                    <td><div class="tDiv">{$note.id}</div></td>
+                                    {if $sms_type gt 0}
+                                    <td><div class="tDiv">{$note.set_sign}</div></td>
+                                    <td><div class="tDiv">{$note.temp_id}</div></td>
+                                    {/if}
+                                    <td><div class="tDiv">{$note.temp_content}</div></td>
+                                    <td><div class="tDiv">{$note.add_time}</div></td>
+                                    <td><div class="tDiv">
+                                        <div class="tlist"><span>{$lang.result.0}：{$note.wait_count} {$lang.tiao}</span></div>
+                                        <div class="tlist"><span>{$lang.result.1}：{$note.success_count} {$lang.tiao}</span></div>
+                                        <div class="tlist"><span>{$lang.result.2}：{$note.failure_count} {$lang.tiao}</span></div>
+                                    </div></td>
+                                    <td class="handle">
+                                        <div class="tDiv a3">
+                                            <a href="mass_sms.php?act=log_list&template_id={$note.id}" title="{$lang.send_sms}" class="btn_log"><i class="sc_icon sc_icon_see"></i>{$lang.send_sms}</a>
+                                            <a href="mass_sms.php?act=edit&id={$note.id}" title="{$lang.edit}" class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>
+                                            <a href="javascript:confirm_redirect('{$lang.remove_confirm}', 'mass_sms.php?act=remove&id={$note.id}')" title="{$lang.remove}" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {foreachelse}
+                                <tr><td class="no-records" colspan="12">{$lang.no_records}</td></tr>
+                                {/foreach}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="8">
+                                        <div class="list-page">
+                                            {include file="library/page.lbi"}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        {if $full_page}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+ 	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+	
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+    </script>
+</body>
+</html>
+{/if}

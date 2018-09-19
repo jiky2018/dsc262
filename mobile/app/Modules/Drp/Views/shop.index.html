@@ -1,0 +1,234 @@
+{include file="page_header"}
+<div class="con">
+  <section class="user-shop-maxbox">
+    <header class="shop-user-max">
+      <div class="user-shop-img-box"><img src="{$shop_info.shop_img}"></div>
+      <div class="user-shop-cont  dis-box">
+        <div class="user-shop-logo"><img src="{$shop_info.headimgurl}"></div>
+        <div class="box-flex">
+          <h4 class="f-07 color-whie  m-top04">{$shop_info.shop_name}</h4>
+        </div>
+      </div>
+      <!--{if $shop_info.url}
+        <a href="{$shop_info.url}">
+          <label class="user-shop-shoucang p-a color-whie">分销中心</label>
+        </a>
+        {/if}-->
+      <div class="user-shop-box2 p-a user-shop-fx"><i class="iconfont icon-fenxiang1"></i></div>
+    </header>
+    <nav class="dis-box user-shop-nav b-color-f">
+      <a class="box-flex {if $status==1}active{/if}" href="{url('drp/shop/index',array('id'=>$shop_info['id'],'status'=>1,'u'=>$shop_info['user_id']))}">
+
+      <div class="nav-icon"><i class="iconfont icon-pailie"></i></div>
+        <p>全部商品 <!--{if $shop_info.sum>0 }
+          <em> ({$shop_info.sum})</em> {else}
+          <em>(0)</em> {/if}-->
+        </p>
+      </a>
+      <a class="box-flex {if $status==2}active{/if}" href="{url('drp/shop/index',array('id'=>$shop_info['id'],'status'=>2,'u'=>$shop_info['user_id']))}">
+      <div class="nav-icon"><i class="iconfont icon-remenzhuanti"></i></div>
+        <p>上新 <!--{if $shop_info.new>0 }
+          <em>({$shop_info.new})</em> {else}
+          <em>(0)</em> {/if}-->
+        </p>
+      </a>
+      <a class="box-flex {if $status==3}active{/if}" href="{url('drp/shop/index',array('id'=>$shop_info['id'],'status'=>3,'u'=>$shop_info['user_id']))}">
+       <div class="nav-icon"><i class="iconfont icon-cuxiao"></i></div>
+        <p>促销 <!--{if $shop_info.promote>0 }
+          <em>({$shop_info.promote})</em> {else}
+          <em>(0)</em> {/if}-->
+        </p>
+      </a>
+      <a class="box-flex  j-s-filter {if $status==4}active{/if}" href="javascript:;">
+      <div class="nav-icon"><i class="iconfont icon-caidan"></i></div>
+        <p>分类筛选</p>
+      </a>
+    </nav>
+  </section>
+  <section class="product-list j-product-list product-list-medium m-top04 n-user-shop" data="1">
+    <ul class="j-prolist-ul">
+      <script id="j-product" type="text/html">
+        <%if totalPage > 0%>
+        <%each list as goods%>
+        <li>
+          <div class="product-div">
+            <a class="product-div-link" href="<%goods.url%>"></a>
+            <img class="product-list-img" src="<%goods.goods_thumb%>" />
+            <div class="product-text index-product-text">
+              <a href="<%goods.url%>">
+                <h4><%goods.goods_name%></h4></a>
+              <p class="dis-box p-t-remark"><span class="box-flex">库存:<%goods.goods_number%><%goods.measure_unit%></span><span class="box-flex">销量:<%goods.sales_volume%><%goods.measure_unit%></span></p>
+              <p><span class="p-price t-first ">
+                  <%if goods.promote_price%>
+                     <%#goods.promote_price%>
+                  <%else%>
+                     <%#goods.shop_price%>
+                  <%/if%>
+              </p>
+              <%if goods.commission > 0%>
+              <div class="f-02 col-6  drp-commission-tag"><label><em class="num"><%goods.dis_commission%>%</em><em class="cont">佣金比例</em></label></div>
+              <%/if%>
+              <a href="javascript:void(0)" onclick="addToCart(<%goods.goods_id%>, 0)" class="icon-flow-cart fr j-goods-attr"><i class="iconfont icon-gouwuche"></i></a>
+            </div>
+          </div>
+        </li>
+        <%/each%>
+        <%else%>
+        <div class="no-div-message">
+          <i class="iconfont icon-biaoqingleiben"></i>
+          <p>亲，此处没有内容～！</p>
+        </div>
+        <%/if%>
+      </script>
+    </ul>
+
+  </section>
+  <div class="shopping-prompt ts-2">
+    <img src="{elixir('img/fengxiang.png')}" />
+  </div>
+  <div class="j-filter-div filter-div ts-5 c-filter-div" id="j-filter-div">
+    <div class="mask-filter-div"></div>
+    <section class="close-filter-div j-close-filter-div">
+      <div class="close-f-btn">
+        <i class="iconfont icon-fanhui"></i>
+        <span>关闭</span>
+      </div>
+    </section>
+    <section class="con-filter-div ">
+      <div class="swiper-wrapper">
+        <div class="category-top blur-div">
+          <aside>
+            <div class="menu-left" id="sidebar" style="top:0;margin-bottom: 0;">
+              <div class="swiper-scroll swiper-container-vertical swiper-container-free-mode">
+                <div class="swiper-wrapper">
+                  <div class="swiper-slide swiper-slide-active">
+                    <ul>
+                      {foreach $category as $key=>$val}
+                        <li data="{url('drp/shop/drpchildcategory', array('id'=>$val['id'],'shop_id'=>$shop_info['id']))}" data-id="{$val.id}">{sub_str($val['name'], 4,'')}</li>
+                        {/foreach}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </aside>
+          <section class="menu-right shop-menu-right padding-all">
+            <ul class="child_category">
+            <script id="category" type="text/html">
+            <%each category as value%>
+                <%if value.cat_id%>
+                <a href="<%value.shop_url%>">
+                  <h5><%value.name%></h5></a>
+
+                <ul>
+                  <%each value.cat_id as cat%>
+                  <li class="w-3">
+                    <a href="<%cat.shop_url%>"></a><img src="<%cat.cat_img%>" alt="<%cat.cat_img%>"><span><%cat.name%></span>
+                  </li>
+                  <%/each%>
+                </ul>
+                 <%else%>
+                  <li class="w-3"><a href="<%value.shop_url%>"></a><img src="<%value.cat_img%>" alt="<%value.name%>" /><span><%value.name%></span></li>
+                  <%/if%>
+            <%/each%>
+            </script>
+            </ul>
+          </section>
+        </div>
+      </div>
+  </div>
+  </section>
+  <div class="footer-cont"><span><img src='{elixir('img/loading1.gif')}'>正在加载……</span></div>
+</div>
+<!--快捷导航-->
+{include file="no_search_nav"}
+<li>
+  <a href="{url('drp/user/index')}">
+    <i class="iconfont icon-fenxiao"></i>
+    <p>{$custom}中心</p>
+  </a>
+</li>
+{include file="float_nav_footer"}
+</div>
+<script type="text/javascript">
+  $(function() {
+    var url = "{url('drp/shop/index', array('id'=>$shop_info['id']))}";
+    $('.j-prolist-ul').infinite({
+      url: url,
+      template: 'j-product',
+      params: 'status={$status}&cat_id={$cat_id}&id={$shop_id}',
+      offset: 300
+    });
+  })
+$(function(){
+    var cat_id = 0;
+    ajaxAction($("#sidebar li:first"), $("#sidebar li:first").attr("data"), $("#sidebar li:first").attr("data-id"));
+    $("#sidebar li").click(function(){
+        var li = $(this);
+        var url = $(this).attr("data");
+        var id = $(this).attr("data-id");
+        ajaxAction(li, url, id);
+    });
+    function ajaxAction(obj, url, id){
+        if(cat_id != id){
+            $.ajax({
+                type: 'get',
+                url: url,
+                data: '',
+                cache: true,
+                async: false,
+                dataType: 'json',
+                beforeSend: function(){
+                    $(".loading").show();
+                },
+                success: function(result){
+                    if(typeof(result.code) == 'undefined'){
+                        $(".child_category").animate({
+                            scrollTop: 0
+                        }, 0);
+                        template.config('openTag', '<%');
+                        template.config('closeTag', '%>');
+                        var html = template('category', result);
+                        $(".child_category").html(html);
+                        //$(".child_category ul").html(result);
+                        obj.addClass("active").siblings("li").removeClass("active");
+                    }
+                    else{
+                        d_messages(result.message);
+                    }
+
+                },
+                complete: function(){
+                    $(".loading").hide();
+                }
+            });
+            cat_id = id;
+        }
+    }
+    //加载更多
+        var loadingHeight = $(".product-list").outerHeight(true);
+        //alert(loadingHeight)
+        function loadimgCont(){
+                if ($(document).scrollTop() >= $(window).height() <$(document).height() - $(window).height()) {
+                        $(".footer-cont").html("<span><img src='{elixir('img/loading1.gif')}'>正在加载……</span>")
+                }
+                if ($(document).scrollTop() >= $(document).height() - $(window).height()) {
+                         $(".footer-cont").html("<span>没有更多了</span>")
+                }
+                if(loadingHeight< $(window).height()){
+                     $(".footer-cont").css("display","none");
+                }else{
+                     $(".footer-cont").css("display","block");
+                }
+        }
+            loadimgCont();
+        $(window).scroll(function() {
+            loadimgCont()
+        });
+})
+
+
+</script>
+</body>
+
+</html>

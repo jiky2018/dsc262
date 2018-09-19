@@ -1,0 +1,66 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<!-- {if $pager.page_count > 1} -->
+<div class="tc">
+    <form name="selectPageForm" action="{$smarty.server.PHP_SELF}" method="get">
+        <!-- {if $pager.styleid eq 0 } --> 
+        <div class="pages w1390" id="pager">
+  {$lang.pager_1}{$pager.record_count}{$lang.pager_2}{$lang.pager_3}{$pager.page_count}{$lang.pager_4} <span> <a href="{$pager.page_first}">{$lang.page_first}</a> <a href="{$pager.page_prev}">{$lang.page_prev}</a> <a href="{$pager.page_next}">{$lang.page_next}</a> <a href="{$pager.page_last}">{$lang.page_last}</a> </span>
+    <!--{foreach from=$pager.search key=key item=item}-->
+      {if $key eq 'keywords'}
+          <input type="hidden" name="{$key}" value="{$item|escape:decode_url}" />
+        {else}
+          <input type="hidden" name="{$key}" value="{$item}" />
+      {/if}
+    <!--{/foreach}-->
+    <select name="page" id="page" onchange="selectPage(this)">
+    {html_options options=$pager.array selected=$pager.page}
+    </select>
+        </div>
+        
+        <!--翻页 start-->
+		<!--{else}-->
+            <div class="pages" id="pager">
+                <ul>
+                    <!-- {if $pager.page_kbd} -->
+                    <!--{foreach from=$pager.search key=key item=item}-->
+                    {if $key eq 'keywords'}
+                    <input type="hidden" name="{$key}" value="{$item|escape:decode_url}" />
+                    {else}
+                    <input type="hidden" name="{$key}" value="{$item}" />
+                    {/if}
+                    <!--{/foreach}--> 
+                    <!-- {/if} -->
+                    
+                    <!-- {if $pager.page_first} --><div class="item prev" style="display:none;"><a href="{$pager.page_first}"><span>{$lang.home}</span></a></a></div><!-- {/if} -->
+                    
+                    <div class="item prev"><a href="{if $pager.page_prev}{$pager.page_prev}{else}#none{/if}"><i class="iconfont icon-left"></i></a></div>
+                    
+                    <!-- {if $pager.page_count neq 1} -->
+                    <!--{foreach from=$pager.page_number key=key item=item}-->
+                    <!-- {if $pager.page eq $key} -->
+                    <div class="item cur"><a href="#none">{$key}</a></div>
+                    <!-- {else} -->
+                    <div class="item"><a href="{$item}">{$key}</a></div>
+                    <!-- {/if} -->
+                    <!--{/foreach}-->
+                    <!-- {/if} -->
+                    <div class="item next"><a href="{if $pager.page_next}{$pager.page_next}{else}#none{/if}"><i class="iconfont icon-right"></i></a></div>
+                    <!-- {if $pager.page_last} --><div class="item next" style="display:none"><a href="{$pager.page_last}"><span>{$lang.page_last_new}</span></a></div><!-- {/if} -->
+                </ul>
+            </div>
+        <!-- {/if} -->
+    </form>
+</div>
+<!-- {/if} -->
+
+<script type="Text/Javascript" language="JavaScript">
+<!--
+{literal}
+function selectPage(sel)
+{
+  sel.form.submit();
+}
+{/literal}
+//-->
+</script>

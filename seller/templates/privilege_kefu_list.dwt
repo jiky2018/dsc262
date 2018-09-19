@@ -1,0 +1,151 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+     <div class="site wrapper">
+         {include file ='library/seller_menu_left.lbi'}
+                  <!--客服列表-s-->
+          <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+				<div class="ecsc-path"><span>权限 - - 客服列表</span></div>
+		          <div class="order_stats_top">
+                        <div class="order_stats_items">
+                            <div class="order_stats_item order_stats_item2">
+                                <i class="icon"><img src="../kefu/public/assets/images/jiaoce_icon2.png"></i>
+                                <div class="desc">
+                                    <span class="tit">历史接待次数</span>
+                                    <span class="value">{$times.times}</span>
+                                </div>
+                            </div>
+                            <div class="order_stats_item order_stats_item3">
+                                <i class="icon"><img src="../kefu/public/assets/images/jiedai_icon3.png"></i>
+                                <div class="desc">
+                                    <span class="tit">历史接待人数</span>
+                                    <span class="value">{$times.people}</span>
+                                </div>
+                            </div>
+                            <div class="order_stats_item order_stats_item4">
+                                <i class="icon"><img src="../kefu/public/assets/images/jinri-icon4.png"></i>
+                                <div class="desc">
+                                    <span class="tit">今日接待次数</span>
+                                    <span class="value">{$times.today_times}</span>
+                                </div>
+                            </div>
+                            <div class="order_stats_item order_stats_item5">
+                                <i class="icon"><img src="../kefu/public/assets/images/renshu-icon5.png"></i>
+                                <div class="desc">
+                                    <span class="tit">今日接待人数</span>
+                                    <span class="value">{$times.today_people}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list-div" id="listDiv" style="margin-top:20px">
+
+                  <form name="listForm" method="post">
+                      <input type="hidden" name="act" value>
+                       {/if}
+                       <div class="search-key" style="float:left">
+                           <a class="sc-btn sc-blue-btn" href="privilege_kefu.php?act=add"><i class="icon-plus"></i>添加客服</a>
+                       </div>
+                       <!--<div class="btn-info">
+                           <a class="sc-btn sc-blue-btn" href="javascript:;">已删除客服</a>
+                       </div>-->
+                    <table class="ecsc-default-table">
+                        <thead>
+                            <tr>
+                                <th width="8%" class="frist">编号</th>
+                                <th width="20%"><a href="javascript:;" title="账号">账号</a></th>
+                                <th width="20%"><a href="javascript:;" title="昵称">昵称</a></th>
+                                <th width="20%"><a href="javascript:;">登录状态</a></th>
+                                <th width="32%"><a href="javascript:;">操作</a></th>
+                            </tr>
+
+                      </thead>
+                  <tbody>
+                      {foreach from=$services_list item=v}
+                      <tr>
+                          <td align="center">
+                              <div class="checkbox-info">
+                                <input type="checkbox" class="ui-checkbox" value="{$v.id}" id="checkbox_{$v.id}" name="checkboxes[]"><label for="checkbox_{$v.id}" class="ui-label"></label>
+                              </div>
+                              <div class="number">{$v.id}</div>
+                          </td>
+                          <td align="center">{$v.user_name}</td>
+                          <td align="center">{$v.nick_name}</td>
+                          <td align="center">{$v.chat_status}</td>
+                          <td align="center" class="ecsc-table-handle">
+                              <span>
+                                  <a href="privilege_kefu.php?act=dialog_list&id={$v.id}" title="会话记录" class="btn-blue">
+                                  <i class="icon icon-edit"></i><p>会话记录</p>
+                                  </a>
+                               </span>
+                              <span>
+                                  <a href="privilege_kefu.php?act=edit&id={$v.id}" title="编辑" class="btn-green"><i class="icon icon-edit"></i><p>编辑</p></a>
+                              </span>
+                              <span>
+                                  <a href="javascript:;" onclick="listTable.remove({$v.id}, '您确认要删除这条记录吗?')" title="删除" class="btn-red"><i class="icon icon-trash"></i><p>删除</p></a>
+                              </span>
+                          </td>
+                      </tr>
+                      {foreachelse}
+                      <tr><td class="no-records" colspan="10">没有找到任何记录</td></tr>
+                      {/foreach}
+                  </tbody>
+                  <tfoot>
+                      <tr>
+                          <th class="frist tc"><input type="checkbox" id="tfoot-all" name="checkboxes[]" class="ui-checkbox" onclick='listTable.selectAll(this, "checkboxes")'><label for="tfoot-all" class="ui-label"></label></th>
+                          <th class="batch-operation" colspan="20">
+                            <a href="javascript:void(0);" class="sc-btn sc-red-btn" data-type="trash"><i class="icon-trash"></i>删除</a>
+                            <span>{if $record_count}共{$record_count}条记录{/if}</span>
+                          </th>
+                      </tr>
+                  </tfoot>
+                 </table>
+                   {include file="page.dwt"}
+                        {if $full_page}
+              </div>
+              </form>
+             <!--客服列表-e-->
+      </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+</body>
+</html>
+
+<script type="text/javascript">
+var batch_trash_confirm = "您确实要把选中的商品放入回收站吗？";
+var batch_no_on_sale = "您确实要将选定的商品下架吗？";
+
+$(function(){
+
+	//列表批量处理
+	$(document).on("click",".batch-operation a.sc-btn",function(){
+		var _this = $(this),
+			table = _this.parents(".ecsc-default-table"),
+			checked = table.find("input[name='checkboxes[]']").is(":checked"),
+			type = _this.data("type");
+		if(checked){
+			changeAction(type);
+		}else{
+			alert("请勾选商品");
+		}
+	});
+});
+
+function changeAction(type)
+{
+  var frm = document.forms['listForm'];
+  frm.elements['act'].value = type;
+  if(confirm(batch_trash_confirm))
+  {
+	frm.submit();
+  }
+}
+
+
+</script>
+{/if}

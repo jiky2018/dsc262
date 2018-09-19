@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+            	{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <!--start-->
+                <div class="ecsc-form-goods">
+                	<form action="tp_api.php" method="post" name="theForm" enctype="multipart/form-data">
+                	<div class="wrapper-list border1">
+                        <dl>
+                        	<dt>打印规格：</dt>
+                            <dd>
+								<div id="specification" class="imitate_select select_w145">
+									<div class="cite">请选择</div>
+									<ul>
+										{foreach from=$print_size item=item}
+										<li><a href="javascript:;" data-value="{$item.specification}" data-width="{$item.width}" class="ftx-01">{$item.specification}</a></li>
+										{/foreach}
+									</ul>
+									<input type="hidden" name="specification" value="{$print_setting.specification}" id="specification_val">
+								</div>
+                                <div class="form_prompt"></div>
+							</dd>
+                        </dl>					
+                        <dl>
+                        	<dt>打印机：</dt>
+                            <dd><input type="text" name="printer" value="{$print_setting.printer}" size="35" class="text" /><div class="notic">打印机名称如：ELP-168ES</div><div class="form_prompt"></div></dd>
+                        </dl>	
+                        <dl>
+                        	<dt>宽度(mm)：</dt>
+                            <dd><input type="text" name="width" value="{$print_setting.width}" size="35" class="text" /><div class="notic">此处设置的width是打印预览时宽度超出纸张尺寸的间距调整，默认是纸张尺寸，根据需求自行设置</div></dd>
+                        </dl>						
+                    	<dl>
+                        	<dt>设为默认：</dt>
+                            <dd>
+                            	<div class="checkbox_items">
+                                	<div class="checkbox_item">
+                                    	<input name="is_default" type="radio" class="ui-radio" value="1" id="is_default_1" {if $print_setting.is_default eq 1}checked="checked"{/if} />
+                                    	<label class="ui-radio-label" for="is_default_1">{$lang.yes}</label>
+                                    </div> 
+                                    <div class="checkbox_item">
+                                        <input name="is_default" type="radio" class="ui-radio" value="0" id="is_default_0" {if $print_setting.is_default eq 0}checked="checked"{/if} />
+                                        <label class="ui-radio-label" for="is_default_0">{$lang.no}</label>
+                                    </div>
+                                 </div>
+                            </dd>
+                        </dl>
+                        <dl class="button_info">
+                         	<dt>&nbsp;</dt>
+                            <dd>
+                            	<input type="submit" value="{$lang.button_submit}" class="sc-btn sc-blueBg-btn btn35" id='submitBtn'/>
+                                <input type="reset" value="{$lang.button_reset}" class="sc-btn btn35 sc-blue-btn" />
+                                <input type="hidden" name="act" value="{$form_action}" />
+                                <input type="hidden" name="id" value="{$print_setting.id}" />
+                            </dd>
+                        </dl>
+                    </div> 
+                    </form>
+                </div>					
+                <!--end-->
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript" src="../js/jquery.picTip.js"></script>
+<script type="text/javascript">
+$(function(){
+	//表单验证
+	$("#submitBtn").click(function(){
+		if($("form[name='theForm']").valid()){
+			$("form[name='theForm']").submit();
+		}
+	});
+
+	$("form[name='theForm']").validate({
+		errorPlacement:function(error, element){
+			var error_div = element.parents('dl').find('div.form_prompt');
+			element.parents('dl').find(".notic").hide();
+			error_div.append(error);
+		},
+		ignore:"",
+		rules:{
+			specification :{
+				required : true
+			},
+			printer : {
+				required : true
+			}
+		},
+		messages:{
+			specification:{
+				required : '<i class="icon icon-exclamation-sign"></i>请选择打印规格'
+			},
+			printer : {
+				required : '<i class="icon icon-exclamation-sign"></i>请填写打印机名称'
+			}
+		}			
+	});
+});
+
+$.divselect("#specification","#specification_val",function(obj){
+	var val = obj.data("width");
+	$("input[name='width']").val(val);
+});
+</script>
+</body>
+</html>

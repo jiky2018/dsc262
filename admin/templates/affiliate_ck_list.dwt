@@ -1,0 +1,108 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">推荐分成 - {$ur_here}</div>
+        <div class="content">		
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>分成订单信息管理。</li>
+                    <li>可搜索分成订单号查询分成订单。</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-head">
+                    <div class="refresh ml0">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+                    <div class="search">
+                    	<form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+                            <div class="select_w120 imitate_select">
+                                <div class="cite">{$lang.please_select}</div>
+                                <ul>
+                                   <li><a href="javascript:;" data-value="">{$lang.sch_stats.all}</a></li>
+                                   <li><a href="javascript:;" data-value="0">{$lang.sch_stats.0}</a></li>
+                                   <li><a href="javascript:;" data-value="1">{$lang.sch_stats.1}</a></li>
+                                   <li><a href="javascript:;" data-value="2">{$lang.sch_stats.2}</a></li>
+                                </ul>
+                                <input name="status" type="hidden" value="">
+                            </div>
+                            <div class="input">
+                                <input type="text" name="order_sn" class="text nofocus" placeholder="{$lang.sch_order}" autocomplete="off" />
+                                <input type="submit" class="btn" name="secrch_btn" ectype="secrch_btn" value="" />
+                            </div>
+                    	</form>
+                    </div>
+                </div>
+                <div class="common-content">
+                	<div class="list-div" id="listDiv">
+						{/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                	<th width="15%"><div class="tDiv">{$lang.order_id}</div></th>
+                                    <th width="15%"><div class="tDiv">{$lang.order_stats.name}</div></th>
+                                    <th width="15%"><div class="tDiv">{$lang.sch_stats.name}</div></th>
+                                    <th width="25%"><div class="tDiv">{$lang.log_info}</div></th>
+                                    <th width="15%"><div class="tDiv">{$lang.separate_type}</div></th>
+                                    <th width="15%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+								{foreach from=$logdb item=val}
+                            	<tr>
+                                    <td><div class="tDiv"><a href="order.php?act=info&order_id={$val.order_id}">{$val.order_sn}</a></div></td>
+									<td><div class="tDiv">{$lang.order_stats[$val.order_status]}</div></td>
+									<td><div class="tDiv">{$lang.sch_stats[$val.is_separate]}</div></td>
+									<td><div class="tDiv">{$val.info}</div></td>
+									<td><div class="tDiv">{$lang.separate_by.$val.separate_type}</div></td>                             
+                                    <td class="handle">
+                                        <div class="tDiv a2">
+                                            {if $val.is_separate eq 0 && $val.separate_able eq 1 && $on eq 1}
+                                            <a href="javascript:confirm_redirect(separate_confirm, 'affiliate_ck.php?act=separate&oid={$val.order_id}')" class="btn_see"><i class="sc_icon sc_icon_see"></i>{$lang.affiliate_separate}</a>
+                                            <a href="javascript:confirm_redirect(cancel_confirm, 'affiliate_ck.php?act=del&oid={$val.order_id}')" class="btn_see"><i class="sc_icon sc_icon_see"></i>{$lang.affiliate_cancel}</a>
+                                            {elseif $val.is_separate eq 1}
+                                            <a href="javascript:confirm_redirect(rollback_confirm, 'affiliate_ck.php?act=rollback&logid={$val.log_id}')" class="btn_see"><i class="sc_icon sc_icon_see"></i>{$lang.affiliate_rollback}</a>
+                                            {else}
+                                            -
+                                            {/if}
+                                        </div>
+                                    </td>
+                                </tr>
+								{foreachelse}
+                                <tr><td class="no-records" colspan="10">{$lang.no_ads}</td></tr>
+                                {/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="10">
+                                    	<div class="list-page">
+                                           {include file="library/page.lbi"}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+						{if $full_page}
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+ 	{include file ='library/pagefooter.lbi'}
+	<script type="Text/Javascript" language="JavaScript">
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+	</script>
+</body>
+</html>
+{/if}

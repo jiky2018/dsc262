@@ -1,0 +1,113 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<div class="ss-warp">
+    <!--{foreach from=$store_shop_list item=shop key=key}-->
+    <div class="ss-item">
+        <div class="ss-info">
+            <div class="ss-i-info">
+                <div class="ss-i-top">
+                    <div class="logo"><a href="{$shop.shop_url}"><img src="{$shop.logo_thumb}"></a></div>
+                    <div class="r-info">
+                        <div class="ss-tit">{$shop.shopName}
+							<!--start 在线客服 -->
+							{if $shop.is_IM eq 1 || $shop.is_dsc}
+							<a href="javascript:;" id="IM" onclick="openWin(this)" ru_id="{$shop.ru_id}" class="p-kefu{if $shop.ru_id eq 0} p-c-violet{/if}"><i class="iconfont icon-kefu"></i></a>
+							{else}
+								{if $shop.kf_type eq 1}
+								<a href="http://www.taobao.com/webww/ww.php?ver=3&touid={$shop.kf_ww}&siteid=cntaobao&status=1&charset=utf-8" class="p-kefu{if $shop.ru_id eq 0} p-c-violet{/if}" target="_blank"><i class="iconfont icon-kefu"></i></a>
+								{else}
+								<a href="http://wpa.qq.com/msgrd?v=3&uin={$shop.kf_qq}&site=qq&menu=yes" class="p-kefu{if $shop.ru_id eq 0} p-c-violet{/if}" target="_blank"><i class="iconfont icon-kefu"></i></a>
+								{/if}
+							{/if}
+							<!--end 在线客服 -->
+						</div>
+                        <div class="ss-desc">
+                            <p>{$lang.Main_brand}： 
+                            <!--{foreach from=$shop.brand_list item=brand name=nobrand}-->
+                                <!--{if !$smarty.foreach.nobrand.last}-->
+                                    {$brand.brand_name},
+                                <!--{else}-->
+                                    {$brand.brand_name}
+                                <!--{/if}-->
+                            <!--{/foreach}-->
+                            </p>
+                            <p>{$lang.seat_of}：{$shop.address}</p>
+                        </div>
+                        <div class="ss-btn">
+                            <a onclick="get_collect_store(2, {$shop.ru_id});" href="javascript:void(0);" class="btn">关注店铺</a>
+                            <a href="{$shop.shop_url}" class="btn">{$lang.enter_the_shop}</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="ss-i-bottom">
+                    <div class="ss-contrast">
+                        <div class="ssc-top">
+                            <span class="col1">{$lang.Store_score}</span>
+                            <span class="col2">{$lang.goods}</span>
+                            <span class="col3">{$lang.service}</span>
+                            <span class="col4">{$lang.Deliver_goods}</span>
+                        </div>
+                        <div class="ssc-content">
+                            <span class="col1">&nbsp;</span>
+                            <span class="col2">{$shop.merch_cmt.cmt.commentRank.zconments.score}</span>
+                            <span class="col3">{$shop.merch_cmt.cmt.commentServer.zconments.score}</span>
+                            <span class="col4">{$shop.merch_cmt.cmt.commentDelivery.zconments.score}</span>
+                        </div>
+                        <div class="ssc-bottom">
+                            <span class="col1">{$lang.peer_comparison}</span>
+                            <span class="col2">{$shop.merch_cmt.cmt.commentRank.zconments.goodReview}%<i class="iconfont icon-arrow-down"></i></span>
+                            <span class="col3">{$shop.merch_cmt.cmt.commentServer.zconments.goodReview}%<i class="iconfont icon-arrow-down"></i></span>
+                            <span class="col4">{$shop.merch_cmt.cmt.commentDelivery.zconments.goodReview}%<i class="iconfont icon-arrow-up"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ss-i-goods">
+                {if $shop.goods_list}
+                <ul>
+                    <!--{foreach from=$shop.goods_list item=goods name=store_goods}-->
+                    <!--{if $smarty.foreach.store_goods.index < 4}-->
+                    <li class="opacity_img">
+                        <div class="p-img"><a href="{$goods.goods_url}" target="_blank"><img src="{$goods.goods_thumb}"></a></div>
+                        <div class="p-name"><a href="{$goods.goods_url}" target="_blank" title="{$goods.goods_name|escape:html}">{$goods.goods_name}</a></div>
+                        <div class="p-price">
+                            <!--{if $goods.promote_price neq ''}-->
+                                {$goods.promote_price}
+                            <!--{else}-->
+                                {$goods.shop_price}
+                            <!--{/if}-->
+                        </div>
+                    </li>
+                    <!--{/if}-->
+                    <!--{/foreach}-->
+                </ul>
+                {else}
+                <div class="no_records">
+                    <i class="no_icon_two"></i>
+                    <div class="no_info">
+                        <h3>{$lang.information_null}</h3>
+                    </div>
+                </div>
+                {/if}
+            </div>
+        </div>
+        <div class="s-more">
+            <span class="sm-wrap"><a href="{$shop.store_shop_url}" target="_blank">{$lang.More_options}<i class="iconfont icon-down"></i></a></span>
+        </div>
+    </div>
+    <!--{foreachelse}-->
+    <div class="no_records">
+        <i class="no_icon_two"></i>
+        <div class="no_info">
+            <h3>{$lang.information_null}</h3>
+        </div>
+    </div>
+    <!--{/foreach}-->
+</div>
+{if $count > $size}
+<div class="w1200 pagePtb">
+    <div class="pages">
+        {$pager}
+    </div>
+</div>
+{/if}

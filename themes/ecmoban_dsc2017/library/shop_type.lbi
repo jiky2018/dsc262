@@ -1,0 +1,109 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<div class="panel-body">
+    <div class="panel-tit"><span>{$title.fields_titles}</span></div>
+    <div class="cue">{$title.titles_annotation}</div>
+    <div class="list">
+    	{include file='library/cententFields.lbi'}
+    	<!--以上是自定义基本信息，以下是固定信息-->
+        <div class="item">
+            <div class="label">
+                <em>*</em>
+                <span>{$lang.Expected_store_type}：</span>
+            </div>
+            <div class="value">
+                <div class="imitate_select w120" id="ec_shoprz_type">
+                	<div class="cite"><span>{if $title.parentType.shoprz_type eq 1}{$lang.flagship_store}{elseif $title.parentType.shoprz_type eq 2}{$lang.exclusive_shop}{elseif $title.parentType.shoprz_type eq 3}{$lang.franchised_store}{else}{$lang.all_option}{/if}</span><i class="iconfont icon-down"></i></div>
+                    <ul>
+                    	<li><a href="javascript:void(0);" data-value="0">{$lang.all_option}</a></li>
+                        <li><a href="javascript:void(0);" data-value="1">{$lang.flagship_store}</a></li>
+                        <li><a href="javascript:void(0);" data-value="2">{$lang.exclusive_shop}</a></li>
+                        <li><a href="javascript:void(0);" data-value="3">{$lang.franchised_store}</a></li>
+                    </ul>
+                </div>
+                <input type="hidden" name="ec_shoprz_type" value="{if $title.parentType.shoprz_type eq 1}1{elseif $title.parentType.shoprz_type eq 2}2{elseif $title.parentType.shoprz_type eq 3}3{else}0{/if}" id="ec_shoprz_type_val" />
+                
+                <div class="imitate_select w130 ml10" id="ec_subShoprz_type" style="display:{if $title.parentType.shoprz_type eq 1}block{else}none{/if};">
+                	<div class="cite"><span>{if $title.parentType.subShoprz_type eq 1}{$lang.subShoprz_type.0}{elseif $title.parentType.subShoprz_type eq 2}{$lang.subShoprz_type.1}{elseif $title.parentType.subShoprz_type eq 3}{$lang.subShoprz_type.2}{else}{$lang.all_option}{/if}</span><i class="iconfont icon-down"></i></div>
+                    <ul>
+                    	<li><a href="javascript:void(0);" data-value="0">{$lang.all_option}</a></li>
+                        <li><a href="javascript:void(0);" data-value="1">{$lang.subShoprz_type.0}</a></li>
+                        <li><a href="javascript:void(0);" data-value="2">{$lang.subShoprz_type.1}</a></li>
+                        <li><a href="javascript:void(0);" data-value="3">{$lang.subShoprz_type.2}</a></li>
+                    </ul>
+                </div>
+                <input type="hidden" name="ec_subShoprz_type" value="{if $title.parentType.subShoprz_type eq 1}1{elseif $title.parentType.subShoprz_type eq 2}2{elseif $title.parentType.subShoprz_type eq 3}3{else}0{/if}" id="ec_subShoprz_type_val" class="{if $title.parentType.shoprz_type neq 1}ignore{/if}" />
+                
+                <div class="orange" ectype="shopSellerPrompt">
+                	<div class="item" style="display: {if $title.parentType.shoprz_type eq 1}block{else}none{/if};">{$lang.subShoprz_type_desc}</div>
+                    <div class="item" style="display: {if $title.parentType.shoprz_type eq 2}block{else}none{/if};">{$lang.parentType_shoprz_type}</div>
+                    <div class="item" style="display: {if $title.parentType.shoprz_type eq 3}block{else}none{/if};">{$lang.parentType_shoprz_type_one}</div>
+                </div>
+                <div class="shopType" ectype="shopType" id="shopSellerType1" style="display:{if $title.parentType.shoprz_type eq 1}block{else}none{/if}">
+                    <div class="item-item" style="display:{if $title.parentType.subShoprz_type eq 2}block{else}none{/if};" id="subShoprz_type2">
+                        <div class="item-warp"><span>{$lang.subShoprz_type_one}：</span><a class="link-blue" href="http://seller.shop.jd.com/apply/getQualificationTemplate.action?_t=164" target="_blank" style="display:none">{$lang.subShoprz_type_two}</a></div>
+                        <div class="item-warp">
+                            <div class="word">{$lang.License_validity_period}：</div>
+                            <div class="text_time">
+                                <input id="shop_expireDateStart" class="text text-2 jdate narrow" type="text" size="20" readonly value="{$title.parentType.shop_expireDateStart}" name="ec_shop_expireDateStart">
+                                <span>&mdash;</span>
+                                <input id="shop_expireDateEnd" class="text text-2 jdate narrow" type="text" size="20" readonly value="{$title.parentType.shop_expireDateEnd}" name="ec_shop_expireDateEnd" >
+                                <div class="cart-checkbox fr">
+                                    <input type="checkbox" id="authorizeCheckBox" value="1" name="ec_shop_permanent" class="ui-checkbox" onClick="get_shopTime_term(this);" {if $title.parentType.shop_permanent eq 1}checked{/if}>
+                                    <label for="authorizeCheckBox" class="ui-label">永久</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="item-warp" id="container2">
+                            <div class="word">{$lang.upload_file}：</div>
+                            <div class="item-con">
+                            	<div class="type-file-box">
+                                    <input type="button" name="button" class="type-file-button" id="button" value="" />
+                                    <input type="file" name="ec_authorizeFile" class="type-file-file" value="{$title.parentType.authorizeFile}" data-state="" hidefocus="true" />
+                                    {if $title.parentType.authorizeFile}<a href="{$title.parentType.authorizeFile}" class="chakan" target="_blank">{$lang.view}</a>{/if}
+                                    <input type="text" name="textfile" class="type-file-text" value="{$title.parentType.authorizeFile}" readonly />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item-item" style="display: {if $title.parentType.subShoprz_type eq 3}block{else}none{/if};" id="subShoprz_type3">
+                        <div class="item-warp">
+                            <div class="word" style="width:auto;">{$lang.ec_shop_hypermarketFile}：</div>
+                            <div id="container1" class="item-con">
+                                <div class="type-file-box">
+                                    <input type="button" name="button" class="type-file-button" id="button" value="" />
+                                    <input type="file" name="ec_shop_hypermarketFile" class="type-file-file" value="{$title.parentType.shop_hypermarketFile}" data-state="" hidefocus="true" />
+                                    {if $title.parentType.shop_hypermarketFile}<a href="{$title.parentType.shop_hypermarketFile}" class="chakan" target="_blank">{$lang.view}</a>{/if}
+                                    <input type="text" name="textfile" class="type-file-text" value="{$title.parentType.shop_hypermarketFile}" readonly />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="view-sample" style="display:none">
+            <div class="img-wrap">
+                <img width="180" height="180" alt="" src="http://seller.shop.jd.com/common/images/ruzhu/x_1.jpg">
+            </div>
+            <div class="t-c mt10">
+                <a class="link-blue" target="_blank" href="http://seller.shop.jd.com/common/images/ruzhu/1.jpg">{$lang.View_larger}</a>
+            </div>
+        </div>
+    </div>    
+</div>
+<script type="text/javascript">
+//时间选择
+var opts2 = {
+	'targetId':'shop_expireDateStart',
+	'triggerId':['shop_expireDateStart'],
+	'alignId':'shop_expireDateStart',
+	'format':'-'
+},opts3 = {
+	'targetId':'shop_expireDateEnd',
+	'triggerId':['shop_expireDateEnd'],
+	'alignId':'shop_expireDateEnd',
+	'format':'-'
+}
+xvDate(opts2);
+xvDate(opts3);
+</script>

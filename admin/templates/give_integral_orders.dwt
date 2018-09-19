@@ -1,0 +1,106 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="exchange_detail.php?act=detail" class="s-back">{$lang.back}</a>{$lang.report_form} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.order.0}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<div class="common-head">
+                	<div class="fl">
+                        <div class="fbutton m0" id="fbutton_1"><a href="javascript:void(0);"><div class="csv" title="导出数据"><span><i class="icon icon-download-alt"></i>导出列表</span></div></a></div>
+                    </div>
+                </div>
+                <div class="common-content">
+                	<div class="list-div" id="listDiv" >
+					{/if}
+                    <table cellpadding="1" cellspacing="1" >
+                        <thead>
+                            <tr>
+                                <th width="8%"><div class="tDiv"><a href="javascript:listTable.sort('ad_id'); ">{$lang.record_id}</a></div></th>
+                                <th width="20%"><div class="tDiv">{$lang.order_sn}</div></th>
+                                <th width="30%"><div class="tDiv">{$lang.goods_name}</div></th>
+                                <th width="14%"><div class="tDiv">{$lang.goods_number}</div></th>
+                                <th width="14%"><div class="tDiv">{$lang.give_integral}</div></th>
+                                <th width="14%"><div class="tDiv">{$lang.rank_integral}</div></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {foreach from=$order_list item=orders}
+                            <input type="hidden" class="user_id" value="{$orders.user_id}" name="user_id">
+                            <tr>
+                                <td><div class="tDiv">{$orders.order_id}</div></td>
+                                <td><div class="tDiv">{$orders.order_sn}</div></td>
+                                <td><div class="tDiv">{$orders.goods_name}</div></td>
+                                <td><div class="tDiv">{$orders.goods_number}</div></td>
+                                <td><div class="tDiv">{$orders.give_integral|default:0}</div></td>
+                                <td><div class="tDiv">{$orders.rank_integral|default:0}</div></td>
+                            </tr>
+                        {foreachelse}
+                        <tr><td class="no-records" align="center" colspan="10">{$lang.no_records}</td></tr>
+                        {/foreach}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="12">
+                                    <div class="tDiv">
+                                        <div class="list-page">
+                                            {include file="library/page.lbi"}
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+					{if $full_page}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+	//分页传值
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+	listTable.query = 'order_query';
+
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+	
+	function getList()
+    {
+        var act = 'order_query';
+		var user_id = $('.user_id').val();
+        $.ajax({
+            url:"exchange_detail.php?is_ajax=1",
+            dataType:"json",
+            type:'post',
+            data:{
+                "act" : act,
+				"user_id" : user_id,
+            },
+            success:function(data){
+                $('.list-div').eq(0).html(data.content);
+            }
+        })
+    }
+	
+	//导出报表(销售明细)
+    $('#fbutton_1').click(function(){
+		var user_id = $('.user_id').val();
+        location.href='exchange_detail.php?act=order_download&user_id=' + user_id;
+    });
+	</script>
+</body>
+</html>
+{/if}

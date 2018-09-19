@@ -1,0 +1,102 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                
+                <div class="explanation clear mb20" id="explanation">
+                    <div class="ex_tit"><i class="sc_icon"></i><h4>温馨提示</h4></div>
+                    <ul>
+                    	<li>商城所有店铺结算订单相关信息管理。</li>
+                    	<li>【订单】：表示是按店铺佣金比例或者分类佣金比例</li>
+                    	<li>【商品】：表示是商品单独设置佣金比例</li>
+                    </ul>
+                </div>
+                
+                <form method="post" action="" name="listForm" onsubmit="return confirm(batch_drop_confirm);">
+                <div class="list-div" id="listDiv">
+                {/if}
+                  <table class="ecsc-default-table mt20">	
+                    <thead>
+                    <tr>
+                      <th width="6%">{$lang.record_id}</th>
+                      <th width="15%">商品编号</th>
+                      <th width="35%" class="tl">商品名称</th>
+                      <th>分类名称</th>
+                      {if $filter.commission_model eq 1}
+                      <th>佣金比例</th>
+                      {/if}
+                      <th>商品价格</th>
+                      <th>商品数量</th>
+                      {if $is_dir}
+                      <th>分销金额</th>
+                      {/if}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {foreach from=$goods_list item=goods name=noorder}
+                    <tr>
+                      <td >
+                        {$goods.rec_id}
+                      </td>
+                      <td>{$goods.goods_id}</td>
+                      <td class="tl">
+                      	<p>
+                      	{$goods.goods_name}
+                        {if $goods.is_return}<em class="red">【已退货】</em>{/if}
+                        </p>
+                      	{if $goods.commission_rate}
+                        <p><em style="color:#31b4e1;">【商品】：{$goods.commission_rate}%</em></p>
+                        {/if}
+                      </td>
+                      <td>{$goods.cat_name}</td>
+                      {if $filter.commission_model eq 1}
+                      <td>{$goods.proportion}</td>
+                      {/if}
+                      <td>{$goods.goods_price}</td>
+                      <td>{$goods.goods_number}</td>
+                      {if $is_dir}
+                      <td>{$goods.drp_money}</td>
+                      {/if}
+                    </tr>
+                    {foreachelse}
+                    <tr><td class="no-records" colspan="20">{$lang.no_records}</td></tr>
+                    {/foreach}
+                    </tbody>
+                  </table>
+                  {include file="page.dwt"}
+                {if $full_page}
+                </div>
+                </form>					
+                <!--end-->
+                
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<!--start-->
+<script type="text/javascript">
+  <!--
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+  listTable.query = "bill_goods_query";
+  
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+  //-->
+</script>
+<!--end-->
+</body>
+</html>
+{/if}

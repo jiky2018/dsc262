@@ -1,0 +1,92 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$lang.article} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>调查选项为调查主题配置，请合理设置。</li>
+                    <li>调查主题可根据关键字搜索。</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<!--商品分类列表-->
+                <div class="common-head">
+                    <div style="float:right;">
+                        <form method="post" action="javascript:newVoteOption()" name="theForm">
+                            <input type="text" name="option_name" class="text" placeholder="{$lang.add_vote_option}" autocomplete="off" />
+                            <input type="hidden" name="id" value="{$id}" size="30" />
+                            <input type="submit" value="添加" class="btn btn30 red_btn"/>
+                        </form>
+                    </div>
+                </div>
+                <div class="common-content">
+                	<div class="list-div" id="listDiv">
+                        {/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                            <thead>
+                            	<tr>
+                                    <th width="40%"><div class="tDiv">{$lang.option_name}</div></th>
+                                    <th width="20%"><div class="tDiv">{$lang.option_order}</div></th>
+                                    <th width="20%"><div class="tDiv">{$lang.vote_count}</div></th>
+                                    <th width="20%"><div class="handle">{$lang.handler}</div></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {foreach from=$option_arr item=list}
+                            	<tr>
+                                    <td><div class="tDiv">{$list.option_name|escape:"html"}</div></td>
+                                    <td><div class="tDiv">{$list.option_order}</div></td>
+                                    <td><div class="tDiv"><input name="sort_order" class="text w40" value="{$list.option_order}" onkeyup="listTable.editInput(this, 'edit_option_order',{$list.option_id} )" type="text"></div></td>
+                                    <td><div class="tDiv">{$list.option_count}</div></td>
+                                    <td class="handle">
+                                        <div class="tDiv a1">
+                                             <a href="javascript:;" onclick="listTable.remove({$list.option_id}, '{$lang.drop_confirm}', 'remove_option')" title="{$lang.remove}" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {foreachelse}
+                                    <tr><td class="no-records" colspan="12">{$lang.no_records}</td></tr>
+                                {/foreach}
+                            </tbody>
+                        </table>
+                        {if $full_page}
+                    </div>
+                </div>
+                <!--商品分类列表end-->
+            </div>
+		</div>
+	</div>
+ 	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+	function newVoteOption()
+	{
+		var option_name = $.trim($("input[name=option_name]").val());
+		var id = $.trim($("input[name=id]").val());
+		
+		if ($.trim(option_name).length > 0)
+		{
+			$.jqueryAjax('vote.php', 'act=new_option&option_name='+option_name+'&id='+id, function(result){
+				if (result.error == 0)
+				{
+					$("#listDiv").html(result.content);
+					$("input[name=option_name]").val('');
+					$("input[name=option_name]").focus();
+				}
+				
+				if (result.message.length > 0)
+				{
+					alert(result.message);
+				}
+			},"POST", "JSON")
+		}
+	}
+	</script>     
+</body>
+</html>
+{/if}

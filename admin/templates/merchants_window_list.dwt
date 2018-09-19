@@ -1,0 +1,104 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">商家 - {$ur_here}</div>
+        <div class="content">
+        	<div class="tabs_info">
+            	<ul>
+                    <li {if $menu_select.current eq '07_merchants_window'}class="curr"{/if}><a href="merchants_window.php?act=list">商品柜橱窗</a></li>
+                    <li {if $menu_select.current eq '06_merchants_custom'}class="curr"{/if}><a href="merchants_custom.php?act=list">自定义橱窗</a></li>
+                </ul>
+            </div>			
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4><span id="explanationZoom" title="收起提示"></span></div>
+                <ul>
+                	<li>店铺商品柜橱窗相关信息管理。</li>
+                    <li>适当增加橱窗并合理安排布局，带给消费者舒适的购物体验。</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<!--商品列表-->
+                <div class="common-head">
+                    <div class="fl">
+                    	<a href="{$action_link.href}"><div class="fbutton"><div class="add" title="{$action_link.text}"><span><i class="icon icon-plus"></i>{$action_link.text}</span></div></div></a>
+                    </div>
+                </div>
+                <div class="common-content">
+                    <form method="post" action="merchants_window.php" name="listForm" onsubmit="return confirm('确认删除该橱窗?');">
+                	<div class="list-div" id="listDiv">
+						{/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                	<th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars"></label></div></th>
+                                	<th width="5%"><div class="tDiv">{$lang.record_id}</div></th>
+                                    <th width="16%"><div class="tDiv">{$lang.window_name}</div></th>
+                                    <th width="15%"><div class="tDiv">{$lang.03_template_setup}</div></th>
+                                    <th width="15%"><div class="tDiv">{$lang.window_type}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.window_color}</div></th>
+                                    <th width="8%"><div class="tDiv">{$lang.sort_order}</div></th>
+                                    <th width="8%"><div class="tDiv">{$lang.display}</div></th>
+                                    <th width="15%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+								{foreach from=$win_list item=window}
+                            	<tr>
+                                    <td class="sign"><div class="tDiv"><input type="checkbox" value="{$window.id}" name="checkboxes[]" class="checkbox" id="checkbox_{$window.id}" /><label for="checkbox_{$window.id}" class="checkbox_stars"></label></div></td>
+                                    <td><div class="tDiv">{$window.id}</div></td>
+									<td><div class="tDiv">{$window.win_name|escape:html}</div></td>
+									<td><div class="tDiv">{$window.seller_theme}</div></td>
+									<td><div class="tDiv">{$window.win_type_name}</div></td>
+									<td><div class="tDiv"><div style="width:50px; height:30px; background-color:{$window.win_color};"></div></td>
+                                    <td><div class="tDiv"><input type="text" name="sort_order" class="text w40" value="{$window.win_order}" autocomplete="off" onkeyup="listTable.editInput(this, 'edit_sort_order', {$window.id})"/></div></td>
+                                    <td>
+                                        <div class="tDiv">
+                                            <div class="switch {if $window.is_show}active{/if}" title="{if $window.is_show}是{else}否{/if}" onclick="listTable.switchBt(this, 'toggle_show', {$window.id})">
+                                                <div class="circle"></div>
+                                            </div>
+                                            <input type="hidden" value="0" name="">
+                                        </div>
+                                    </td>                               
+                                    <td class="handle">
+                                        <div class="tDiv a3_3">
+                                            <a href="merchants_window.php?act=edit&id={$window.id}" class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>
+                                            {if $window.win_type}
+                                            <a href="merchants_window.php?act=add_win_goods&id={$window.id}" class="btn_see"><i class="icon icon-plus"></i>{$lang.add_product}</a>
+                                            {/if}
+                                            <a href="javascript:;" onclick="listTable.remove({$window.id}, '{$lang.drop_confirm}')" class="btn_trash"><i class="icon icon-trash"></i>{$lang.remove}</a>
+                                        </div>
+                                    </td>
+                                </tr>
+								{foreachelse}
+								<tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+								{/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="10">
+                                        <div class="tDiv">
+                                            <div class="tfoot_btninfo">
+                                                <input type="hidden" name="act" value="batch" />
+                                                <input type="submit" value="{$lang.drop}" name="remove" ectype="btnSubmit" class="btn btn_disabled" disabled="">
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>							
+                        </table>
+						{if $full_page}
+                    </div>
+                    </form>
+                </div>
+                <!--商品列表end-->
+            </div>
+		</div>
+	</div>
+ {include file ='library/pagefooter.lbi'}
+</body>
+</html>
+{/if}

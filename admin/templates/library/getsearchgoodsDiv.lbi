@@ -1,0 +1,72 @@
+<!--优惠活动搜索添加商品-->
+{if $pbtype eq 'favourable'}
+	<div class="checkbox_items">
+    {foreach from=$goods_list item=list}
+    <div class="checkbox_item">
+        <input name="act_range_ext[]" type="checkbox" class="ui-checkbox" value="{$list.goods_id}" id="checkbox_{$list.goods_id}" checked="checked" />
+        <label for="checkbox_{$list.goods_id}" class="ui-label">{$list.goods_name}</label>
+    </div>
+    {/foreach}
+    </div>
+{/if}
+
+<!--优惠券搜索添加商品-->
+{if $pbtype eq 'coupons'}
+	<div class="checkbox_items">
+    {foreach from=$goods_list item=list}
+    <div class="checkbox_item">
+        <input name="cou_goods[]" type="checkbox" class="ui-checkbox" value="{$list.goods_id}" id="checkbox_{$list.goods_id}" checked="checked" />
+        <label for="checkbox_{$list.goods_id}" class="ui-label">{$list.goods_name}</label>
+    </div>
+    {/foreach}
+    </div>
+{/if}
+<!--优惠券搜索添加商品-->
+{if $pbtype eq 'coupons_appoint'}
+	<div class="checkbox_items">
+    {foreach from=$goods_list item=list}
+    <div class="checkbox_item">
+        <input type="checkbox" class="ui-checkbox" name="cou_ok_goods[]" id="gift_id2[{$list.goods_id}]" value="{$list.goods_id}" checked="checked" />
+        <label for="gift_id2[{$list.goods_id}]" class="ui-label">{$list.goods_name}</label>
+    </div>
+    {/foreach}
+    </div>
+{/if}
+<!--超值礼包添加商品-->
+{if $pbtype eq 'package'}
+{foreach from=$package_goods_list item=package_goods}
+<tr data-goods="{$package_goods.goods_id}">
+    <td><div class="tDiv">{$package_goods.goods_name_pack}</div></td>
+    <td><div class="tDiv">{$package_goods.shop_price}</div></td>
+    <td><div class="tDiv"><input class="text w50 tc fn" style="margin-right:0px;" onblur="edit_package_nuber(this)" name="goods_number[]" autocomplete="off" value="{$package_goods.goods_number}" type="text"></div></td>
+    <td>
+        <div class="tDiv">
+            {if $package_goods.products}
+            <div class="imitate_select select_w120">
+                <div class="cite">请选择...</div>
+                <ul style="display: none;" class="ps-container">
+                    <li><a href="javascript:;" data-value="" class="ftx-01">请选择...</a></li>
+                    {foreach from=$package_goods.products item=products}
+
+                    <li><a href="javascript:;" data-value="{$products.product_id}" class="ftx-01" ectype="package_checked">{$products.goods_attr_str}</a></li>
+
+                    {/foreach}
+                </ul>
+                <input type="hidden" name="product_id[]" value="{$package_goods.product_id}" data-oldproduct="{$package_goods.product_id}" >
+            </div>
+            {/if}
+        </div>
+    </td>
+    <td class="handle">
+        <div class="tDiv a1">
+            {if $package_goods.products}
+            <a href="javascript:;" ectype="add_package_goods" title="增加" class="btn_trash"><i class="icon icon-plus"></i>增加</a>						
+            {/if}
+            <a href="javascript:;" ectype="remove_group" title="{$lang.remove}" data-operation="package" data-msg="确定删除该礼包商品吗？" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>									
+        </div>
+    </td>
+</tr>
+{foreachelse}
+<tr><td class="no-records" colspan="12">{$lang.no_records}</td></tr>
+{/foreach}
+{/if}

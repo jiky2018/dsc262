@@ -1,0 +1,218 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<link rel="icon" href="animated_favicon.gif" type="image/gif" />
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/base.css" />
+<link href="{$ecs_css_path}" rel="stylesheet" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS|{$page_title}" href="{$feed_url}" />
+{* 包含脚本文件 *}
+{insert_scripts files='jquery-1.9.1.min.js,jquery.json.js,transport_jquery.js,common.js'}
+
+<link rel="stylesheet" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/purebox.css">
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/sc_common.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/rotate3di.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/scroll_city.js"></script>
+<!-- #BeginLibraryItem "/library/js_languages.lbi" --><!-- #EndLibraryItem -->
+</head>
+
+<body>
+<!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
+<div class="ecsc-breadcrumb w1200">
+    <!-- #BeginLibraryItem "/library/ur_here.lbi" --><!-- #EndLibraryItem -->
+</div>
+<div class="Main">
+    <!-- #BeginLibraryItem "/library/discuss_left.lbi" --><!-- #EndLibraryItem -->
+    <div class="right">
+            <div class="replylist" id="discuss" style="border:none;">
+                <div class="user">
+                    <div class="u-icon"><a href="user.php"><img src="{if $user_picture}{$user_picture}{else}themes/<?php echo $GLOBALS['_CFG']['template']; ?>/images/touxiang.jpg{/if}" width="85" height="85" /></a></div>
+                    <div class="u-name"><a href="user.php">{$comment.user_name}</a></div>
+                </div>
+                <div class="cont mb20">
+                	<dl>
+                    	<dt>{$lang.tips}</dt>
+                        <dd>{$comment.content}</dd>
+                    </dl>
+                    <dl>
+                    	<dt>{$lang.single}</dt>
+                        <dd>
+                        	<div class="comment-show-pic">
+                            	<table cellspacing="10">
+                                    <tbody>
+                                        <tr>
+                                        	{foreach from=$img_list item=img key=key}
+                                            {if $key eq 0}                                
+                                            <td>             
+                                                <a class="comment-show-pic-wrap" href="javascript:void(0);">                       
+                                                    <img alt="" src="{$img.img_thumb}" height="96">   
+                                                </a> 
+                                            </td>     
+                                            {/if}
+                                            {/foreach}           
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <span><a class="p-simsun ftx-05" href="single_sun.php?act=discuss_show&did={$comment.comment_id}&dis_type=4" target="_blank">{$lang.see_single}&gt;</a></span>
+                            </div>
+                        </dd>
+                    </dl>
+                    {if $buy_goods}
+                    <dl>
+                    	<dt>{$lang.color}</dt>
+                        <dd>{$buy_goods.goods_attr}</dd>
+                    </dl>
+                    {/if}
+                    <dl>
+                    	<dt>{$lang.published_data}</dt>
+                        <dd>{$comment.add_time}</dd>
+                    </dl>
+                </div>
+            </div>
+        <div id="reply_comment_ECS_COMMENT{$comment.comment_id}"> 
+        	<div class="replylist">
+        		{foreach from=$reply.reply_list item=list}
+                <div class="item-reply">
+                	<strong>{$list.floor}</strong>
+                    <div class="reply-list">
+                    	<div class="reply-con">
+                            <span class="u-name ftx-05">{$list.user_name}：</span>
+                            <span class="u-con">{$list.content}</span>
+                        </div>
+                        <div class="reply-meta">
+                            <span class="reply-left fl">{$list.add_time}</span>
+                            <a class="fr ftx-05" href="#reply">{$lang.reply_comment}</a>
+                        </div>
+                    </div>
+                </div>
+                {/foreach}
+            </div>    
+            {if $reply.reply_count gt $reply.reply_size}
+            <div class="pages26">
+                <div class="pages">
+                    <div class="pages-it">
+                        {$reply.reply_pager}
+                    </div>
+                </div>
+            </div>
+            {/if}
+        </div>
+        <div class="reply" id="reply">
+            <h2>发表回复</h2>
+            <div class="item">
+                <div class="cont" style="width:943px; border:1px solid #ddd;">
+                    <div class="reply_textarea fl" style="width:943px;">
+                    	<input type="hidden" id="comment_id" name="comment_id" value="{$comment.comment_id}">
+                        <input type="hidden" id="user_id" name="user_id" value="{$comment.user_id}">
+                        <input type="hidden" id="goods_id" name="goods_id" value="{$comment.id_value}">
+                        
+                    	<textarea id="reply_content" style="width:933px;"></textarea>
+                    </div>    
+                </div>
+            </div>
+            <div class="item">
+                <a href="javascript:void(0);" class="btn">{$lang.publish}</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.purebox.js"></script>
+
+<script type="text/javascript">
+$(function(){
+	$('#reply .btn').click(function(){
+		var comment_id = $("#comment_id").val();
+		var reply_content = $("#reply_content").val();
+		var user_id = $("#user_id").val();
+		var goods_id = $("#goods_id").val();
+		
+		if(reply_content == ''){
+			
+			var divId = 'discuss_show_add';
+			var content = '<div id="discuss_show_add">' + 
+								'<div class="tip-box icon-box">' +
+									'<span class="warn-icon m-icon"></span>' + 
+									'<div class="item-fore">' +
+										'<h3 class="rem ftx-04">'+json_languages.comm_content+'</h3>' +
+									'</div>' +
+								'</div>' +
+							'</div>';
+			pb({
+				id:divId,
+				title:json_languages.title,
+				width:455,
+				height:58,
+				content:content, 	//调取内容
+				drag:false,
+				foot:false
+			});
+			
+			return false;
+		}
+		
+		Ajax.call('comment.php', 'act=comment_reply&comment_id=' + comment_id + '&reply_content=' + reply_content + '&goods_id=' + goods_id + '&user_id=' + user_id + '&libType=' + 1, commentReplyResponse, 'POST', 'JSON');
+	});
+});
+	
+function commentReplyResponse(res){
+	
+	var message;
+	var comment_repay = '';
+	
+	if(res.err_no == 1){
+		message = login_content.'·<a href="user.php" style="color:#F90">'+json_languages.go_login+'</a>';
+		var pb_div_class = 'warn-icon';
+	}else if(res.err_no == 2){
+		message = have_said;
+		var pb_div_class = 'warn-icon';
+	}else{
+		message = res.message;
+		var pb_div_class = 'warn-icon-ok';
+	}
+	
+	var comment_repay_divId = "dialog_comment_repay"; 
+	var foot = false;
+	var pb_div_class = 'warn-icon';
+	
+	var content = '<div id="dialog_comment_repay">' + 
+						'<div class="tip-box icon-box">' +
+							'<span class="' + pb_div_class + ' m-icon"></span>' + 
+							'<div class="item-fore">' +
+								'<h3 class="rem ftx-04">' + message + '</h3>' +
+							'</div>' +
+						'</div>' +
+					'</div>';
+		
+	pb({
+		id:comment_repay_divId,
+		title:json_languages.title,
+		width:455,
+		height:58,
+		content:content, 	//调取内容
+		drag:false,
+		foot:foot
+	});
+	
+	if(res.err_no == 0){
+		$('#' + comment_repay_divId + " .pb-ct .item-fore h3").css({
+			'font-size' : '14px'
+		}); 
+	}
+	
+	$("#reply_content").val('');
+	
+	$("#reply_comment_ECS_COMMENT" + res.comment_id).html(res.content);
+}
+</script>
+</body>
+</html>

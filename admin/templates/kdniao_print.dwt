@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+<body>
+	<div class="print-main">
+		<div class="print-warp kdniao-warp">
+			<div class="kdniao-content" id="kdniaoCon">
+            	<link rel="stylesheet" type="text/css" href="css/main.css">
+				{foreach from=$batch_html item=content name=html}
+				<div class="print_content" style="height:180mm;">
+					{$content}
+				</div>
+                {if !$smarty.foreach.html.last}
+                <p style="page-break-before:always"></p>
+                {/if}
+				{/foreach}
+			</div>
+			<div class="print-handle">
+            	<div class="print-btn"><a href="javascript:void(0);" ectype="btnPreview"><i class="iconfont icon-browse"></i>{$lang.preview}</a></div>
+				<div class="print-btn"><a href="javascript:void(0);" ectype="btnPrint"><i class="iconfont icon-dayin"></i>{$lang.print}</a></div>
+				<div class="print-spec">
+					<label>{$lang.express_way}：<em class="blue">{$shipping_info.shipping_name}</em></label>
+					<label>{$lang.print_size}：<em class="black">{$shipping_spec.kdniao_width|default:0}mm x {$shipping_spec.kdniao_height|default:0}mm</em></label>
+					<p>{$lang.print_explain}</p>
+				</div>
+			</div>
+		</div>
+    </div>
+	<input type="hidden" name="batch_error" value="{$batch_error}">
+	<input type="hidden" name="kdniao_printer" value="{$kdniao_printer}">
+	
+    {insert_scripts files="jquery.purebox.js"}
+    <script type="text/javascript" src="../js/LodopFuncs.js"></script>
+	<script type="text/javascript">
+	$(document).on("click","*[ectype='btnPrint']",function() {
+		var printer = $("input[name='kdniao_printer']").val();
+		 
+		if (printer == '' || printer == null) {
+			alert(printer_set_notic);
+			return false;
+		}
+		var html = $("#kdniaoCon").html();
+		var title = "{$lang.print_express}";
+		var count = $(".print_content").length;
+		var height = 181;
+		if(count > 1){
+			height = 180;
+		}
+		lodop_print_html(title, html, printer,98,height);
+	});
+	
+	$(document).on("click","*[ectype='btnPreview']",function() {
+		var printer = $("input[name='kdniao_printer']").val();
+		 
+		if (printer == '' || printer == null) {
+			alert(printer_set_notic);
+			return false;
+		}
+		var html = $("#kdniaoCon").html();
+		var title = "{$lang.print_express}";
+		var count = $(".print_content").length;
+		var height = 181;
+		if(count > 1){
+			height = 180;
+		}		
+		lodop_preview_html(title, html, printer,98,height);
+	});
+	
+	var batch_error = $("input[name='batch_error']").val();
+	if(batch_error){
+		alert(batch_error);
+	}
+	</script>
+</body>
+</html>

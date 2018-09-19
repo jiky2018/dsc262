@@ -1,0 +1,100 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.list.0}</li>
+                    <li>{$lang.operation_prompt_content.list.1}</li>
+                    <li>{$lang.operation_prompt_content.list.2}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+                        <form action="tag_manage.php" method="post" name="theForm" enctype="multipart/form-data">
+                            <div class="switch_info">
+                                <div class="item">
+                                    <div class="label">{$lang.tag_words}：</div>
+                                    <div class="label_value">
+										<input name="tag_name" type="text" id="tag_name" value="{$tag.tag_words}" maxlength="60" class="text text_2" autocomplete="off" />
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.name_search}：</div>
+                                    <div class="label_value">
+										<input name="keyword" type="text" id="keyword" class="text text_2 mr10" autocomplete="off" />
+										<input name="search" type="button" id="search" value="{$lang.button_search}" class="button" onclick="searchGoods()" />
+                                    </div>
+                                </div>								
+                                <div class="item">
+                                    <div class="label">{$lang.goods_name}：</div>
+                                    <div class="label_value">
+										<select name="goods_id" id="goods_id" class="select">
+											<option value="{$tag.goods_id}" selected="selected">{$tag.goods_name}</option>
+										</select>   
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="label_value info_btn">
+										<input type="submit" class="button" value="{$lang.button_submit}" />
+										<input type="reset" class="button button_reset" value="{$lang.button_reset}" />
+										<input type="hidden" name="id" value="{$tag.tag_id}" />
+										<input type="hidden" name="act" value="{$insert_or_update}" />
+                                    </div>
+                                </div>								
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+    </div>
+ 	{include file ='library/pagefooter.lbi'}
+	{literal}
+	<script type="text/javascript">
+	function searchGoods()
+	{
+	  var filter = new Object;
+	  filter.keyword  = document.forms['theForm'].elements['keyword'].value;
+
+	  Ajax.call('tag_manage.php?is_ajax=1&act=search_goods', filter, searchGoodsResponse, 'GET', 'JSON');
+	}
+
+	function searchGoodsResponse(result)
+	{
+	  if (result.error == '1' && result.message != '')
+	  {
+		alert(result.message);
+		return;
+	  }
+
+	  var sel = document.forms['theForm'].elements['goods_id'];
+
+	  sel.length = 0;
+
+	  /* 创建 options */
+	  var goods = result.content;
+	  if (goods)
+	  {
+		for (i = 0; i < goods.length; i++)
+		{
+		  var opt = document.createElement("OPTION");
+		  opt.value = goods[i].goods_id;
+		  opt.text  = goods[i].goods_name;
+		  sel.options.add(opt);
+		}
+	  }
+
+	  return;
+	}
+	</script>
+	{/literal}
+</body>
+</html>

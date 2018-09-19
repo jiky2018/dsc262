@@ -1,0 +1,55 @@
+<div class="pb_download_common">
+    <div class="title red" ectype="prompt_download">共{$page_count}页数据，正在处理导出，请勿关闭窗口.....</div>
+    <div class="download_items ps-scrollbar-visible">
+    	<div class="download_items_info" ectype="download_content"></div>
+    </div>
+</div>
+<input type="hidden" name='filename' value='{$filename}'>
+<input type="hidden" name='fileaction' value='{$fileaction}'>
+<input type="hidden" name='lastfilename' value='{$lastfilename}'>
+<input type="hidden" name='lastaction' value='{$lastaction}'>
+<script type="text/javascript">
+	function start(page_down)
+	{
+		var filename = $("input[name='filename']").val();
+		var fileaction = $("input[name='fileaction']").val()
+		
+		var page_count = "{$page_count}";
+		var obj = $("*[ectype='download_content']");
+		var html = '<div class="item"><div class="label">正在处理导出第'+page_down+'页数据...</div><div class="value" ectype="complete"></div></div>';
+		obj.append(html);
+		
+		Ajax.call(filename+'.php?act='+fileaction, 'page_down=' + page_down + "&page_count=" + page_count + get_args(), start_response, 'POST', 'JSON');
+	}
+	
+	function start_response(result){
+		//处理已完成文字
+		$("*[ectype='complete']").each(function(){
+			$(this).html("已完成");
+		});
+		
+		if(result.is_stop == 1){
+			start(result.next_page);
+		}else{
+			$("[ectype='prompt_download']").html("全部完成，请关闭窗口");
+			order_downloadList_last()
+		}
+		
+		var height = $(".download_items_info").height();
+		console.log(height);
+		$(".download_items").scrollTop(height);
+		$(".download_items").perfectScrollbar("destroy");
+		$(".download_items").perfectScrollbar();
+	}
+	
+	//导出商家佣金列表
+	function order_downloadList_last()
+	{
+		var args = get_args();
+		var lastfilename = $("input[name='lastfilename']").val();
+		var lastaction = $("input[name='lastaction']").val();
+		location.href = lastfilename+".php?act=" + lastaction + args;
+	}
+	
+	start(1);
+</script>

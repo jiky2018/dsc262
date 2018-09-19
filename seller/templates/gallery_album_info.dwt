@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+				{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="ecsc-form-goods">
+                <form method="post" action="gallery_album.php" name="theForm" enctype="multipart/form-data" id="album_form">
+                  <div class="wrapper-list border1">
+                  	<dl>
+                    	<dt>{$lang.require_field}&nbsp;{$lang.album_mame}：</dt>
+                        <dd>
+							<input type="text" name='album_mame' value='{$album_info.album_mame}' class="text" autocomplete="off" />
+							<div class="form_prompt"></div>
+						</dd>
+                    </dl>
+                      <dl>
+                          <dt>上级相册：</dt>
+                          <dd>
+                              <div id="parent_id" class="imitate_select select_w320">
+                                  <div class="cite">顶级相册</div>
+                                  <ul>
+                                      {foreach from=$cat_select item=list}
+                                      <li><a href="javascript:;" data-value="{$list.album_id}" class="ftx-01">{$list.name}</a></li>
+                                      {/foreach}
+                                  </ul>
+                                  <input name="parent_id" type="hidden" value="{$album_info.parent_album_id}" id="parent_id_val">
+                              </div>
+                          </dd>
+                      </dl>
+                    <dl>
+                    	<dt>{$lang.album_cover}：</dt>
+                        <dd>
+                            <div class="type-file-box mr0">
+                            	<div class="input">
+                                <input type="text" name="textfile" class="type-file-text" {if $album_info.album_cover}value="../{$album_info.album_cover}"{/if} id="textfield" autocomplete="off" readonly>
+                                <input type="button" name="button" id="button" class="type-file-button" value="上传..." />
+                                <input type="file" class="type-file-file"  name="album_cover" data-state="imgfile" size="30" hidefocus="true" value="" />
+                                </div>
+                                {if $album_info.album_cover}
+                                <span class="show">
+                                    <a href="../{$album_info.album_cover}" target="_blank" class="nyroModal"><i class="icon icon-picture" onmouseover="toolTip('<img src=../{$album_info.album_cover}>')" onmouseout="toolTip()"></i></a>
+                                </span>
+                                {/if}
+                                <input type="hidden" name="file_url" value="{$album_info.album_cover}" class="type-file-text" autocomplete="off" readonly />
+                            </div>
+                            <div class="form_prompt"></div>
+                        </dd>
+                    </dl>
+                    <dl>
+                    	<dt>{$lang.album_desc}：</dt>
+                        <dd><textarea class="textarea" name="album_desc" id="role_describe">{$album_info.album_desc}</textarea></dd>
+                    </dl>
+                    <dl>
+                    	<dt>{$lang.sort_order}：</dt>
+                        <dd><input type="text" name="sort_order" value="{if $album_info.sort_order}{$album_info.sort_order}{else}50{/if}" size="35" class="text" /></dd>
+                    </dl>
+                    <dl class="button_info">
+                    	<dt>&nbsp;</dt>
+                        <dd>
+                        	<input type="submit" value="{$lang.button_submit}" class="sc-btn sc-blueBg-btn btn35" id="submitBtn" />
+                            <input type="reset" value="{$lang.button_reset}" class="sc-btn btn35 sc-blue-btn" />
+                            <input type="hidden" name="act" value="{$form_action}" />
+                            <input type="hidden" name="id" value="{$album_info.album_id}" />
+                            <input type="hidden" name="seller_id" value="{$album_info.ru_id}" />
+                        </dd>
+                    </dl>
+                 </div>
+                </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+    <script type="text/javascript" src="../js/jquery.picTip.js"></script>
+<script type="text/javascript">
+$(function(){
+	$("#submitBtn").click(function(){
+		if($("#album_form").valid()){
+			$("#album_form").submit();
+		}
+	});
+
+	$('#album_form').validate({
+		errorPlacement:function(error, element){
+			var error_div = element.parents('dl').find('div.form_prompt');
+			//element.parents('dl').find(".notic").hide();
+			error_div.append(error);
+		},
+		rules : {
+			album_mame : {
+				required : true
+			}
+		},
+		messages : {
+			album_mame : {
+				required : '<i class="icon icon-exclamation-sign"></i>'+album_mame_null
+			}
+		}
+	});
+});	
+</script>
+</body>
+</html>

@@ -1,0 +1,281 @@
+<div class="step">
+<div class="tit"><h4>{$title.fields_titles}</h4></div>
+
+<div class="items"> 
+{foreach from=$title.cententFields item=fields}
+	<div class="item">
+		<div class="label">{$fields.fieldsFormName}：</div>
+		<div class="value">
+			{if $fields.chooseForm eq 'input'}
+				<input class="text" type="text" value="{$fields.titles_centents}" size="{$fields.inputForm}" name="{$fields.textFields}">
+			{elseif $fields.chooseForm eq 'other'}
+				{if $fields.otherForm eq 'textArea'}
+					<div class="level_linkage">
+						<div class="fl">
+							<div class="ui-dropdown smartdropdown alien">
+								<input type="hidden" value="{$fields.textAreaForm.country}" name="{$fields.textFields}[]">
+								<div class="txt">{$lang.country}</div>
+								<i class="down u-dropdown-icon"></i>
+								<div class="options clearfix" style="max-height:300px;">
+
+                                <!-- {foreach from=$country_list item=country} -->
+									<span class="liv" data-text="{$lang.china}"  data-type="1" data-value="{$country.region_id}">{$lang.china}</span>
+                                <!--{/foreach}-->
+								</div>
+							</div>
+							<div class="ui-dropdown smartdropdown alien">
+								<input type="hidden" value="{$fields.textAreaForm.province}" name="{$fields.textFields}[]" id="selProvinces">
+								<div class="txt">{$lang.province_alt}</div>
+								<i class="down u-dropdown-icon"></i>
+								<div class="options clearfix" style="max-height:300px;">
+									<!--{foreach from=$province_list item=list}-->
+									<span class="liv" data-text="{$list.region_name}" data-type="2" data-value="{$list.region_id}">{$list.region_name}</span>
+									<!--{/foreach}-->
+								</div>
+							</div>
+							<div class="ui-dropdown smartdropdown alien">
+								<input type="hidden" value="{$fields.textAreaForm.city}" name="{$fields.textFields}[]" id="selCities">
+								<div class="txt">{$lang.city}</div>
+								<i class="down u-dropdown-icon"></i>
+								<div class="options clearfix" style="max-height:300px;">
+                                <!-- {foreach from=$fields.city_list item=city_list} -->
+									<span class="liv hide" data-text="{$lang.city}" data-type="3" data-value="{$city_list.region_id}">{$lang.city}</span>
+                                <!--{/foreach}-->
+								</div>
+							</div>
+							<div class="ui-dropdown smartdropdown alien">
+								<input type="hidden" value="{$fields.textAreaForm.district}" name="{$fields.textFields}[]" id="selDistricts">
+								<div class="txt">{$lang.area_alt}</div>
+								<i class="down u-dropdown-icon"></i>
+								<div class="options clearfix" style="max-height:300px;">
+                                	<!-- {foreach from=$fields.district_list item=district_list} -->
+									<span class="liv hide" data-text="{$lang.area_alt}" data-type="4" data-value="{$district_list.region_id}">{$lang.area_alt}</span>
+                                    <!--{/foreach}-->
+								</div>
+							</div>
+						</div>
+					</div>
+				{elseif $fields.otherForm eq 'dateFile'}
+					<div class="type-file-box">
+						<input type="button" name="button" id="button" class="type-file-button" value="" />
+						<input type="file" class="type-file-file" name="{$fields.textFields}" size="30" hidefocus="true" value="" />
+						<input name="text_{$fields.textFields}" type="hidden" value="{$fields.titles_centents}" />
+						{if $fields.titles_centents neq ''}
+                        <span class="show">
+							<a href="../{$fields.titles_centents}" target="_blank" class="nyroModal"><i class="icon icon-picture" data-tooltipimg="{$fields.titles_centents}" ectype="tooltip" title="tooltip"></i></a>
+						</span>
+                        {/if}
+						<input type="text" name="textfile" class="type-file-text" id="textfield" readonly />
+					</div>
+				{elseif $fields.otherForm eq 'dateTime'} 
+					{foreach from=$fields.dateTimeForm item=date key=dk name=date}
+						{if $dk eq 0}  
+						<div class="text_time" id="text_time_{$fields.textFields}_{$dk}">
+                            <input name="{$fields.textFields}[]" type="text" class="text mr0" id="{$fields.textFields}_{$dk}" size="{$date.dateSize}" value='{$date.dateCentent}' readonly />
+						</div>
+						{else}
+						<span class="bolang">&nbsp;&nbsp;~&nbsp;&nbsp;</span>
+						<div class="text_time" id="text_time_{$fields.textFields}_{$dk}">
+							<input name="{$fields.textFields}[]" type="text" class="text" id="{$fields.textFields}_{$dk}" size="{$date.dateSize}" value='{$date.dateCentent}' readonly />
+						</div>
+						{/if}
+						<script type="text/javascript">
+							var opts = {
+								'targetId':'{$fields.textFields}_{$dk}',
+								'triggerId':['{$fields.textFields}_{$dk}'],
+								'alignId':'text_time_{$fields.textFields}_{$dk}',
+								'hms':'off',
+								'format':'-'
+							}
+							xvDate(opts);
+						</script>
+					{/foreach}
+				{/if}
+				{elseif $fields.chooseForm eq 'textarea'}
+					<textarea name="{$fields.textFields}" cols="{$fields.cols}" rows="{$fields.rows}" class="textarea">{$fields.titles_centents}</textarea>  
+				{elseif $fields.chooseForm eq 'select'}
+					<div id="{$fields.textFields}" class="imitate_select select_w320">
+						<div class="cite">{$lang.select_please}</div>
+						<ul>
+						{foreach from=$fields.selectList item=selectList}
+							<li><a href='javascript:;' data-value='{$selectList}' class='ftx-01'>{$selectList}</a></li>
+						{/foreach}
+						</ul>
+						<input name="{$fields.textFields}" type="hidden" value="{$fields.titles_centents}" id="{$fields.textFields}_val">
+					</div>  
+				{elseif $fields.chooseForm eq 'radio'}  
+                	<div class="checkbox_items"> 
+					{foreach from=$fields.radioCheckboxForm item=radio key=rc_k}
+                        <div class="checkbox_item"> 
+                            <input name="{$fields.textFields}" type="radio" class="ui-radio" value="{$radio.radioCheckbox}" id="{$fields.textFields}_{$radio.radioCheckbox}" {if $fields.titles_centents eq $radio.radioCheckbox}checked="checked"{else}{if $rc_k eq 0}checked="checked"{/if}{/if} />
+                            <label for="{$fields.textFields}_{$radio.radioCheckbox}" class="ui-radio-label">{$radio.radioCheckbox}</label>
+                        </div>
+                    {/foreach}
+                    </div>
+				{elseif $fields.chooseForm eq 'checkbox'}  
+                	<div class="checkbox_items">
+					{foreach from=$fields.radioCheckboxForm item=checkbox key=rc_k}
+						<div class="checkbox_item">
+                       		<input name="{$fields.textFields}" type="checkbox" class="ui-checkbox" value="{$checkbox.radioCheckbox}" id="{$fields.textFields}_{$checkbox.radioCheckbox}" {if $fields.titles_centents eq $checkbox.radioCheckbox}checked="checked"{else}{if $rc_k eq 0}checked="checked"{/if}{/if} />
+                        	<label for="{$fields.textFields}_{$checkbox.radioCheckbox}" class="ui-label">{$checkbox.radioCheckbox}</label>
+                        </div>
+					{/foreach}
+                    </div>
+				{/if}
+			<div class="fl org">{$fields.formSpecial}</div>
+		</div>
+	</div>
+{/foreach}
+	<!--以上是自定义基本信息，以下是固定信息-->
+	<div class="item">
+		<div class="label">{$lang.require_field}&nbsp;{$lang.expect_shop_type}：</div>
+		<div class="label_value">
+			<div id="shoprz_type" class="imitate_select select_w320">
+				<div class="cite">{$lang.select_please}</div>
+				<ul>
+					<li><a href='javascript:;' data-value='1' class='ftx-01'>{$lang.flagship_store}</a></li>
+					<li><a href='javascript:;' data-value='2' class='ftx-01'>{$lang.exclusive_shop}</a></li>
+					<li><a href='javascript:;' data-value='3' class='ftx-01'>{$lang.franchised_store}</a></li>
+				</ul>
+				<input name="ec_shoprz_type" type="hidden" value="{if $title.parentType.shoprz_type}{$title.parentType.shoprz_type}{else}0{/if}" id="shoprz_type_val">
+                                    
+			</div>
+			<div id="subShoprz_type" style="display:{if $title.parentType.shoprz_type eq 1}block{else}none{/if}" class="imitate_select select_w320">
+				<div class="cite">{$lang.select_please}</div>
+				<ul>
+					<li><a href='javascript:;' data-value='1' class='ftx-01'>{$lang.subShoprz_type.0}</a></li>
+					<li><a href='javascript:;' data-value='2' class='ftx-01'>{$lang.subShoprz_type.1}</a></li>
+					<li><a href='javascript:;' data-value='3' class='ftx-01'>{$lang.subShoprz_type.2}</a></li>
+				</ul>
+				<input name="ec_subShoprz_type" type="hidden" value="{if $title.parentType.subShoprz_type}{$title.parentType.subShoprz_type}{else}0{/if}" id="subShoprz_type_val">
+			</div>	
+			
+			<div id="shopSellerType1" style="display:{if $title.parentType.shoprz_type eq 1}block{else}none{/if}">
+				<div class="org" id="subShoprz_type1" style="display:{if $title.parentType.subShoprz_type eq 1}block{else}none{/if}; clear:both; padding-top:7px;">{$lang.subshop_brand_notic}</div>
+				<div style="display:{if $title.parentType.subShoprz_type eq 2}block{else}none{/if};" class="fl bf100" id="subShoprz_type2">
+					<div class="org">{$lang.subShoprz_org_notic.0}<a class="blue" href="#" target="_blank" style="display:none">{$lang.subShoprz_org_notic.1}</a></div>
+					<div class="shop_nr">
+						<label class="fl">{$lang.grant_validity}：</label>
+						<div class="text_time" id="text_time5">
+							<input type="text" name="ec_shop_expireDateStart" value="{$title.parentType.shop_expireDateStart}" id="shop_expireDateStart" class="text mr0" readonly />
+						</div>
+						<span class="bolang">&nbsp;&nbsp;~&nbsp;&nbsp;</span>
+						<div class="text_time" id="text_time6">
+							<input type="text" name="ec_shop_expireDateEnd" value="{$title.parentType.shop_expireDateEnd}" id="shop_expireDateEnd" class="text" readonly />
+						</div>
+                        <div class="checkbox_item fl">
+                            <input type="checkbox" id="authorizeCheckBox" value="1" name="ec_shop_permanent" class="ui-checkbox" onClick="get_authorizeCheckBox(this, 'shop_expireDateStart', 'shop_expireDateEnd','{$title.parentType.shop_expireDateStart}','{$title.parentType.shop_expireDateEnd}');" {if $title.parentType.shop_permanent eq 1}checked{/if}>
+                            <label for="authorizeCheckBox" class="ui-label">永久</label>
+                        </div>
+					</div>
+					<div id="container2" class="fl bf100 mt10" style="position: relative;">
+						<div class="type-file-box">
+							<input type="button" name="button" id="button" class="type-file-button" value="" />
+							<input type="file" class="type-file-file" name="ec_authorizeFile" size="30" hidefocus="true" value="" />
+							{if $title.parentType.authorizeFile}
+                            <span class="show">
+								<a href="../{$title.parentType.authorizeFile}" target="_blank" class="nyroModal"><i class="icon icon-picture" data-tooltipimg="../{$title.parentType.authorizeFile}" ectype="tooltip" title="tooltip"></i></a>
+							</span>
+                            {/if}
+							<input type="text" name="textfile" class="type-file-text" id="textfield" readonly />
+						</div>
+					</div>
+				</div>
+			
+				<div style="display:{if $title.parentType.subShoprz_type eq 3}block{else}none{/if}; clear:both; line-height:30px;" id="subShoprz_type3">
+					{$lang.subShoprz_type_notic.0}：
+					<div id="container1" style="position: relative;">
+						<div class="type-file-box">
+							<input type="button" name="button" id="button" class="type-file-button" value="" />
+							<input type="file" class="type-file-file" name="ec_shop_hypermarketFile" size="30" hidefocus="true" value="" />
+							{if $title.parentType.shop_hypermarketFile}
+                            <span class="show">
+								<a href="../{$title.parentType.shop_hypermarketFile}" target="_blank" class="nyroModal"><i class="icon icon-picture" data-tooltipimg="../{$title.parentType.shop_hypermarketFile}" ectype="tooltip" title="tooltip"></i></a>
+							</span>
+                            {/if}
+							<input type="text" name="textfile" class="type-file-text" id="textfield" readonly />
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div style="display:{if $title.parentType.shoprz_type eq 2}block{else}none{/if}; clear:both; padding-top:7px;" id="shopSellerType2" class="orange">
+				 {$lang.subShoprz_type_notic.1}
+			</div>
+			<div style="display:{if $title.parentType.shoprz_type eq 3}block{else}none{/if}; clear:both; padding-top:7px;" id="shopSellerType3" class="orange">
+				{$lang.subShoprz_type_notic.2}
+			</div>
+            <div class="form_prompt"></div>
+		</div>
+	</div>
+</div>
+</div>
+<script type="text/javascript">
+	$.divselect("#shoprz_type","#shoprz_type_val",function(){
+		var val = $("#shoprz_type_val").val();
+		var num = 4;
+		var idType = 'shopSellerType';
+		if(val == 1){
+			$("#subShoprz_type").show();
+		}else{
+			$("#subShoprz_type").hide();
+		}
+
+		get_show_hide(val,num,idType);		
+	})
+	
+	function get_show_hide(val,num,idType){
+
+	var newType;
+
+	for(i=1; i<num; i++){
+		newType = document.getElementById(idType+i);
+		if(i == val){
+			newType.style.display = 'block';
+		}else{
+			newType.style.display = 'none';
+		}
+
+		}
+	}
+	
+	$.divselect("#subShoprz_type","#subShoprz_type_val",function(){
+		var val = $("#subShoprz_type_val").val();
+		var num = 4;
+		var idType = 'subShoprz_type';	
+		
+		get_show_hide(val,num,idType);
+	})
+
+	function get_shoprz_type(val,num,idType){
+
+	var subShoprz_type = document.getElementById('subShoprz_type');
+
+	if(val == 1){
+	subShoprz_type.style.display = 'block';
+	}else{
+	subShoprz_type.style.display = 'none';
+	}
+
+	get_show_hide(val,num,idType);
+	}
+
+	//时间选择
+	var opts1 = {
+		'targetId':'shop_expireDateStart',//时间写入对象的id
+		'triggerId':'shop_expireDateStart',//触发事件的对象id
+		'alignId':'text_time5',//日历对齐对象
+		'format':'-',//时间格式 默认'YYYY-MM-DD HH:MM:SS'
+		'hms':'off',
+		'min':'' //最小时间
+	},opts2 = {
+		'targetId':'shop_expireDateEnd',
+		'triggerId':'shop_expireDateEnd',
+		'alignId':'text_time6',
+		'format':'-',
+		'hms':'off',
+		'min':''
+	}
+	xvDate(opts1);
+	xvDate(opts2);
+</script>

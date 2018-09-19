@@ -1,0 +1,217 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$lang.goods_alt} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.view.0}</li>
+                    <li>{$lang.operation_prompt_content.view.1}</li>
+                    <li>{$lang.operation_prompt_content.view.2}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-head">
+                    <div class="fl">
+                    	<a href="javascript:void(0)" {$action_link.spec} date-id="{$album_id}"><div class="fbutton"><div class="add" title="{$action_link.text}"><span><i class="icon icon-plus"></i>{$action_link.text}</span></div></div></a>
+                    </div>
+                    <div class="refresh{if !$action_link} ml0{/if}">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.refresh_span_image}</div>
+                    </div>
+                </div>
+                <div class="common-content">
+                    <form method="post" action="gallery_album.php" name="listForm">
+                	<div class="list-div" id="listDiv">
+                        {/if}
+                        <table cellpadding="0" cellspacing="0" border="0">
+                            <tbody>
+                            	<tr>
+                                    <td>
+                                        <div class="pic-container">
+											{if $pic_album}
+                                            <div class="pic-items">
+												<h3>{$lang.imgage}</h3>
+                                                {foreach from=$pic_album item=agency}
+                                                <div class="item" id="pic_{$agency.pic_id}">
+                                                    <div class="image">
+                                                        <div class="base-msg">
+                                                            <div class="img-container"><img src="{$agency.pic_file}" /></div>
+                                                            <div class="checkbox_item">
+                                                                <input type="checkbox" name="checkboxes[]" value="{$agency.pic_id}" class="ui-checkbox" id="checkbox_{$agency.pic_id}" />
+                                                                <label for="checkbox_{$agency.pic_id}" class="ui-label"></label>
+                                                                <input type="hidden" name="pic_checkboxes[]" value="{$gallery.album_id}" />
+                                                            </div>
+                                                            <div class="img-width">{$agency.pic_spec}({$agency.pic_size})</div>
+                                                            <div class="img-handle">
+                                                                <a href="javaScript:void(0);" class="btn_see" onclick="album_move('{$agency.pic_id}')"><i class="sc_icon icon-move"></i>转移相册</a>
+                                                                <a href="javaScript:void(0);" class="btn_see" onclick="remove_pic('{$agency.pic_id}')"><i class="sc_icon icon-trash"></i>{$lang.remove}</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <i class="icon icon-remove"  onclick="remove_pic('{$agency.pic_id}')"></i>
+                                                    {if $agency.verific_pic eq 1}
+                                                    <i class="i-img"><img src="images/yin.png"></i>
+                                                    {/if}
+                                                </div>
+                                                {/foreach}
+                                            </div>
+											{/if}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="12">
+                                        <div class="tDiv">
+                                            <div class="tfoot_btninfo">
+                                              <div class="shenhe">
+                                              	<div class="checkbox_item fl font12 mt5 mr5">
+                                                	<input type="checkbox" name="all_list" class="ui-checkbox" id="all_list" /><label for="all_list" class="ui-label">{$lang.check_all}</label>
+                                                </div>
+                                                <div id="remove_type" class="imitate_select select_w120">
+                                                    <div class="cite">{$lang.drop}</div>
+                                                    <ul>
+                                                        <li><a href="javascript:;" data-value="remove" class="ftx-01">{$lang.drop}</a></li>
+                                                        {if $album_ru eq 0}<li><a href="javascript:;" data-value="transfer" class="ftx-01">{$lang.transfer_album}</a></li>{/if}
+                                                    </ul>
+                                                    <input name="type" type="hidden" value="remove" id="type_value">
+                                                </div>
+                                                <div id="album_id" class="imitate_select select_w120" style="display:none">
+                                                    <div class="cite">{$lang.select_please}</div>
+                                                    <ul>
+                                                        <li><a href="javascript:;" data-value="-1" class="ftx-01">{$lang.select_please}</a></li>
+                                                        {foreach from=$cat_select item=list}
+                                                        <li><a href="javascript:;" data-value="{$list.album_id}" class="ftx-01">{$list.name}</a></li>
+                                                        {/foreach}
+                                                    </ul>
+                                                    <input name="album_id" type="hidden" value="-1">
+                                                </div>											
+                                                  <input type="hidden" name="act" value="batch" />
+                                                  <input type="hidden" name="old_album_id" value="{$album_id}" />
+                                                  <input type="submit" name="drop" id="btnSubmit" value="{$lang.button_submit}" class="btn btn_disabled" ectype="btnSubmit" disabled />
+                                              </div>
+                                            </div>
+                                            <div class="list-page">
+                                                {include file="library/page.lbi"}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>            
+                        </table>
+                        {if $full_page}
+                    </div>
+                    </form>
+                </div>
+            </div>
+		</div>
+	</div>
+	{include file ='library/pagefooter.lbi'}
+	{insert_scripts files="../js/plupload.full.min.js,../js/spectrum-master/spectrum.js,jquery.purebox.js"}
+	<script type="text/javascript">
+    listTable.recordCount = {$record_count|default:0};
+    listTable.pageCount = {$page_count|default:1};
+    listTable.query = 'pic_query';
+    
+    {foreach from=$filter item=item key=key}
+    listTable.filter.{$key} = '{$item}';
+    {/foreach}
+        
+    $(".ps-container").perfectScrollbar();
+    
+    $.divselect("#remove_type","#type_value",function(obj){
+        var val = obj.attr("data-value");
+        if(val == 'transfer'){
+            $("#album_id").show()
+        }else{
+            $("#album_id").hide();
+        }
+    });
+    
+    /*添加图片*/
+    $(document).on("click","a[ectype='addpic_album']",function(){
+		var album_id ="{$album_id}";
+		$.jqueryAjax('dialog.php', 'is_ajax=1&act=pic_album' + '&id=' + album_id + '&temp=addBatchWarehouse', function(data){
+			var content = data.content;
+			pb({
+				id:"categroy_dialog",
+				title:"{$lang.upload_image}",
+				width:788,
+				content:content,
+				ok_title:"{$lang.button_submit_alt}",
+				drag:false,
+				foot:false,
+				cl_cBtn:false,
+			});
+		});
+	});
+	
+	function remove_pic(id){
+		if(confirm("{$lang.confirm_delete}")){
+			Ajax.call('gallery_album.php', "act=pic_remove&id=" + id, remove_picResponse, 'POST', 'JSON');
+		}
+	}
+	   
+	function remove_picResponse(data){
+		if(data.error == 0){
+			$("#pic_"+data.id).remove();
+		}else{
+			alert(data.content);
+		}
+	}
+    
+    //鼠标停留出发显示
+    $(document).on("mouseover",".image",function(){
+		$(this).find(".img-width").hide();
+		$(this).find(".img-handle").show();
+    });
+	
+    $(document).on("mouseout",".image",function(){
+        $(this).find(".img-width").show();
+        $(this).find(".img-handle").hide();
+    });
+    
+	function album_move(pic_id){
+		if(pic_id > 0){
+			Ajax.call('dialog.php', 'act=album_move' + '&pic_id=' + pic_id, album_moveResponse, 'POST', 'JSON');
+		}else{
+			alert("{$lang.select_transfer_image}");
+		}
+	}
+    
+	function album_moveResponse(result){
+		var content = result.content;
+		pb({
+			id: "album_move",
+			title: "{$lang.transfer_album}",
+			width: 600,
+			content: content,
+			ok_title: "{$lang.button_submit_alt}",
+			drag: true,
+			foot: true,
+			cl_cBtn: false,
+			onOk: function () {
+				var album_id = $("#album_move").find("input[name='album_id']").val();
+				if(album_id != result.old_album_id && album_id != 0){
+					Ajax.call('get_ajax_content.php', 'act=album_move_back' + '&pic_id=' + result.pic_id + "&album_id=" + album_id, album_move_backResponse, 'POST', 'JSON');
+				}
+			}
+		});
+	}
+	
+	function album_move_backResponse(result){
+		if(result.pic_id > 0){
+			$("#pic_"+result.pic_id).remove();
+		}
+	}
+    </script>
+</body>
+</html>
+{/if}

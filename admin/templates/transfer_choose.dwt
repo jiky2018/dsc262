@@ -1,0 +1,200 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$lang.11_system} - {$ur_here}</div>
+            <div class="content">
+            <div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.info.0}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+				<div class="common-head">
+                    <div class="fl">
+                        <a href="transfer_manage.php"><div class="fbutton"><div class="edit" title="{$lang.transfer_manage}"><span><i class="icon icon-edit"></i>{$lang.transfer_manage}</span></div></div></a>
+                    </div>    
+                </div>
+                <div class="mian-info">
+                    <form action="transfer_manage.php" method="post" name="theForm" enctype="multipart/form-data" onsubmit="return start()">
+                        <div class="switch_info user_basic" style="display:block;">
+                            <div class="item">
+                                <div class="label">{$lang.select_file_template}：</div>
+                                <div class="label_value">
+                                    <div id="suppliers_id" class="imitate_select select_w120">
+                                        <div class="cite">{$lang.please_select}</div>
+                                        <ul>
+                                            <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.select_please}</a></li>
+                                           
+                                            <li><a href="javascript:;" data-value="1" class="ftx-01">{$lang.category_manage}</a></li>
+                                            <li><a href="javascript:;" data-value="2" class="ftx-01">{$lang.02_cat_and_goods}</a></li>
+                                            <li><a href="javascript:;" data-value="3" class="ftx-01">{$lang.user_manage}</a></li>
+                                            <li><a href="javascript:;" data-value="4" class="ftx-01">{$lang.02_articlecat_list}</a></li>
+                                            <li><a href="javascript:;" data-value="5" class="ftx-01">{$lang.03_article_list}</a></li>
+                                            <li><a href="javascript:;" data-value="6" class="ftx-01">{$lang.seller_list_info}</a></li>
+                                            <li><a href="javascript:;" data-value="7" class="ftx-01">{$lang.order_list_info}</a></li>
+                                            <li><a href="javascript:;" data-value="8" class="ftx-01">{$lang.order_goods_list}</a></li>
+                                            <li><a href="javascript:;" data-value="9" class="ftx-01">{$lang.08_goods_type}</a></li>
+                                            <li><a href="javascript:;" data-value="10" class="ftx-01">{$lang.attr_list}</a></li>
+                                        </ul>
+                                        <input name="data_cat" type="hidden" value="0">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="item">
+                                <div class="label">{$lang.exec}：</div>
+                                <div class="label_value">
+                                    <div class="checkbox_items">
+                                        <div class="checkbox_item">
+                                            <input type="radio" class="ui-radio" name="silent" id="silent_1" value="1" checked="true" />
+                                            <label for="silent_1" class="ui-radio-label">{$lang.silent_1}</label>
+                                        </div>
+                                        <div class="checkbox_item">
+                                            <input type="radio" class="ui-radio" name="silent" id="silent_0" value="0" />
+                                            <label for="silent_0" class="ui-radio-label">{$lang.silent_0}</label>
+                                        </div>
+                                    </div>	
+                                </div>
+                            </div>
+                                
+                            <div class="item">
+                                <div class="label">&nbsp;</div>
+                                <div class="label_value info_btn mt0">
+                                    <input name="submit" type="submit" id="submit" value="{$lang.button_submit}" class="button" />
+                                </div>
+                            </div>
+                            
+                            <div class="list-div" id="listDiv">
+                              <table cellspacing='0' cellpadding='0' id='listTable'>
+                                <tr>
+                                  <th>{$lang.page}</th>
+                                  <th>{$lang.total}</th>
+                                  <th>{$lang.time}</th>
+                                </tr>
+                              </table>
+                            </div>
+    						<div style="display:none;border: 1px solid rgb(204, 0, 0);margin-top:10px; padding: 4px; background-color: rgb(255, 255, 206); color: rgb(206, 0, 0);" id="errorMsg" ></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+ 	{include file ='library/pagefooter.lbi'}
+    <script type="Text/Javascript" language="JavaScript">
+    <!--
+    {literal}
+
+    var restart = 1;
+    /**
+     * 开始处理数据
+     */
+    function start()
+    {
+        var silent = document.forms['theForm'].elements['silent'][0].checked? 1 : 0;
+        var data_cat = document.forms['theForm'].elements['data_cat'].value;
+        
+        if (data_cat)
+        {
+            if (restart)
+            {
+                var tbl = document.getElementById("listTable");
+                for (i = tbl.rows.length - 1; i > 0; i--)
+                {
+                  tbl.deleteRow(i);
+                }
+                restart = 0;
+            }
+            var elem = document.getElementById('errorMsg');
+            elem.style.display = 'none';
+            elem.innerHTML = '';
+            Ajax.call('transfer_manage.php?act=is_ajax&start=1', 'silent=' + silent + '&data_cat=' + data_cat , start_response, 'GET', 'JSON');
+        }
+        else
+        {
+            alert("请选择需要导入模块数据！");
+        }
+        return false;
+    }
+
+    /**
+     * 处理反馈信息
+     * @param: result
+     * @return
+     */
+    function start_response(result)
+    {
+        //没有执行错误
+        if (result.error == 0)
+        {
+          if (result.done == 0)
+          {
+            restart = 1;
+            /* 结束时，删除多余的最后一行 */
+            var tbl = document.getElementById("listTable"); //获取表格对象
+            tbl.deleteRow(tbl.rows.length - 1);
+          }
+          else
+          {
+            var cell;
+            var tbl = document.getElementById("listTable"); //获取表格对象
+
+            if (result.done == 1)
+            {
+                if (tbl.rows.length >1)
+                /* 已经换模块，删除多余的最后一行 */
+                {
+                    tbl.deleteRow(tbl.rows.length - 1);
+                }
+              /* 产生一个标题行 */
+              var row = tbl.insertRow(-1);
+
+              cell = row.insertCell(0);
+              cell.className = 'first-cell';
+              cell.colSpan = '3';
+              cell.innerHTML = result.title ;
+            }
+            else
+            {
+              document.getElementById(result.row.pre_id).innerHTML = result.row.pre_time; //更新上一行执行时间
+            }
+
+            //创建新任务行
+            var row = tbl.insertRow(-1);
+            cell = row.insertCell(0);
+            cell.innerHTML = result.row.new_page ;
+            cell = row.insertCell(1);
+            cell.innerHTML = result.row.new_total ;
+            cell = row.insertCell(2);
+            cell.id = result.row.cur_id;
+            cell.innerHTML = result.row.new_time ;
+
+            //提交任务
+            Ajax.call('transfer_manage.php?act=is_ajax', 'page=' + result.page + '&page_size=' + result.page_size + '&total=' + result.total + '&silent=' + result.silent + '&data_cat=' + result.data_cat  , start_response, 'GET', 'JSON');
+          }
+
+          if (result.silent && result.content.length > 0)
+          {
+            var elem = document.getElementById('errorMsg');
+            elem.style.display = '';
+            elem.innerHTML += result.content;
+          }
+
+
+        }
+
+        if (result.message.length > 0)
+        {
+          //有信息则输出出错信息
+          alert(result.message);
+        }
+    }
+    {/literal}
+    //-->
+    </script>
+</body>
+</html>

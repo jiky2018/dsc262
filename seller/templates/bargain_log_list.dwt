@@ -1,0 +1,120 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+                {include file ='library/seller_menu_tab.lbi'}
+                <form method="post" action="team.php?act=remove_team_info" name="listForm" onsubmit="return confirm(batch_drop_confirm);">
+                <!-- start presale list -->
+                <div class="list-div" id="listDiv">
+                {/if}
+                <table class="ecsc-default-table">
+                    <thead>
+                        <tr>
+                        <th width="3%">编号</th>
+                        <th width="8%">会员名称</th>
+                        <th width="8%">砍价目标</th>
+                        <th width="8%">已砍价到</th>
+                        <th width="10%">参加时间</th>
+                        <th width="6%">参与砍价人次</th>
+                        <th width="6%">活动状态</th>
+                        <th width="6%">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {foreach from=$bargain_log_list item=list}
+                    <tr class="bd-line">
+                        <td align="center">{$list.id}</td>
+                        <td align="center">{$list.user_name}</td>
+                        <td align="center">{$list.target_price}</td>
+                        <td align="center">{$list.final_price}</td>
+                        <td align="center">{$list.add_time}</td>
+                        <td align="center">{$list.count_num}</td>
+                        <td align="center">{$list.status}</td>
+                        <td align="center" class="ecsc-table-handle tr">
+                            <span>
+                                <a href="bargain.php?act=bargain_statistics_list&amp;id={$list.id}" title="{$lang.view}" class="btn-green fancybox fancybox.iframe"><i class="icon sc_icon_see"></i><p>亲友帮</p></a>
+                            </span>
+                        </td>
+                    </tr>
+                    {foreachelse}
+                    <tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+                    {/foreach}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="20">
+                            {include file="page.dwt"}
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+                {if $full_page}
+              </div>
+              <!-- end presale list -->
+              </form>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript">
+//弹出框
+  $(".fancybox").fancybox({
+      width       : '60%',
+      height      : '60%',
+      closeBtn    : true,
+      title       : ''
+  });
+
+<!--
+  listTable.query = 'bargain_log_query';
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+
+  {literal}
+  onload = function()
+  {
+    startCheckOrder();
+  }
+
+  {if $priv_ru eq 1}
+  function get_store_search(val){
+    if(val == 1){
+      document.forms['searchForm'].elements['merchant_id'].style.display = '';
+      document.forms['searchForm'].elements['store_keyword'].style.display = 'none';
+      document.forms['searchForm'].elements['store_type'].style.display = 'none';
+    }else if(val == 2){
+      document.forms['searchForm'].elements['merchant_id'].style.display = 'none';
+      document.forms['searchForm'].elements['store_keyword'].style.display = '';
+      document.forms['searchForm'].elements['store_type'].style.display = 'none';
+    }else if(val == 3){
+      document.forms['searchForm'].elements['merchant_id'].style.display = 'none';
+      document.forms['searchForm'].elements['store_keyword'].style.display = '';
+      document.forms['searchForm'].elements['store_type'].style.display = '';
+    }else{
+      document.forms['searchForm'].elements['merchant_id'].style.display = 'none';
+      document.forms['searchForm'].elements['store_keyword'].style.display = 'none';
+      document.forms['searchForm'].elements['store_type'].style.display = 'none';
+    }
+  }
+  {/if}
+
+  {/literal}
+//-->
+</script>
+</body>
+</html>
+{/if}

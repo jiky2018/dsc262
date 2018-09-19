@@ -1,0 +1,181 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+    <div class="warpper">
+        <div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>短信模板 - {$ur_here}</div>
+        <div class="content">
+            <div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content_common}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+                        <form action="ecjia_mobile_activity.php" method="post" name="theForm" enctype="multipart/form-data" id="mobile_activity_form" >
+                            <div class="switch_info" id="conent_area">
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}活动名称：</div>
+                                    <div class="label_value">
+                                        <input type="text" name="activity_name" class="text" value="{$activity_info.activity_name}" autocomplete="off" /><div class="notic m20">{$lang.ad_name_notic2}</div>
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">活动方式：</div>
+                                    <div class="label_value">
+                                        <div class="checkbox_items">
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="activity_group" id="activity_group" value="1" checked="true">
+                                                <label for="sex_1" class="ui-radio-label">摇一摇</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item activity_object">
+                                    <div class="label">{$lang.require_field}活动参与平台：</div>
+                                    <div class="label_value">
+                                        <div id="activity_object" class="imitate_select select_w320">
+                                            <div class="cite">{if $activity_info.activity_object}{$mobile_client[$activity_info.activity_object]}{else}{$lang.please_select}{/if}</div>
+                                            <ul class="ps-container ps-active-y" style="display: none;">
+                                            {foreach from=$activity_object item=client key=key}
+                                                <li><a href="javascript:;" data-value="{$key}" class="ftx-01">{$client}</a></li>
+                                            {/foreach}
+                                            </ul>
+                                            <input name="activity_object" type="hidden" value="{$activity_info.activity_object}" id="activity_object">
+                                        </div>
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">是否开启：</div>
+                                    <div class="label_value">
+                                        <div class="checkbox_items">
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="enabled" id="sex_0" value="1" {if $activity_info.enabled eq 1} checked="true" {/if}>
+                                                <label for="sex_0" class="ui-radio-label">{$lang.yes}</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="enabled" id="sex_1" value="0" {if $activity_info.enabled eq 0} checked="true" {/if}>
+                                                <label for="sex_1" class="ui-radio-label">{$lang.no}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">活动限制次数：</div>
+                                    <div class="label_value">
+                                        <input type="text" name="limit_num" class="text" value="{$activity_info.limit_num}" autocomplete="off" />
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">活动时间限制：</div>
+                                    <div class="label_value">
+                                        <input type="text" name="limit_time" class="text" value="{$activity_info.limit_time}" autocomplete="off" />
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">活动时间：</div>
+                                    <div class="label_value">
+                                      <div class="text_time" id="text_time_start">
+                                          <input type="text" name="start_time" value="{if $activity_info.start_time}{$activity_info.start_time}{else}{$activity_date.start_time}{/if}" id="start_time_id" class="text mr0" readonly />
+                                      </div>
+                                      <span class="bolang">&nbsp;&nbsp;~&nbsp;&nbsp;</span>
+                                      <div class="text_time" id="text_time_end">
+                                          <input type="text" name="end_time" value="{if $activity_info.end_time}{$activity_info.end_time}{else}{$activity_date.end_time}{/if}" id="end_time_id" class="text" readonly />
+                                      </div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">规则描述：</div>
+                                    <div class="label_value">
+                                        <textarea class="textarea" name="activity_desc" id="activity_desc">{$activity_info.activity_desc}</textarea>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="label_value info_btn">
+                                        <a href="javascript:;" class="button" id="submitBtn">{$lang.button_submit}</a>
+                                        <input type="hidden" name="act" value="{$form_action}" />
+                                        <input type="hidden" name="id" value="{$activity_info.activity_id}" />
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {include file ='library/pagefooter.lbi'}
+    
+    <script type="text/javascript">
+        //时间选择
+        var opts1 = {
+            'targetId':'start_time_id',//时间写入对象的id
+            'triggerId':['start_time_id'],//触发事件的对象id
+            'alignId':'text_time_start',//日历对齐对象
+            'format':'-',//时间格式 默认'YYYY-MM-DD HH:MM:SS'
+            'min':'{$snatch.start_time}' //最小时间
+        },opts2 = {
+            'targetId':'end_time_id',
+            'triggerId':['end_time_id'],
+            'alignId':'text_time_end',
+            'format':'-',
+            'min':'{$snatch.start_time}'
+        }
+        xvDate(opts1);
+        xvDate(opts2);
+
+        $(function(){
+            $("#submitBtn").click(function(){
+                if($("#mobile_activity_form").valid()){
+                    $("#mobile_activity_form").submit();
+                }
+            });
+
+            $('#mobile_activity_form').validate({
+                errorPlacement:function(error, element){
+                    var error_div = element.parents('div.label_value').find('div.form_prompt');
+                    element.parents('div.label_value').find(".notic").hide();
+                    error_div.append(error);
+                },
+                rules:{
+                    activity_name :{
+                        required : true
+                    },
+                    activity_object :{
+                        required : true
+                    }
+                },
+                messages:{
+                    activity_name:{
+                         required : '<i class="icon icon-exclamation-sign"></i>'+'活动名称不可为空'
+                    },
+                    activity_object:{
+                         required : '<i class="icon icon-exclamation-sign"></i>'+'请选择活动参与平台'
+                    }
+                }           
+            });
+
+            $("input[name='group']").click(function(){
+                var val = $(this).val();
+                if (val == 'guider') {
+                    $('.administrator').hide();
+                    $('.ru_shop').hide();
+                }
+                else
+                {
+                    $('.administrator').show();
+                    $('.ru_shop').show();
+                }
+            })
+        })
+    </script>     
+</body>
+</html>

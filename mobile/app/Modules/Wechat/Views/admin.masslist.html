@@ -1,0 +1,86 @@
+{include file="pageheader"}
+<style>
+ul{margin:0;padding:0}
+.col-md-1 img{vertical-align: middle; width:8rem;height:8rem;}
+.line-center {line-height: 172px;overflow:hidden; }
+.text-muted {overflow:hidden; }
+.onelist-hidden{white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}/*超出1行隐藏*/
+.twolist-hidden{overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;}/*超出2行隐藏*/
+.admin-top h4{margin-top:40px;}
+.admin-top p{margin-top:10px;}
+</style>
+<div class="wrapper">
+    <div class="title">{$lang['wechat_menu']} - 发送记录</div>
+    <div class="content_tips">
+      <div class="tabs_info">
+	    	  <ul>
+	        		<li><a href="{url('mass_message')}">群发信息</a></li>
+	        		<li class="curr"><a href="{url('mass_list')}">发送记录</a></li>
+	    	  </ul>
+	    </div>
+      <div class="explanation" id="explanation">
+	        <div class="ex_tit">
+	        	<i class="sc_icon"></i>
+	        	<h4>操作提示</h4>
+	        	<span id="explanationZoom" title="收起提示"></span>
+	        </div>
+          <ul>
+            <li>1、只有已经发送成功的消息才能删除</li>
+            <li>2、删除消息是将消息的图文详情页失效，已经收到的用户，还是能在其本地看到消息卡片。</li>
+            <li>3、如果多次群发发送的是一个图文消息，那么删除其中一次群发，就会删除掉这个图文消息也，导致所有群发都失效</li>
+            <li>★ 发送人数，即排除发送时过滤、用户拒收、接收已达到4条的用户数</li>
+          </ul>
+	    </div>
+      <div class="flexilist" style="line-height:18px;">
+    	  <div class="main-info">
+    	  	  <ul class="list-div">
+                  <table cellspacing="0" cellpadding="0" border="0">
+                      <tr>
+                          <th width="35%"><div class="tDiv">标题</div></th>
+                          <th width="35%"><div class="tDiv">发送状态</div></th>
+                          <th width="10%"><div class="tDiv">发送时间</div></th>
+                          <th ><div class="tDiv" style="text-align: center;">{$lang['handler']}</div></th>
+                      </tr>
+                  </table>
+                  {if $list}
+  		            {foreach $list as $val}
+  		            <li class="list-group-item" style="overflow:hidden;" >
+  		                <div class="col-md-1 line-center" style="padding-left:0;"><img src="{$val['artinfo']['file']}" /></div>
+  		                <div class="col-md-3 admin-top">
+                        <h4 class="onelist-hidden">[{$val['artinfo']['type']}]{$val['artinfo']['title']}</h4>
+                        <p class="text-muted twolist-hidden">{sub_str($val['artinfo']['content'], 60)}</p>
+  		                </div>
+  		                <div class="col-md-4">
+  		                    <p>{$val['status']}</p>
+  		                    <p>发送人数：{$val['totalcount']}人</p>
+  		                    <p>成功人数：{$val['sentcount']}人</p>
+  		                    <p>过滤人数：{$val['filtercount']}人</p>
+  		                    <p>失败人数：{$val['errorcount']}人</p>
+  		                </div>
+  		                <div class="col-md-3 line-center">发送时间：{date('Y年m月d日', $val['send_time'])}</div>
+  		                <div class="col-md-1 line-center"><a data-href="{url('mass_del', array('id'=>$val['id']))}" class="btn button btn-danger bg-red delete" href="javascript:;" >删除</a></div>
+
+  		            </li>
+  		           {/foreach}
+
+                 {else}
+                  <li class="no-records" colspan="6">没有找到任何记录</li>
+                 {/if}
+		        </ul>
+        </div>
+      </div>
+            <div class="list-div of">
+                <table cellspacing="0" cellpadding="0" border="0">
+                    <tfoot>
+                        <tr>
+                            <td colspan="7">
+                                {include file="pageview"}
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+    </div>
+</div>
+
+{include file="pagefooter"}

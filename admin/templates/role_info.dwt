@@ -1,0 +1,129 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back"></a>{$lang.10_priv_admin} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.info.0}</li>
+                    <li>{$lang.operation_prompt_content.info.1}</li>
+					<li>{$lang.operation_prompt_content_common}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+                        <form method="POST" action="role.php" name="theFrom" id="role_form">
+                    	<div class="switch_info business_info" style="background:none;">
+                            <div class="step">
+                                <div class="items">
+                                    <div class="item">
+                                        <div class="label">{$lang.require_field}&nbsp;{$lang.user_name}：</div>
+                                        <div class="value">
+                                            <input type="text" class="text" name="user_name"  value="{$user.role_name|escape}" id="user_name" autocomplete="off" />
+                                            <div class="form_prompt"></div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.role_describe}：</div>
+                                        <div class="value">
+                                            <textarea class="textarea" name="role_describe" id="role_describe">{$user.role_describe|escape}</textarea>
+                                            <div class="form_prompt"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {foreach from=$priv_arr item=priv}
+                            <div class="step">
+                            	<div class="tit">
+                                    <div class="checkbox_items">
+                                    	<div class="checkbox_item">
+                                            <input type="checkbox" name="chkGroup" value="checkbox" class="ui-checkbox" id="chkGroup_{$priv.action_id}" />
+                                            <label for="chkGroup_{$priv.action_id}" class="ui-label blod">{$lang[$priv.action_code]}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="qx_items">
+                                	<div class="qx_item">
+                                        <div class="checkbox_items">
+                                            {foreach from=$priv.priv key=priv_list item=list}
+                                            <div class="checkbox_item">
+                                                <input type="checkbox" value="{$priv_list}" name="action_code[]" class="ui-checkbox" id="{$priv_list}_{$priv.action_id}" date="{$priv.action_code}" {if $list.cando eq 1} checked="true" {/if} title="{$list.relevance}"/>
+                                                <label for="{$priv_list}_{$priv.action_id}" class="ui-label">{$lang[$list.action_code]}</label>
+                                            </div>
+                                            {/foreach}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {/foreach}
+                            <div class="steplast">
+                            	<div class="checkbox_items">
+                                	<div class="checkbox_item">
+                                    	<input type="checkbox" name="checkall" value="checkbox" class="ui-checkbox" id="checkall" />
+                                        <label for="checkall" class="ui-label">{$lang.check_all}</label>
+                                    </div>
+                                </div>
+                                <div class="info_btn">
+                                    <input type="submit" name="submit" value="{$lang.button_submit}" class="button" id="submitBtn" />
+                                    <input type="hidden" name="id" value="{$user_id}" />
+                                    <input type="hidden" name="act" value="{$form_act}" />
+                                </div>
+                            </div>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+ 	{include file ='library/pagefooter.lbi'}
+    <script language="javascript">
+	$(function(){
+		$("#checkall").click(function(){
+			var checkbox = $(this).parents(".switch_info").find('input:checkbox[type="checkbox"]');
+			if($(this).prop("checked") == true){
+				checkbox.prop("checked",true);
+			}else{
+				checkbox.prop("checked",false);
+			}
+		});
+		
+		$("input[name='chkGroup']").click(function(){
+			var checkbox = $(this).parents(".tit").next(".qx_items").find('input:checkbox[type="checkbox"]');
+			if($(this).prop("checked") == true){
+				checkbox.prop("checked",true);
+			}else{
+				checkbox.prop("checked",false);
+			}
+		});
+		
+		$("input[name='action_code[]']").click(function(){    
+			var qx_items = $(this).parents(".qx_items");
+			var length = qx_items.find("input[name='action_code[]']").length;
+			var length2 =  qx_items.find("input[name='action_code[]']:checked").length;
+			if(length == length2){
+				qx_items.prev().find("input[name='chkGroup']").prop("checked",true);
+			}else{
+				qx_items.prev().find("input[name='chkGroup']").prop("checked",false);
+			}
+		});
+		
+		$(".qx_items").each(function(index, element) {
+			var length = $(this).find("input[name='action_code[]']").length;
+			var length2 = $(this).find("input[name='action_code[]']:checked").length;
+			
+			if(length == length2){
+				$(this).prev().find("input[name='chkGroup']").prop("checked",true);
+			}else{
+				$(this).prev().find("input[name='chkGroup']").prop("checked",false);
+			}
+		});
+	});
+    </script>
+</body>
+</html>

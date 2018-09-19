@@ -1,0 +1,222 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">推送消息 - {$ur_here}</div>
+        <div class="content">
+        	<div class="tabs_info">
+            	<ul>
+                    <li {if $appid eq '1'}class="curr"{/if}>
+                    	<a href="ecjia_push_record.php?act=list&appid=1">EC+多商户 iPhone{if $appid neq '1'}<em class="li_color">({$msg_record_count.count1|default:0})</em>{/if}</a>
+                    </li>
+                    <li {if $appid eq '2'}class="curr"{/if}>
+                        <a href="ecjia_push_record.php?act=list&appid=2">EC+多商户 Android{if $appid neq '2'}<em class="li_color">({$msg_record_count.count2|default:0})</em>{/if}</a>
+                    </li>
+                    <li {if $appid eq '3'}class="curr"{/if}>
+                        <a href="ecjia_push_record.php?act=list&appid=3">EC+多商户 iPad{if $appid neq '3'}<em class="li_color">({$msg_record_count.count3|default:0})</em>{/if}</a>
+                    </li>
+                    <li {if $appid eq '4'}class="curr"{/if}>
+                        <a href="ecjia_push_record.php?act=list&appid=4">EC+掌柜 iPhone{if $appid neq '4'}<em class="li_color">({$msg_record_count.count4|default:0})</em>{/if}</a>
+                    </li>
+                    <li {if $appid eq '5'}class="curr"{/if}>
+                        <a href="ecjia_push_record.php?act=list&appid=5">EC+掌柜 Android{if $appid neq '5'}<em class="li_color">({$msg_record_count.count5|default:0})</em>{/if}</a>
+                    </li>
+                </ul>
+            </div>			
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>该页面展示了所有的推送消息记录，可进行推送和删除操作。</li>
+                    <li>可输入消息主题关键字进行检索。</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<!--商品列表-->
+                <div class="common-head">
+                    <div class="fl">
+                        <a href="{$action_link.href}"><div class="fbutton"><div class="add" title="{$action_link.text}"><span><i class="icon icon-plus"></i>{$action_link.text}</span></div></div></a>
+                    </div>
+                    <div class="refresh">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+					<div class="search">
+                    	<form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+                    	<div class="input">
+                        	<input type="text" name="keyword" class="text nofocus w140" placeholder="请输入消息主题" autocomplete="off">
+							<input type="submit" class="btn" name="secrch_btn" ectype="secrch_btn" value="" />
+                        </div>
+                        </form>
+                    </div>					
+                </div>
+                <div class="common-content">
+					<form method="post" action="" name="listForm" onsubmit="return confirmSubmit(this)">
+                    <div class="list-div" id="listDiv">
+                    	<div class="flexigrid ht_goods_list{if $add_handler} xn_goods_list{/if}">
+						{/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                	<th width="5%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars"></label></div></th>
+                                    <th width="25%"><div class="tDiv">消息主题</div></th>
+                                    <th width="25%"><div class="tDiv">消息内容</div></th>
+                                    <th width="20%"><div class="tDiv">推送状态</div></th>
+                                    <th width="10%"><div class="tDiv">添加时间</div></th>
+                                    <th class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+								{foreach from=$push_record_list item=push_list}
+                            	<tr>
+                                    <td class="sign">
+                                        <div class="tDiv">
+    										<input type="checkbox" name="checkboxes[]" value="{$push_list.message_id}" class="checkbox" id="checkbox_{$push_list.message_id}" />
+    										<label for="checkbox_{$push_list.message_id}" class="checkbox_stars"></label>
+    									</div>
+                                    </td>
+                                    <td class="sky_id"><div class="tDiv">{$push_list.title}</div></td>
+                                    <td class="sky_id"><div class="tDiv">{$push_list.content}</div></td>
+                                    <td class="sky_id"><div class="tDiv">{$push_list.status}<br>该消息已经被推送了{$push_list.push_count}次<br>推送于：{$push_list.push_date}</div></td>
+                                    <td class="sky_id"><div class="tDiv">{$push_list.date}</div></td>
+                                    <td class="handle">
+                                        <div class="tDiv ht_tdiv">
+                                            <a href="ecjia_push_record.php?act=edit&id={$push_list.message_id}" class="btn_edit">再次推送</a>
+                                            <a href="ecjia_push_record.php?act=edit&id={$push_list.message_id}" class="btn_see">消息复用</a>
+                                            <a href="javascript:;" onclick="listTable.remove({$push_list.message_id}, '确定要删除吗')" class="btn_trash"><i class="icon icon-trash"></i>删除消息</a>
+                                        </div>
+                                    </td>
+                                </tr>
+								{foreachelse}
+								<tr><td class="no-records"  colspan="20">{$lang.no_records}</td></tr>								
+								{/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                	<td colspan="12">
+                                    	<div class="tDiv">
+                                            <div class="tfoot_btninfo">
+                                                <input type="hidden" name="act" value="batch" />
+                                                <!-- 操作类型 start -->
+                                                <div class="imitate_select select_w120">
+                                                    <div class="cite">{$lang.please_select}</div>
+                                                    <ul>
+                                                        <li><a href="javascript:changeAction();" data-value="" class="ftx-01">{$lang.select_please}</a></li>
+                                                        <li><a href="javascript:changeAction();" data-value="delete" class="ftx-01">删除消息</a></li>
+                                                        <li><a href="javascript:changeAction();" data-value="push_again" class="ftx-01">再次推送消息</a></li>
+                                                    </ul>
+                                                    <input name="type" type="hidden" value="" id="">
+                                                </div>
+                                                <!-- 操作类型 end -->
+
+                                                <input type="submit" value="{$lang.button_submit}" id="btnSubmit" name="btnSubmit" class="btn btn_disabled" disabled="true" ectype="btnSubmit" />				
+                                            </div>
+                                            <div class="list-page">
+                                               {include file="library/page.lbi"}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        {if $full_page}
+                        </div>
+                    </div>
+					</form>
+                </div>
+                <!--商品列表end-->
+            </div>
+		</div>
+	</div>
+
+	{include file ='library/pagefooter.lbi'}
+    
+    {insert_scripts files="jquery.purebox.js"}
+    
+    {literal}
+	<script type="text/javascript">
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+	
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+	/* 起始页通过商品一览点击进入自营/商家商品判断条件 */
+	listTable.filter.self = '{$self}';
+	listTable.filter.merchants = '{$merchants}';
+	
+	function movecatList(val, level)
+	{
+		var cat_id = val;
+		document.getElementById('target_cat').value = cat_id;
+		Ajax.call('goods.php?is_ajax=1&act=sel_cat_goodslist', 'cat_id='+cat_id+'&cat_level='+level, movecatListResponse, 'GET', 'JSON');
+	}
+
+	function movecatListResponse(result)
+	{
+		if (result.error == '1' && result.message != '')
+		{
+			alert(result.message);
+			return;
+		}
+		
+		var response = result.content;
+		var cat_level = result.cat_level;
+		
+		for(var i=cat_level;i<10;i++)
+		{
+			$("#move_cat_list"+Number(i+1)).remove();
+		}
+		
+		if(response)
+		{
+			$("#move_cat_list"+cat_level).after(response);
+		}
+		
+		return;
+	}
+
+	onload = function()
+	{
+		document.forms['listForm'].reset();
+	}
+
+
+	function changeAction()
+	{
+		var frm = document.forms['listForm'];
+
+	}
+	  
+	//ecmoban模板堂 --zhuo  start
+	function get_review_status(){
+		var frm = document.forms['listForm'];
+		
+		if(frm.elements['type'].value == 'review_to'){
+			if(frm.elements['review_status'].value == 2){
+				frm.elements['review_content'].style.display = '';
+			}else{
+				frm.elements['review_content'].style.display = 'none';
+			}
+		}else{
+			frm.elements['review_content'].style.display = 'none';
+		}
+	}
+	//ecmoban模板堂 --zhuo  end
+	
+	
+	//单选勾选
+	function get_ajax_act(t, goods_id, act, FileName){
+		
+		if(t.checked == false){
+			t.value = 0;
+		}
+		
+		Ajax.call(FileName + '.php?act=' + act, 'id=' + goods_id + '&val=' + t.value, act_response, 'POST', 'JSON');
+	}
+	</script>
+    {/literal}
+</body>
+</html>
+{/if}

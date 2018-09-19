@@ -1,0 +1,178 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<div class="user-product-list">
+    <div class="thead">
+        <div class="th u-seller"><span>{$lang.seller_store}</span></div>
+        <div class="th u-pop"><span>{$lang.Popularity_follow}</span></div>
+        <div class="th u-serve"><span>{$lang.Service_evaluation}</span></div>
+        <div class="th u-time"><span>{$lang.follow_time}</span></div>
+        <div class="th u-operate"><span>{$lang.handle}</span></div>
+    </div>
+    <input name="merchantId"  class="merchantId" value="" type="hidden">
+    {if $store_list}
+    {foreach from=$store_list item=store}
+    <div class="tbody">
+        <div class="tr">
+            <div class="td u-seller">
+                <div class="td-checkbox">
+                    <div class="checkbox">
+                        <input type="checkbox" id="check_{$store.ru_id}" class="ui-grey-checkbox collcheck" value="{$store.ru_id}" name="goods_check" onChange="get_goods_check(this, 'merchantId')">
+                        <label for="check_{$store.ru_id}">&nbsp;</label>
+                    </div>
+                </div>
+                <div class="td-sellerLogo"><a href="{$store.url}" target="_blank" class="store_name"><img src="{$store.brand_thumb}" height="45"/></a></div>
+                <div class="td-sellerName">
+                <a href="{$store.url}" target="_blank" class="store_name">{$store.store_name}</a>
+                <div class="ecsc-service">
+                
+                {if $store.is_IM eq 1 || $store.is_dsc}
+                <a id="IM" onclick="openWin(this)" href="javascript:;" ru_id="{$store.ru_id}">
+                    <i class="btn-im"></i>
+                    <span class="ftx-04">{$lang.con_cus_service}</span>
+                </a>
+                {else}
+                {if $goods.kf_type eq 1}
+                <a href="{if $store.kf_type eq 1}http://www.taobao.com/webww/ww.php?ver=3&touid={$store.kf_ww}&siteid=cntaobao&status=1&charset=utf-8{else}http://wpa.qq.com/msgrd?v=3&uin={$store.kf_qq}&site=qq&menu=yes{/if}" target="_blank">
+                    <i class="btn-im"></i>
+                    <span class="ftx-04">{$lang.con_cus_service}</span>
+                </a>
+                {else}
+                <a href="http://wpa.qq.com/msgrd?v=3&uin={$store.kf_qq}&site=qq&menu=yes" class="p-kefu" target="_blank">
+                	<i class="btn-im"></i>
+                    <span class="ftx-04">{$lang.con_cus_service}</span>
+                </a>
+                {/if}
+                {/if}
+                
+                </div>
+                </div>
+            </div>
+            <div class="td u-pop"><span class="ftx-01">{$store.count_store}人</span></div>
+            <div class="td u-serve"><span class="ftx-01">{$store.merch_cmt.cmt.all_zconments.score}{$lang.branch}</span></div>
+            <div class="td u-time"><span class="ftx-08">{$store.add_time}</span></div>
+            <div class="td u-operate">
+                <div class="u-seller-desc">
+                	<a href="javascript:void(0)" onclick="get_collect_store(1, {$store.ru_id});" class="goods_gz has_gz">&nbsp;</a>
+                </div>
+            </div>
+        </div>
+        <div class="tr pro_main">
+            <div class="seller-tabs">
+                <ul class="seller-tabs-nav">
+                    <li class="best-seller on">{$lang.shop_sells}</li>
+                    <li class="new-seller">{$lang.shop_new}</li>
+                </ul>
+            </div>
+            <div class="u-seller-product">
+                <div class="seller-product-item">
+                    <ul>
+                        {foreach from=$store.hot_goods item=goods}
+                        <li>
+                            <div class="p-img"><a href="{$goods.url}" target="_blank"><img src="{$goods.goods_thumb}" width="142" height="142" /></a></div>
+                            <div class="p-price">
+                                <!-- {if $goods.promote_price neq ""} -->
+                                {$goods.promote_price}
+                                <!-- {else}-->
+                                {$goods.shop_price}
+                                <!--{/if}-->
+                            </div>
+                            <div class="p-name"><a href="{$goods.url}" target="_blank">{$goods.goods_name|truncate:22:”…”}</a></div>
+                        </li>
+                        {/foreach}
+                    </ul>
+                    <a href="javascript:void(0);" class="done-prev seller-prev"></a>
+                    <a href="javascript:void(0);" class="done-next seller-next"></a>
+                </div>
+                <div class="seller-product-item">
+                    <ul>
+                        {foreach from=$store.new_goods item=goods}
+                        <li>
+                            <div class="p-img"><a href="{$goods.url}" target="_blank"><img src="{$goods.goods_thumb}" width="142" height="142" /></a></div>
+                            <div class="p-price">
+                                <!-- {if $goods.promote_price neq ""} -->
+                                {$goods.promote_price}
+                                <!-- {else}-->
+                                {$goods.shop_price}
+                                <!--{/if}-->
+                            </div>
+                            <div class="p-name"><a href="{$goods.url}" target="_blank">{$goods.goods_name|truncate:22:”…”}</a></div>
+                        </li>
+                        {/foreach}
+                    </ul>
+                    <a href="javascript:void(0);" class="done-prev seller-prev"></a>
+                    <a href="javascript:void(0);" class="done-next seller-next"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {/foreach}
+    <div class="tfoot">
+        <div class="tr">
+            <div class="td">
+            	<div class="tfoot_bg">
+                    <div class="checkbox">
+                        <input type="checkbox" id="allCheckbox" name="goods_check"  value="7" class="ui-grey-checkbox collcheck" onChange="get_coll_checkall(this, 'merchantId')">
+                        <label for="allCheckbox" class="ui-grey">{$lang.check_all}</label>
+                    </div>
+                    <a href="javascript:get_collect_store(1);" class="pl_cz">{$lang.no_attention}</a>
+                    <span class="collection-num">{$lang.Share}<em>{$count}</em>{$lang.pager_2}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    {else}
+        <div class="td td_bf">{$lang.Collection_store_null}</div>
+    {/if}
+</div>
+
+{if $count > $size}
+<div class="user-pages pages26">
+    <div class="pages"><div class="pages-it">{$pager}</div></div>
+</div>
+{/if}
+
+<script type="text/javascript">
+	function load_collection_store(){
+		$(".pro_main").slide({titCell:".seller-tabs li",mainCell:".u-seller-product",trigger:"click"});
+		$(".pro_main .seller-product-item").slide({mainCell:"ul",effect:"leftLoop",autoPage:true,vis:5,prevCell:".seller-prev",nextCell:".seller-next",pnLoop:false});
+	
+		$(document).ready( function(){
+			var userLeftHeight =$(".user-left").outerHeight();
+			var userRightHeight= $(".user-right").outerHeight();
+			if(userRightHeight>userLeftHeight){
+				$(".user-left").css("height",userRightHeight);
+			}
+		});
+	}
+	load_collection_store();
+</script>
+
+<script type="text/javascript">
+	//IM
+    function openWin(obj) {
+		
+		var where_goods = "";
+		if($(obj).attr('goods_id')){
+			where_goods = '&goods_id=' + $(obj).attr('goods_id');
+		}
+		
+		var where_seller = "";
+		if($(obj).attr('ru_id')){
+			where_seller = '&ru_id=' + $(obj).attr('ru_id');
+		}
+
+        if($(obj).attr('IM_type') != 'dsc'){
+            var where = where_goods + where_seller;
+        }else{
+            var where = '';
+        }
+        var url='online.php?act=service' + where                   //转向网页的地址;
+        var name='webcall';                         //网页名称，可为空;
+        var iWidth=700;                          //弹出窗口的宽度;
+        var iHeight=500;                         //弹出窗口的高度;
+        //获得窗口的垂直位置
+        var iTop = (window.screen.availHeight - 30 - iHeight) / 2;
+        //获得窗口的水平位置
+        var iLeft = (window.screen.availWidth - 10 - iWidth) / 2;
+        window.open(url, name, 'height=' + iHeight + ',,innerHeight=' + iHeight + ',width=' + iWidth + ',innerWidth=' + iWidth + ',top=' + iTop + ',left=' + iLeft + ',status=no,toolbar=no,menubar=no,location=no,resizable=no,scrollbars=0,titlebar=no');
+    }
+</script>

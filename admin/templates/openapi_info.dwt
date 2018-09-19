@@ -1,0 +1,150 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$lang.27_interface} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content_common}</li>
+                	<li>{$lang.operation_prompt_content.info.0}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+                        <form action="open_api.php" method="post" name="theForm" enctype="multipart/form-data" id="oss_configure_form">
+                            <div class="switch_info">
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}{$lang.user_name}：</div>
+                                    <div class="label_value">
+										<input type='text' name='name' value='{$api.name|escape:html}' size='55' class="text" />
+                                   		<div class="form_prompt"></div>
+                                        <div class="notic"></div>	
+                                    </div>
+                                </div>						
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}AppKey：</div>
+                                    <div class="label_value">
+										<input type='text' name='app_key' value='{$api.app_key|escape:html}' size='55' class="text" />
+                                        <div class="form_prompt"></div>
+                                        <div class="notic"><input name="AppKeyAuto" class="btn btn25 blue_btn" value="{$lang.AppKeyAuto}" type="button"></div>	
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.is_open}：</div>
+                                    <div class="label_value">
+                                        <div class="checkbox_items">
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="is_open" id="is_open_0" value="0" {if $api.is_open eq 0} checked="true" {/if}  />
+                                                <label for="is_open_0" class="ui-radio-label">{$lang.close}</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="is_open" id="is_open_1" value="1" {if $api.is_open eq 1} checked="true" {/if}  />
+                                                <label for="is_open_1" class="ui-radio-label">{$lang.open}</label>
+                                            </div>
+                                        </div>	
+                                    </div>
+                                </div>																
+                            </div>
+                            <div class="switch_info business_info" style="background:none;">  
+								{foreach from=$api_list item=list}
+                                <div class="step">
+                                    <div class="tit">
+                                        <div class="checkbox_items">
+                                            <div class="checkbox_item">
+                                                <input type="checkbox" name="chkGroup" value="checkbox" class="ui-checkbox" id="chkGroup_{$list.cat}" />
+                                                <label for="chkGroup_{$list.cat}" class="ui-label blod">{$list.name}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="qx_items">
+                                        <div class="qx_item">
+                                            <div class="checkbox_items">
+												{foreach from=$list.list item=child}
+                                                <div class="checkbox_item">
+                                                    <input type="checkbox" value="{$child.val}" name="action_code[]" {if $child.is_check}checked="true"{/if} class="ui-checkbox" id="{$child.val}" date="{$list.cat}" />
+                                                    <label for="{$child.val}" class="ui-label">{$child.name}</label>
+                                                </div>
+                                                {/foreach}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {/foreach}
+                            </div>
+						    <div class="switch_info">	
+								<div class="item">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="label_value info_btn">
+										<input type="hidden" name="id" value="{$api.id}" />
+										<input class="button" type="submit" value="{$lang.button_submit}" id="submitBtn" />
+										<input class="button button_reset" type="reset" value="{$lang.button_reset}" />
+										<input type="hidden" name="act" value="{$form_act}" />
+                                    </div>
+                                </div>
+							</div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+    </div>
+ 	{include file ='library/pagefooter.lbi'}
+	<script language="javascript">
+		$(function(){
+			var name = $(":input[name='name']").val();
+			$(":input[name='AppKeyAuto']").click(function(){
+				Ajax.call('open_api.php?is_ajax=1&act=app_key', 'name=' + name, AppKeyResponse, "GET", "JSON");
+			});
+		});
+		
+		function AppKeyResponse(result){
+			$(":input[name='app_key']").val(result.app_key);
+		}
+		
+        $("#checkall").click(function(){
+			var checkbox = $(this).parents(".switch_info").find('input:checkbox[type="checkbox"]');
+			if($(this).prop("checked") == true){
+				checkbox.prop("checked",true);
+			}else{
+				checkbox.prop("checked",false);
+			}
+        });
+		
+		$("input[name='chkGroup']").click(function(){
+			var checkbox = $(this).parents(".tit").next(".qx_items").find('input:checkbox[type="checkbox"]');
+			if($(this).prop("checked") == true){
+				checkbox.prop("checked",true);
+			}else{
+				checkbox.prop("checked",false);
+			}
+		});
+		
+		$("input[name='action_code[]']").click(function(){    
+			var qx_items = $(this).parents(".qx_items");
+			var length = qx_items.find("input[name='action_code[]']").length;
+			var length2 =  qx_items.find("input[name='action_code[]']:checked").length;
+			if(length == length2){
+				qx_items.prev().find("input[name='chkGroup']").prop("checked",true);
+			}else{
+				qx_items.prev().find("input[name='chkGroup']").prop("checked",false);
+			}
+        });
+		
+		$(".qx_items").each(function(index, element) {
+            var length = $(this).find("input[name='action_code[]']").length;
+			var length2 = $(this).find("input[name='action_code[]']:checked").length;
+			
+			if(length == length2){
+				$(this).prev().find("input[name='chkGroup']").prop("checked",true);
+			}else{
+				$(this).prev().find("input[name='chkGroup']").prop("checked",false);
+			}
+        });
+    </script>
+</body>
+</html>

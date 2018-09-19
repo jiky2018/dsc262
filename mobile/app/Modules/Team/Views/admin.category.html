@@ -1,0 +1,144 @@
+{include file="admin_pageheader"}
+
+<div class="wrapper">
+  <div class="title">拼团 - 频道列表</div>
+  <div class="content_tips">
+    <div class="tabs_info">
+            <ul>
+                <li><a href="../mobile/index.php?r=team/admin/index">拼团商品</a></li>
+                <li class="curr"><a href="../mobile/index.php?r=team/admin/category">活动频道</a></li>
+                <li><a href="../mobile/index.php?r=team/admin/teaminfo">开团团队</a></li>
+                <li style = "display:none"><a href="../mobile/index.php?r=team/admin/teamrecycle">回收站</a></li>
+            </ul>
+        </div>
+    <div class="explanation" id="explanation">
+        <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4><span id="explanationZoom" title="收起提示"></span></div>
+        <ul>
+            <li>显示平台内所有参与拼团的频道，管理员可以选择添加频道，再将不同的商品添加到各个频道内，多样地展示商品。</li>
+            <li>主频道将显示在拼团首页，每个主频道下可添加四个子频道。</li>
+        </ul>
+    </div>
+    <div class="flexilist">
+        <div class="common-head">
+            <div class="fl">
+             <a href="{url('team/admin/addcategory')}"><div class="fbutton"><div class="add" title="添加频道"><span><i class="fa fa-plus"></i>添加频道</span></div></div></a>
+            </div>
+        </div>
+        <div class="common-content">
+          <div class="list-div"  id="listDiv">
+             <table cellspacing="0" cellpadding="0" border="0">
+                <tr class="active">
+                  <th></th>
+                  <th><div class="tDiv">频道名称</div></th>
+                  <th><div class="tDiv">商品数量</div></th>
+                  <th><div class="tDiv">是否显示</div></th>
+                  <th><div class="tDiv">排序</div></th>
+                  <th><div class="tDiv">操作</div></th>
+                </tr>
+                {if $list}
+                {foreach $list as $list}
+                <tr>
+                    <td>
+                        <div class="tDiv first_setup">
+                           <div class="setup_span">
+                                <em><i class="fa fa-cog" style="margin-top:-5px"></i>设置<i class="arrow"></i></em>
+                                <ul>
+                                    {if $list.parent_id <= 0}
+                                    <li><a href="{url('team/admin/addcategory', array('parent_id'=>$list['id']))}">新增下一级</a></li>
+                                    <li><a href="{url('team/admin/category', array('tc_id'=>$list['id']))}">查看下一级</a></li>
+                                    {/if}
+                                </ul>
+                            </div>
+                        </div>
+                    </td>
+                    <td><div class="tDiv">{$list.name}</div></td>
+                    <td><div class="tDiv">{$list.goods_number}</div></td>
+                    <td><div class="tDiv">
+                        <div style="line-height:15px;">
+                            <div class="switch fl ml10 {if $list.status}active{/if}" id="category{$list.id}" title="{if $list.status}是{else}否{/if}" onclick="edit_status({$list.id})">
+                            <div class="circle"></div>
+                            </div>
+                        </div>
+                    </div>
+                    </td>
+                    <td><div class="tDiv">{$list.sort_order}</div></td>
+                    <td><div class="tDiv">
+                        <a href="{url('team/admin/addcategory', array('tc_id'=>$list['id']))}'}">编辑</a> &nbsp;|
+                        <a href='javascript:void(0);' onclick="if(confirm('您确定要删除该频道及子频道吗？')){window.location.href='{url('team/admin/removecategory', array('tc_id'=>$list['id']))}'}" class="btn_trash"><i class="icon icon-trash"></i>删除</a>
+                        </div>
+                    </td>
+                </tr>
+                {/foreach}
+                {else}
+                <tbody>
+                <tr><td class="no-records" colspan="6">没有找到任何记录</td></tr>
+                </tbody>
+                {/if}
+                <tfoot>
+
+                </tfoot>
+             </table>
+          </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    function confirm_bath()
+    {
+        Items = document.getElementsByName('checkboxes[]');
+        var arr = new Array();
+        for (i=0; Items[i]; i++){
+            if (Items[i].checked){
+                var selected = 1;
+                  arr.push(Items[i].value);
+            }
+        }
+        if(selected != 1){
+            return false;
+        }else{
+            $.post("{url('team/admin/removeteam')}", {team_id:arr}, function(data){
+                if(data.url){
+                    window.location.href = data.url;
+                }
+            }, 'json');
+        }
+
+    }
+
+    //ajax 修改频道状态
+    function edit_status(cat_id){
+        $.post("{url('team/admin/editstatus')}", {cat_id:cat_id}, function(data){
+            if($("#category" + cat_id).hasClass("active")){
+                $("#category" + cat_id).removeClass("active");
+            }else{
+                $("#category" + cat_id).addClass("active");
+            }
+        }, 'json');
+    }
+
+    $("#explanationZoom").on("click",function(){
+        var explanation = $(this).parents(".explanation");
+        var width = $(".content_tips").width();
+        if($(this).hasClass("shopUp")){
+            $(this).removeClass("shopUp");
+            $(this).attr("title","收起提示");
+            explanation.find(".ex_tit").css("margin-bottom",10);
+            explanation.animate({
+                width:width
+            },300,function(){
+                $(".explanation").find("ul").show();
+            });
+        }else{
+            $(this).addClass("shopUp");
+            $(this).attr("title","提示相关设置操作时应注意的要点");
+            explanation.find(".ex_tit").css("margin-bottom",0);
+            explanation.animate({
+                width:"118"
+            },300);
+            explanation.find("ul").hide();
+        }
+    });
+</script>
+{include file="admin/footer"}

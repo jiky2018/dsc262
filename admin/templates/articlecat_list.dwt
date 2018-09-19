@@ -1,0 +1,117 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.article} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.0}</li>
+                    <li>{$lang.operation_prompt_content.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-head">
+                    <div class="fl">
+                    	<a href="{$action_link.href}"><div class="fbutton"><div class="add" title="{$action_link.text}"><span><i class="icon icon-plus"></i>{$action_link.text}</span></div></div></a>
+                    </div>
+                    {if $action_link1}
+                    <div class="fl">
+                    	<a href="{$action_link1.href}"><div class="fbutton"><div class="reply" title="{$lang.return_to_superior}"><span><i class="icon icon-reply"></i>{$lang.return_to_superior}</span></div></div></a>
+                    </div>
+                    {/if}
+                    <div class="refresh">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+                </div>
+                <div class="common-content">
+                	<div class="list-div" id="listDiv">
+                        {/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                    <th width="10%"></th>
+									<th width="5%"><div class="tDiv">{$lang.record_id}</div></th>
+                                    <th width="15%"><div class="tDiv">{$lang.cat_name}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.type}</div></th>
+                                    <th width="28%"><div class="tDiv">{$lang.cat_desc}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.sort_order}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.show_in_nav}</div></th>
+                                    <th width="12%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {foreach from=$articlecat item=cat}
+                            	<tr>
+                                    <td>
+                                    	<div class="tDiv first_setup">
+                                        	<div class="setup_span">
+                                            	<em><i class="icon icon-cog"></i>{$lang.setup}<i class="arrow"></i></em>
+                                                <ul>
+                                                    <li><a href="{$cat.add_child}">{$lang.add_next_level}</a></li>
+                                                    <li><a href="{$cat.child_url}">{$lang.view_next_level}</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </td>
+									<td><div class="tDiv">{$cat.cat_id}</div></td>
+                                    <td><div class="tDiv"><a href="article.php?act=list&amp;cat_id={$cat.cat_id}" class="ftx-05"><strong>{$cat.cat_name|escape}</strong></a></div></td>
+                                    <td><div class="tDiv">{$cat.type_name|escape}</div></td>
+                                    <td><div class="tDiv">{$cat.cat_desc|escape}</div></td>
+                                    <td><div class="tDiv"><input name="sort_order" class="text w40" value="{$cat.sort_order}" onkeyup="listTable.editInput(this, 'edit_sort_order',{$cat.cat_id} )" type="text"></div></td>
+                                    <td>
+                                    	<div class="tDiv">
+                                            <div class="switch {if $cat.show_in_nav eq 1}active{/if}" title="{if $cat.show_in_nav eq 1}是{else}否{/if}" onclick="listTable.switchBt(this, 'toggle_show_in_nav', {$cat.cat_id})">
+                                            	<div class="circle"></div>
+                                            </div>
+                                            <input type="hidden" value="0" name="">
+                                        </div>
+                                    </td>
+                                    <td class="handle">
+                                        <div class="tDiv a2">
+                                            <a href="articlecat.php?act=edit&amp;id={$cat.cat_id}" class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>
+                                            {if $cat.cat_type neq 2 and $cat.cat_type neq 3 and $cat.cat_type neq 4}
+                                            <a href="javascript:;" onclick="listTable.remove({$cat.cat_id}, '{$lang.drop_confirm}')" title="{$lang.remove}" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>
+                                            {/if}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {foreachelse}
+                                    <tr><td class="no-records" colspan="12">{$lang.no_records}</td></tr>
+                                {/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="12">
+                                    	<div class="list-page">
+                                            {include file="library/page.lbi"}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        {if $full_page}
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+    {include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+	//列表导航栏设置下路选项
+	$(".ps-container").perfectScrollbar();
+	
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+    </script>     
+</body>
+</html>
+{/if}

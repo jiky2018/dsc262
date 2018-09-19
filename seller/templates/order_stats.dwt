@@ -1,0 +1,486 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+            	{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="clear"></div>
+                <div class="order_stats">
+                    <div class="order_stats_top">
+                        <div class="order_stats_items">
+                            <div class="order_stats_item order_stats_item2">
+                            	<i class="icon"><img src="images/icon2.png" /></i>
+                                <div class="desc">
+                                	<span class="tit">{$lang.overall_sum}</span>
+                                    <span class="value">{$total_turnover}</span>
+                                </div>
+                            </div>
+                            <div class="order_stats_item order_stats_item3">
+                            	<i class="icon"><img src="images/icon3.png" /></i>
+                                <div class="desc">
+                                	<span class="tit">{$lang.overall_choose}</span>
+                                    <span class="value">{$click_count}</span>
+                                </div>
+                            </div>
+                            <div class="order_stats_item order_stats_item4">
+                            	<i class="icon"><img src="images/icon4.png" /></i>
+                                <div class="desc">
+                                	<span class="tit">{$lang.kilo_buy_amount}</span>
+                                    <span class="value">{$click_ordernum}</span>
+                                </div>
+                            </div>
+                            <div class="order_stats_item order_stats_item5">
+                            	<i class="icon"><img src="images/icon5.png" /></i>
+                                <div class="desc">
+                                	<span class="tit">{$lang.kilo_buy_sum}</span>
+                                    <span class="value">{$click_turnover}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="order_stats_search">
+                    	<div class="screeItme">
+                            <form action="" method="post" id="selectForm" name="selectForm">
+                                <strong class="fl lh mr10">{$lang.start_end_date}：</strong>
+                                <div class="text_time" id="text_time1">
+                                    <input name="start_date" id="start_date" value="{$start_date}" class="text" readonly="readonly"/>
+                                </div>
+                                <div class="bolang">&nbsp;&nbsp;~&nbsp;&nbsp;</div>
+                                <div class="text_time" id="text_time2">
+                                    <input name="end_date" id="end_date" value="{$end_date}" class="text" readonly="readonly"/>
+                                </div>
+                                <input type="submit" name="submit" value="{$lang.query}" class="sc-btn sc-blueBg-btn btn30 ml10" />
+                            </form>
+                        </div>
+                        <div class="screeItme mt10">
+                            <form method="post" id="selectForm" name="selectForm">
+                                <strong class="fl lh mr10">{$lang.select_year_month}：</strong>
+                                <!--{foreach from=$start_date_arr item=start_date key=k}-->
+                                {if $k > 0}
+                                <span class="bolang">&nbsp;&nbsp;+&nbsp;&nbsp;</span>
+                                {/if}
+                                <div class="text_time" id="text_time_start">
+                                    <input type="text" class="text text_2 mr0" name="year_month[]" id="year_month_{$k}" value="{$start_date}" autocomplete="off" readonly>
+                                </div>
+                                <!--{/foreach}-->
+                                <input type="hidden" name="is_multi" value="1" />
+                                <input type="submit" name="submit" value="{$lang.query}" class="sc-btn sc-blueBg-btn btn30 ml10" />
+                            </form>
+                        </div>
+                    </div>
+                    <div class="main-content p0 mt20">
+                    	<div class="tabmenu">
+                            <ul class="tab">
+                                <li class="active" id="order_circs-tab" data-tab="order_circs"><a href="javascript:void(0);">{$lang.order_circs}</a></li>
+                                <li id="shipping-tab" data-tab="shipping"><a href="javascript:void(0);">{$lang.shipping_method}</a></li>
+                                <li id="pay-tab" data-tab="pay"><a href="javascript:void(0);">{$lang.pay_method}</a></li>
+                                <li id="area-tab" data-tab="area"><a href="javascript:void(0);">{$lang.tab_area}</a></li>
+                            </ul>
+                        </div>
+                        <div class="items-info">
+                        	<div class="wrapper-list">
+                            	<div id="order_main" style="height:378px;"></div>
+                                <div id="order_main_price" style="height:378px;"></div>
+                            </div>
+                            <div class="wrapper-list" style="display:none;">
+                            	<div id="ship_main" style="width:970px; height:500px;"></div>
+                            </div>
+                            <div class="wrapper-list" style="display:none;">
+                            	<div id="pay_main" style="width:970px; height:500px;"></div>
+                            </div>
+                            <div class="wrapper-list" style="display:none;">
+                            	<div id="area_main" style="width:970px; height:500px;"></div>
+                            </div>							
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript" src="../js/echarts-all.js"></script>
+<script type="text/javascript">
+	//统计数据 start
+	var is_multi = {if $is_multi}true{else}false{/if};
+	var order_data = {if $order_data}{$order_data}{else}''{/if};
+	var sale_data = {if $sale_data}{$sale_data}{else}''{/if};
+	var ship_data = {if $ship_data}{$ship_data}{else}''{/if};
+	var pay_data = {if $pay_data}{$pay_data}{else}''{/if};
+	var area_data = {if $area_data}{$area_data}{else}''{/if};
+
+	var myChart_order = echarts.init(document.getElementById("order_main"));
+	var myChart_ship = echarts.init(document.getElementById("ship_main"));
+	var myChart_pay = echarts.init(document.getElementById("pay_main"));
+	var myChart_area = echarts.init(document.getElementById("area_main"));
+	var myChart_price = echarts.init(document.getElementById("order_main_price"));
+	
+	if(is_multi){
+		//订单概况
+		var option_order = {
+			title : {
+				text: '{$lang.order_survey}',
+				subtext: ''
+			},
+			tooltip : {
+				trigger: 'axis'
+			},
+			legend: {
+				data:['{$lang.order_state_01}','{$lang.order_state_02}',"{$lang.order_state_03}","{$lang.order_state_04}"]
+			},
+			toolbox: {
+				show : true,
+				feature : {
+					magicType : {show: true, type: ['line', 'bar']},
+					restore : {show: true},
+					saveAsImage : {show: true}
+				}
+			},
+			calculable : true,
+			xAxis : [
+				{
+					type : 'category',
+					data : order_data[0]
+				}
+			],
+			yAxis : [
+				{
+					type : 'value'
+				}
+			],
+			series : [
+				{
+					name:'{$lang.order_state_01}',
+					type:'bar',
+					data:order_data[1],
+					markPoint : {
+						data : [
+							{type : 'max', name: '{$lang.max_value}'},
+							{type : 'min', name: '{$lang.min_value}'}
+						]
+					},
+					markLine : {
+						data : [
+							{type : 'average', name: '{$lang.average_value}'}
+						]
+					}
+				},
+				{
+					name:'{$lang.order_state_02}',
+					type:'bar',
+					data:order_data[2],
+					markPoint : {
+						data : [
+							{type : 'max', name: '{$lang.max_value}'},
+							{type : 'min', name: '{$lang.min_value}'}
+						]
+					},
+					markLine : {
+						data : [
+							{type : 'average', name : '{$lang.average_value}'}
+						]
+					}
+				},
+				{
+					name:'{$lang.order_state_03}',
+					type:'bar',
+					data:order_data[3],
+					markPoint : {
+						data : [
+							{type : 'max', name: '{$lang.max_value}'},
+							{type : 'min', name: '{$lang.min_value}'}
+						]
+					},
+					markLine : {
+						data : [
+							{type : 'average', name : '{$lang.average_value}'}
+						]
+					}
+				},
+				{
+					name:'{$lang.order_state_04}',
+					type:'bar',
+					data:order_data[4],
+					markPoint : {
+						data : [
+							{type : 'max', name: '{$lang.max_value}'},
+							{type : 'min', name: '{$lang.min_value}'}
+						]
+					},
+					markLine : {
+						data : [
+							{type : 'average', name : '{$lang.average_value}'}
+						]
+					}
+				}
+			]
+		};
+
+		//订单概况
+		var option_sale = {
+			title : {
+				text: '{$lang.sale_survey}',
+				subtext: ''
+			},
+			tooltip : {
+				trigger: 'axis'
+			},
+			legend: {
+				data:['{$lang.order_state_01}','{$lang.order_state_02}',"{$lang.order_state_03}","{$lang.order_state_04}"]
+			},
+			toolbox: {
+				show : true,
+				feature : {
+					magicType : {show: true, type: ['line', 'bar']},
+					restore : {show: true},
+					saveAsImage : {show: true}
+				}
+			},
+			calculable : true,
+			xAxis : [
+				{
+					type : 'category',
+					data : sale_data[0]
+				}
+			],
+			yAxis : [
+				{
+					type : 'value'
+				}
+			],
+			series : [
+				{
+					name:'{$lang.order_state_01}',
+					type:'bar',
+					data:sale_data[1],
+					markPoint : {
+						data : [
+							{type : 'max', name: '{$lang.max_value}'},
+							{type : 'min', name: '{$lang.min_value}'}
+						]
+					},
+					markLine : {
+						data : [
+							{type : 'average', name: '{$lang.average_value}'}
+						]
+					}
+				},
+				{
+					name:'{$lang.order_state_02}',
+					type:'bar',
+					data:sale_data[2],
+					markPoint : {
+						data : [
+							{type : 'max', name: '{$lang.max_value}'},
+							{type : 'min', name: '{$lang.min_value}'}
+						]
+					},
+					markLine : {
+						data : [
+							{type : 'average', name : '{$lang.average_value}'}
+						]
+					}
+				},
+				{
+					name:'{$lang.order_state_03}',
+					type:'bar',
+					data:sale_data[3],
+					markPoint : {
+						data : [
+							{type : 'max', name: '{$lang.max_value}'},
+							{type : 'min', name: '{$lang.min_value}'}
+						]
+					},
+					markLine : {
+						data : [
+							{type : 'average', name : '{$lang.average_value}'}
+						]
+					}
+				},
+				{
+					name:'{$lang.order_state_04}',
+					type:'bar',
+					data:sale_data[4],
+					markPoint : {
+						data : [
+							{type : 'max', name: '{$lang.max_value}'},
+							{type : 'min', name: '{$lang.min_value}'}
+						]
+					},
+					markLine : {
+						data : [
+							{type : 'average', name : '{$lang.average_value}'}
+						]
+					}
+				}
+			]
+		};
+	}else{
+	}
+	
+	//配送方式
+	option_ship = {
+		title : {
+			text: '{$lang.distribution_mode}',
+			subtext: '',
+		},
+		tooltip : {
+			trigger: 'item',
+			formatter: "{a} <br/>{b} : {c} ({d}%)"
+		},
+		legend: {
+			data: ship_data[0]
+		},
+		series : [
+			{
+				name: '{$lang.access_source}',
+				type: 'pie',
+				radius : '55%',
+				center: ['50%', '60%'],
+				data: ship_data[1],
+				itemStyle: {
+					emphasis: {
+						shadowBlur: 10,
+						shadowOffsetX: 0,
+						shadowColor: 'rgba(0, 0, 0, 0.5)'
+					}
+				}
+			}
+		]
+	};
+	
+	//支付方式
+	option_pay = {
+		title : {
+			text: '{$lang.payment_method}',
+			subtext: '',
+		},
+		tooltip : {
+			trigger: 'item',
+			formatter: "{a} <br/>{b} : {c} ({d}%)"
+		},
+		legend: {
+			data: pay_data[0]
+		},
+		series : [
+			{
+				name: '{$lang.access_source}',
+				type: 'pie',
+				radius : '55%',
+				center: ['50%', '60%'],
+				data: pay_data[1],
+				itemStyle: {
+					emphasis: {
+						shadowBlur: 10,
+						shadowOffsetX: 0,
+						shadowColor: 'rgba(0, 0, 0, 0.5)'
+					}
+				}
+			}
+		]
+	};
+
+	//配送地区
+	option_area = {
+		title : {
+			text: '{$lang.distribution_area}',
+			subtext: '',
+		},
+		tooltip : {
+			trigger: 'item',
+			formatter: "{a} <br/>{b} : {c} ({d}%)"
+		},
+		legend: {
+			data: area_data[0]
+		},
+		series : [
+			{
+				name: '{$lang.access_source}',
+				type: 'pie',
+				radius : '55%',
+				center: ['50%', '60%'],
+				data: area_data[1],
+				itemStyle: {
+					emphasis: {
+						shadowBlur: 10,
+						shadowOffsetX: 0,
+						shadowColor: 'rgba(0, 0, 0, 0.5)'
+					}
+				}
+			}
+		]
+	};
+	
+	if(is_multi){
+		//订单概况
+		myChart_order.setOption(option_order);
+		myChart_price.setOption(option_sale);
+	}else{
+		//订单概况
+		myChart_order.setOption(order_data['order']);
+		myChart_price.setOption(order_data['sale']);
+	}
+	//配送方式
+	myChart_ship.setOption(option_ship);
+	//支付方式
+	myChart_pay.setOption(option_pay);
+	//配送地区
+	myChart_area.setOption(option_area);	
+	//统计数据 end
+
+	//日期选择插件调用start sunle
+	var opts1 = {
+		'targetId':'start_date',//时间写入对象的id
+		'triggerId':['start_date'],//触发事件的对象id
+		'alignId':'text_time1',//日历对齐对象
+		'format':'-'//时间格式 默认'YYYY-MM-DD HH:MM:SS'
+	},opts2 = {
+		'targetId':'end_date',
+		'triggerId':['end_date'],
+		'alignId':'text_time2',
+		'format':'-'
+	},opts3 = {
+		'targetId':'year_month_0',
+		'triggerId':['year_month_0'],
+		'alignId':'year_month_0',
+		'format':'-'
+	},opts4 = {
+		'targetId':'year_month_1',
+		'triggerId':['year_month_1'],
+		'alignId':'year_month_1',
+		'format':'-'
+	},opts5 = {
+		'targetId':'year_month_2',
+		'triggerId':['year_month_2'],
+		'alignId':'year_month_2',
+		'format':'-'
+	},opts6 = {
+		'targetId':'year_month_3',
+		'triggerId':['year_month_3'],
+		'alignId':'year_month_3',
+		'format':'-'
+	},opts7 = {
+		'targetId':'year_month_4',
+		'triggerId':['year_month_4'],
+		'alignId':'year_month_4',
+		'format':'-'
+	}
+
+	xvDate(opts1);
+	xvDate(opts2);
+	xvDate(opts3);
+	xvDate(opts4);
+	xvDate(opts5);
+	xvDate(opts6);
+	xvDate(opts7);
+	//日期选择插件调用end sunle
+</script>
+</body>
+</html>

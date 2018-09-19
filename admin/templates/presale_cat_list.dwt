@@ -1,0 +1,83 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.16_presale} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.list.0}</li>
+                    <li>{$lang.operation_prompt_content.list.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<div class="common-head">
+                	<div class="fl">
+						<a href="presale_cat.php?act=add"><div class="fbutton"><div class="add" title="{$lang.add_presale_cat}"><span><i class="icon icon-plus"></i>{$lang.add_presale_cat}</span></div></div></a>
+					</div>
+                </div>
+                <div class="common-content">
+                	<div class="list-div"  id="listDiv" >
+						{/if}
+                    	<table cellpadding="1" cellspacing="1">
+                        	<thead>
+                            	<tr>
+									<th width="10%"><div class="tDiv">{$lang.record_id}</div></th>
+                                	<th width="30%"><div class="tDiv">{$lang.cat_name}</div></th>
+                                    <th width="20%"><div class="tDiv">{$lang.sort_order}</div></th>
+                                    <th width="20%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+							    {foreach from=$cat_info item=cat}
+								<tr  class="{$cat.parent_id}{if $cat.level > 0}_{$cat.level}{/if}" style="{if $cat.level neq 0}display:none;{/if}" id="{$cat.level}_{$cat.cause_id}">
+								<td>
+									<div class="tDiv first_setup">
+										{$cat.cat_id}
+										<!-- <div class="setup_span">
+											<em><i class="icon icon-cog"></i>{$lang.setup}<i class="arrow"></i></em>
+											<ul>
+												<li><a href="presale_cat.php?act=add&parent_id={$cat.cat_id}">{$lang.add_next_level}</a></li>
+												<li><a href="presale_cat.php?act=list&parent_id={$cat.cat_id}">{$lang.view_next_level}</a></li>
+											</ul>
+										</div> -->
+									</div>
+								</td>
+								<td><div class="tDiv">{$cat.cat_name}</div></td>
+								<td><div class="tDiv"><span onclick="listTable.edit(this, 'edit_sort_order',{$cat.cat_id})">{$cat.sort_order}</span></div></td>							
+							    <td align="center" class="handle">
+                                    <div class="tDiv a2">
+                                        <a href="presale_cat.php?act=edit&amp;cat_id={$cat.cat_id}" title="{$lang.edit}" class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>
+                                        <a href="javascript:;" onclick="listTable.remove({$cat.cat_id}, '{$lang.drop_confirm}')" title="{$lang.remove}" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>	
+                                    </div>
+								</td>
+								</tr>
+								{foreachelse}
+								<tr><td class="no-records"  align="center" colspan="11">{$lang.no_records}</td></tr>
+								{/foreach}
+                            </tbody>
+                        </table>
+						{if $full_page}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+	//分页传值
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+	listTable.query = 'cause_query';
+
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+    </script>
+</body>
+</html>
+{/if}

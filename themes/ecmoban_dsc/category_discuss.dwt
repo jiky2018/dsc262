@@ -1,0 +1,242 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<link rel="icon" href="animated_favicon.gif" type="image/gif" />
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/base.css" />
+<link href="{$ecs_css_path}" rel="stylesheet" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS|{$page_title}" href="{$feed_url}" />
+<link rel="stylesheet" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/purebox.css">
+{* 包含脚本文件 *}
+{insert_scripts files='common.js,jquery-1.9.1.min.js,jquery.json.js,transport_jquery.js'}
+
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/sc_common.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/rotate3di.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/scroll_city.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/notLogin.js"></script>
+<!-- #BeginLibraryItem "/library/js_languages.lbi" --><!-- #EndLibraryItem -->
+</head>
+
+<body>
+<!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
+<div class="ecsc-breadcrumb w1200">
+    <!-- #BeginLibraryItem "/library/ur_here.lbi" --><!-- #EndLibraryItem -->
+</div>
+<div class="Main">
+    <!-- #BeginLibraryItem "/library/discuss_left.lbi" --><!-- #EndLibraryItem -->
+    <div class="right">
+        <div class="View_Mode">
+            <ul class="Tab">
+                <li class="li1 current"><a href="javascript:void(0);" class="dis_type" rev="0">{$lang.discuss_user}(<em>{$all_count}</em>)</a></li>
+                <li class="li3"><a href="javascript:void(0);" class="dis_type" rev="4">{$lang.s_count}(<em>{$s_count}</em>)</a></li>
+                <li class="li2"><a href="javascript:void(0);" class="dis_type" rev="1">{$lang.t_count}(<em>{$t_count}</em>)</a></li>
+                <li class="li3"><a href="javascript:void(0);" class="dis_type" rev="2">{$lang.w_count}(<em>{$w_count}</em>)</a></li>
+                <li class="li3 last"><a href="javascript:void(0);" class="dis_type" rev="3">{$lang.q_count}(<em>{$q_count}</em>)</a></li>
+            </ul>
+            <ul class="rank">
+                <li>{$lang.sort}：</li>
+                <li><a class="dis_type" href="javascript:void(0);" sort="add_time">{$lang.time}</a></li>
+                <li><a href="javascript:void(0);" class="dis_type" sort="reply_num">{$lang.reply_number}</a></li>
+                <li><a href="javascript:void(0);" class="dis_type" sort="dis_browse_num">{$lang.click_count}</a></li>
+            </ul>
+        </div>
+        <div class="Discuss" id="Discuss">
+            <div class="table clearfix" id="discuss_list_ECS_COMMENT">
+                <div class="thead">
+                    <div class="th lie1">{$lang.message_title}</div>
+                    <div class="th lie2">{$lang.reply_browse}</div>
+                    <div class="th lie3">{$lang.article_author}</div>
+                    <div class="th lie4">{$lang.time}</div>
+                </div>
+                <div class="tbody">
+                	{foreach from=$discuss_list.list item=list}
+                    <div class="tr">
+                        <div class="td lie1">
+                        	{if $list.dis_type eq 1}
+                            <i class="tie_icon tao"></i>
+                            {elseif $list.dis_type eq 2}
+                            	<i class="tie_icon wen"></i>
+                            {elseif $list.dis_type eq 3}
+                            	<i class="tie_icon quan"></i>
+                            {elseif $list.dis_type eq 4}
+                            	<i class="tie_icon shai"></i>
+                            {/if}
+                        	<div class="s1">
+                            	<a href="single_sun.php?act=discuss_show&did={$list.dis_id}" target="_blank">{$list.dis_title}</a>
+                                {if $list.dis_type eq 4}
+                            	<img src="images/image_s.jpg">
+                                {/if}
+                            </div>
+                        </div>
+                        <div class="td lie2">{$list.reply_num}/{$list.dis_browse_num}</div>
+                        <div class="td lie3"><a href="user.php">{$list.user_name}</a></div>
+                        <div class="td lie4">{$list.add_time}</div>
+                    </div>
+                    {/foreach}
+                </div>
+                <div class="pages26">
+                	<div class="pages">
+                        <div class="pages-it">
+                            {$discuss_list.pager}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <form method="post" action="single_sun.php" name="dis_theForm" id="theFrom" enctype="multipart/form-data">
+        <div class="Review_Form">
+            <h3>{$lang.publish_top}</h3>
+            <ul>
+                <li>
+                    <div class="label">{$lang.types}：</div>
+                    <div class="deal">
+                        <div class="value-item selected">
+                            <input type="radio" checked="checked" id="referenceType1" name="referenceType" class="ui-radio" value="1">
+                            <label for="referenceType1" class="ui-radio-label">{$lang.t_count}</label>
+                        </div>
+                        <div class="value-item">
+                            <input type="radio" id="referenceType2" name="referenceType" class="ui-radio" value="2">
+                            <label for="referenceType2" class="ui-radio-label">{$lang.w_count}</label>
+                        </div>
+                        <div class="value-item">
+                            <input type="radio" id="referenceType3" name="referenceType" class="ui-radio" value="3">
+                            <label for="referenceType3" class="ui-radio-label">{$lang.q_count}</label>
+                        </div>
+                        <div class="value-item">
+                            <input type="radio" id="referenceType4" name="referenceType" class="ui-radio" value="4">
+                            <label for="referenceType4" class="ui-radio-label referenceType4">{$lang.s_count}</label>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="label">{$lang.message_title}：</div>
+                    <div class="deal">
+                        <input type="text" class="text1" id="commentTitle" name="commentTitle" />
+                    </div>
+                </li>
+                <li>
+                    <div class="label">{$lang.content}：</div>
+                    <div class="deal">
+                        <input type="hidden" name="content" id="test_content" />
+                        <iframe src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/editor/editor.html?id=test_content" frameborder="0" scrolling="no" width="890" height="320"></iframe>
+                    </div>
+                    
+                </li>
+                <!--{if $enabled_captcha}-->
+                <li>
+                    <div class="label">{$lang.comment_captcha}：</div>
+                    <div class="deal">
+                        <input type="text" id="captcha" name="captcha" value="" class="text text-3 fl" placeholder="{$lang.comment_captcha}" size="8" />
+                        <img src="captcha_verify.php?captcha=is_common&{$rand}" alt="captcha" class="seccodeimg" onClick="this.src='captcha_verify.php?captcha=is_common&'+Math.random()" />
+                    </div>
+                </li>
+                <!--{/if}-->
+                <li class="buttons">
+                	<input type="hidden" name="act" value="add_discuss" />
+                    <input type="hidden" name="good_id" value="{$goods_id}" />
+                    <input type="hidden" name="user_id" id="user_id" value="{$user_id}" />
+                    <a href="javascript:void(0);" class="btn">{$lang.publish}</a>
+                </li>
+            </ul>
+        </div>
+        </form>
+        <div id="shengmin">{$lang.statement}：<br>{$lang.statement_one}<br>{$lang.statement_two}</div>
+    </div>
+</div>
+<input name="dis_class" type="hidden" value="" />
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.purebox.js"></script>
+</body>
+
+<script type="text/javascript">
+$(function(){
+    //默认第一个单选
+    $("input[name='referenceType']").each(function(index, element){
+        if(index == 0){
+			$(this).prop('checked', true).siblings().prop('checked', false);
+		}
+    });;
+	
+	$('.buttons .btn').click(function(){
+		var sub_Form = $("form[name='dis_theForm']");
+		var commentTitle = document.getElementById("commentTitle").value.length;
+		var content = document.getElementById("test_content").value;
+		var captcha = '';
+                var user_id = document.getElementById("user_id").value;
+                if(document.getElementById("captcha")){
+                    captcha = document.getElementById("captcha").value;
+                }
+		if(user_id <= 0){
+			$.notLogin("get_ajax_content.php?act=get_login_dialog",'');
+			return false;
+		}
+		
+		if(commentTitle == ""){
+                        var message ="{$lang.commentTitle_not}";
+                        var divId = 'flow_add_cart';
+                        dialogPrompt(divId,message);
+			return false;
+		}else if(commentTitle < 4 || commentTitle > 50){
+                        var message ="{$lang.commentTitle_xz}";
+                        var divId = 'flow_add_cart';
+                        dialogPrompt(divId,message);
+			return false;
+		}
+		
+		if(content == '<br>' || content.length < 1){
+                        var message ="{$lang.content_not}";
+                        var divId = 'flow_add_cart';
+                        dialogPrompt(divId,message);
+			return false;
+		}
+		<!--{if $enabled_captcha}-->
+		if(captcha == ''){
+                var message ="{$lang.captcha_not}";
+                        var divId = 'flow_add_cart';
+                        dialogPrompt(divId,message);
+			return false;
+		}else if(captcha.length != 4){
+                         var message ="{$lang.captcha_xz}";
+                        var divId = 'flow_add_cart';
+                        dialogPrompt(divId,message);
+			return false;
+		}else{
+			$.ajax({
+				async:false,
+				url:'ajax_dialog.php?act=ajax_captcha',
+				data:{'captcha':captcha},
+				type:'get',
+				success:function(data){
+					if(data == "false"){
+						var message ="验证码错误!";
+						var divId = 'flow_add_cart';
+						dialogPrompt(divId,message);
+						captcha = false;
+					}
+				}
+			});	
+			if(!captcha){
+				return false;	
+			}
+		}
+		<!--{/if}-->
+		sub_Form.submit();
+	});
+        
+	//晒单贴调整到评论列表
+	$(".referenceType4").click(function(){
+		location.href = "user.php?act=comment_list";
+	});
+});
+</script>
+
+</html>

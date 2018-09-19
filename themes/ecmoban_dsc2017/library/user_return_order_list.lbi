@@ -1,0 +1,55 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<div class="user-order-list">
+<!--{foreach from=$orders item=item}-->
+<dl class="item">
+    <dt class="item-t">
+        <div class="t-statu">{if $item.return_status eq 6}<span class="red">{$lang.rf[$item.return_status]}</span>{else}{$item.reimburse_status}{/if}</div>
+        <div class="t-info">
+            <span class="info-item">{$lang.return_sn_user}：{$item.return_sn}</span>
+            <span class="info-item">{$lang.apply_time}：{$item.apply_time}</span>
+        </div>
+        {if $item.return_type eq 1}<div class="t-price">{$lang.y_amount}：<span class="red">{$item.should_return}</span></div>{/if}
+    </dt>
+    <dd class="item-c">
+        <div class="c-left">
+            <div class="c-goods">
+                <div class="c-img"><a href="goods.php?id={$item.goods_id}" target="_blank"><img src="{$item.goods_thumb}" alt=""></a></div>
+                <div class="c-info">
+                    <div class="info-name"><a href="goods.php?id={$item.goods_id}" target="_blank">{$item.goods_name}</a></div>
+                </div>
+            </div>
+        </div>
+        <div class="c-handle">
+            <a href="user.php?act=return_detail&ret_id={$item.ret_id}&order_id={$item.order_id}" class="sc-btn">查看</a>
+			{if $item.activation_type eq 1}
+			<a href="#" ectype="activation_return_order" class="sc-btn" data-id="{$item.ret_id}" >{$lang.activation_return}</a>
+			{/if}
+            {if $item.return_status eq 3}<a href="user.php?act=return_delivery&order_id={$item.order_id}" class="sc-btn" onclick="if (!confirm('."'你确认已经收到货物了吗？否则财物两空哦！'".')) return false;">确认收货</a>{/if}
+            {if $item.return_status eq 0 && $item.refound_status eq 0}
+            <a href="user.php?act=cancel_return&ret_id={$item.ret_id}" onclick="if (!confirm('."'你确认取消该退换货申请吗？'".')) return false;" class="sc-btn">取消</a>
+            {/if}
+            {if $item.return_status eq 4}<a href="javascript:get_order_delete_return({$item.ret_id});" class="sc-btn">删除</a>{/if}
+        </div>
+    </dd>
+</dl>
+<!--{foreachelse}-->
+<div class="no_records">
+    <i class="no_icon"></i>
+    <div class="no_info"><h3>{insert name='get_page_no_records' filename=$filename act=$action}</h3></div>
+</div>    
+<!--{/foreach}-->
+</div>
+ <script language="javascript">
+    $("*[ectype='activation_return_order']").click(function(){
+		if(confirm("确定激活该退换货订单？")){
+			var ret_id = $(this).data('id');
+			$.jqueryAjax('user.php', 'act=activation_return_order&ret_id='+ret_id, function(result){
+				if(result.error == 1){
+					pbDialog(result.err_msg,'',0);
+				}else{
+					location.href = "user.php?act=return_list";
+				}
+			})
+		}
+	});
+</script> 

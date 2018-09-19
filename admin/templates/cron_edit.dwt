@@ -1,0 +1,227 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="cron.php?act=list" class="s-back">{$lang.back}</a>{$lang.11_system} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content_common}</li>
+                    <li>{$lang.operation_prompt_content.info.0}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+                        <form action="cron.php" method="post" name="form" enctype="multipart/form-data" id="cron_form" >
+                            <div class="switch_info">
+                            	<div class="item">
+                                    <div class="label">{$lang.cron_name}：</div>
+                                    <div class="label_value"><input type="text" name="cron_name" value="{$cron.cron_name|escape}"  class="text text_readonly" autocomplete="off" id="cron_name"  readonly="readonly" /></div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.cron_desc}：</div>
+                                    <div class="label_value"><textarea class="textarea textarea_readonly" name="cron_desc" id="role_describe" readonly>{$cron.cron_desc|escape}</textarea></div>
+                                </div>  
+                                {foreach from=$cron.cron_config item=config}
+                                <div class="item">
+                                	<div class="label">{$config.label}：</div>
+                                    <!-- {if $config.type == "text"} -->
+                                    <div class="label_value"><input name="cfg_value[]" type="{$config.type}" value="{$config.value}" size="40" class="text" /></div>
+                                    <!-- {elseif $config.type == "textarea"} -->
+                                    <div class="label_value"><textarea name="cfg_value[]" cols="80" rows="5" class="textarea">{$config.value}</textarea></div>
+                                    <!-- {elseif $config.type == "select"} -->
+                                    <div class="label_value">
+                                        <div  class="imitate_select select_w320">
+                                            <div class="cite">{$lang.please_select}</div>
+                                            <ul>
+                                                {foreach from=$config.range item=options key=k}
+                                                <li><a href="javascript:;" data-value="{$k}" class="ftx-01">{$options}</a></li>
+                                                {/foreach}
+                                            </ul>
+                                            <input name="cfg_value[]" type="hidden" value="{$config.value}" >
+                                        </div>
+                                    </div>
+                                    <!-- {/if} -->
+                                    <input name="cfg_name[]" type="hidden" value="{$config.name}" />
+                                    <input name="cfg_type[]" type="hidden" value="{$config.type}" />
+                                </div>
+                                {/foreach}
+                                <div class="item">
+                                    <div class="label">{$lang.cron_time}：</div>
+                                    <div class="label_value">
+                                        <div class="checkbox_items mt10">
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="ttype" id="ttype_day" value="day" onClick="dotype('day');" />
+                                                <label for="ttype_day" class="ui-radio-label">{$lang.cron_month}</label>
+                                            </div>
+                                            <div id='cron_day'>
+                                                <div  class="imitate_select select_w120">
+                                                    <div class="cite">{$lang.please_select}</div>
+                                                    <ul>
+                                                       {foreach from=$days item=options key=k}
+                                                       <li><a href="javascript:;" data-value="{$k}" class="ftx-01">{$options}</a></li>
+                                                       {/foreach}
+                                                    </ul>
+                                                    <input name="cron_day" type="hidden" value="{$cron.cronday}" >
+                                                </div>
+                                                <div class="notic">{$lang.cron_day}</div>
+                                            </div>
+                                        </div>
+                                        <div class="checkbox_items mt10">
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="ttype" id="ttype_week" value="week" onClick="dotype('week');"/>
+                                                <label for="ttype_week" class="ui-radio-label">{$lang.cron_week}</label>
+                                            </div>
+                                            <div id='cron_week'>
+                                                <div  class="imitate_select select_w120">
+                                                    <div class="cite">{$lang.please_select}</div>
+                                                    <ul>
+                                                       {foreach from=$week item=options key=k}
+                                                       <li><a href="javascript:;" data-value="{$k}" class="ftx-01">{$options}</a></li>
+                                                       {/foreach}
+                                                    </ul>
+                                                    <input name="cron_week" type="hidden" value="{$cron.cronweek}" >
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="checkbox_items mt10">
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="ttype" id="ttype_unlimit" value="unlimit" onClick="dotype('unlimit')" />
+                                                <label for="ttype_unlimit" class="ui-radio-label">{$lang.cron_unlimit}</label>
+                                            </div>
+                                            <div id='hour_select'>
+                                                <div  class="imitate_select select_w120">
+                                                    <div class="cite">{$lang.please_select}</div>
+                                                    <ul>
+                                                       {foreach from=$hours item=options key=k}
+                                                       <li><a href="javascript:;" data-value="{$k}" class="ftx-01">{$options}</a></li>
+                                                       {/foreach}
+                                                    </ul>
+                                                    <input name="cron_hour" type="hidden" value="{$cron.cronhour}" >
+                                                </div>
+                                            </div>
+                                             <div class="notic">{$lang.cron_hour}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.cron_minute}：</div>
+                                    <div class="label_value">
+                                        <input type="text" name="cron_minute" value="{$cron.cronminute|escape}"  class="text" autocomplete="off"/>
+                                        <div class="notic">{$lang.notice_minute}</div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.cron_run_once}：</div>
+                                    <div class="label_value">
+                                        <div class="checkbox_items">
+                                            <div class="checkbox_item">
+                                                <input type="checkbox" value="1" name="cron_run_once" class="ui-checkbox" id="cron_run_once" {$cron.autoclose}>
+                                                <label for="cron_run_once" class="ui-label">{$lang.close}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.cron_advance}：</div>
+                                    <div class="label_value">
+                                        <div class="checkbox_items" >
+                                            <div class="checkbox_item">
+                                                <input type="checkbox" value="1" name="show_advance" class="ui-checkbox" onClick="show();" id="show_advance"/>
+                                                <label for="show_advance" class="ui-label">{$lang.cron_show_advance}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item" id="advance_1">
+                                    <div class="label">{$lang.cron_allow_ip}：</div>
+                                    <div class="label_value">
+                                        <input type="text" name="allow_ip" value="{$cron.allow_ip|escape}"  class="text" autocomplete="off"/>
+                                        <div class="notic">{$lang.notice_alow_ip}</div>
+                                    </div>
+                                </div>
+                                <div class="item" id="advance_2">
+                                    <div class="label">{$lang.cron_alow_files}</div>
+                                    <div class="label_value">
+                                        <div class="checkbox_items">
+                                            {foreach from=$page_list key=page_list item=list}
+                                            <div class="checkbox_item">
+                                                <input type="checkbox" value="{$page_list}" name="alow_files[]" class="ui-checkbox" id="{$page_list}" {if $list eq 1} checked="true" {/if}/>
+                                                <label for="{$page_list}" class="ui-label">{$lang.page.$page_list}</label>
+                                            </div>
+                                            {/foreach}
+                                        </div>
+                                         <div class="notic">{$lang.notice_alow_files}</div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="label_value info_btn">
+                                        <input type="submit" class="button" name="Submit" value="{$lang.button_submit}" />
+                                        <input type="hidden" name="cron_id" value="{$cron.cron_id}" />
+                                        <input type="hidden" name="step" value="2" />
+                                        <input type="hidden" name="act" value="{$cron.cron_act}" />
+                                        <input type="hidden" name="cron_code" value="{$cron.cron_code}" />
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+    </div>
+	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+	function dotype(type)
+	{
+		if(type=='unlimit')
+		{
+			$("#cron_day").hide();
+			$("#cron_week").hide();
+			$("#ttype_unlimit").prop("checked",true);
+		}
+		else if(type == 'day')
+		{
+			$("#cron_day").show();
+			$("#cron_week").hide();
+			$("#ttype_day").prop("checked",true);
+		}
+		else if(type == 'week')
+		{
+			$("#cron_day").hide();
+			$("#cron_week").show();
+			$("#ttype_week").prop("checked",true);
+		}
+	}
+	function show()
+	{
+		if($("input[name='show_advance']").is(":checked"))
+		{
+			$("#advance_1").show();
+			$("#advance_2").show();
+		}
+		else
+		{
+			$("#advance_1").hide();
+			$("#advance_2").hide();
+		}
+	}
+	
+	{if $cron.cronday > 0}
+	dotype('day');
+	{elseif $cron.cronweek > 0}
+	dotype('week');
+	{else}
+	dotype('unlimit');
+	{/if}
+
+	$("#advance_1").hide();
+	$("#advance_2").hide();
+    </script>     
+</body>
+</html>

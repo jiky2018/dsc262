@@ -1,0 +1,160 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}					
+                <div class="search-info">
+                    <div class="search-form">
+                        <form action="javascript:searchComment()" name="searchForm">
+							<div class="search-key">
+                                <input type="text" name="keyword" class="text text_2" placeholder="{$lang.search_comment}" />
+                                <input type="submit" class="submit" value="{$lang.button_search}" />
+                            </div>
+                        </form>
+                    </div>
+                </div>					
+                <form method="POST" action="comment_manage.php?act=batch_drop" name="listForm" onsubmit="return confirm_bath()">
+                <!-- start comment list -->
+                <div class="list-div" id="listDiv">
+                {/if}
+                <table class="ecsc-default-table">
+                    <thead>
+                        <tr>
+                            <th width="8%">
+                                <div class="first_all">
+                                    <input onclick='listTable.selectAll(this, "checkboxes")' type="checkbox" class="ui-checkbox" id="all"/>
+                                    <label for="all" class="ui-label"><a href="javascript:listTable.sort('comment_id'); ">{$lang.record_id}</a></label>
+                                    {$sort_comment_id}
+                                </div>
+                            </th>
+                            <th width="10%"><a href="javascript:listTable.sort('user_name'); ">{$lang.user_name}</a><div class="img">{$sort_user_name}</div></th>
+                            <th width="10%"><a href="javascript:listTable.sort('comment_type'); ">{$lang.comment_type}</a><div class="img">{$sort_comment_type}</div></th>
+                            <th width="30%"><a href="javascript:listTable.sort('id_value'); ">{$lang.comment_obj}</a><div class="img">{$sort_id_value}</div></th>
+                            <th width="10%"><a href="javascript:listTable.sort('ip_address'); ">{$lang.ip_address}</a><div class="img">{$sort_ip_address}</div></th>
+                            <th width="10%"><a href="javascript:listTable.sort('add_time'); ">{$lang.comment_time}</a><div class="img">{$sort_add_time}</div></th>
+                            <th width="10%">{$lang.comment_flag}</th>
+                            <th width="10%">{$lang.handler}</th>
+                        </tr>
+                  </thead>
+                  <tbody>
+                  {foreach from=$comment_list item=comment}
+                  <tr class="bd-line">
+                    <td class="first_td_checkbox">
+                        <div class="first_all">
+                            <input value="{$comment.comment_id}" name="checkboxes[]" type="checkbox" id="comment_{$comment.comment_id}" class="ui-checkbox">
+                            <label for="comment_{$comment.comment_id}" class="ui-label">{$comment.comment_id}</label>
+                        </div>
+                    </td>
+                    <td align="center">{if $comment.user_name}{$comment.user_name}{else}{$lang.anonymous}{/if}</td>
+                    <td align="center">{$lang.type[$comment.comment_type]}</td>
+                    <td align="center"><a href="../{if $comment.comment_type eq '0' || $comment.comment_type eq '2' || $comment.comment_type eq '3'}goods{else}article{/if}.php?id={$comment.id_value}" target="_blank">{$comment.title}</a></td>
+                    <td align="center">{$comment.ip_address}</td>
+                    <td align="center">{$comment.add_time}</td>
+                    <td align="center">{if $comment.status eq 0}{$lang.hidden}{else}{$lang.display}{/if}</td>
+                    <td class="ecsc-table-handle{if $comment_edit_delete} tr{/if}">
+                      <span{if !$comment_edit_delete} mr0{/if}><a href="comment_manage.php?act=reply&amp;id={$comment.comment_id}" class="btn-green"><i class="icon icon-edit"></i><p>{$lang.edit}</p></a></span>
+                      {if $comment_edit_delete}
+                      <span><a href="javascript:void(0);" onclick="listTable.remove({$comment.comment_id}, '{$lang.drop_confirm}')" title="{$lang.drop}" class="btn-red"><i class="icon icon-trash"></i><p>{$lang.drop}</p></a></span>
+                      {/if}
+                    </td>
+                  </tr>
+                  {foreachelse}
+                  <tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+                  {/foreach}
+                  </tbody>
+                  <tfoot>
+                    {if $comment_edit_delete}
+                    <tr>
+                        <td colspan="10" class="td_border">
+                            <div class="shenhe">
+                                <div id="sel_action" class="imitate_select select_w120">
+                                    <div class="cite">{$lang.please_select}</div>
+                                    <ul>
+                                        <li><a href="javascript:;" data-value="remove" class="ftx-01">{$lang.drop_select}</a></li>
+                                        <li><a href="javascript:;" data-value="allow" class="ftx-01">{$lang.allow}</a></li>
+                                        <li><a href="javascript:;" data-value="deny" class="ftx-01">{$lang.forbid}</a></li>
+                                    </ul>
+                                    <input name="sel_action" type="hidden" value="remove" id="">
+                                </div>
+                                <input type="hidden" name="act" value="batch" />
+                                <input type="submit" name="drop" id="btnSubmit" value="{$lang.button_submit}" class="sc-btn btn_disabled" disabled="true" />
+                            </div>
+                        </td>
+                    </tr>
+                    {/if}
+                    <tr>
+                        <td colspan="10">
+                            {include file="page.dwt"}
+                        </td>
+                    </tr>
+                  </tfoot>
+                </table>
+
+                {if $full_page}
+                </div>
+                <!-- end comment list -->
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript" language="JavaScript">
+<!--
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+  cfm = new Object();
+  cfm['allow'] = '{$lang.cfm_allow}';
+  cfm['remove'] = '{$lang.cfm_remove}';
+  cfm['deny'] = '{$lang.cfm_deny}';
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+
+  {literal}
+  onload = function()
+  {
+      // 开始检查订单
+      startCheckOrder();
+  }
+  /**
+   * 搜索评论
+   */
+  function searchComment()
+  {
+      var keyword = Utils.trim(document.forms['searchForm'].elements['keyword'].value);
+	
+      if (keyword.length > 0)
+      {
+        listTable.filter['keywords'] = keyword;
+        listTable.filter.page = 1;
+        listTable.loadList();
+      }
+      else
+      {
+          document.forms['searchForm'].elements['keyword'].focus();
+      }
+  }
+  {/literal}
+
+  function confirm_bath()
+  {
+    var action = document.forms['listForm'].elements['sel_action'].value;
+
+    return confirm(cfm[action]);
+  }
+//-->
+</script>
+</body>
+</html>
+{/if}

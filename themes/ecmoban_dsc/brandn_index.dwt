@@ -1,0 +1,182 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable --><!-- TemplateBeginEditable name="head" --><!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<link rel="icon" href="animated_favicon.gif" type="image/gif" />
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/base.css" />
+<link href="{$ecs_css_path}" rel="stylesheet" type="text/css" />
+<link href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/select.css" rel="stylesheet" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS|{$page_title}" href="{$feed_url}" />
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/quickLinks.css" />
+<link rel="stylesheet" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/purebox.css">
+{* 包含脚本文件 *}
+{insert_scripts files='jquery-1.9.1.min.js,jquery.json.js,transport_jquery.js'}
+{insert_scripts files='common.js,global.js,utils.js,compare.js,cart_common.js,cart_quick_links.js'}
+
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/sc_common.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.tabso_yeso.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.yomi.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/rotate3di.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/scroll_city.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/notLogin.js"></script>
+<!-- #BeginLibraryItem "/library/js_languages.lbi" --><!-- #EndLibraryItem -->
+</head>
+
+<body>
+<!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
+
+<div class="ppk-breadcrumb">
+	<div class="w1200">
+    	<!-- #BeginLibraryItem "/library/ur_here.lbi" --><!-- #EndLibraryItem -->
+    </div>
+</div>
+<div class="ppk-main" style="background:url(images/ppj-bg.jpg) 50% 0% no-repeat;">
+	<div class="w1210">
+    	<div class="m-left">
+        	<div class="attention-rate">
+            	<h3>{$lang.brand_home}</h3>
+                <span class="spacer"></span>
+                <div class="pinpai-logo"><img src="data/brandlogo/{$brand.brand_logo}" /></div>
+                <span class="spacer"></span>
+                <div class="follow-info">
+                    <span class="follow-sum"><p id="collect_count">{$brand.collect_count}</p><i>{$lang.ren}</i></span><em>{$lang.follow}</em>
+                </div>
+                <div class="go-follow  {if $brand.is_collect}logined{/if}" id="collect_brand" data-bid="{$brand_id}">
+                    <i></i><span class="follow">{if $brand.is_collect}{$lang.follow_yes}{else}{$lang.follow}{/if}</span>
+                </div>
+            </div>
+            <script type="text/javascript">
+                $(document).on("click","#collect_brand",function(){
+					{if $user_id}
+						var brand_id = $("#collect_brand").data('bid');
+						if($(this).hasClass("logined")){
+							$(this).removeClass("logined");
+							$(this).find(".follow").html('{$lang.follow}');
+	
+							Ajax.call('brandn.php', 'act=cancel&id=' + brand_id, collect_brandResponse, 'POST', 'JSON');
+						}else{
+							$(this).addClass("logined");
+							$(this).find(".follow").html('{$lang.follow_yes}');
+	
+							Ajax.call('brandn.php', 'act=collect&id=' + brand_id, collect_brandResponse, 'POST', 'JSON');
+						}
+					{else}
+						var back_url = "brandn.php?id=" + {$brand_id};
+            			$.notLogin("get_ajax_content.php?act=get_login_dialog",back_url);	
+					{/if}
+                });
+				
+                function collect_brandResponse(result)
+                {
+                    if (result.error > 0) {
+                        alert(result.message);
+                    }
+                    else
+                    {
+                        
+                        $("#collect_count").html(result.collect_count);
+                    }
+                }
+
+                function cancel_brandResponse(result)
+                {
+                    if (result.error > 0) {
+                        alert(result.message);
+                    }
+                    else
+                    {
+                        $("#collect_count").html(result.collect_count);
+                    }
+                }
+            </script>
+            <div class="pinpai-detail">
+            	{insert name='get_adv_child' ad_arr=$brandn_left_ad id=0}
+            	<div class="item types clearfix">
+                	<b></b>
+                    <h3>{$lang.brand_category}</h3>
+                    <div class="type-items clearfix">
+                    <!-- {foreach from=$brand_cat_list item=brand_cat name=brand} -->
+                    	<!--{if !$smarty.foreach.brand.first}-->
+                    	<a href="{$brand_cat.url}" target="_blank">{$brand_cat.cat_name}</a>
+                        <!--{/if}-->
+                    <!-- {/foreach} -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="m-right">
+        	<div class="subnavwrap">
+                <b></b>
+                <div class="subnav">
+					<a href="brandn.php?id={$brand_id}" {if $act eq 'index'} class="curr" {/if}><i></i><span>{$lang.home}</span></a>
+					<a href="brandn.php?act=new&id={$brand_id}" {if $act eq 'new'} class="curr" {/if}><i></i><span>{$lang.look_new}</span></a>
+					<a href="brandn.php?act=hot&id={$brand_id}" {if $act eq 'hot'} class="curr" {/if}><i></i><span>{$lang.look_hot}</span></a>
+					<a href="brandn.php?act=cat&id={$brand_id}" {if $act eq 'cat'} class="curr" {/if}><i></i><span>{$lang.all_category}</span></a>
+	      		</div>
+            </div>
+            {insert name='get_adv_child' ad_arr=$brandn_top_ad id=0}
+            <div class="brand-common favor sm">
+            	<div class="smt">
+                    <h3>{$lang.best}</h3>
+                	<a href="javascript:;" class="get-extra" onclick="change_best()">{$lang.change_a_lot}<i></i></a>
+                </div>
+                <div class="smc" id="change_index">
+                	<!-- #BeginLibraryItem "/library/brandn_best_goods.lbi" --><!-- #EndLibraryItem -->
+                </div>
+            </div>
+            <div class="brand-common new sm">
+            	<div class="smt">
+                    <h3>{$lang.look_hot}</h3>
+                	<a href="brandn.php?act=hot&id={$brand_id}">{$lang.see_all}<i>&gt;</i></a>
+                </div>
+                <div class="smc">
+                	<ul class="common-items clearfix">
+                    	<!-- {foreach from=$hot_goods item=hot_goods name=hot_goods} -->
+                    	<!-- {if $smarty.foreach.hot_goods.iteration lte 8} -->
+                        <li class="common-item">
+                        	<a href="{$hot_goods.url}" target="_blank">
+                            	<div class="item-img"><img src="{$hot_goods.thumb}" width="200" width="200" /></div>
+                                <div class="item-info">
+                                	<div class="item-price"><span class="price current">{$hot_goods.shop_price}</span></div>
+                                    <p class="item-title">{$hot_goods.short_style_name}</p>
+                                </div>
+                            </a>
+                        </li>
+                        <!-- {/if} -->
+                        <!-- {/foreach} -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+<script type="text/javascript">
+    function change_best()
+    {
+        var brand_id = $("#collect_brand").data('bid');
+        var cat_id = '';
+        $.ajax({
+            async:false,
+            cache:false,
+            data:{id:brand_id, cat:cat_id},
+            type:'POST',
+            dataType:'JSON',
+            url:"brandn.php?act=change_index",
+            success:function(result){
+                $('#change_index').html(result.content);
+            }
+        });
+    }
+    
+</script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.purebox.js"></script>
+</body>
+</html>

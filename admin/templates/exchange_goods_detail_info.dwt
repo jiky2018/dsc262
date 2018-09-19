@@ -1,0 +1,103 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+<body class="iframe_body">
+    <div class="warpper">
+        <div class="title"><a href="exchange_detail.php?act=detail" class="s-back">{$lang.back}</a>{$lang.report_form} - {$lang.store_integral_goods}</div>
+        <div class="content">
+            <div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.info.0}</li>
+                </ul>
+            </div>
+            <div class="flexilist mt30">
+            	<div class="query_result">
+                    <div class="common-head">
+                        <div class="refresh ml0">
+                            <div class="refresh_tit" onclick="getList(this)" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                            <div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                        </div>
+                    </div>
+                    <div class="common-content">
+                        <div class="list-div" id="listDiv">
+                            {/if}
+                            <table cellpadding="0" cellspacing="0" border="0">
+                                <thead>
+                                    <tr>
+                                        <th width="5%" class="sky_id"><div class="tDiv">{$lang.record_id}</div></th>
+                                        <th width="30%"><div class="tDiv">{$lang.goods_name}</div></th>
+                                        <th width="21%"><div class="tDiv">{$lang.goods_img}</div></th>
+                                        <th width="22%"><div class="tDiv">{$lang.gift_consumption_score}</div></th>
+                                        <th width="20%"><div class="tDiv">{$lang.gift_grade_integral}</div></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {foreach from=$goods item=goods}
+                                    <input type="hidden" name="user_id" class="user_id" value="{$goods.user_id}">
+                                    <tr> 
+                                        <td class="sky_id"><div class="tDiv">{$goods.goods_id}</div></td>
+                                        <td><div class="tDiv">{$goods.goods_name}</div></td>
+                                        <td><div class="tDiv"><img src="{$goods.goods_thumb}" width="68" height="68" /></div></td>
+                                        <td><div class="tDiv">{$goods.give_integral}</div></td>
+                                        <td><div class="tDiv">{$goods.rank_integral}</div></td>
+                                    </tr>
+                                    {foreachelse}
+                                    <tr><td class="no-records"  colspan="20">{$lang.no_records}</td></tr>								
+                                    {/foreach}
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="12">
+                                            <div class="tDiv">
+                                                <div class="list-page">
+                                                   {include file="library/page.lbi"}
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                            {if $full_page}
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    {include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+        //分页传值
+        var user_id = $('.user_id').val();
+        listTable.recordCount = {$record_count|default:0};
+        listTable.pageCount = {$page_count|default:1};
+        listTable.url = "exchange_detail.php?is_ajax=1&user_id="+user_id;
+        listTable.query = "goods_detail_query";
+    
+        {foreach from=$filter item=item key=key}
+        listTable.filter.{$key} = '{$item}';
+        {/foreach}
+        
+        function getList()
+        {
+            var act = 'goods_detail_query';
+            var user_id = $('.user_id').val();
+            $.ajax({
+                url:"exchange_detail.php?is_ajax=1",
+                dataType:"json",
+                type:'post',
+                data:{
+                    "act" : act,
+                    "user_id" : user_id,
+                },
+                success:function(data){
+                    $('.list-div').eq(0).html(data.content);
+                }
+            })
+        }
+    </script>
+</body>
+</html>
+{/if}

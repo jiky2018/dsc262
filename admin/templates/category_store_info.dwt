@@ -1,0 +1,426 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$lang.goods_alt} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content_common}</li>
+                    <li>{$lang.operation_prompt_content.info.0}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+                        <form action="category_store.php" method="post" name="theForm" enctype="multipart/form-data" id="store_category_form">
+                            <div class="switch_info">
+                                <div class="item">
+                               	    <div class="label">{$lang.require_field}&nbsp;{$lang.cat_name}：</div>
+                                    <div class="label_value">
+									  {if $form_act eq 'insert'}
+									  <textarea name="cat_name" cols="48" rows="3" class="textarea">{$cat_info.cat_name|escape:html}</textarea>
+									  <p class="bf100"><label class="blue_label ml0">{$lang.category_name_notic}</label></p>
+									  {else}
+									  <input type='text' class="text" name='cat_name' maxlength="20" value='{$cat_info.cat_name|escape:html}' size='27' />
+									  {/if}
+                                      <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.phone_icon}：</div>
+                                    <div class="label_value">
+                                        <div class="type-file-box">
+                                            <input type="button" name="button" id="button" class="type-file-button" value="" />
+                                            <input type="file" class="type-file-file" id="ad_img" name="touch_icon" data-state="imgfile" size="30" hidefocus="true" value="" />
+                                            {if $cat_info.touch_icon}
+                                            <span class="show">
+                                                <a href="../{$cat_info.touch_icon}" target="_blank" class="nyroModal"><i class="icon icon-picture" data-tooltipimg="../{$cat_info.touch_icon}" ectype="tooltip" title="tooltip"></i></a>
+                                            </span>
+                                            {/if}
+                                            <input type="text" name="textfile" class="type-file-text" {if $cat_info.touch_icon}{$cat_info.touch_icon}{/if} id="textfield" autocomplete="off" readonly />
+                                        </div>
+                                        <div class="form_prompt"></div>
+                                        <div class="notic m20" id="AdCodeImg">{$lang.phone_icon_notic}</div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.parent_id}：</div>
+                                    <div class="label_value">
+										<div class="search_select">
+											<div class="categorySelect">
+												<div class="selection">
+													<input type="text" name="category_name" id="category_name" class="text w290 valid" value="{if $parent_category}{$parent_category}{else}顶级分类{/if}" autocomplete="off" readonly data-filter="cat_name" />
+													<input type="hidden" name="parent_id" id="category_id" value="{$parent_id|default:0}" data-filter="cat_id" />
+												</div>
+												<div class="select-container w319" style="display:none;">
+													{include file="library/filter_category_seller.lbi"}
+												</div>
+											</div>
+										</div>
+                                        <div class="notic">{$lang.parent_id_notic}</div>
+                                    </div>
+                                </div>								
+                                <div class="item">
+                                    <div class="label">{$lang.measure_unit}：</div>
+                                    <div class="label_value">
+										<input type="text" class="text text_4" name='measure_unit' value='{$cat_info.measure_unit}' size="12" autocomplete="off" />
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.sort_order}：</div>
+                                    <div class="label_value">
+										<input type="text" class="text text_4" name='sort_order' {if $cat_info.sort_order}value='{$cat_info.sort_order}'{else} value="50"{/if} size="15" autocomplete="off" />
+                                    </div>
+                                </div>	
+                                <div class="item">
+                                    <div class="label">{$lang.is_show}：</div>
+                                    <div class="label_value">
+                                        <div class="checkbox_items">
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="is_show" id="is_show_1" value="1" {if $cat_info.is_show neq 0} checked="true" {/if}  />
+                                                <label for="is_show_1" class="ui-radio-label">{$lang.yes}</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="is_show" id="is_show_0" value="0" {if $cat_info.is_show eq 0} checked="true" {/if}  />
+                                                <label for="is_show_0" class="ui-radio-label">{$lang.no}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item hide">
+                                    <div class="label">{$lang.show_in_nav}：</div>
+                                    <div class="label_value">
+                                        <div class="checkbox_items">
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="show_in_nav" id="show_in_nav_1" value="1" {if $cat_info.show_in_nav neq 0} checked="true" {/if}  />
+                                                <label for="show_in_nav_1" class="ui-radio-label">{$lang.yes}</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="show_in_nav" id="show_in_nav_0" value="0" {if $cat_info.show_in_nav eq 0} checked="true" {/if}  />
+                                                <label for="show_in_nav_0" class="ui-radio-label">{$lang.no}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>	
+								{if $cat_info.parent_id neq 0}
+                                <div class="item">
+                                    <div class="label">{$lang.show_category_top}：</div>
+                                    <div class="label_value">
+                                        <div class="checkbox_items">
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="is_top_show" id="is_top_show_1" value="1" {if $cat_info.is_top_show neq 0} checked="true" {/if}  />
+                                                <label for="is_top_show_1" class="ui-radio-label">{$lang.yes}</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="is_top_show" id="is_top_show_0" value="0" {if $cat_info.is_top_show eq 0} checked="true" {/if}  />
+                                                <label for="is_top_show_0" class="ui-radio-label">{$lang.no}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>	
+								{/if}
+                                
+                                <div class="item" {if !$cat_name_arr}style="display:none"{/if}>
+                                    <div class="label">{$lang.category_herf}：</div>
+                                    <div class="label_value">
+									  <textarea name='category_links' rows="6" cols="48" class="textarea">{$cat_info.category_links}</textarea>
+									  <p class="bf100"><label class="blue_label ml0">{$lang.category_herf_notic}</label></p>										
+                                    </div>
+                                </div>
+                                
+                                <div class="item">
+                                    <div class="label">{$lang.filter_attr}：</div>
+                                    <div class="label_value">
+										<div class="lv-item" ectype="item">
+                                            <div class="value_select" ectype="type_cat">
+                                                <div id="parent_id1" class="imitate_select select_w145" ectype="typeCatSelect">
+                                                    <div class="cite">{$lang.please_select}</div>
+                                                    <ul>
+                                                        <li><a href="javascript:;" data-value="0" data-level='1' data-cat='1' class="ftx-01">{$lang.please_select}</a></li>
+                                                        {foreach from=$type_level item=cat}
+                                                        <li><a href="javascript:;" data-value="{$cat.cat_id}" data-level="{$cat.level}"  data-cat='1' class="ftx-01">{$cat.cat_name}</a></li>
+                                                        {/foreach}
+                                                    </ul>
+                                                    <input type="hidden" value="{$cat_tree1.checked_id|default:0}" id="parent_id_val1" ectype="typeCatVal">
+                                                </div>
+                                                {if $cat_tree1.arr}
+                                                <div id="parent_id2" class="imitate_select select_w145" ectype="typeCatSelect">
+                                                    <div class="cite">{$lang.please_select}</div>
+                                                    <ul>
+                                                        <li><a href="javascript:;" data-value="0" data-level='2' data-cat='1' class="ftx-01">{$lang.please_select}</a></li>
+                                                        {foreach from=$cat_tree1.arr item=cat}
+                                                        <li><a href="javascript:;" data-value="{$cat.cat_id}" data-level="{$cat.level}" data-cat='1' class="ftx-01">{$cat.cat_name}</a></li>
+                                                        {/foreach}
+                                                    </ul>
+                                                    <input type="hidden" value="{$cat_tree.checked_id|default:0}" id="parent_id_val2" ectype="typeCatVal">
+                                                </div>
+                                                {/if}
+                                                {if $cat_tree.arr}
+                                                <div id="parent_id{if $cat_tree1.arr}3{else}2{/if}" class="imitate_select select_w145" ectype="typeCatSelect">
+                                                    <div class="cite">{$lang.please_select}</div>
+                                                    <ul>
+                                                        <li><a href="javascript:;" data-value="0" data-level='{if $cat_tree1.arr}3{else}2{/if}' data-cat='1' class="ftx-01">{$lang.please_select}</a></li>
+                                                        {foreach from=$cat_tree.arr item=cat}
+                                                        <li><a href="javascript:;" data-value="{$cat.cat_id}" data-level="{$cat.level}" data-cat='1' class="ftx-01">{$cat.cat_name}</a></li>
+                                                        {/foreach}
+                                                    </ul>
+                                                    <input type="hidden" value="{$type_c_id|default:0}" id="parent_id_val{if $cat_tree1.arr}3{else}2{/if}" ectype="typeCatVal">
+                                                </div>
+                                                {/if}
+                                            </div>
+                                            <div class="imitate_select select_w170" ectype="attrTypeSelect">
+                                                <div class="cite">{$lang.sel_goods_type}</div>
+                                                <ul style="display: none;">
+                                                    {$goods_type_list}
+                                                </ul>
+                                                <input name="goods_type" type="hidden" value="0">
+                                            </div>
+                                            <div class="imitate_select select_w120">
+                                                <div class="cite">{$lang.sel_goods_type}</div>
+                                                <ul style="display: none;">
+                                                    <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.sel_filter_attr}</a></li>
+                                                </ul>
+                                                <input name="filter_attr[]" type="hidden" value="0">
+                                            </div>
+                                            <a href="javascript:;" onclick="addFilterAttr(this)" class="fl mr10" ectype="operation">[+]</a>
+										</div>         
+										{foreach from=$filter_attr_list item=filter_attr name="filter_attr_tab"}
+										<div class="lv-item" ectype="item">
+                                            <div class="imitate_select select_w170" ectype="attrTypeSelect">
+                                                <div class="cite">{$lang.sel_goods_type}</div>
+                                                <ul style="display: none;">
+                                                    {$goods_type_list}
+                                                </ul>
+                                                <input name="goods_type" type="hidden" value="{$filter_attr.goods_type}">
+                                            </div>
+                                            <div class="imitate_select select_w120">
+                                                <div class="cite">{$lang.sel_goods_type}</div>
+                                                <ul style="display: none;">
+                                                    <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.sel_filter_attr}</a></li>
+                                                    {foreach from=$filter_attr.option item=item key=key}
+                                                    <li><a href="javascript:;" data-value="{$key}" class="ftx-01">{$item}</a></li>
+                                                    {/foreach}
+                                                </ul>
+                                                <input name="filter_attr[]" type="hidden" value="{$filter_attr.filter_attr}">
+                                            </div>
+                                            <a href="javascript:;" onclick="removeFilterAttr(this)" class="fl mr10" ectype="operation">[-]&nbsp;</a>
+                                        </div>
+										{/foreach}
+                                    	<input name="attr_parent_id" type="hidden" value="{$type_c_id|default:0}">
+                                	</div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.grade}：</div>
+                                    <div class="label_value">					
+									  <input type="text" name="grade" value="{$cat_info.grade|default:0}" size="40" class="text mr10" autocomplete="off" />
+									  <div class="notic">{$lang.notice_grade}</div>
+                                      <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.cat_style}：</div>
+                                    <div class="label_value">					
+									  <input type="text" name="style" value="{$cat_info.style|escape}" size="40" class="text mr10" autocomplete="off" />
+									  <div class="notic">{$lang.notice_style}</div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.keywords}：</div>
+                                    <div class="label_value">					
+										<input type="text" name="keywords" value='{$cat_info.keywords}' size="50" class="text mr10" autocomplete="off" />										
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.cat_desc}：</div>
+                                    <div class="label_value">					
+										<textarea name='cat_desc' rows="6" cols="48" class="textarea">{$cat_info.cat_desc}</textarea>							
+                                    </div>
+                                </div>								
+                                <div class="item">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="label_value info_btn">
+										<input type="submit" value="{$lang.button_submit}" class="button" id="submitBtn" />
+										<input type="reset" value="{$lang.button_reset}" class="button button_reset" />
+										<input type="hidden" name="act" value="{$form_act}" />
+										<input type="hidden" name="old_cat_name" value="{$cat_info.cat_name}" />
+										<input type="hidden" name="cat_id" value="{$cat_info.cat_id}" />
+                                        <input type="hidden" name="user_id" value="{$cat_info.user_id}" />
+                                    </div>
+                                </div>								
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+    </div>
+	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+    $(function(){
+		//表单验证
+		$("#submitBtn").click(function(){
+			if($("#category_info_form").valid()){
+				$("#category_info_form").submit();
+			}
+		});
+		
+		$('#store_category_form').validate({
+			errorPlacement:function(error, element){
+				var error_div = element.parents('div.label_value').find('div.form_prompt');
+				element.parents('div.label_value').find(".notic").hide();
+				error_div.append(error);
+			},
+			rules:{
+				cat_name :{
+					required : true
+				},
+				grade :{
+					min : 0,
+					max : 10 
+				}
+			},
+			messages:{
+				cat_name:{
+					 required : '<i class="icon icon-exclamation-sign"></i>'+catname_empty
+				},
+				grade:{
+					min : '<i class="icon icon-exclamation-sign"></i>' + grade_min_0,
+					max : '<i class="icon icon-exclamation-sign"></i>' + grade_max_10
+				}
+			}			
+		});
+	});
+	
+    /**
+     * 新增一个筛选属性
+     */
+    function addFilterAttr(obj)
+	{
+		var obj = $(obj);
+		var parent = obj.parents("*[ectype='item']");
+		var clone = parent.clone();
+		clone.find("[ectype='operation']")
+		.attr("onclick",'removeFilterAttr(this)')
+		.html("[-]");
+
+		parent.after(clone);
+	}
+
+    
+    /**
+     * 删除一个筛选属性
+     */
+    function removeFilterAttr(obj)
+	{
+		var obj = $(obj);
+		var parent = obj.parents("*[ectype='item']");
+		parent.remove();
+	}
+    
+    //顶级分类页模板 by wu
+    $(document).ready(function(){
+        $("[name='is_top_style']").click(function(){
+            if($(this).attr('value')==1)
+            {
+                $("[name='top_style_tpl']").parents('.item').show();
+                $("[name='cat_icon']").parents('.item').show();
+            }
+            else
+            {
+                $("[name='top_style_tpl']").parents('.item').hide();
+                $("[name='cat_icon']").parents('.item').hide();
+            }
+        })
+    })
+    
+    function delete_icon(cat_id)
+    {
+        $.ajax({
+            type:'get',
+            url:'category.php',
+            data:'act=delete_icon&cat_id='+cat_id,
+            dataType:'json',
+            success:function(data){
+                if(data.error==1)
+                {	
+                    location.reload();
+                }
+                if(data.error==0)
+                {	
+                    alert(delete_fail);
+                }			
+            }
+        })
+    }
+    
+    // 分类分级 by qin
+    function catList(val, level)
+    {
+        var cat_parent_id = val;
+        Ajax.call('goods.php?is_ajax=1&act=sel_cat', 'cat_id='+cat_parent_id+'&cat_level='+level, catListResponse, 'GET', 'JSON');
+    }
+    
+    function catListResponse(result)
+    {
+        document.getElementById('cat_parent_id').value = result.parent_id + "_" + Number(result.cat_level - 1);  
+        if (result.error == '1' && result.message != '')
+        {
+            alert(result.message);
+            return;
+        }
+        var response = result.content;
+        var cat_level = result.cat_level; // 分类级别， 1为顶级分类
+        for(var i=cat_level;i<10;i++)
+        {
+            $("#cat_list"+Number(i+1)).remove();
+        }
+        if(response)
+        {
+            $("#cat_list"+cat_level).after(response);
+        }
+        return;
+    }
+	
+	var arr = new Array();
+	var sel_filter_attr = "{$lang.sel_filter_attr}";
+	{foreach from=$attr_list item=val key=att_cat_id}
+	arr[{$att_cat_id}] = new Array();
+	{foreach from=$val item=item key=i}
+	  {foreach from=$item item=attr_val key=attr_id}
+		arr[{$att_cat_id}][{$i}] = ["{$attr_val}", {$attr_id}];
+	  {/foreach}
+	{/foreach}
+	{/foreach}
+	
+	//修改 by wu
+	function changeCat(obj)
+	{
+		var obj = $(obj);
+		var key = obj.data('value');
+		
+		if(arr[key]){
+			var tArr = arr[key];
+			var target = obj.parents(".imitate_select").next().find("ul");
+			target.find("li:gt(0)").remove();
+			for(var i=0; i<tArr.length; i++){
+				var line = "<li><a href='javascript:;' data-value='"+tArr[i][1]+"' class='ftx-01'>"+tArr[i][0]+"</a></li>";
+				target.append(line);
+			}
+		}
+	}
+	
+	//属性分类筛选出属性类型
+	$.divselect("*[ectype='typeCatSelect']","*[ectype='typeCatVal']",function(obj){
+		var level = obj.data('level'),
+			cat = obj.data("cat"),
+			val = obj.data("value");
+
+		get_childcat(obj,2);
+	});
+    </script>
+</body>
+</html>

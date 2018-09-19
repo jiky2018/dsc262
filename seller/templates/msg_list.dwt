@@ -1,0 +1,135 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+ <div class="ecsc-layout">
+    <div class="site wrapper">
+		{include file ='library/seller_menu_left.lbi'}
+		<div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+				{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                {/if}
+                <form method="POST" action="user_msg.php?act=batch_drop" name="listForm" onsubmit="return confirm_bath()">
+                <!-- start article list -->
+                <div class="list-div" id="listDiv">
+                <table class="ecsc-default-table ecsc-table-seller mt20">
+                  <tbody>
+                  <tr>
+                    <th width="8%">
+                      <div class="first_all">
+                          <input onclick='listTable.selectAll(this, "checkboxes")' type="checkbox" id="all" class="ui-checkbox" />
+                          <label for="all" class="ui-label"><a href="javascript:listTable.sort('msg_id'); ">{$lang.msg_id}</a></label>
+                          <div class="img">{$sort_msg_id}</div>
+                      </div>
+                    </th>
+                    <th width="10%"><a href="javascript:listTable.sort('user_name'); ">{$lang.user_name}</a>{$sort_user_name}</th>
+                    <th width="30%"><a href="javascript:listTable.sort('msg_title'); ">{$lang.msg_title}</a>{$sort_msg_title}</th>
+                    <th width="10%"><a href="javascript:listTable.sort('msg_type'); ">{$lang.msg_type}</a>{$sort_msg_type}</th>
+                    <th width="15%"><a href="javascript:listTable.sort('msg_time'); ">{$lang.msg_time}</a>{$sort_msg_time}</th>
+                    <th width="10%"><a href="javascript:listTable.sort('msg_status'); ">{$lang.msg_status}</a>{$sort_msg_status}</th>
+                    <th width="10%"><a href="javascript:listTable.sort('reply'); ">{$lang.reply}</a>{$sort_reply}</th>
+                    <th width="10%">{$lang.handler}</th>
+                  </tr>
+                  {foreach from =$msg_list item=msg}
+                  <tr>
+                    <td class="first_td_checkbox"><div class="first_all"><input type="checkbox" name="checkboxes[]" value="{$msg.msg_id}" id="checkbox_{$msg.msg_id}" class="ui-checkbox" /><label for="checkbox_{$msg.msg_id}" class="ui-label">{$msg.msg_id}</label></div></td>
+                    <td align="center">{$msg.user_name}</td>
+                    <td align="left">{$msg.msg_title|truncate:40|escape:html}</td>
+                    <td align="center">{$msg.msg_type}{if $msg.order_id}<br><a href="order.php?act=info&order_id={$msg.order_id}">{$msg.order_sn}{/if}</a></td>
+                    <td align="center"  nowrap="nowrap">{$msg.msg_time}</td>
+                    {if $msg.msg_area eq 0}
+                    <td align="center">{$lang.display}</td>
+                    {else}
+                    <td align="center">{if $msg.msg_status eq 0}{$lang.hidden}{else}{$lang.display}{/if}</td>
+                    {/if}
+                    <td align="center">{if $msg.reply eq 0}{$lang.unreplyed}{else}{$lang.replyed}{/if}</td>
+                    <td align="center" class="ecsc-table-handle tr">
+                      <a href="user_msg.php?act=view&id={$msg.msg_id}" title="{$lang.view}"><i class="icon icon-search"></i></a>
+                      <a href="javascript:;" onclick="listTable.remove({$msg.msg_id}, '{$lang.drop_confirm}')"  title="{$lang.remove}"><i class="icon icon-trash"></i></a>
+                    </td>
+                  </tr>
+                  {foreachelse}
+                  <tr><td class="no-records" colspan="7">{$lang.no_records}</td></tr>
+                  {/foreach}
+                  </tbody>
+                  <tfoot>
+					<tr>
+					  <td class="td_border" colspan="10">
+						<div class="shenhe">
+						  <select name="sel_action" class="select mr10">
+							<option value="">{$lang.select_please}</option>
+							<option value="remove">{$lang.delete}</option>
+							<option value="allow">{$lang.allow}</option>
+							<option value="deny">{$lang.forbid}</option>
+						  </select>
+						  <input type="hidden" name="act" value="batch" />
+						  <input type="submit" name="drop" id="btnSubmit" value="{$lang.button_submit}" class="sc-btn btn_disabled" disabled="true" />
+						</div>
+					  </td>
+					</tr>
+                    <tr>
+                        <td colspan="20">{include file="page.dwt"}</td>
+                    </tr>
+                  </tfoot>
+                </table>
+                </div>
+                <!-- end article list -->
+                </form>
+			</div>
+		</div>
+
+	</div>
+</div>
+{include file="library/seller_footer.lbi"}
+{if $full_page}
+<script type="text/javascript">
+listTable.recordCount = {$record_count};
+listTable.pageCount = {$page_count};
+cfm = new Object();
+cfm['allow'] = '{$lang.cfm_allow}';
+cfm['remove'] = '{$lang.cfm_remove}';
+cfm['deny'] = '{$lang.cfm_deny}';
+{foreach from=$filter item=item key=key}
+listTable.filter.{$key} = '{$item}';
+{/foreach}
+{literal}
+<!--
+onload = function()
+{
+    // 开始检查订单
+    startCheckOrder();
+}
+
+/**
+ * 搜索标题
+ */
+function searchMsg()
+{
+    var keyword = Utils.trim(document.forms['searchForm'].elements['keyword'].value);
+    var msgType = document.forms['searchForm'].elements['msg_type'].value;
+
+    listTable.filter['keywords'] = Utils.trim(document.forms['searchForm'].elements['keyword'].value);
+    listTable.filter['msg_type'] = document.forms['searchForm'].elements['msg_type'].value;
+    listTable.filter['page'] = 1;
+    listTable.loadList();
+}
+
+function confirm_bath()
+{
+    var action = document.forms['listForm'].elements['sel_action'].value;
+    if (action == 'allow'||action == 'remove'||action == 'deny')
+      {
+          return confirm(cfm[action]);
+      }
+}
+//-->
+</script>
+
+{/literal}
+</body>
+</html>
+{/if}

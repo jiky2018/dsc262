@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+    	{include file ='library/seller_menu_left.lbi'}
+		<div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+            	{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="wrapper-list ecsc-form-default">
+                	<div class="explanation" id="explanation">
+                        <div class="ex_tit"><i class="sc_icon"></i><h4>使用说明</h4></div>
+                        <ul>
+                            <li>使用搜索条件每次只允许搜索符合条件的50个商品。</li>
+                            <li>根据搜索条件搜出商品，然后选中移到右边窗口，之后选中橱窗，确定即可将商品加入对应的橱窗里面。</li>
+                        </ul>
+                    </div>
+                    <form action="merchants_window.php" method="post" name="windowform" onsubmit="return queryGoods(this)">
+                        <div class="step" ectype="filter" data-filter="goods">
+                            <div class="step_content">
+                                <div class="goods_search_div mt20">
+                                    <div class="search_select">
+                                        <div class="categorySelect">
+                                            <div class="selection">
+                                                <input type="text" name="category_name" id="category_name" class="text w250 valid" value="{$lang.select_cat}" autocomplete="off" readonly data-filter="cat_name" />
+                                                <input type="hidden" name="cat_id" id="category_id" value="0" data-filter="cat_id" />
+                                            </div>
+                                            <div class="select-container" style="display:none;">
+                                                {include file="library/filter_category.lbi"}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="search_select">
+                                        <div class="brandSelect">
+                                            <div class="selection">
+                                                <input type="text" name="brand_name" id="brand_name" class="text w120 valid" value="{$lang.select_barnd}" autocomplete="off" readonly data-filter="brand_name" />
+                                                <input type="hidden" name="brand_id" id="brand_id" value="0" data-filter="brand_id" />
+                                            </div>
+                                            <div class="brand-select-container" style="display:none;">
+                                                {include file="library/filter_brand.lbi"}
+                                            </div>
+                                        </div>                            
+                                    </div>
+                                    <input type="text" name="keyword" class="text text_2 mr10" placeholder="{$lang.search_log}" autocomplete="off" data-filter="keyword"/>
+                                    <a href="javascript:void(0);" class="sc-btn sc-blueBg-btn" ectype="search">{$lang.button_search}</a>
+                                </div>
+                                <div class="clear"></div>
+                                <div class="move_div">
+                                    <div class="move_left">
+                                        <h4>{$lang.optional_goods}</h4>
+                                        <div class="move_info">
+                                            <div class="move_list">
+                                                {include file="library/move_left.lbi"}
+                                            </div>
+                                        </div>
+                                        <div class="move_handle">
+                                            <a href="javascript:void(0);" class="sc-btn btn25 moveAll" ectype="moveAll">{$lang.check_all}</a>
+                                            <a href="javascript:void(0);" class="sc-btn btn25 sc-blueBg-btn" ectype="sub" data-operation="add_win_goods">{$lang.button_submit}</a>
+                                        </div>
+                                    </div>
+                                    <div class="move_middle">
+                                        <div class="move_point" data-operation="add_win_goods"></div>
+                                    </div>
+                                    <div class="move_right">
+                                        <h4>{$lang.add_product}</h4>
+                                        <div class="move_info">
+                                            <div class="move_list">
+                                                {include file="library/move_right.lbi"}
+                                            </div>
+                                        </div>
+                                        <div class="move_handle">
+                                            <a href="javascript:void(0);" class="sc-btn btn25 moveAll" ectype="moveAll">{$lang.check_all}</a>
+                                            <a href="javascript:void(0);" class="sc-btn btn25 sc-blueBg-btn" ectype="sub" data-operation="drop_win_goods">{$lang.remove}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="button-bottom">
+                                	<div class="button_info">
+                                    <input type="hidden" name="win_id" value="{$win_info.id}" />
+                                    <input type="hidden" name="act" value="update_win_goods" />
+                                    <input name="submit" type="submit" id="submit" value="{$lang.button_submit}" class="sc-btn btn35 sc-blueBg-btn fn" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>            
+{include file="library/seller_footer.lbi"}
+<script type="text/javascript"> 
+	//滚动轴
+  $(".move_list").perfectScrollbar();
+  
+  var elements = document.forms['windowform'].elements;
+  var sz1 = new SelectZone(1, elements['src_goods_lists'], elements['dst_goods_lists']);
+
+  /* 搜索商品列表 */
+    function queryGoods(obj)
+    {
+        var filters = new Object;
+        filters.cat_id = obj.cat_id.value;
+        filters.brand_id = obj.brand_id.value;
+        filters.keyword = obj.keyword.value;
+
+        Ajax.call('goods_export.php?is_ajax=1&act=get_goods_list', filters, queryGoodsResponse , 'POST', 'JSON');
+        return false;
+    }
+
+    function queryGoodsResponse (result)
+    {
+        if (result.error > 0)
+        {
+            alert(result.message);
+            return;
+        }
+        Utils.$('src_goods_lists').innerHTML = '';
+        for (var i=0,l=result.content.length;i<l;++i)
+        {
+            var new_opt = document.createElement('OPTION');
+            new_opt.value = result.content[i].goods_id;
+            new_opt.innerHTML = result.content[i].goods_name;
+            Utils.$('src_goods_lists').appendChild(new_opt);
+        }
+    }
+</script>
+{/literal}
+</body>
+</html>

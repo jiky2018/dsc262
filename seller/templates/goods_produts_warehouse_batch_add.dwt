@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+<style type="text/css">
+.list-div table {
+    width: 100%;
+}
+
+.list-div td {
+    background: #fff none repeat scroll 0 0;
+    border-bottom: 1px solid #eaeaea;
+    height: 38px;
+    line-height: 20px;
+    word-break: keep-all;
+}
+</style>
+  
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        <div class="site wrapper">
+			{include file ='library/seller_menu_left.lbi'}
+            <div class="ecsc-layout-right">
+                <div class="main-content" id="mainContent">
+					{include file ='library/url_here.lbi'}
+					{include file ='library/seller_menu_tab.lbi'}
+                    <div class="ecsc-form-goods">
+                        <div class="explanation" id="explanation">
+                            <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4></div>
+                           	<ul>
+                            	<li>整在批量处理数量，请耐心等待.</li>
+                            </ul>
+                        </div>
+                        <div id="listDiv">
+                        <table class="ecsc-default-table goods-default-table mt20" id="listTable">
+                            <thead>
+                                <tr ectype="table_header">
+                                	{foreach from=$attr_names item=vo}
+                                    <th>{$vo}</th>
+                                    {/foreach}
+                                    <th>{$lang.upload_product.goods_id}</th>
+                                    <th>{$lang.upload_product.warehouse_id}</th>
+                                    {if $cfg.add_shop_price eq 0}
+                                    <th>{$lang.market_price}</th>
+                                    {/if}
+                                    <th>{$lang.product_price}</th>
+                                    {if $cfg.add_shop_price eq 0}
+                                    <th>{$lang.promote_price}</th>
+                                    {/if}
+                                    <th>{$lang.product_number}</th>
+                                    <th>{$lang.product_warn_number}</th>
+                                    <th>{$lang.product_sn}</th>
+                                    <th>{$lang.bar_code}</th>
+                                    <th>{$lang.state}</th>
+                                </tr>
+                            </thead>
+                        </table>   
+					</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+{insert_scripts files="jquery.purebox.js"}
+<script type="text/javascript">
+    
+    $(function(){
+        start({$page});
+        ajax_title();
+    });
+    function start(page)
+    {
+        {if $smarty.get.act != 'add'}
+        Ajax.call('goods_produts_warehouse_batch.php?act=ajax_insert', 'page=' + page, start_response, 'POST', 'JSON');
+        {/if}
+    }
+    
+    /**
+     * 处理反馈信息
+     * @param: result
+     * @return
+     */
+    function start_response(result)
+    {
+        if(result.list){
+			var attr_value;
+            var tbl = document.getElementById("listTable"); //获取表格对象
+            var row = tbl.insertRow(-1);
+            var attr_arr = result.list.goods_attr_name.split('|');
+            var attr_num=attr_arr.length;
+            var num = 0;
+            
+            for(var i=0;i<attr_num;i++){
+				cell = row.insertCell(i);
+				cell.align = "center";
+				
+				attr_value = attr_arr[i].split('-');
+				cell.innerHTML = "<div class='tDiv'>"+attr_value[0]+"</div>";
+			}
+			
+			if(!result.list.product_sn){
+				result.list.product_sn = "（空）";
+			}
+			
+			if(!result.list.bar_code){
+				result.list.bar_code = "（空）";
+			}
+			
+			cell = row.insertCell(attr_num);
+			{if $cfg.add_shop_price eq 0}
+			cell.align = "center";
+			cell.innerHTML = "<div class='tDiv'>"+result.list.goods_id+"</div>";
+			cell = row.insertCell(attr_num+1);
+			cell.align = "center";
+			cell.innerHTML = "<div class='tDiv'>"+result.list.warehouse_id+"</div>";
+			cell = row.insertCell(attr_num+2);
+			cell.align = "center";
+			cell.innerHTML = "<div class='tDiv'>"+result.list.product_market_price+"</div>";
+			cell = row.insertCell(attr_num+3);
+			cell.align = "center";
+			cell.innerHTML = "<div class='tDiv'>"+result.list.product_price+"</div>";
+			cell = row.insertCell(attr_num+4);
+			cell.align = "center";
+			cell.innerHTML = "<div class='tDiv'>"+result.list.product_promote_price+"</div>";
+			cell = row.insertCell(attr_num+5);
+			cell.align = "center";
+			cell.innerHTML = "<div class='tDiv'>"+result.list.product_number+"</div>";
+			cell = row.insertCell(attr_num+6);
+			cell.align = "center";
+			cell.innerHTML = "<div class='tDiv'>"+result.list.product_warn_number+"</div>";
+			cell = row.insertCell(attr_num+7);
+			cell.align = "center";
+			cell.innerHTML = "<div class='tDiv'>"+result.list.product_sn+"</div>";
+			cell = row.insertCell(attr_num+8);
+			cell.align = "center";
+			cell.innerHTML = "<div class='tDiv'>"+result.list.bar_code+"</div>";
+			cell = row.insertCell(attr_num+9);
+			cell.align = "center";
+			cell.innerHTML = "<div class='tDiv'>"+result.status_lang+"</div>";
+            {else}
+			cell.align = "center";
+			cell.innerHTML = "<div class='tDiv'>"+result.list.goods_id+"</div>";
+			cell = row.insertCell(attr_num+1);
+			cell.align = "center";
+			cell.innerHTML = "<div class='tDiv'>"+result.list.warehouse_id+"</div>";
+			cell = row.insertCell(attr_num+2);
+			cell.align = "center";
+			cell.innerHTML = "<div class='tDiv'>"+result.list.product_price+"</div>";
+			cell = row.insertCell(attr_num+3);
+			cell.align = "center";
+			cell.innerHTML = "<div class='tDiv'>"+result.list.product_number+"</div>";
+			cell = row.insertCell(attr_num+4);
+			cell.align = "center";
+			cell.innerHTML = "<div class='tDiv'>"+result.list.product_warn_number+"</div>";
+			cell = row.insertCell(attr_num+5);
+			cell.align = "center";
+			cell.innerHTML = "<div class='tDiv'>"+result.list.product_sn+"</div>";
+			cell = row.insertCell(attr_num+6);
+			cell.align = "center";
+			cell.innerHTML = "<div class='tDiv'>"+result.list.bar_code+"</div>";
+			cell = row.insertCell(attr_num+7);
+			cell.align = "center";
+			cell.innerHTML = "<div class='tDiv'>"+result.status_lang+"</div>";
+			{/if}
+            if(result.is_stop == 1){
+                start(result.page);
+            }	
+        }
+        
+        if(result.is_stop == 0){
+            $("#title_name").addClass("red");
+            $("#title_name").html("已完成更新，请关闭该窗口！");
+        }else{
+            $("#title_name").html("正在更新数据中，请勿关闭该窗口！");
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,247 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!--申请类目信息-->
+<div class="panel-body">
+	<div class="panel-tit"><span>{$title.fields_titles}</span></div>
+    <div class="cue">{$title.titles_annotation}</div>
+    <div class="list">
+        {foreach from=$title.cententFields item=fields}
+        <div class="item">
+            <div class="label">
+                <em>{if $fields.will_choose eq 1 && $choose_process eq 1}*{/if}</em>
+                <span>{$fields.fieldsFormName}：</span>
+            </div>
+            <div class="value">
+                {if $fields.chooseForm eq 'input'}
+                    <input class="text" type="text" value="{$fields.titles_centents}" size="{$fields.inputForm}" name="{$fields.textFields}">
+                    <div class="verify" id="{$fields.textFields}"></div>
+                {elseif $fields.chooseForm eq 'other'}
+                    {if $fields.otherForm eq 'textArea'}
+                        <select name="{$fields.textFields}[]" class="catselectB" id="selCountries_{$fields.textFields}_{$sn}" onchange="region.changed(this, 1, 'selProvinces_{$fields.textFields}_{$sn}')">
+                          <option value="0">{$lang.please_select}{$lang.country}</option>
+                          <!-- {foreach from=$country_list item=country} -->
+                          <option value="{$country.region_id}" {if $fields.textAreaForm.country eq $country.region_id}selected{/if}>{$country.region_name}</option>
+                          <!-- {/foreach} -->
+                        </select>
+                        <select name="{$fields.textFields}[]" class="catselectB" id="selProvinces_{$fields.textFields}_{$sn}" onchange="region.changed(this, 2, 'selCities_{$fields.textFields}_{$sn}')">
+                          <option value="0">{$lang.please_select}{$lang.province}</option>
+                          {if $fields.province_list}
+                          <!-- {foreach from=$fields.province_list item=province} -->
+                          <option value="{$province.region_id}" {if $fields.textAreaForm.province eq $province.region_id}selected{/if}>{$province.region_name}</option>
+                          <!-- {/foreach} -->
+                          {else}
+                          <!-- {foreach from=$province_list item=province} -->
+                          <option value="{$province.region_id}">{$province.region_name}</option>
+                          <!-- {/foreach} -->
+                          {/if}
+                        </select>
+                        <select name="{$fields.textFields}[]" class="catselectB" id="selCities_{$fields.textFields}_{$sn}" onchange="region.changed(this, 3, 'selDistricts_{$fields.textFields}_{$sn}')">
+                          <option value="0">{$lang.please_select}{$lang.city}</option>
+                          {if $fields.city_list}
+                          <!-- {foreach from=$fields.city_list item=city} -->
+                          <option value="{$city.region_id}" {if $fields.textAreaForm.city eq $city.region_id}selected{/if}>{$city.region_name}</option>
+                          <!-- {/foreach} -->
+                          {else}
+                          <!-- {foreach from=$city_list item=city} -->
+                          <option value="{$city.region_id}">{$city.region_name}</option>
+                          <!-- {/foreach} -->
+                          {/if}
+                        </select>
+                        <select name="{$fields.textFields}[]" class="catselectB" id="selDistricts_{$fields.textFields}_{$sn}" {if $fields.textAreaForm.district eq 0}style="display:none"{/if}>
+                          <option value="0">{$lang.please_select}{$lang.area}</option>
+                          {if $fields.district_list}
+                          <!-- {foreach from=$fields.district_list item=district} -->
+                          <option value="{$district.region_id}" {if $fields.textAreaForm.district eq $district.region_id}selected{/if}>{$district.region_name}</option>
+                          <!-- {/foreach} -->
+                          {else}
+                          <!-- {foreach from=$district_list item=district} -->
+                          <option value="{$district.region_id}">{$district.region_name}</option>
+                          <!-- {/foreach} -->
+                          {/if}
+                        </select>
+                    {elseif $fields.otherForm eq 'dateFile'}
+                        <input name="{$fields.textFields}" type="file" /><input name="text_{$fields.textFields}" type="hidden" value="{$fields.titles_centents}" />{if $fields.titles_centents neq ''}&nbsp;&nbsp;<a href="{$fields.titles_centents}" target="_blank">{$lang.view}</a>{/if}
+                    {elseif $fields.otherForm eq 'dateTime'} 
+                        {foreach from=$fields.dateTimeForm item=date key=dk}
+                            {if $dk eq 0}  
+                            <input id="{$fields.textFields}_{$dk}" class="input jdate narrow" type="text" size="{$date.dateSize}" readonly value="{$date.dateCentent}" name="{$fields.textFields}[]"> 
+                            {else}
+                            —&nbsp;<input id="{$fields.textFields}_{$dk}" class="input jdate narrow" type="text" size="{$date.dateSize}" readonly value="{$date.dateCentent}" name="{$fields.textFields}[]"> 
+                            {/if}
+                            <script type="text/javascript">
+								var opts = {
+									'targetId':'{$fields.textFields}_{$dk}',
+									'triggerId':['{$fields.textFields}_{$dk}'],
+									'alignId':'{$fields.textFields}_{$dk}',
+									'hms':'off',
+									'format':'-'
+								}
+								xvDate(opts);
+							</script>
+                        {/foreach}
+                    {/if}
+                {elseif $fields.chooseForm eq 'textarea'}
+                    <textarea name="{$fields.textFields}" cols="{$fields.cols}" rows="{$fields.rows}">{$fields.titles_centents}</textarea>  
+                {elseif $fields.chooseForm eq 'select'}  
+                    <select name="{$fields.textFields}">
+                        <option value="0" selected="selected">{$lang.Please_select}</option>
+                    {foreach from=$fields.selectList item=selectList}
+                        <option value="{$selectList}" {if $fields.titles_centents eq $selectList}selected="selected"{/if}>{$selectList}</option>
+                    {/foreach}
+                    </select>    
+                {elseif $fields.chooseForm eq 'radio'}   
+                    {foreach from=$fields.radioCheckboxForm item=radio key=rc_k}
+                    <label><input name="{$fields.textFields}" type="radio" value="{$radio.radioCheckbox}" {if $fields.titles_centents eq $radio.radioCheckbox}checked="checked"{else}{if $rc_k eq 0}checked="checked"{/if}{/if} />&nbsp;{$radio.radioCheckbox}</label>
+                    {/foreach}
+                {elseif $fields.chooseForm eq 'checkbox'}   
+                    {foreach from=$fields.radioCheckboxForm item=checkbox key=rc_k}
+                    <label><input name="{$fields.textFields}" type="checkbox" value="{$radio.radioCheckbox}"  {if $fields.titles_centents eq $checkbox.radioCheckbox}checked="checked"{else}{if $rc_k eq 0}checked="checked"{/if}{/if} />&nbsp;{$checkbox.radioCheckbox}</label>
+                    {/foreach}    
+                {/if}
+                <div class="org">{$fields.formSpecial}</div>
+                <div class="verify" id="{$fields.textFields}"></div>
+            </div>
+        </div>
+        {/foreach}
+     	<!--以上是自定义基本信息，以下是固定信息-->
+        <div class="item">
+            <div class="label">
+                <em>*</em>
+                <span>{$lang.Expected_store_type}：</span>
+            </div>
+            <div class="value">
+                <select id="shoprz_type" class="select" name="ec_shoprz_type" onChange="get_shoprz_type(this.value,4,'#shopSellerType');">
+                <option value="0" {if $title.parentType.shoprz_type eq 0}selected="selected"{/if}>{$lang.all_option}</option>
+                <option value="1" {if $title.parentType.shoprz_type eq 1}selected="selected"{/if}>{$lang.flagship_store}</option>
+                <option value="2" {if $title.parentType.shoprz_type eq 2}selected="selected"{/if}>{$lang.exclusive_shop}</option>
+                <option value="3" {if $title.parentType.shoprz_type eq 3}selected="selected"{/if}>{$lang.franchised_store}</option>
+                </select>
+                
+                <font style="color:#F00" id="shoprz_Html"></font>
+                
+                <select id="subShoprz_type" class="select2" name="ec_subShoprz_type" onChange="get_show_hide(this.value,4,'#subShoprz_type');" style="display:{if $title.parentType.shoprz_type eq 1}block{else}none{/if};">
+                <option value="0" {if $title.parentType.subShoprz_type eq 0}selected="selected"{/if}>{$lang.all_option}</option>
+                <option value="1" {if $title.parentType.subShoprz_type eq 1}selected="selected"{/if}>{$lang.subShoprz_type.0}</option>
+                <option value="2" {if $title.parentType.subShoprz_type eq 2}selected="selected"{/if}>{$lang.subShoprz_type.1}</option>
+                <option value="3" {if $title.parentType.subShoprz_type eq 3}selected="selected"{/if}>{$lang.subShoprz_type.2}</option>
+                </select>
+                
+                <font style="color:#F00" id="subShoprz_Html"></font>
+                
+                <div class="shopType" id="shopSellerType1" style="display:{if $title.parentType.shoprz_type eq 1}block{else}none{/if}">
+                    <div class="item-item" id="subShoprz_type1" style="display:{if $title.parentType.subShoprz_type eq 1}block{else}none{/if};">
+                        <span class="orange">{$lang.subShoprz_type_desc}</span>
+                    </div>
+                    <div class="item-item" style="display:{if $title.parentType.subShoprz_type eq 2}block{else}none{/if};" id="subShoprz_type2">
+                        <div class="item-warp"><span>{$lang.subShoprz_type_one}：</span><a class="link-blue" href="http://seller.shop.jd.com/apply/getQualificationTemplate.action?_t=164" target="_blank" style="display:none">{$lang.subShoprz_type_two}</a></div>
+                        <div class="item-warp">
+                            <div class="word">{$lang.License_validity_period}：</div>
+                            <input id="shop_expireDateStart" class="text text-2 jdate narrow" type="text" size="20" readonly value="{$title.parentType.shop_expireDateStart}" name="ec_shop_expireDateStart"> &mdash; 
+                            <input id="shop_expireDateEnd" class="text text-2 jdate narrow" type="text" size="20" readonly value="{$title.parentType.shop_expireDateEnd}" name="ec_shop_expireDateEnd" >
+                            <label><input type="checkbox" id="authorizeCheckBox" value="1" name="ec_shop_permanent" onClick="get_authorizeCheckBox(this, 'shop_expireDateStart', 'shop_expireDateEnd','{$title.parentType.shop_expireDateStart}','{$title.parentType.shop_expireDateEnd}');" {if $title.parentType.shop_permanent eq 1}checked{/if}>&nbsp;永久</label>
+                        </div>
+                        <div class="item-warp" id="container2">
+                        	<div class="word">{$lang.upload_file}：</div>
+                            <div class="item-con">
+                            	<input name="ec_authorizeFile" type="file">{if $title.parentType.authorizeFile}&nbsp;&nbsp;<a href="{$title.parentType.authorizeFile}" target="_blank">{$lang.view}</a>{/if}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item-item" style="display: {if $title.parentType.subShoprz_type eq 3}block{else}none{/if};" id="subShoprz_type3">
+						<div class="item-warp">
+                        	<div class="word" style="width:auto;">{$lang.ec_shop_hypermarketFile}：</div>
+                            <div id="container1" class="item-con">
+                                <input name="ec_shop_hypermarketFile" type="file">{if $title.parentType.shop_hypermarketFile}&nbsp;&nbsp;<a href="{$title.parentType.shop_hypermarketFile}" target="_blank">{$lang.view}</a>{/if}
+                            </div>
+                    </div>
+                </div>
+                <div style="display: {if $title.parentType.shoprz_type eq 2}block{else}none{/if}; clear:both;" id="shopSellerType2" class="orange">
+                     {$lang.parentType_shoprz_type}
+                </div>
+                <div style="display: {if $title.parentType.shoprz_type eq 3}block{else}none{/if}; clear:both;" id="shopSellerType3" class="orange">
+                    {$lang.parentType_shoprz_type_one}
+                </div>
+            </div>
+        </div>
+    </div>
+        <div class="view-sample" style="display:none">
+            <div class="img-wrap">
+                <img width="180" height="180" alt="" src="http://seller.shop.jd.com/common/images/ruzhu/x_1.jpg">
+            </div>
+            <div class="t-c mt10">
+                <a class="link-blue" target="_blank" href="http://seller.shop.jd.com/common/images/ruzhu/1.jpg">{$lang.View_larger}</a>
+            </div>
+        </div>
+	</div>        
+</div>
+
+<script type="text/javascript">
+$(function(){
+	var shoprz_type = document.getElementById('shoprz_type');// 期望店铺类型
+	
+	if({$title.parentType.shoprz_type} == 0){
+		
+		if(shoprz_type.value != 0){
+			shoprz_type.value = 0;
+		} 
+	}
+	
+	if({$title.parentType.shop_permanent} == 1){
+		document.getElementById('authorizeCheckBox').checked = true;
+	}
+});
+
+function get_show_hide(val,num,idType){
+	
+	var subShoprz = document.getElementById('subShoprz_type');
+	var subShoprz_Html = document.getElementById('subShoprz_Html');
+	
+	if(subShoprz.style.display == 'block'){
+		if(val == 0){
+			subShoprz_Html.innerHTML = merchants_step_error_three;
+		}else{
+			subShoprz_Html.innerHTML = '';
+		}
+	}
+	
+	for(i=1; i<num; i++){
+		if(val != i){
+			$(idType + i).hide();
+		}else{
+			$(idType + val).show();
+		}
+	}
+}
+
+function get_shoprz_type(val,num,idType){
+	
+	var shoprz_Html = document.getElementById('shoprz_Html');//  主营类目
+	if(val == 0){
+		shoprz_Html.innerHTML = merchants_step_error_one;
+	}else{
+		shoprz_Html.innerHTML = '';
+	}
+	
+	if(val == 1){
+		$('#subShoprz_type').show();
+	}else{
+		$('#subShoprz_type').hide();
+	}
+	
+	get_show_hide(val,num,idType);
+}
+
+//时间选择
+var opts = {
+	'targetId':'shop_expireDateStart',
+	'triggerId':['shop_expireDateStart'],
+	'alignId':'shop_expireDateStart',
+	'format':'-'
+},opts2 = {
+	'targetId':'shop_expireDateEnd',
+	'triggerId':['shop_expireDateEnd'],
+	'alignId':'shop_expireDateEnd',
+	'format':'-'
+}
+xvDate(opts);
+xvDate(opts2);
+</script>

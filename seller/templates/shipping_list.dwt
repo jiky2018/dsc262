@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+		{include file ='library/seller_menu_left.lbi'}
+		<div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+				{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+				<!-- start payment list -->
+                <div class="list-div" id="listDiv">
+                <table class="ecsc-default-table mt20">
+                	<thead>
+                        <tr>
+                            <th width="12%" class="tl pl10">{$lang.shipping_name}</th>
+                            <th width="35%" class="tl pl10">{$lang.shipping_desc}</th>
+                            <th width="6%">{$lang.insure}</th>
+                            <th width="6%">{$lang.support_cod}</th>
+							<th width="10%">支持快递鸟打印</th>
+                            <th width="5%">{$lang.sort_order}</th>
+                            <th width="15%">{$lang.handler}</th>
+                        </tr>
+                    </thead>
+					<tbody>
+                    {foreach from=$modules item=module}
+                    {if ($seller_shopinfo.ru_id>0 && $module.install == 1 && $module.code != 'cac') || $seller_shopinfo.ru_id==0}
+                        <tr>
+                            <td class="tl pl10">{$module.name}</td>
+                            <td class="tl pl10">{$module.desc}</td>
+                            <td align="center">{$module.insure_fee}</td>
+                            <td align='center'>{if $module.cod==1}{$lang.yes}{else}{$lang.no}{/if}</td>
+							<td align="center">{if $module.kdniao_print==1}是{else}否{/if}</td>
+                            <td align="center" valign="top"> {if $module.install == 1} <span>{$module.shipping_order}</span> {else} &nbsp; {/if} </td>
+                            <td align="center" nowrap="true">
+                                {if $module.install == 1}
+                                    {if $kdniao_account_use && $module.kdniao_print == 1}
+                                        <a href="javascript:void(0);" ectype="account_setting" data-id="{$module.id}" data-code="{$module.code}">快递鸟帐号设置</a>
+                                    {/if}
+                                    <a href="shipping.php?act=edit_print_template&shipping={$module.id}">{$lang.shipping_print_edit}</a>
+                                {else}
+                                    未启用
+                                {/if}
+                            </td>
+                        </tr>
+                    {/if}
+                    {foreachelse}
+                    	<tr><td class="no-records" colspan="11">{$lang.no_records}&nbsp;&nbsp;请您完善<a href="index.php?act=merchants_first">店铺基本信息设置</a></td></tr>
+                    {/foreach}
+               		</tbody>
+                </table>
+        		</div>
+        	</div>
+    	</div>
+	</div>
+</div>
+<!-- end payment list -->
+
+{include file ='library/seller_footer.lbi'}
+<script type="Text/Javascript" language="JavaScript">
+<!--
+{literal}
+
+onload = function()
+{
+    // 开始检查订单
+    startCheckOrder();
+}
+{/literal}
+//-->
+</script>
+
+    {insert_scripts files="jquery.purebox.js"}
+    <script type="text/javascript">
+    //帐号设置
+    $(document).on('click', "*[ectype='account_setting']", function(){
+        var id = $(this).data('id');
+        $.jqueryAjax('shipping.php', 'act=account_setting&id='+id, function(data){
+            var content = data.content;
+            pb({
+                id:"setting_dialog",
+                title:'帐号设置',
+                width:500,
+                content:content,
+                ok_title:"确定",
+                cl_title:"取消",
+                drag:true,
+                foot:true,
+                onOk:function(){
+                    save_account();
+                }
+            });     
+        })
+    })
+    //保存设置
+    function save_account(){
+        var obj = $("#setting_dialog");
+    var this_data = obj.find("form").serialize();
+        $.jqueryAjax('shipping.php', this_data, function(data){
+      pbDialog('设置成功', '', 1);
+        }, 'post')
+    }
+
+  //帐号申请
+  $(document).on('click', "*[ectype='account_apply']", function(){
+    var id = $(this).data('id');
+    $.jqueryAjax('shipping.php', 'act=account_apply&id='+id, function(data){
+      var content = data.content;
+      pb({
+        id:"apply_dialog",
+        title:'客户号申请',
+        width:700,
+        content:content,
+        ok_title:"确定",
+        cl_title:"取消",
+        drag:true,
+        foot:true,
+        onOk:function(){
+          submit_account();
+        }
+      });   
+    })
+  })
+  //提交申请
+  function submit_account(){
+    var obj = $("#apply_dialog");
+    var this_data = obj.find("form").serialize();
+    $.jqueryAjax('shipping.php', this_data, function(data){
+      if(data.error == 1){
+        pbDialog("提交申请失败", data.message, 0);
+      }else{
+        pbDialog("提交申请成功", '', 1);
+      }
+    }, 'post')
+  }
+    </script>   
+</body>
+</html>

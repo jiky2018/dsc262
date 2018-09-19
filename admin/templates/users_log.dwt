@@ -1,0 +1,99 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="users.php?act=list" class="s-back">{$lang.back}</a>{$lang.08_members} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.log.0}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<!--商品分类列表-->
+                <div class="common-head">
+                    <div class="refresh{if !$action_link} ml0{/if}">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+                </div>
+                <div class="common-content">
+                    <form method="post" action="users.php" name="listForm" onsubmit="return confirm(remove_log_confirm);">
+                	<div class="list-div" id="listDiv">
+                        {/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                            <thead>
+                                <tr>
+                                    <th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars"></label></div></th>
+                                    <th width="5%"><div class="tDiv">{$lang.record_id}</div></th>
+                                    <th width="30%"><div class="tDiv">{$lang.handle_time}</div></th>
+                                    <th width="30%"><div class="tDiv">{$lang.change_type}</div></th>、
+                                    <th width="12%"><div class="tDiv">{$lang.ip_address}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.change_city}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.logon_service}</div></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {foreach from=$user_log item=log}
+                            	<tr>
+                                    <td class="sign"><div class="tDiv"><input type="checkbox" name="checkboxes[]" class="checkbox" value="{$log.log_id}" id="checkbox_{$log.log_id}" /><label for="checkbox_{$log.log_id}" class="checkbox_stars"></label></div></td>
+                                    <td><div class="tDiv">{$log.log_id}</div></td>
+                                    <td>
+                                        <div class="tDiv">
+                                            <p>{$log.change_time}</p>
+                                            <p>{$log.admin_name}</p>
+                                        </div>
+                                    </td>
+                                    <td><div class="tDiv">{$lang.change_type_user.$log.change_type}</div></td>
+                                    <td><div class="tDiv">{$log.ip_address}</div></td>
+                                    <td><div class="tDiv">{$log.change_city}</div></td>
+                                    <td><div class="tDiv">{$log.logon_service}</div></td>
+                                </tr>
+                                {foreachelse}
+                                <tr><td class="no-records" colspan="12">{$lang.no_records}</td></tr>
+                                {/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="12">
+                                        <div class="tDiv">
+                                        	<div class="tfoot_btninfo">
+                                                <input name="act" type="hidden" value="batch_log" />
+                                                <input name="user_id" type="hidden" value="{$user_id}" />
+                                                
+                                                <input name="remove" type="submit" ectype="btnSubmit" value="{$lang.drop}" class="btn btn_disabled" disabled />
+                                            </div>
+                                            <div class="list-page">
+                                                {include file="library/page.lbi"}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        {if $full_page}
+                    </div>
+                    </form>
+                </div>
+            </div>
+	   </div>
+	</div>
+    {include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+
+    listTable.recordCount = {$record_count|default:0};
+    listTable.pageCount = {$page_count|default:1};
+    listTable.query = 'users_log_query';
+
+    {foreach from=$filter item=item key=key}
+    listTable.filter.{$key} = '{$item}';
+    {/foreach}
+    $(".ps-container").perfectScrollbar();
+    </script>     
+</body>
+</html>
+{/if}

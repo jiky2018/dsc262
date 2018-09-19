@@ -1,0 +1,122 @@
+{include file="admin_pageheader"}
+
+<div class="wrapper">
+    <div class="title">会员 - {if $user_name} {$user_name}的下级{/if}会员列表 </div>
+        <div class="content_tips">
+            <div class="tabs_info">
+                <ul>
+                  {foreach $select as $key=>$val}
+                  <li {if $current_level == $val} class="curr"{/if}><a href="{url('drp_aff_list', array('auid' => $auid, 'level' => $val))}">推荐等级{$val}</a></li>
+                  {/foreach}
+                </ul>
+            </div>
+            <div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4><span id="explanationZoom" title="收起提示"></span></div>
+                <ul>
+                    <li>显示下线会员信息，非分销商信息, 需要开启推荐分成。</li>
+                    <li>搜索支持 当前推荐等级列表下的会员名。</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-head">
+                    <div class="fl">
+                    </div>
+                    <div class="search">
+                        <form action="{url('drp_aff_list')}" method="post">
+                             <div class="input">
+                                 <input type="text" placeholder="会员名" name="keyword"  class="text nofocus" autocomplete="off">
+                                 <input type="hidden" name="auid" value="{$auid}">
+                                 <input type="hidden" name="level" value="{$current_level}">
+                                 <input type="submit" name="export" value="" class="btn"  style="font-style:normal">
+                             </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="common-content">
+                    <div class="list-div" id="listDiv">
+                        <table cellpadding="0" cellspacing="0" border="0">
+                            <thead>
+                                <tr>
+                                  <th><div class="tDiv">编号</div></th>
+                                  <th><div class="tDiv">会员名称</div></th>
+                                  <th><div class="tDiv">推荐等级</div></th>
+                                  <th><div class="tDiv">邮件地址</div></th>
+                                  <th><div class="tDiv">邮箱验证</div></th>
+                                  <th><div class="tDiv">可用资金</div></th>
+                                  <th><div class="tDiv">冻结资金</div></th>
+                                  <th><div class="tDiv">等级积分</div></th>
+                                  <th><div class="tDiv">消费积分</div></th>
+                                  <th><div class="tDiv">注册日期</div></th>
+                                  <th><div class="tDiv text-center">操作</div></th>
+                                </tr>
+                            </thead>
+                            {if $user_list}
+                            {foreach $user_list as $key=>$val}
+                            <tr>
+                                <td><div class="tDiv">{$val.user_id}</div></td>
+                                <td><div class="tDiv">{$val.user_name}</div></td>
+                                <td><div class="tDiv">{$val.level}</div></td>
+                                <td><div class="tDiv">{$val.email}</div></td>
+                                <td><div class="tDiv">{if $val.is_validated == 1}已验证{else}未验证{/if}</div></td>
+                                <td><div class="tDiv">{$val.user_money}</div></td>
+                                <td><div class="tDiv">{$val.frozen_money}</div></td>
+                                <td><div class="tDiv">{$val.rank_points}</div></td>
+                                <td><div class="tDiv">{$val.pay_points}</div></td>
+                                <td><div class="tDiv">{$val.reg_time}</div></td>
+                                <td class="handle text-center">
+                                    <div class="tDiv a4">
+                                        <a href="{$val['edit_url']}" class="btn_edit"><i class="fa fa-edit"></i>编辑</a>
+                                        <a href="{$val['address_list']}" class="btn_see" title=""><i class="sc_icon sc_icon_see"></i>收货地址</a>
+                                        <a href="{$val['order_list']}" class="btn_see" title=""><i class="sc_icon sc_icon_see"></i>查看订单</a>
+                                        <a href="{$val['account_log']}" class="btn_see" title=""><i class="sc_icon sc_icon_see"></i>查看账目明细</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {/foreach}
+                            {else}
+                            <tbody>
+                            <tr><td class="no-records" colspan="11">没有找到任何记录</td></tr>
+                            </tbody>
+                            {/if}
+                             <tfoot>
+                                <tr>
+                                    <td colspan="11">
+                                        <div class="list-page">
+                                            {include file="admin_pageview"}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $("#explanationZoom").on("click",function(){
+        var explanation = $(this).parents(".explanation");
+        var width = $(".content_tips").width();
+        if($(this).hasClass("shopUp")){
+            $(this).removeClass("shopUp");
+            $(this).attr("title","收起提示");
+            explanation.find(".ex_tit").css("margin-bottom",10);
+            explanation.animate({
+                width:width
+            },300,function(){
+                $(".explanation").find("ul").show();
+            });
+        }else{
+            $(this).addClass("shopUp");
+            $(this).attr("title","提示相关设置操作时应注意的要点");
+            explanation.find(".ex_tit").css("margin-bottom",0);
+            explanation.animate({
+                width:"118"
+            },300);
+            explanation.find("ul").hide();
+        }
+    });
+
+</script>
+{include file="admin/footer"}

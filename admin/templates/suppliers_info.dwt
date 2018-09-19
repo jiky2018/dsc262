@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$lang.10_priv_admin} - {$ur_here}</div>
+            <div class="content">
+            <div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.info.0}</li>
+                    <li>{$lang.operation_prompt_content_common}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="mian-info">
+                    <form method="post" action="suppliers.php" name="theForm" enctype="multipart/form-data"  id="agency_form">
+                        <div class="switch_info user_basic" style="display:block;">
+                            <div class="item">
+                                <div class="label">{$lang.require_field}&nbsp;{$lang.label_suppliers_name}</div>
+                                <div class="label_value">
+                                    <input type="text" name='suppliers_name' value='{$suppliers.suppliers_name}' class="text" autocomplete="off" id="suppliers_name"/>
+                                    <div class="form_prompt"></div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.label_suppliers_desc}</div>
+                                <div class="label_value">
+                                    <textarea class="textarea" name="suppliers_desc" id="role_describe">{$suppliers.suppliers_desc}</textarea>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.label_admins}</div>
+                                <div class="label_value">
+                                    <div class="checkbox_items">
+                                        {foreach from=$suppliers.admin_list item=admin}
+                                        <div class="checkbox_item">
+                                            {if $admin.type eq "other"}<span class="red">*</span>{/if}
+                                            <input type="checkbox" value="{$admin.user_id}" name="admins[]" class="ui-checkbox" id="checked_{$admin.user_id}" {if $admin.type eq "this"}checked="checked"{/if} />
+                                            <label for="checked_{$admin.user_id}" class="ui-label">{$admin.user_name}</label>
+                                        </div>
+                                        {/foreach}
+                                        <div class="notic m20">{$lang.notice_admins}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="item">
+                                <div class="label">&nbsp;</div>
+                                <div class="label_value info_btn">
+                                    <a href="javascript:;" class="button" id="submitBtn">{$lang.button_submit}</a>
+                                    <input type="hidden" name="act" value="{$form_action}" />
+                                    <input type="hidden" name="id" value="{$suppliers.suppliers_id}" />
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+     {include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+    //滚动轴
+    $(".move_list").perfectScrollbar();
+
+    $(function(){
+        $("#submitBtn").click(function(){
+            if($("#agency_form").valid()){
+                $("#agency_form").submit();
+            }
+        });
+
+        $('#agency_form').validate({
+            errorPlacement:function(error, element){
+				var error_div = element.parents('div.label_value').find('div.form_prompt');
+				element.parents('div.label_value').find(".notic").hide();
+				error_div.append(error);
+			},
+            rules : {
+                suppliers_name : {
+                    required : true
+                }
+            },
+            messages : {
+                suppliers_name : {
+                    required : '<i class="icon icon-exclamation-sign"></i>'+no_suppliers_name
+                }
+            }
+        });
+    });
+    </script>
+</body>
+</html>

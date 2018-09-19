@@ -1,0 +1,59 @@
+    {if $shipping_area.shipping_code =='ems' || $shipping_area.shipping_code =='yto' || $shipping_area.shipping_code =='zto' || $shipping_area.shipping_code =='sto_express' || $shipping_area.shipping_code =='post_mail' || $shipping_area.shipping_code =='sf_express' || $shipping_area.shipping_code =='post_express' }
+    <div class="item">
+        <div class="label">{$lang.fee_compute_mode}：</div>
+        <div class="label_value">
+            <div class="checkbox_items">
+                <div class="checkbox_item">
+                    <input type="radio" class="ui-radio" id="fee_by_weight" {if $fee_compute_mode != 'by_number' }checked="true"{/if} onclick="compute_mode('{$shipping_area.shipping_code}','weight')" name="fee_compute_mode" value="by_weight"  />
+                    <label for="fee_by_weight" class="ui-radio-label">{$lang.fee_by_weight}</label>
+                </div>
+                <div class="checkbox_item">
+                    <input type="radio" class="ui-radio" id="fee_by_number" {if $fee_compute_mode == 'by_number'}checked="true"{/if}  onclick="compute_mode('{$shipping_area.shipping_code}','number')" name="fee_compute_mode" value="by_number"  />
+                    <label for="fee_by_number" class="ui-radio-label">{$lang.fee_by_number}</label>
+                </div>
+            </div>
+        </div>
+    </div>
+  {/if}
+    <!--{if $shipping_area.shipping_code != 'cac'}-->
+    {foreach from=$fields item=field}
+    <!--{if $fee_compute_mode == 'by_number'}-->
+       <!--{if $field.name == 'item_fee' || $field.name == 'free_money' || $field.name == 'pay_fee'}-->
+            <div class="item" id="{$field.name}">
+                <div class="label">{$lang.require_field}&nbsp;{$field.label}：</div>
+                <div class="label_value">
+                    <input type="text" name="{$field.name}" value="{$field.value}" class="text" autocomplete="off"/>
+                    <div class="form_prompt"></div>
+                </div>
+            </div>
+            <!--{else}-->
+            <div class="item" id="{$field.name}" style="display:none">
+                <div class="label">{$lang.require_field}&nbsp;{$field.label}：</div>
+                <div class="label_value">
+                    <input type="text" name="{$field.name}" value="{$field.value}" class="text" autocomplete="off"/>
+                    <div class="form_prompt"></div>
+                </div>
+            </div>
+        <!--{/if}-->
+    <!--{else}-->
+        <!--{if $field.name != 'item_fee'}-->
+            <div class="item" id="{$field.name}">
+                <div class="label">{$lang.require_field}&nbsp;{$field.label}：</div>
+                <div class="label_value">
+                    <input type="text" name="{$field.name}" value="{$field.value}" class="text" autocomplete="off"/>
+                    <div class="form_prompt"></div>
+                </div>
+            </div>
+        <!--{else}-->
+             <div class="item" id="{$field.name}" style="display:none">
+                <div class="label">{$lang.require_field}&nbsp;{$field.label}：</div>
+                <div class="label_value">
+                    <input type="text" name="{$field.name}" value="{$field.value}" class="text" autocomplete="off"/>
+                    <div class="form_prompt"></div>
+                </div>
+            </div>
+        <!--{/if}-->
+     <!--{/if}-->
+    {/foreach}
+<!--{/if}-->
+<input name="return_data" value="{$return_data|default:0}" type="hidden"  id="return_data"/>

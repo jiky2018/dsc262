@@ -1,0 +1,2335 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<!-- #BeginLibraryItem "/library/js_languages_new.lbi" --><!-- #EndLibraryItem -->
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/css/user.css">
+<link rel="stylesheet" type="text/css" href="../js/perfect-scrollbar/perfect-scrollbar.min.css" />
+</head>
+
+<body>
+<!-- #BeginLibraryItem "/library/page_header_common.lbi" --><!-- #EndLibraryItem -->
+<div class="user-content clearfix">
+    <div class="user-side" ectype="userSide">
+        <!-- {if $action neq 'default'} -->
+        <div class="user-perinfo-ny">
+            <div class="profile clearfix">
+                <div class="avatar">
+                    <a href="user.php" class="u-pic">
+                        <img src="{if $user_default_info.user_picture}{$user_default_info.user_picture}{else}themes/<?php echo $GLOBALS['_CFG']['template']; ?>/images/touxiang.jpg{/if}" alt="">
+                    </a>
+                </div>
+                <div class="name">
+                    <h2>{$user_default_info.nick_name}</h2>
+					{if $user_default_info.special_rank}
+                    <div class="">{$user_default_info.rank_name}</div>
+					{else}
+					<div class="user-rank user-rank-{$user_default_info.rank_sort|default:1}">{$user_default_info.rank_name}</div>
+					{/if}
+                </div>
+            </div>
+        </div>
+        <!--{/if}-->
+        <!-- {if $action eq 'default'} -->
+        <div class="user-mod user-perinfo">
+            <div class="profile clearfix">
+                <div class="avatar">
+                    <a href="user.php?act=profile" class="u-pic">
+                        <img src="{if $info.user_picture}{$info.user_picture}{else}themes/<?php echo $GLOBALS['_CFG']['template']; ?>/images/touxiang.jpg{/if}" alt="">
+                    </a>
+                </div>
+                <div class="name">
+                    <h2>{$info.nick_name}</h2>
+                    {if $user_default_info.special_rank}
+                    <div class="">{$user_default_info.rank_name}</div>
+                    {else}
+                    <div class="user-rank user-rank-{$user_default_info.rank_sort|default:1}">{$user_default_info.rank_name}</div>
+                    {/if}
+                </div>
+            </div>
+            <div class="account">
+                <div class="item clearfix">
+                    <div class="item-name">账户资料：</div>
+                    <div class="item-main">
+                        <b class="integrity"><em style="width: {$security_rating.Percentage}%;"></em></b><span>{$security_rating.Percentage}%</span>
+                    </div>
+                </div>
+                <div class="item clearfix">
+                    <div class="item-name">账户安全：</div>
+                    <div class="item-main safe">
+                        <a href="user.php?act=account_safe" class="iconfont icon-email {if $validate.email_validate}active{/if}"><span class="tip">{if $validate.email_validate}邮箱已验证{else}邮箱未验证{/if}</span></a>
+                        <a href="user.php?act=account_safe" class="iconfont icon-see {if $validate.real_id}active{/if}"><span class="tip">{if $validate.real_id}实名认证已完成{else}实名认证未完成{/if}</span></a>
+                        <a href="user.php?act=account_safe" class="iconfont icon-password active"><span class="tip">密码已设置</span></a>
+                        <a href="user.php?act=account_safe" class="iconfont icon-mobile-phone {if $validate.mobile_phone}active{/if}"><span class="tip">{if $validate.mobile_phone}手机已验证{else}手机未验证{/if}</span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--{/if}-->
+        <div class="user-mod">
+            <!-- #BeginLibraryItem "/library/user_menu.lbi" --><!-- #EndLibraryItem -->
+        </div>
+    </div>
+    <div class="user-main" ectype="userMain" data-action="{if $action eq 'default'}default{else}noDefault{/if}">
+        <!-- {if $action neq 'default'} -->
+        <div class="user-crumbs hide">
+            <!-- #BeginLibraryItem "/library/ur_here.lbi" --><!-- #EndLibraryItem -->
+        </div>
+        <!--{/if}-->
+
+        <!--#用户中心首页 start -->
+        <!--{if $action eq 'default'} -->
+        <ul class="user-index-order-statu clearfix">
+            <li>
+                <a href="user.php?act=order_list&order_type=toBe_pay">
+                <div class="circle"><i class="iconfont icon-columns"></i></div>
+                <div class="info">
+                    <p>{$lang.piad_not}</p>
+                    <div class="num">{$pay_count}</div>
+                </div>
+                </a>
+            </li>
+            <li>
+                <a href="user.php?act=order_list&order_type=toBe_confirmed">
+                <div class="circle"><i class="iconfont icon-truck-alt"></i></div>
+                <div class="info">
+                    <p>{$lang.receipt_not}</p>
+                    <div class="num">{$to_confirm_order}</div>
+                </div>
+                </a>
+            </li>
+            <li>
+                <a href="user.php?act=comment_list">
+                <div class="circle"><i class="iconfont icon-edit"></i></div>
+                <div class="info">
+                    <p>{$lang.comment_not}</p>
+                    <div class="num">{$signNum}</div>
+                </div>
+                </a>
+            </li>
+            <li>
+                <a href="user.php?act=order_list&order_type=toBe_finished">
+                <div class="circle"><i class="iconfont icon-complete"></i></div>
+                <div class="info">
+                    <p>{$lang.cs.102}</p>
+                    <div class="num">{$to_finished}</div>
+                </div>
+                </a>
+            </li>
+        </ul>
+        <ul class="user-index-wallet clearfix">
+            <li>
+                <div class="words"></div>
+                <div class="info info-line">
+                    <a href="user.php?act=account_log">{$info.surplus}</a>
+                </div>
+            </li>
+            <li>
+                <div class="words"></div>
+                <div class="info info-line">
+                    <a href="user.php?act=bonus">{$lang.bonus_user}（<span class="red">{$info.bonus_count}</span>）</a>
+                    
+                </div>
+            </li>
+            <li>
+                <div class="words"></div>
+                <div class="info">
+                    <a href="user.php?act=coupons">优惠券（<span class="red">{$coupons.num}</span>）</a><br>
+                    <div class="num"><a href="coupons.php?act=coupons_index" target="_blank" class="line">领券</a></div>
+                </div>
+            </li>
+            <li>
+                <div class="words"></div>
+                <div class="info info-line">
+                    <a href="user.php?act=value_card">储值卡（<span class="red">{$value_card.num}</span>）</a>
+                </div>
+            </li>
+            <li>
+                <div class="words"></div>
+                <div class="info info-line"><a href="user.php?act=account_log">{$info.integral}</a></div>
+            </li>
+        </ul>
+        <div class="user-mod">
+            <div class="user-section">
+                <div class="user-title">
+                    <h2>我的订单</h2>
+                    <a href="user.php?act=order_list" class="more">{$lang.see_all_order}</a>
+                </div>
+                <div class="user-index-order-list">
+                    {foreach from=$order_list item=order}
+                    <div class="tr">
+                        <div class="td td-goods">
+                            {foreach from=$order.goods item=goods name=name}
+                            {assign var="order_goods_num" value=$smarty.foreach.name.iteration}
+							{if $smarty.foreach.name.total gt 1}
+                                {if $goods.og_extension_code neq 'package_buy'}
+                                	{if $smarty.foreach.name.index lt 4}
+                                    <div class="c-img"><a href="{$goods.url}"><img src="{if $goods.goods_thumb}{$goods.goods_thumb}{else}{$order.no_picture}{/if}" alt=""></a></div>
+                                    {/if}
+                                {else}
+                                    <div class="c-img"><a href="./package.php"><img src="{if $goods.goods_thumb}./data/gallery_album/package_goods_default.jpg{else}{$order.no_picture}{/if}" alt=""></a></div> 
+                                {/if}
+							{else}
+                                {if $goods.og_extension_code neq 'package_buy'}
+                                    <div class="c-img"><a href="{$goods.url}"><img src="{if $goods.goods_thumb}{$goods.goods_thumb}{else}{$order.no_picture}{/if}" alt=""></a></div>
+                                {else}
+                                    <div class="c-img"><a href="./package.php"><img src="{if $goods.goods_thumb}./data/gallery_album/package_goods_default.jpg{else}{$order.no_picture}{/if}" alt=""></a></div> 
+                                {/if}
+								<div class="c-info">{$goods.goods_name}</div>
+							{/if}
+                            {/foreach}
+                            
+                            {if $order_goods_num gt 4}
+                            <div class="ellipsis">....</div>
+                            {/if}
+                        </div>
+                        <div class="td td-price">{$order.total_fee}</div>
+                        <div class="td td-name">{$order.consignee}</div>
+                        <div class="td td-statu">{$order.order_status}</div>
+                        <div class="td td-handle">
+                            <a href="user.php?act=order_detail&order_id={$order.order_id}" class="sc-btn">{$lang.order_detail}</a>
+                        </div>
+                    </div>
+                    {foreachelse}
+                    <div class="no_records">
+                        <i class="no_icon"></i>
+                        <div class="no_info no_info_line">
+                            <h3>{insert name='get_page_no_records' filename=$filename act=$action}</h3>
+                            <div class="no_btn">
+                                <a href="index.php" class="sc-btn sc-red-btn">去逛商城</a>
+                            </div>
+                        </div>
+                    </div>
+                    {/foreach}
+                </div>
+            </div>
+            
+            <div class="user-section">
+                <div class="user-title">
+                    <h2>{$lang.Recent_collection}</h2>
+                    <a href="user.php?act=collection_list" class="more">{$lang.see_all_Collection}</a>
+                </div>
+                <div class="user-index-collection-list">
+                    {foreach from=$collection_goods item=goods}
+                    <div class="tr">
+                        <div class="td td-goods">
+                            <a href="{$goods.url}" class="img"><img src="{$goods.goods_thumb}" alt=""></a>
+                            <a href="{$goods.url}" class="name">{$goods.goods_name}</a>
+                        </div>
+                        <div class="td td-price">
+                            {if $goods.promote_price neq ''}
+                                {$goods.promote_price}
+                            {else}
+                                {$goods.shop_price}
+                            {/if}
+                        </div>
+                        <div class="td td-shop">
+                            <a href="{$goods.shop_url}" class="name">{$goods.shop_name}</a>
+                            {if $goods.is_IM eq 1 || $goods.is_dsc}
+                            <a id="IM" onclick="openWin(this)" href="javascript:;" goods_id="{$goods.goods_id}" class="iconfont icon-kefu user-shop-kefu"></a>
+                            {else}
+                                {if $goods.kf_type eq 1}
+                                <a href="http://www.taobao.com/webww/ww.php?ver=3&touid={$order.kf_ww}&siteid=cntaobao&status=1&charset=utf-8" class="iconfont icon-kefu user-shop-kefu" target="_blank"></a>
+                                {else}
+                                <a href="http://wpa.qq.com/msgrd?v=3&uin={$order.kf_qq}&site=qq&menu=yes" class="iconfont icon-kefu user-shop-kefu" target="_blank"></a>
+                                {/if}
+                            {/if}
+                        </div>
+                        <div class="td td-handle"><a href="{$goods.url}" class="sc-btn">立即购买</a></div>
+                    </div>
+                    {foreachelse}
+                    <div class="no_records">
+                        <i class="no_icon"></i>
+                        <div class="no_info">
+                            <h3>主人，您近期还没有收藏商品呦~</h3>
+                        </div>
+                    </div>
+                    {/foreach}
+                </div>
+            </div>
+            {if $collection_goods}{/if}
+            {if $guess_goods}
+            <div class="user-section">
+                <div class="user-title">
+                    <h2>{$lang.guess_love}</h2>
+                </div>
+                <ul class="user-goods-list clearfix">
+                    <!-- {foreach from=$guess_goods item=goods} -->
+                    <li>
+                        <a href="{$goods.url}" class="img"><img src="{$goods.goods_thumb}" alt=""></a>
+                        <a href="" class="title">{$goods.short_name}</a>
+                        <div class="price">{$goods.shop_price}</div>
+                    </li>
+                    <!--{/foreach}-->
+                </ul>
+            </div>    
+            {/if}
+            {if $helpart_list}
+            <div class="user-section">
+                <div class="user-title">
+                    <h2>{$lang.calendar_help}</h2>
+                </div>
+                <ul class="user-help-list clearfix">
+                    {foreach from=$helpart_list item=help}
+                    <li><a href="{$help.url}" class="ftx-05" target="_blank">{$help.title}</a></li>
+                    {/foreach}
+                </ul>
+            </div>
+            {/if}
+        </div>
+        <!--{/if}-->
+        <!--#用户中心首页 end -->
+
+        <!--#缺货登记页面 start -->
+        <!--{if $action eq 'booking_list'} -->
+        <div class="user-mod">
+            <div class="user-title">
+                <h2>{$lang.label_booking}</h2>
+            </div>
+            <div class="user-booking-list">
+                <!-- {foreach from=$booking_list item=item} -->
+                <dl class="item">
+                    <dt class="item-t">
+                        <div class="t-handle">
+                            <a href="javascript:void(0);" ectype="goods_del_booking" data-url="user.php?act=act_del_booking&id={$item.rec_id}" class="sc-btn">取消订购</a>
+                        </div>
+                        <a href="{$item.url}" class="t-img"><img src="{$item.goods_thumb}" alt=""></a>
+                        <div class="t-info">
+                            <div class="info-name"><a href="{$item.url}">{$item.goods_name}</a></div>
+                            <p class="info-num">订购数量：<span class="red">{$item.goods_number}</span></p>
+                        </div>
+                    </dt>
+                    <dd class="item-c">
+                        <div class="fl">处理备注：<span class="ftx-05">{$item.dispose_note}</span></div>
+                        <div class="fr">{$item.booking_time}</div>
+                    </dd>
+                </dl>
+                <!--{foreachelse}-->
+                <div class="no_records">
+                    <i class="no_icon"></i>
+                    <div class="no_info"><h3>{insert name='get_page_no_records' filename=$filename act=$action}</h3></div>
+                </div>
+                <!--{/foreach}-->
+            </div>
+        </div>
+        <!--{/if}-->
+        <!--#缺货登记页面 end -->
+        
+        <!--#缺货登记页面 -->
+        <!--{if $action eq 'add_booking'} -->
+        <div class="user-mod">
+            <div class="user-title">
+                <h2>{$lang.label_booking}</h2>
+            </div>
+            <form action="user.php" method="post" class="user-form" name="formBooking" id="formBooking">
+                <div class="form-row">
+                    <div class="form-label">{$lang.booking_goods_name}：</div>
+                    <div class="form-value">{$info.goods_name}</div>
+                </div>
+                <div class="form-row">
+                    <div class="form-label"><em class="red">*</em>{$lang.booking_amount}：</div>
+                    <div class="form-value">
+                        <input name="number" type="text" value="{$info.goods_number}" class="form-input" />
+                        <div class="form_prompt"></div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-label"><em class="red">*</em>{$lang.describe}：</div>
+                    <div class="form-value">
+                    <textarea name="desc" cols="80" rows="20" wrap="virtual" class="textarea">{$goods_attr}{$info.goods_desc|escape}</textarea>
+                    <div class="form_prompt"></div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-label"><em class="red">*</em>{$lang.contact_username}：</div>
+                    <div class="form-value"><input name="linkman" type="text" value="{$info.consignee|escape}" size="25"  class="form-input"/><div class="form_prompt"></div></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-label"><em class="red">*</em>{$lang.email_address}：</div>
+                    <div class="form-value"><input name="email" type="text" value="{$info.email|escape}" size="25" class="form-input" /><div class="form_prompt"></div></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-label"><em class="red">*</em>{$lang.contact_phone}：</div>
+                    <div class="form-value"><input name="tel" type="text" value="{$info.tel|escape}" size="25" class="form-input" /><div class="form_prompt"></div></div>
+                </div>
+                <div class="form-btn-wp">
+                    <input name="act" type="hidden" value="act_add_booking" />
+                    <input name="id" type="hidden" value="{$info.id}" />
+                    <input name="rec_id" type="hidden" value="{$info.rec_id}" />
+                    <input type="submit" name="submit" class="form-btn" value="{$lang.submit_booking_goods}" id="submitBtn" />
+                    <input type="reset" name="reset" class="form-btn form-btn-gray" value="{$lang.button_reset}" />
+                </div>
+            </form>
+        </div>	
+        <!-- {/if} -->
+        <!-- #缺货登记页面 end-->			
+        
+        <!-- 我的收藏界面 start-->
+        <!--{if $action eq 'collection_list' ||  $action eq 'store_list'||  $action eq 'focus_brand'}-->
+        <div class="user-mod">
+            <div class="user-title">
+                <h2>我的收藏</h2>
+                <ul class="tabs">
+                    <li {if $action eq 'collection_list'}class="active"{/if}><a href="user.php?act=collection_list">{$lang.Collection_goods}</a></li>
+                    <li {if $action eq 'store_list'}class="active"{/if}><a href="user.php?act=store_list">{$lang.store_list}</a></li>
+                    <li {if $action eq 'focus_brand'}class="active"{/if}><a href="user.php?act=focus_brand">关注品牌</a></li>
+                </ul>
+            </div>
+            <div class="collection-list-warp clearfix c-tab-box-ajax">
+                <!--{if $action eq 'collection_list'} -->
+                <!-- #BeginLibraryItem "/library/collection_goods_list.lbi" --><!-- #EndLibraryItem -->
+                <!--{elseif $action eq 'store_list'} -->
+                <!-- #BeginLibraryItem "/library/collection_store_list.lbi" --><!-- #EndLibraryItem -->
+                <!--{elseif $action eq 'focus_brand'} -->
+                <!-- #BeginLibraryItem "/library/collection_brands_list.lbi" --><!-- #EndLibraryItem -->
+                <!--{/if} -->
+            </div>
+            
+            {if $count > $size}
+            <div class="clearfix" id="pages_ajax">
+                <div class="pages">{$pager}</div>
+            </div>
+            {/if}
+            
+        </div>			
+        <!-- {/if} -->
+        <!-- #我的收藏界面 end-->
+
+        <!-- 关注品牌 start-->
+        <!--{if $action eq 'focus_brand'}-->
+        
+        <!--{/if}-->
+        <!--关注品牌 end-->	
+        
+        <!-- 我的留言界面 start-->
+        <!--{if $action eq 'message_list'}-->
+        <div class="user-mod">
+            <div class="user-title">
+                <h2>意见建议</h2>
+            </div>
+            <div class="user-message-warp clearfix">
+                <form action="user.php" method="post" enctype="multipart/form-data" name="formMsg">
+                    <div class="user-items">
+                        <!--{if $order_info}-->
+                        <div class="item">
+                            <div class="label">{$lang.order_number}：</div>
+                            <div class="value value-checkbox">
+                                <div class="txt-lh"><a href="{$order_info.url}"><img src="images/note.gif" style="margin-top:-3px;"/>&nbsp;&nbsp;{$order_info.order_sn}</a></div>
+                            </div>
+                        </div>    
+                        <input name="msg_type" type="hidden" value="5" />
+                        <input name="order_id" type="hidden" value="{$order_info.order_id}" />
+                        <!--{else}-->
+                        <div class="item">
+                            <div class="label"><em class="red">*</em>&nbsp;{$lang.message_type}：</div>
+                            <div class="value">
+                                <div class="radio-item">
+                                    <input type="radio" checked="" name="msg_type" class="ui-radio" id="checkbox-message" value="0">
+                                    <label for="checkbox-message" class="ui-radio-label">{$lang.type[0]}</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="msg_type" class="ui-radio" id="checkbox-complaint" value="1">
+                                    <label for="checkbox-complaint" class="ui-radio-label">{$lang.type[1]}</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="msg_type" class="ui-radio" id="checkbox-ask" value="2">
+                                    <label for="checkbox-ask" class="ui-radio-label">{$lang.type[2]}</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="msg_type" class="ui-radio" id="checkbox-customer" value="3">
+                                    <label for="checkbox-customer" class="ui-radio-label">{$lang.type[3]}</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="msg_type" class="ui-radio" id="checkbox-buy" value="4">
+                                    <label for="checkbox-buy" class="ui-radio-label">{$lang.type[4]}</label>
+                                </div>
+                            </div>
+                        </div>
+                        <!--{/if}-->
+                        <div class="item">
+                            <div class="label"><em class="red">*</em>&nbsp;{$lang.message_title}：</div>
+                            <div class="value">
+                                <input type="text" name="msg_title" class="text text-2">
+                                <div class="form_prompt"></div>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="label"><em class="red">*</em>&nbsp;{$lang.message_content}：</div>
+                            <div class="value">
+                                <textarea name="msg_content" class="textarea textarea2"></textarea>
+                                <div class="form_prompt"></div>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="label">&nbsp;</div>
+                            <div class="value">
+                                <div class="value-file">
+                                    <input type="button" class="sc-btn sc-redBg-btn" value="{$lang.Select_file}">
+                                    <input type="text" name="textfield" id="textfield" class="txt">
+                                    <input type="file" name="message_img" class="file" id="fileField" size="28" onchange="document.getElementById('textfield').value=this.value">
+                                </div>
+                                <span class="remind">{$lang.message_type_list}，附件大小不得超过{$upload_size_limit}。</span>
+                            </div>
+                        </div>
+                        <!--{if $enabled_captcha}-->
+                        <div class="item">
+                            <div class="label"><em class="red">*</em>&nbsp;{$lang.comment_captcha}：</div>
+                            <div class="item-value">
+                            	<div class="captcha_input">
+                                    <input type="text" class="text w100" id="captcha" name="captcha">
+                                    <img src="captcha_verify.php?captcha=is_common&{$rand}" alt="captcha" class="captcha_img" onClick="this.src='captcha_verify.php?captcha=is_common&'+Math.random()" data-key="captcha_common" />
+                                </div>
+								<div class="form_prompt"></div>
+                            </div>
+                        </div>
+                        <!--{/if}-->
+                        <div class="item item-button">
+                            <div class="label">&nbsp;</div>
+                            <div class="value">
+								{if $is_order eq 1}
+								<input type="hidden" name="is_order" value="1" />
+								{/if}
+                                <input type="hidden" name="act" value="act_add_message" />
+                                <input type="submit" class="sc-btn sc-redBg-btn" value="{$lang.submit_goods}" id="pingjia_form">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!--{if $message_list}-->
+            <div class="user-title">
+                <h2>{$lang.label_message}</h2>
+				<ul class="tabs">
+                    <li {if $is_order eq 0}class="active"{/if}><a href="user.php?act=message_list">普通留言</a></li>
+                    {if $is_have_order}<li {if $is_order eq 1}class="active"{/if}><a href="user.php?act=message_list&is_order=1">订单留言</a></li>{/if}
+                </ul>
+            </div>
+            <div class="user-message-list"> 
+                <!--{foreach from=$message_list item=message key=key name=message} -->
+                <div class="m-item{if $smarty.foreach.message.last} last{/if}">
+                    <div class="u-ico"><img src="{if $user_id}{if $user_info.user_picture}{$user_info.user_picture}{else}themes/<?php echo $GLOBALS['_CFG']['template']; ?>/images/touxiang.jpg{/if}{else}themes/<?php echo $GLOBALS['_CFG']['template']; ?>/images/avatar.png{/if}"></div>
+                    <div class="ud-right">
+                        <div class="m-tit">
+                            <h3>{$message.msg_title}</h3>
+                            <span>
+                                {if $message.msg_type eq '留言' || $message.msg_type eq '投诉' || $message.msg_type eq '询问' || $message.msg_type eq '售后' || $message.msg_type eq '求购'}
+                                {$message.msg_type}
+                                {else}
+                                留言
+                                {/if}
+                            </span>
+							{if $is_order eq 1}<div class="fl ml5">订单号:{$message.order_sn}</div>{/if}
+                            <div class="fr">
+								{if $is_order eq 1}
+									<a href="user.php?act=del_msg&amp;id={$key}&amp;is_order=1&amp;order_id={$message.order_id}" onclick="if (!confirm('{$lang.confirm_remove_msg}')) return false;" class="ftx-05 fr ml0">{$lang.drop}</a>
+								{else}
+									<a href="user.php?act=del_msg&amp;id={$key}&amp;order_id={$message.order_id}" onclick="if (!confirm('{$lang.confirm_remove_msg}')) return false;" class="ftx-05 fr ml0">{$lang.drop}</a>
+								{/if}
+                                <em class="mr10">{$message.msg_time}</em>
+                            </div>
+                        </div>
+                        <div class="txt">{$message.msg_content}</div>
+                        <!-- {if $message.message_img} 如果上传了图片-->
+                        <div class="fr">
+                            <a href="data/feedbackimg/{$message.message_img}" {if $message.message_type eq 1}class="nyroModal"{/if}>{$lang.view_upload_file}</a>
+                        </div>
+                        <!--{/if}-->
+                        <!-- {if $message.re_msg_content} -->
+                        <div class="txt">
+                            <a href="mailto:{$message.re_user_email}" target="_bank" class="ftx-03" >{$lang.shopman_reply}</a> ({$message.re_msg_time})<br />
+                            {$message.re_msg_content}
+                        </div>
+                        <!-- {/if} -->
+                    </div>
+                </div>
+                <!--{/foreach}-->
+            </div>
+            <!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+            <!--{/if}-->
+        </div>
+        <!-- {/if} -->
+        <!-- #我的留言界面 end-->	
+        
+        <!-- 我的推荐界面 start-->
+        <!--{if $action eq 'affiliate'}-->
+        <div class="user-mod">
+            <div class="user-title">
+                <h2>推荐流程及方式</h2>
+            </div>
+            <div class="affiliate-step-warp clearfix">
+                    <div class="a-items">
+                    <div class="a-item">
+                            <div class="a-item-info">
+                            <i class="item-icon item-icon-1"></i>
+                            <span>1 会员发送推荐码</span>
+                        </div>
+                        <i class="iconfont icon-right"></i>
+                    </div>
+                    <div class="a-item">
+                            <div class="a-item-info">
+                            <i class="item-icon item-icon-2"></i>
+                            <span>2 访问者访问平台</span>
+                        </div>
+                        <i class="iconfont icon-right"></i>
+                    </div>
+                    <div class="a-item">
+                            <div class="a-item-info">
+                            <i class="item-icon item-icon-3"></i>
+                            <span>3 访问者注册/购买</span>
+                        </div>
+                        <i class="iconfont icon-right"></i>
+                    </div>
+                    <div class="a-item">
+                            <div class="a-item-info">
+                            <i class="item-icon item-icon-4"></i>
+                            <span>4 会员获得佣金提成</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="affiliate-mode">
+                    <div class="mode-item">
+                            <div class="tit mt10">
+                            <span class="type">方式一</span>
+                            <strong>邀请链接</strong>
+                        </div>
+                        <div class="cont">
+                            <div class="aff-form">
+                                <textarea class="aff-textarea" name="" id="affTextarea" value='{$shopurl}?u={$userid}'>{$shopurl}?u={$userid}</textarea>
+                                <div id="clip_container" class="fr relative">
+                                    <a href="javascript:void(0);" class="sc-btn sc-redBg-btn" id="clip_button">{$lang.code_copy}</a>
+                                </div>
+                            </div>
+                            <p>把专属你的邀请链接发给你的好友，好友打开此接接后系统会默认输入你的邀请码</p>
+                        </div>
+                    </div>
+                    <!--<div class="mode-item">
+                            <div class="tit mt20">
+                            <span class="type">方式二</span>
+                            <strong>分享到</strong>
+                        </div>
+                        <div class="cont">
+                            <div class="c-item">
+                                    <i class="c-item-i c-item-i-1"></i>
+                                <span>朋友圈</span>
+                            </div>
+                            <div class="c-item">
+                                    <i class="c-item-i c-item-i-2"></i>
+                                <span>QQ好友</span>
+                            </div>
+                            <div class="c-item">
+                                    <i class="c-item-i c-item-i-3"></i>
+                                <span>新浪微博</span>
+                            </div>
+                            <div class="c-item">
+                                    <i class="c-item-i c-item-i-4"></i>
+                                <span>QQ空间</span>
+                            </div>
+                            <div class="c-item">
+                                    <i class="c-item-i c-item-i-5"></i>
+                                <span>微信好友</span>
+                            </div>
+                        </div>
+                    </div>-->
+                </div>
+            </div>
+            <div class="user-title">
+                <h2>{$lang.affiliate_member}</h2>
+            </div>
+            <div class="affiliate-list-warp clearfix">
+                    <table class="user-table user-table-baitiao">
+                    <colgroup>
+                        <col width="214">
+                        <col width="214">
+                        <col width="214">
+                        <col>
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th class="tc">{$lang.affiliate_lever}</th>
+                            <th>{$lang.affiliate_num}</th>
+                            <th>{$lang.level_point}（%）</th>
+                            <th>{$lang.level_money}（%）</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- {foreach from=$affdb key=level item=val name=affdb} -->
+                        <tr>
+                            <td class="tc">{$level}</td>
+                            <td class="tc">{$val.num}</td>
+                            <td class="tc">{$val.point}</td>
+                            <td class="tc">{$val.money}</td>
+                        </tr>
+                        <!-- {/foreach} -->
+                    </tbody>
+                </table>
+            </div>
+            <!-- {if $logdb} -->
+            <div class="user-title">
+                <h2>{$lang.Split_rule}</h2>
+            </div>
+            <div class="affiliate-list-warp clearfix">
+                    <table class="user-table user-table-baitiao">
+                    <colgroup>
+                        <col width="214">
+                        <col width="214">
+                        <col width="214">
+                        <col>
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th class="tc">{$lang.order_number}</th>
+                            <th>{$lang.affiliate_money}</th>
+                            <th>{$lang.affiliate_point}</th>
+                            <th>{$lang.affiliate_mode}</th>
+                            <th>{$lang.affiliate_status}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- {foreach from=$logdb item=val name=logdb} -->
+                        <tr>
+                            <td class="tc">{$val.order_sn}</td>
+                            <td class="tc">{$val.money}</td>
+                            <td class="tc">{$val.point}</td>
+                            <td class="tc"><!-- {if $val.separate_type == 1 || $val.separate_type === 0} -->{$lang.affiliate_type.$val.separate_type}<!-- {else} -->{$lang.affiliate_type.$affiliate_type}<!-- {/if} --></td>
+                            <td class="tc">{$lang.affiliate_stats[$val.is_separate]}</td>
+                        </tr>
+                        <!-- {/foreach} -->
+                    </tbody>
+                </table>
+            </div>
+            <!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+            <!-- {/if} -->
+        </div>			
+        <!-- {/if} -->
+        <!-- #我的推荐界面 end-->	
+        
+        <!-- 我的评论界面 start-->
+        <!--{if $action eq 'comment_list'}-->
+        <div class="user-mod">
+            <div class="user-title">
+                <h2>{$lang.comment_list}</h2>
+                <ul class="tabs">
+                    <li {if $sign == 0}class="active"{/if}><a href="user.php?act=comment_list">{$lang.stay_evaluate_goods}({$signNum0})</a></li>
+                    <li {if $sign == 1}class="active"{/if}><a href="user.php?act=comment_list&sign=1">{$lang.stay_add_file}({$signNum1})</a></li>
+                    <li {if $sign == 2}class="active"{/if}><a href="user.php?act=comment_list&sign=2">{$lang.Already_evaluated}({$signNum2})</a></li>
+                </ul>
+            </div>
+            <div class="comment-list-warp clearfix">
+                <div class="user-order-list">
+                    <!-- {if $comment_list} -->
+                    <!--{foreach from=$comment_list item=item name=foo}-->
+                    <dl class="item">
+                        <dt class="item-t">
+                        <div class="t-statu">{if $sign eq 0}{$lang.comment_not}{elseif $sign eq 1}{$lang.stay_add_file}{else $sign eq 2}{$lang.Already_evaluated}{/if}</div>
+                        <div class="t-info">
+                            <span class="info-item">{$lang.order_number}：{$item.order_sn}</span>
+                            <span class="info-item">{$item.add_time}</span>
+                            <span class="info-item"></span>
+                        </div>
+                        <div class="t-price">{$item.goods_price}</div>
+                        </dt>
+                        <dd class="item-c">
+                            <div class="c-left">
+                                <div class="c-goods">
+                                    <div class="c-img"><a href="{$item.goods_url}" target="_blank" title="{$item.goods_name}"><img src="{$item.goods_thumb}" alt=""></a></div>
+                                    <div class="c-info">
+                                        <div class="info-name"><a href="{$item.goods_url}" target="_blank" title="{$item.goods_name}">{$item.goods_name}</a></div>
+                                        <div class="info-price"><b>{$item.goods_price}</b><i>×</i><span>{$item.goods_number}</span></div>
+                                        <div class="info-attr">{if $item.goods_attr} [{$item.goods_attr}]{/if}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="c-handle">
+                                <a href="javascript:void(0);" class="sc-btn" ectype="btn-comment" data-foot="{if $item.comment.comment_id > 0 && $item.comment.img_list}false{else}true{/if}" data-recid="{$item.rec_id}" data-sign="{$sign}">{if $sign eq 0}{$lang.Click_review}{elseif $sign eq 1}{$lang.Continue_bask_single}{else $sign == 2}{$lang.comment_see}{/if}</a>
+                                <a href="user.php?act=order_detail&order_id={$item.order_id}" target="_blank" class="sc-btn">{$lang.order_detail}</a>
+                            </div>
+                        </dd>
+                    </dl>
+                    <!--{/foreach}-->
+                    <script type="text/javascript">
+                       {foreach from=$lang.cmt_lang item=item key=key}
+                       var {$key} = "{$item}";
+                       {/foreach}
+                            
+                       {if $sign eq 0}
+                       $("input[name='comment_rank']").val(0);
+                       {/if}
+                    </script>
+                    <!-- {else} -->
+                    <div class="no_records">
+                        <i class="no_icon_two"></i>
+                        <div class="no_info no_info_line">
+                            {if $smarty.get.sign eq 0}
+                                <h3>{insert name='get_page_no_records' filename=$filename act='comment_list_0'}</h3>
+                                <div class="no_btn"><a href="index.php" class="sc-btn">去逛商城</a></div>
+                            {elseif $smarty.get.sign eq 1}
+                                <h3>{insert name='get_page_no_records' filename=$filename act='comment_list_1'}</h3>
+                                <div class="no_btn"><a href="user.php?act=comment_list" class="sc-btn">全部评价/晒单</a></div>
+                            {elseif $smarty.get.sign eq 2}
+                                <h3>{insert name='get_page_no_records' filename=$filename act='comment_list_2'}</h3>
+                                <div class="no_btn"><a href="user.php?act=comment_list" class="sc-btn">全部评价/晒单</a></div>
+                            {/if}
+                        </div>
+                    </div>
+                    <!-- {/if} -->
+                </div>
+                <!--{if $comment_list}-->
+                    <!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+                <!--{/if}-->
+            </div>
+        </div>			
+        <!-- {/if} -->
+        <!-- #我的评论界面 end-->
+        
+        <!-- 已晒单评论、满意度界面 start-->
+        <!--{if $action eq 'commented_view'}-->
+        <div class="user-mod">
+            <div class="user-title">
+                <h2>{$lang.comment_list}</h2>
+            </div>
+            <div class="comment-list-warp clearfix">
+                <div class="user-order-list">
+                    <!-- {if $order_goods} -->
+                    <!--{foreach from=$order_goods item=item}-->
+                    <dl class="item">
+                        <dt class="item-t">
+                        <div class="t-statu">{if $sign eq 0}{$lang.comment_not}{elseif $sign eq 1}{$lang.stay_add_file}{else $sign eq 2}{$lang.Already_evaluated}{/if}</div>
+                        <div class="t-info">
+                            <span class="info-item">{$lang.order_number}：{$item.order_sn}</span>
+                            <span class="info-item">{$item.add_time}</span>
+                            <span class="info-item"></span>
+                        </div>
+                        <div class="t-price">{$item.goods_price}</div>
+                        </dt>
+                        <dd class="item-c">
+                            <div class="c-left">
+                                <div class="c-goods">
+                                    <div class="c-img"><a href="goods.php?id={$item.goods_id}" target="_blank" title="{$item.goods_name}"><img src="{$item.goods_thumb}" alt=""></a></div>
+                                    <div class="c-info">
+                                        <div class="info-name"><a href="goods.php?id={$item.goods_id}" target="_blank" title="{$item.goods_name}">{$item.goods_name}</a></div>
+                                        <div>{if $item.goods_attr} [{$item.goods_attr}]{/if}</div>
+                                        <div class="info-price"><b>{$item.goods_price}</b><i>×</i><span>{$item.goods_number}</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="c-handle">
+                                <a href="javascript:void(0);" class="sc-btn" ectype="btn-comment" data-foot="{if $item.comment.comment_id > 0 && $item.comment.img_list}false{else}true{/if}" data-recid="{$item.rec_id}" data-sign="{$sign}">
+                                    <!--{if $item.comment.comment_id > 0}-->
+                                    {if $item.comment.img_list}{$lang.comment_see}{else}{$lang.comment_again}{/if}
+                                    <!--{else}-->
+                                    {$lang.comment_add}
+                                    <!--{/if}-->
+                                </a>
+                                <a href="user.php?act=order_detail&order_id={$item.order_id}" target="_blank" class="sc-btn">{$lang.order_detail}</a>
+                            </div>
+                        </dd>
+                    </dl>
+                    <!--{/foreach}-->
+                    <script type="text/javascript">
+                       {foreach from=$lang.cmt_lang item=item key=key}
+                       var {$key} = "{$item}";
+                       {/foreach}
+                       
+                       {if $sign eq 0}
+                       $("input[name='comment_rank']").val(0);
+                       {/if}
+                    </script>
+                    <!-- {else} -->
+                    
+                    <div class="no_records">
+                        <i class="no_icon_two"></i>
+                        <div class="no_info">
+                            <h3>{$lang.order_Prompt}</h3>
+                        </div>
+                    </div>
+                    <!-- {/if} -->
+                </div>
+                {if $shop_info.ru_id > 0}
+                <div class="votelist">
+                    <div class="title">{$lang.Satisfaction_evaluation}</div>
+                    <div class="votelist-content">
+                        <div class="service-lcol">
+                            <div class="service-lcol-cont">
+                                <div class="shopper-img"><a href="{$merch_cmt.store_url}"><img width="100" height="100" src="{$shop_info.logo_thumb}" alt=""></a></div>
+                                <div class="shopper-info">
+                                    <div class="shopper-msg">
+                                        <h3>{$shop_info.shop_name}
+                                            {if $shop_information.is_IM eq 1 || $shop_information.is_dsc}
+                                            <a id="IM" onclick="openWin(this)" href="javascript:;" goods_id="{$goods.goods_id}" class="p-kefu"><i class="iconfont icon-kefu"></i></a>
+                                            {else}
+                                            {if $basic_info.kf_type eq 1}
+                                            <a href="http://www.taobao.com/webww/ww.php?ver=3&touid={$basic_info.kf_ww}&siteid=cntaobao&status=1&charset=utf-8" class="p-kefu" target="_blank"><i class="iconfont icon-kefu"></i></a>
+                                            {else}
+                                            <a href="http://wpa.qq.com/msgrd?v=3&uin={$basic_info.kf_qq}&site=qq&menu=yes" class="p-kefu" target="_blank"><i class="iconfont icon-kefu"></i></a>
+                                            {/if}
+                                            {/if}
+                                        </h3>    
+                                        <p>{$lang.phone}：{if $shop_info.kf_tel}{$shop_info.kf_tel}{else}{$lang.No_comment}{/if}</p>
+                                    </div>
+                                    <div class="shopper-name">
+                                        <div class="item">
+                                            <strong>综合</strong>
+                                            <span>{$merch_cmt.cmt.all_zconments.score}</span>
+                                        </div>
+                                        <div class="item">
+                                            <span>商品</span>
+                                            <span>{$merch_cmt.cmt.commentRank.zconments.score}</span>
+                                        </div>
+                                        <div class="item">
+                                            <span>服务</span>
+                                            <span>{$merch_cmt.cmt.commentServer.zconments.score}</span>
+                                        </div>
+                                        <div class="item">
+                                            <span>发货</span>
+                                            <span>{$merch_cmt.cmt.commentDelivery.zconments.score}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="service-rcol">
+                        {if $degree_count == 0}
+                        <div class="score">
+                            <dl class="ev-list">
+                                <dt><em>*</em>{$lang.product_desc}</dt>
+                                <dd ectype="rates">
+                                    <span class="commstar" ectype="p_rate">
+                                        <a href="javascript:;" data-value="1" class="star1"></a>
+                                        <a href="javascript:;" data-value="2" class="star2"></a>
+                                        <a href="javascript:;" data-value="3" class="star3"></a>
+                                        <a href="javascript:;" data-value="4" class="star4"></a>
+                                        <a href="javascript:;" data-value="5" class="star5"></a>
+                                    </span>
+                                    <input type="hidden" name="desc_rank" value="0">
+                                    <span class="degree-text" style="display: none;"><em ectype="number">0</em>分</span>
+                                    <span class="comt-error" style="display: none;">{$lang.Please_rate}</span>
+                                </dd>
+                            </dl>
+                            <dl class="ev-list">
+                                <dt><em>*</em>{$lang.seller_fwtd}</dt>
+                                <dd ectype="rates">
+                                    <span class="commstar" ectype="p_rate">
+                                        <a href="javascript:;" data-value="1" class="star1"></a>
+                                        <a href="javascript:;" data-value="2" class="star2"></a>
+                                        <a href="javascript:;" data-value="3" class="star3"></a>
+                                        <a href="javascript:;" data-value="4" class="star4"></a>
+                                        <a href="javascript:;" data-value="5" class="star5"></a>
+                                    </span>
+                                    <input type="hidden" name="service_rank" value="0">
+                                    <span class="degree-text" style="display: none;"><em ectype="number">0</em>分</span>
+                                    <span class="comt-error" style="display: none;">{$lang.Please_rate}</span>
+                                </dd>
+                            </dl>
+                            <dl class="ev-list">
+                                <dt><em>*</em>{$lang.logistics_speed}</dt>
+                                <dd ectype="rates">
+                                    <span class="commstar" ectype="p_rate">
+                                        <a href="javascript:;" data-value="1" class="star1"></a>
+                                        <a href="javascript:;" data-value="2" class="star2"></a>
+                                        <a href="javascript:;" data-value="3" class="star3"></a>
+                                        <a href="javascript:;" data-value="4" class="star4"></a>
+                                        <a href="javascript:;" data-value="5" class="star5"></a>
+                                    </span>
+                                    <input type="hidden" name="delivery_rank" value="0">
+                                    <span class="degree-text" style="display: none;"><em ectype="number">0</em>分</span>
+                                    <span class="comt-error" style="display: none;">{$lang.Please_rate}</span>
+                                </dd>
+                            </dl>
+                            <dl class="ev-list">
+                                <dt><em>*</em>{$lang.logistics_senders}</dt>
+                                <dd ectype="rates">
+                                    <span class="commstar" ectype="p_rate">
+                                        <a href="javascript:;" data-value="1" class="star1"></a>
+                                        <a href="javascript:;" data-value="2" class="star2"></a>
+                                        <a href="javascript:;" data-value="3" class="star3"></a>
+                                        <a href="javascript:;" data-value="4" class="star4"></a>
+                                        <a href="javascript:;" data-value="5" class="star5"></a>
+                                    </span>
+                                    <input type="hidden" name="sender_rank" value="0">
+                                    <span class="degree-text" style="display: none;"><em ectype="number">0</em>分</span>
+                                    <span class="comt-error" style="display: none;">{$lang.Please_rate}</span>
+                                </dd>
+                            </dl>
+                            <div class="op-btn"><a href="javascript:void(0);" class="sc-btn sc-redBg-btn" ectype="storeRateBtn" data-orderid="{$order_id}">{$lang.submit_goods}</a></div>
+                        </div>
+                        {else}
+                        <h3><s class="icon-02"></s><span>{$lang.comments_think}</span></h3>
+                        {/if}
+                    </div>
+                    </div>
+                </div>
+                {/if}
+            </div>
+        </div>            
+        <!-- {/if} -->
+        <!-- 已晒单评论、满意度界面 end-->
+
+        <!-- 我的提货界面 start-->
+        <!-- {if $action eq 'take_list'} -->
+        <div class="user-mod">
+            <div class="user-title">
+                <h2>{$lang.take_list}</h2>
+            </div>
+            <div class="take-list-warp clearfix">
+                <!-- {if $take_list} -->
+                <!--{foreach from=$take_list item=take}-->
+                <div class="tl-item">
+                    <div class="item-t">
+                            <div class="t-goods">
+                            <div class="t-img"><a href="goods.php?id={$take.goods_id}" target="_blank"><img src="{if $take.goods_thumb}{$take.goods_thumb}{/if}"></a></div>
+                            <div class="t-info">
+                                <div class="info-name"><a href="goods.php?id={$take.goods_id}" class="ftx-03" target="_blank">{$take.goods_name}</a></div>
+                                <div class="info-sku">{$lang.card_number_label}：{$take.gift_sn}</div>
+                            </div>
+                        </div>
+                        <div class="t-statu">{if $take.status eq 1}{$lang.cs.101}{elseif $take.status eq 2}<a onclick="if (confirm('{$lang.confirm_received}'))location.href='user.php?act=confim_goods&take_id={$take.gift_gard_id}'" class="sc-btn">确认收货</a>{else}完成{/if}</div>
+                    </div>
+                    <div class="item-f">
+                        <div class="f-left">{$lang.gift_address}：{$take.address}</div>
+                        <div class="f-right">{$take.user_time}</div>
+                    </div>
+                </div>
+                <!--{/foreach}-->
+                <!-- {else} -->
+                <div class="no_records">
+                    <i class="no_icon_two"></i>
+                    <div class="no_info">
+                        <h3>{insert name='get_page_no_records' filename=$filename act=$action}</h3>
+                    </div>
+                </div>
+                <!-- {/if} -->
+            </div>
+        </div>			
+        <!--{/if}-->	
+        <!-- 我的提货界面 end-->
+        
+        <!-- 交易纠纷 start-->
+        <!-- {if $action eq 'complaint_list'} -->
+        <div class="user-mod">
+            <div class="user-title">
+                <h2>{$lang.transaction_disputes}</h2>
+                <ul class="tabs" ectype="dispute-tabs">
+                    <li {if $is_complaint eq 0}class="active"{/if}><a href="user.php?act=complaint_list">{$lang.may_apply_order}</a></li>
+                    <li {if $is_complaint eq 1}class="active"{/if}><a href="user.php?act=complaint_list&is_complaint=1">{$lang.already_apply_order}</a></li>
+                </ul>
+            </div>
+            <div class="dispute-content" ectype="dispute-content">
+                <div class="user-order-list user-dispute-list">
+				{foreach from=$orders item=order}
+                    <dl class="item">
+                        <dt class="item-t">
+						{if $is_complaint eq 1}<div class="t-statu">{$lang.complaint_state.$order.complaint_state}{if $order.has_talk eq 1}<span class="red">--未读信息</span>{/if}</div>{/if}
+                            <div class="t-info">
+                                <span class="info-item">{$lang.order_number}：{$order.order_sn}</span>
+                                <span class="info-item">{$order.order_time}</span>
+                                <span class="info-item">{$order.consignee}</span>
+                                <span class="info-item">
+                                    <a href="{$order.shop_url}" class="user-shop-link">{$order.shop_name}</a>
+                                    {if $order.is_IM eq 1 || $order.is_dsc}
+									<a id="IM" onclick="openWin(this)" href="javascript:;" ru_id="{$order.ru_id}"  class="iconfont icon-kefu user-shop-kefu"></a>
+									{else}
+									{if $order.kf_type eq 1}
+									<a href="http://www.taobao.com/webww/ww.php?ver=3&touid={$order.kf_ww}&siteid=cntaobao&status=1&charset=utf-8" class="iconfont icon-kefu user-shop-kefu" target="_blank"></a>
+									{else}
+									<a href="http://wpa.qq.com/msgrd?v=3&uin={$order.kf_qq}&site=qq&menu=yes" class="iconfont icon-kefu user-shop-kefu" target="_blank"></a>
+									{/if}
+									{/if}
+                                </span>
+                            </div>
+							<div class="t-price">{$order.total_fee}</div>
+                        </dt>
+                        <dd class="item-c">
+                            <div class="c-left">
+								{foreach from=$order.order_goods item=goods name=foo}
+                                <div class="c-goods">
+									<div class="c-img"><a href="{$goods.url}"><img src="{if $goods.goods_thumb}{$goods.goods_thumb}{else}{$order.no_picture}{/if}" alt=""></a></div>
+									
+                                    <div class="c-info">
+										<div class="o-info-lm">
+											{if $goods.extension_code eq 'package_buy'}
+											{$goods.goods_name|truncate:30}
+											<span class="red">{$lang.remark_package}</span>
+											{else}
+											<a href="{$goods.url}" class="info-name" target="_blank" title="{$goods.goods_name}">{$goods.goods_name}</a>
+											{if $goods.trade_id}<a href="user.php?act=trade&tradeId={$goods.trade_id}&snapshot=true" class="trade_snapshot" target="_blank">[{$lang.trade_snapshot}]</a>{/if}
+											{/if}
+										</div>
+										<div class="info-price"><b>{$goods.goods_price}</b><i>×</i><span>{$goods.goods_number}</span></div>
+									</div>
+                                </div>
+								{/foreach}
+                            </div>
+                            <div class="c-handle">
+								{if $is_complaint eq 0}
+                                <a href="user.php?act=complaint_apply&order_id={$order.order_id}" class="sc-btn">申请交易纠纷</a>
+								{else}
+								<a href="user.php?act=complaint_apply&complaint_id={$order.is_complaint}" class="sc-btn">查看详情</a>
+								{if $order.complaint_state eq 4}
+								<a href="javascript:void();" ectype="del_compalint" data-id="{$order.is_complaint}" class="sc-btn">删除</a>
+								{/if}
+								{/if}
+							</div>
+                        </dd>
+                    </dl>
+					{foreachelse}
+					<div class="no_records">
+						<i class="no_icon"></i>
+						<div class="no_info">
+							<h3>
+								{$no_records}
+							</h3>
+						</div>
+					</div>
+					{/foreach}
+                </div>
+                <!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+            </div> 
+        </div>
+		<script type="text/javascript">
+		 $("*[ectype='del_compalint']").on("click", function () {
+			 var _this = $(this);
+			 var id = _this.data("id");
+			 if(confirm("确定删除吗？")){
+				 Ajax.call('ajax_user.php?act=del_compalint', 'compalint_id=' + id, function(data){
+					 if(data.error == 1){
+						pbDialog(data.message,"",0);
+					 }else{
+						_this.parents(".item").remove();
+					 }
+				 }, 'POST', 'JSON');
+			 }
+		 })     
+		</script>
+        <!--{/if}-->
+        <!-- 交易纠纷 end-->
+		
+        <!-- 交易纠纷详情 start-->
+        <!-- {if $action eq 'complaint_apply'} -->
+		<div class="user-mod">
+            <div class="user-title">
+                <h2>{$lang.apply_disputes_order}</h2>
+            </div>
+			{if $complaint_id neq 0}
+			<div class="view-dis-order">
+                <div class="ii-section iis-state">
+                    <div class="stepflex">
+                        <dl class="first active"><dt></dt><dd>{$lang.complaint_state.0}</dd></dl>
+                        <dl {if $complaint_info.complaint_state gt 0}class="active"{/if}><dt></dt><dd>{$lang.complaint_state.1}</dd></dl>
+                        <dl {if $complaint_info.complaint_state gt 1}class="active"{/if}><dt></dt><dd>{$lang.complaint_state.2}</dd></dl>
+						<dl {if $complaint_info.complaint_state gt 2}class="active"{/if}><dt></dt><dd>{$lang.complaint_state.3}</dd></dl>
+                        <dl class="last {if $complaint_info.complaint_state eq 4}active{/if}"><dt></dt><dd>{$lang.complaint_state.4}</dd></dl>
+                    </div>
+					{if $complaint_info.complaint_state neq 4}
+                    <div class="iis-state-warp">
+                        <i class="icon icon-iis-1"></i>
+                        <div class="iis-state-info">
+                            <div class="tit">您的纠纷单已提交，等待管理员处理。</div>
+                            <div class="iis-btn">
+                                <a href="user.php?act=arbitration&complaint_id={$complaint_id}&complaint_state=4" class="sc-btn">问题已解决</a>
+                                <a href="user.php?act=complaint_apply&complaint_id={$complaint_id}" class="sc-btn">更新纠纷详情</a>
+                            </div>
+                        </div>
+                    </div>
+					{/if}
+                </div>
+			</div>
+			{/if}
+            <div class="dis-order-apply">
+                <div class="user-order-list">
+                    <dl class="item">
+                        <dt class="item-t">
+                            <div class="t-info">
+                                <span class="info-item">{$lang.order_number}：{$order.order_sn}</span>
+                                <span class="info-item">{$order.order_time}</span>
+                                <span class="info-item">{$order.consignee}</span>
+                                <span class="info-item">
+                                    <a href="{$order.shop_url}" class="user-shop-link">{$order.shop_name}</a>
+                                    {if $order.is_IM eq 1 || $order.is_dsc}
+									<a id="IM" onclick="openWin(this)" href="javascript:;" ru_id="{$order.ru_id}"  class="iconfont icon-kefu user-shop-kefu"></a>
+									{else}
+									{if $order.kf_type eq 1}
+									<a href="http://www.taobao.com/webww/ww.php?ver=3&touid={$order.kf_ww}&siteid=cntaobao&status=1&charset=utf-8" class="iconfont icon-kefu user-shop-kefu" target="_blank"></a>
+									{else}
+									<a href="http://wpa.qq.com/msgrd?v=3&uin={$order.kf_qq}&site=qq&menu=yes" class="iconfont icon-kefu user-shop-kefu" target="_blank"></a>
+									{/if}
+									{/if}
+                                </span>
+                            </div>
+							<div class="t-price">{$order.total_fee}</div>
+                        </dt>
+                        <dd class="item-c">
+                            <div class="c-left">
+								{foreach from=$order.order_goods item=goods name=foo}
+                                <div class="c-goods">
+									<div class="c-img"><a href="{$goods.url}"><img src="{if $goods.goods_thumb}{$goods.goods_thumb}{else}{$order.no_picture}{/if}" alt=""></a></div>
+                                    <div class="c-info">
+										<div class="o-info-lm">
+											{if $goods.extension_code eq 'package_buy'}
+											{$goods.goods_name|truncate:30}
+											<span class="red">{$lang.remark_package}</span>
+											{else}
+											<a href="{$goods.url}" class="info-name" target="_blank" title="{$goods.goods_name}">{$goods.goods_name}</a>
+											{if $goods.trade_id}<a href="user.php?act=trade&tradeId={$goods.trade_id}&snapshot=true" class="trade_snapshot" target="_blank">[{$lang.trade_snapshot}]</a>{/if}
+											{/if}
+										</div>
+										<div class="info-price"><b>{$goods.goods_price}</b><i>×</i><span>{$goods.goods_number}</span></div>
+									</div>
+                                </div>
+								{/foreach}
+                            </div>
+                        </dd>
+                    </dl>
+                </div>
+                <div class="ii-section complaint_apply">
+				<form action="user.php" method="post" enctype="multipart/form-data" name="formMsg" id="reportForm" >
+                    <div class="user-title">
+                    	{if $complaint_info.complaint_state gt 1}
+                        <h2>{$lang.appeal_info}</h2>
+                        {else}
+                        <h2>{$lang.complaint_info}</h2>
+                        {/if}
+                    </div>
+                    <div class="user-items">
+                        <div class="item">
+                            <div class="label">{if $complaint_id eq 0}<em class="red">*</em>{/if}{$lang.complaint_title}：</div>
+                            <div class="value">
+                            {if $complaint_id eq 0}
+                                <div class="imitate_select w200">
+                                    <div class="cite"><span>{$lang.please_select}</span><i class="iconfont icon-down"></i></div>
+                                    <ul>
+                                        <li><a href="javascript:void(0);" data-value="0" ectype='check_title'>{$lang.please_select}</a></li>
+                                        {foreach from=$complaint_title item=title}
+                                        <li><a href="javascript:void(0);" data-value="{$title.title_id}" ectype='check_title'>{$title.title_name}</a></li>
+                                        {/foreach}
+                                    </ul>
+                                    <input type="hidden" name='title_id' value='0'>
+                                </div>
+                                <span class="form_prompt ml10">{$lang.complaint_title_null}</span>
+                            {else}
+                            	<span class="txt-lh ftx-07">{$complaint_info.title_name}</span>
+                            {/if}
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="label">{if $complaint_id eq 0}<em class="red">*</em>{/if}{$lang.problem_desc}：</div>
+                            <div class="value">
+                                {if $complaint_id eq 0}
+                                <textarea name="complaint_content" class="textarea"></textarea>
+                                <div class="form_prompt"></div>
+                                <div class="fl red lh20 mt10">尊敬的用户，为了更好的解决您的问题，请您在问题描述中反馈具体纠纷问题，并上传相关证据图片，避免上传外部链接等内容，以免耽误您的纠纷处理。</div>
+                                {else}
+                                <span class="txt-lh ftx-07">{$complaint_info.complaint_content}</span>
+                                {/if}
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="label">{$lang.evidence_upload}：</div>
+                            <div class="value">
+                            {if $complaint_id eq 0}
+                                <div class="sc-btn fl" id="uploadbutton">{$lang.upload_img}</div>
+                            {/if}
+                                <div class="upload-img-box">
+                                    <div class="img-lists">
+                                        <ul class="img-list-ul" ectype="imglist">
+                                            {if $img_list}
+                                            {foreach from=$img_list item=list}
+                                            <li><a href="{$list.comment_img}" target="_blank"><img width="78" height="78" alt="" src="{$list.comment_img}"></a>{if $report_id eq 0}<i class="iconfont icon-cha" ectype="compimg-remove" data-imgid="{$list.id}"></i>{/if}</li>
+                                            {/foreach}
+                                            {/if}
+                                        </ul>
+                                    </div>
+                                </div>
+                                {if $complaint_id eq 0}
+                                <div class="clear"></div>
+                                <div class="fl lh20 mt10">为了能够更快更好地解决问题，请您上传与卖家沟通的记录图片或者其他证明图片</div>
+                                {/if}
+                            </div>
+                        </div>
+                        {if $complaint_id neq 0}
+                        <div class="item">
+                            <div class="label">{$lang.complaint_time}：</div>
+                            <div class="value">
+                                <span class="txt-lh ftx-07">{$complaint_info.add_time}</span>
+                            </div>
+                        </div>
+                        {/if}
+                        {if $complaint_info.complaint_state gt 0}
+                        
+                        <div class="item">
+                            <div class="label">{$lang.complaint_handle_time}：</div>
+                            <div class="value">
+                                <span class="txt-lh ftx-07">{$complaint_info.complaint_handle_time}</span>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="label">{$lang.handle_user}：</div>
+                            <div class="value">
+                                <span class="txt-lh ftx-07">{$complaint_info.handle_user}</span>
+                            </div>
+                        </div>
+                        {/if}
+                        
+                        {if $complaint_info.complaint_state gt 1}
+						{if $complaint_info.ru_id gt 0}
+                        <div class="item">
+                            <div class="label">{$lang.appeal_content}：</div>
+                            <div class="value">
+                                <span class="txt-lh ftx-07">{$complaint_info.appeal_messg}</span>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="label">{$lang.appeal_content}：</div>
+                            <div class="value">
+                                <div class="upload-img-box">
+                                    <div class="img-lists">
+                                        <ul class="img-list-ul">
+                                            {foreach from=$complaint_info.appeal_img item=list}
+                                            <li><a href="{$list.img_file}" target="_blank"><img width="78" height="78" alt="" src="{$list.img_file}"></a></li>
+                                            {foreachelse}
+                                            暂无图片
+                                            {/foreach}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="label">{$lang.complaint_time}：</div>
+                            <div class="value"><span class="txt-lh ftx-07">{$complaint_info.appeal_time}</span></div>
+                        </div>
+						{/if}
+                        <div class="item">
+                            <div class="label">{$lang.talk_record}：</div>
+                            <div class="value">
+                                <div class="talk_list" ectype="talk_list">
+									<div class="talk_list_info">
+                                    {include file="library/talk_list.lbi"}
+									</div>
+                                </div>
+                            </div>
+                        </div>
+                        {if $complaint_info.complaint_state neq 4}
+                        <div class="item">
+                            <div class="label">{$lang.talk_release}：</div>
+                            <div class="value">
+                                <textarea name="talk_content" class="textarea mb10"></textarea>
+                                <a href="javascript:;" class="sc-btn sc-redBg-btn" ectype="talk_release" data-type="0">{$lang.talk_release}</a>
+                                <a href="javascript:;" class="sc-btn sc-redBg-btn" ectype="talk_release" data-type="1">{$lang.talk_refresh}</a>
+                            </div>
+                        </div>
+                        {/if}
+                        {/if}
+                        {if $complaint_info.complaint_state eq 4}
+                        <div class="item">
+                            <div class="label">{$lang.end_handle_messg}：</div>
+                            <div class="value"><span class="txt-lh ftx-07">{$complaint_info.end_handle_messg}</span></div>
+                        </div>
+                        <div class="item">
+                            <div class="label">{$lang.end_handle_time}：</div>
+                            <div class="value"><span class="txt-lh ftx-07">{$complaint_info.end_handle_time}</span></div>
+                        </div>
+                        <div class="item">
+                            <div class="label">{$lang.handle_user}：</div>
+                            <div class="value"><span class="txt-lh ftx-07">{$complaint_info.end_handle_user}</span></div>
+                        </div>
+                        {/if}
+                        <div class="item item-button">
+                            <div class="label">&nbsp;</div>
+                            <div class="value">
+                                <input name="complaint_id" type="hidden" value="{$complaint_info.complaint_id}">
+                                <input name="order_id" type="hidden" value="{$order_id}">
+                                {if $complaint_id eq 0}
+                                <input name='act' type='hidden' value='complaint_submit'>
+                                <input type="submit" name="submit" id="submitBtn" class="sc-btn sc-redBg-btn" value="确认提交">
+                                {else}
+                                <a href="user.php?act=complaint_list&is_complaint=1" class="sc-btn sc-redBg-btn"> 返回 </a>
+                                {/if}
+                                {if $complaint_info.complaint_state eq 2}
+                                <input name='act' type='hidden' value='arbitration'>
+                                <input type="submit" name="submit" class="sc-btn sc-redBg-btn" value="提交仲裁">
+                                {/if}
+                            </div>
+                        </div>
+                    </div>
+				</form>
+                </div>
+            </div>
+        </div>
+		<script type="text/javascript">
+		{if $complaint_info.complaint_state eq 2  || $complaint_info.complaint_state eq 3}
+        startCheckStalk();
+        {/if}
+		//检查谈话
+        function startCheckStalk()
+        {
+          window.setInterval("Checktalk()", 3000);
+        }
+        function Checktalk(){
+            var complaint_id = $("input[name='complaint_id']").val();
+            Ajax.call('ajax_user.php', "act=talk_release&complaint_id=" +  complaint_id + "&type=1", function(data){
+                $("[ectype='talk_list'] .talk_list_info").html(data.content);
+				var height = $("*[ectype='talk_list'] .talk_list_info").height();
+				$("[ectype='talk_list']").scrollTop(height);
+            }, 'POST', 'JSON');
+        }
+             $("*[ectype='check_title']").on("click", function () {
+                 var _this = $(this);
+                 var val = _this.data("value");
+				 if(val == 0){
+					_this.parents(".value").find('.form_prompt').html("{$lang.complaint_title_null}");
+				 }else{
+					 Ajax.call('ajax_user.php?act=complaint_title_desc', 'title_id=' + val, function(data){
+						 if(data.error == 1){
+							pbDialog(data.message,"",0);
+						 }else{
+							_this.parents(".value").find('.form_prompt').html(data.content);
+						 }
+					 }, 'POST', 'JSON');
+				 }
+             })     
+             $(document).on('click','*[ectype="talk_release"]',function(){
+				   var _this = $(this);
+				   var type = _this.data('type');
+				   var talk_content = $("textarea[name='talk_content']").val();
+				   var complaint_id = $("input[name='complaint_id']").val();
+				   var talk_id = _this.data('id');
+				   var back = true;
+				   if(type == 0 && talk_content == ''){
+						back = false;
+				   }
+				   if(back){
+						Ajax.call('ajax_user.php', "act=talk_release&talk_content=" +  talk_content + "&complaint_id=" + complaint_id + "&type=" + type + "&talk_id=" + talk_id, function(data){
+							$("[ectype='talk_list'] .talk_list_info").html(data.content);
+							var height = $("*[ectype='talk_list'] .talk_list_info").height();
+							$("[ectype='talk_list']").scrollTop(height);
+							$("textarea[name='talk_content']").val('');
+						}, 'POST', 'JSON');
+				   }else{
+						pbDialog("发布内容不能为空","",0);
+				   }
+			})
+        </script>
+		<!--{/if}-->
+        <!-- 交易纠纷详情 end-->
+		
+        <!-- 违规举报 start-->
+        <!-- {if $action eq 'illegal_report'} -->
+        <div class="user-mod">
+            <div class="user-title">
+                <h2>{$lang.illegal_report}{if $report_time}--<span class="red">{$lang.malice_report}{$lang.malice_report_end}{$report_time}{/if}</span></h2>
+            </div>
+            <div class="illegal-report-content">
+                <div class="user-order-list">
+                   {foreach from=$goods_report item=report}
+                    <dl class="item">
+                        <dt class="item-t">
+                            <div class="t-statu">{if $report.report_state eq 0}未处理{elseif $report.report_state eq 2}用户取消{else}{if $report.handle_type eq 1}无效举报{elseif $report.handle_type eq 2}恶意举报{else}有效举报{/if}{/if}</div>
+                            <div class="t-info">
+                                <span class="info-item">举报类型：<em class="red">{$report.type_name}</em></span>
+                                <span class="info-item">举报主题：<em class="red">{$report.title_name}</em></span>
+                            </div>
+                            <div class="fr">{$report.add_time}</div>
+                        </dt>
+                        <dd class="item-c">
+                            <div class="c-left">
+                                <div class="c-goods">
+                                    <div class="c-img"><a href="{$report.url}" target="_blank"><img src="{$report.goods_image}" alt="{$report.goods_name}"></a></div>
+                                    <div class="c-info">
+                                        <div class="info-name"><a href="{$report.url}" target="_blank">{$report.goods_name}</a></div>
+                                        <div class="info-store">商家：<span class="ftx-06">{$report.shop_name}</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="c-handle">
+								<a href="user.php?act=goods_report&report_id={$report.report_id}" class="sc-btn">查看</a>
+								{if $report.report_state eq 0}<a href="#" class="sc-btn" ectype="cancel_report" data-type="1" data-state="2" data-id="{$report.report_id}">取消</a>{/if}
+								{if $report.handle_type gt 0 || $report.report_state eq 2}<a href="#" class="sc-btn" ectype="cancel_report" data-type="1" data-state="3" data-id="{$report.report_id}">删除</a>{/if}
+							</div>
+                        </dd>
+                    </dl>
+					{foreachelse}
+					<div class="no_records">
+                    <i class="no_icon_two"></i>
+                    <div class="no_info">
+                        <h3>{insert name='get_page_no_records' filename=$filename act=$action}</h3>
+                    </div>
+                </div>
+					{/foreach}
+                </div>
+            </div>
+        </div>
+        <!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+             
+        <!--{/if}-->
+        <!--举报信息录入-->
+        <!--{if $action eq 'goods_report'}-->
+        <div class="user-mod">
+            <div class="user-title">
+                <h2>{$lang.illegal_report}</h2>
+            </div>
+            <div class="view-illegal-report">
+                <div class="ii-section iis-state">
+                	{if $goods_report_info.report_state neq 2}
+                    <div class="stepflex">
+                        <dl class="first active"><dt></dt><dd>填写举报内容</dd></dl>
+                        <dl {if $report_id gt 0}class="active"{/if}><dt></dt><dd>平台审核处理</dd></dl>
+                        <dl class="last{if $goods_report_info.handle_type gt 0} active{/if}"><dt></dt><dd>举报完成</dd></dl>
+					</div>
+                    {else}
+                    <div class="iis-state-warp">
+                    	<i class="icon icon-iis-4"></i>
+                        <div class="iis-state-info">
+                        	<div class="tit tit60 ftx-01">用户已取消此商品举报</div>
+                        </div>
+                    </div>
+                    {/if}
+                </div>
+                <form action="user.php" method="post" enctype="multipart/form-data" name="formMsg" id="reportForm" >
+                    <div class="ii-section">
+                        <div class="user-items">
+                            <div class="item">
+                                <div class="label">被举报商家：</div>
+                                <div class="value"><span class="txt-lh ftx-06">{$goods_info.shop_name}</span></div>
+                            </div>
+                            <div class="item">
+                                <div class="label">相关商品：</div>
+                                <div class="value">
+                                    <div class="p-product">
+                                        <div class="img"><a href="{$goods_info.url}" target="_blank"><img src="{$goods_info.goods_thumb}" alt="{$goods_info.goods_name}"></a></div>
+                                        <div class="name"><a href="{$goods_info.url}" target="_blank">{$goods_info.goods_name}</a></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{if $report_id eq 0}<em class="red">*</em>{/if}举报类型：</div>
+                                <div class="value">
+									{if $report_id eq 0}
+										{foreach from=$report_type item=type name=name}
+										<div class="radio-item">
+											<input type="radio" name="type_id" class="ui-radio" value="{$type.type_id}" id="type_{$type.type_id}" {if $smarty.foreach.name.first}checked="checked"{/if} ectype='check_title'>
+											<label for="type_{$type.type_id}" class="ui-radio-label">{$type.type_name}</label>
+										</div>
+										{/foreach}
+									{else}
+										<span class="txt-lh ftx-06">{$goods_report_info.type_name}：{$goods_report_info.type_desc}</span>
+									{/if}
+                                    <div class="form_prompt"></div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{if $report_id eq 0}<em class="red">*</em>{/if}举报主题：</div>
+                                <div class="value">
+									{if $report_id eq 0}
+										<div class="imitate_select w200">
+											<div class="cite"><span>{$lang.Please_select}</span><i class="iconfont icon-down"></i></div>
+											<ul ectype='report_title'>
+												<li><a href="javascript:void(0);" data-value="">{$lang.Please_select}</a></li>
+                                                {if $report_title}
+                                                {foreach from=$report_title item=title}
+												<li><a href="javascript:void(0);" data-value="{$title.title_id}">{$title.title_name}</a></li>
+												{/foreach}
+                                                {/if}
+											</ul>
+											<input type="hidden" name='title_id' value=''>
+										</div>
+										<div class="form_prompt"></div>
+									 {else}
+										<span class="txt-lh ftx-06">{$goods_report_info.title_name}</span>
+									 {/if}
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{if $report_id eq 0}<em class="red">*</em>{/if}举报内容：</div>
+                                <div class="value">
+									{if $report_id eq 0}
+										<textarea name="inform_content" class="textarea"></textarea>
+										<div class="form_prompt"></div>
+									{else}
+										<span class="txt-lh ftx-06">{$goods_report_info.inform_content}</span>
+									{/if}
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">证据上传：</div>
+                                <div class="value">
+                                    {if $report_id eq 0}<div class="sc-btn fl mt5" id='uploadbutton'>上传文件</div>{/if}
+                                    <div class="upload-img-box">
+                                        <div class="img-lists">
+                                            <ul class="img-list-ul" ectype="imglist">
+                                                {if $img_list}
+                                                {foreach from=$img_list item=list}
+                                                <li><img width="78" height="78" alt="" src="{$list.comment_img}">{if $report_id eq 0}<i class="iconfont icon-cha" ectype="reimg-remove" data-imgid="{$list.id}"></i>{/if}</li>
+                                                {/foreach}
+                                                {/if}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+							{if $goods_report_info.handle_type gt 0}
+							<div class="item">
+                                <div class="label">{$lang.handle_type}：</div>
+                                <div class="value">
+										<span class="txt-lh ftx-06">{$lang.handle_type_desc.$goods_report_info.handle_type}</span>
+                                </div>
+                            </div>
+							<div class="item">
+                                <div class="label">{$lang.handle_message}：</div>
+                                <div class="value">
+										<span class="txt-lh ftx-06">{$goods_report_info.handle_message}</span>
+                                </div>
+                            </div>
+							{/if}
+                            <div class="item item-button">
+                                <div class="label">&nbsp;</div>
+                                <div class="value">
+									{if $report_id eq 0}
+                                    <input name='goods_id' type='hidden' value='{$goods_info.goods_id}'>
+                                    <input name='goods_name' type='hidden' value='{$goods_info.goods_name}'>
+                                    <input name='goods_image' type='hidden' value='{$goods_info.goods_thumb}'>
+                                    <input name='act' type='hidden' value='goods_report_submit'>
+									<input type="submit" name="submit" id="submitBtn" class="sc-btn sc-redBg-btn" value="确认提交">
+									{else}
+										{if $goods_report_info.report_state eq 0}
+											<input type="button" name="button"  class="sc-btn sc-redBg-btn" value="取消举报" ectype="cancel_report" data-type="0" data-state="2" data-id="{$goods_report_info.report_id}">
+										{/if}
+										{if $goods_report_info.handle_type gt 0 || $goods_report_info.report_state eq 2}
+											<input type="button" class="sc-btn sc-redBg-btn" value="删除" ectype="cancel_report" data-type="0" data-state="3" data-id="{$goods_report_info.report_id}">
+										{/if}
+									{/if}
+								</div>
+                            </div>
+                        </div>
+                    </div>
+					<div class="user-prompt mt20">
+						<div class="tit"><span>违规举报须知</span><i class="iconfont icon-down"></i></div>
+						<div class="info">
+							<h3>违规举报须知</h3>
+							<p>1、请提供充分的证据以确保举报成功，请珍惜您的会员权利，帮助商城更好地管理网站；</p>
+							<p>2、被举报待处理的商品不能反复进行违规提交，处理下架后的商品不能再次举报，商家如重新上架后仍存在违规现象，可再次对该商品进行违规举报；</p>
+							<p>3、举报仅针对商品，如情节严重，再做处理</p>
+							<p>4、举报时依次选择举报类型及举报主题（必填），填写违规描述（必填），上传5张以内的举证图片（选填），详细的举报内容有助于平台对该条举报的准确处理。</p>
+							<p>5、请客观地向商城反映您所遇到的真实情况，以共同维护一个诚信和公平的购物环境。</p>
+						</div>
+					</div>
+                </form>
+            </div>
+        </div>
+        <script type="text/javascript">
+             $("*[ectype='check_title']").on("click", function () {
+                 var _this = $(this);
+                 var val = _this.val();
+                 Ajax.call('ajax_user.php?act=checked_report_title', 'type_id=' + val, function(data){
+                     var report_f = $("*[ectype='report_title']").parents(".imitate_select");
+                     report_f.find("input[name='title_id']").val('0')
+                     report_f.find(".cite").find("span").html("{$lang.Please_select}");
+                     $("*[ectype='report_title']").html(data);
+                 }, 'POST', 'JSON');
+             })     
+             
+        </script>
+        <!--{/if}-->
+        <!-- 违规举报 end-->
+        
+        <!-- 我的发票 start-->
+        <!-- {if $action eq 'invoice'} -->
+        <div class="user-mod">
+            <div class="user-title">
+                <h2>{$lang.my_invoice}</h2>
+                <ul class="tabs">
+                    <li class="active"><a href="user.php?act=invoice">{$lang.order_invoice_state}</a></li>
+                    <li><a href="user.php?act=vat_invoice_info">{$lang.increment_invoice_info}</a></li>
+                </ul>
+            </div>
+            <div id="user_inv_list">
+				<!-- #BeginLibraryItem "/library/user_inv_list.lbi" --><!-- #EndLibraryItem -->
+            </div>
+        </div>    
+        <!--{/if}-->
+		
+        <!-- {if $action eq 'vat_invoice_info'} -->
+        <div class="user-mod">
+            <div class="user-title">
+                <h2>{$lang.my_invoice}</h2>
+                <ul class="tabs" ectype="invoice-tabs">
+                    <li><a href="user.php?act=invoice">{$lang.order_invoice_state}</a></li>
+                    <li  class="active"><a href="user.php?act=vat_invoice_info">{$lang.increment_invoice_info}</a></li>
+                </ul>
+            </div>
+            <div>
+                <div class="increment_invoice_info">
+					{if $submitted}
+					<div class="ii-section iis-state">
+                        <div class="iis-state-warp">
+                            <i class="icon icon-iis-{if $audit_status eq 0}1{elseif $audit_status eq 1}3{elseif $audit_status eq 2}2{/if}"></i>
+                            <div class="iis-state-info">
+                                <div class="tit">{if $audit_status eq 0}您的增票资质已提交，等待审核。{elseif $audit_status eq 1}恭喜！您的增票资质信息审核通过。{elseif $audit_status eq 2}抱歉！您的增票资质信息错误，审核不通过。{/if}</div>
+                                <div class="iis-btn">
+                                    <a href="user.php?act=vat_update&vat_id={$vat_id}" class="sc-btn">修改</a>
+                                    <a href="user.php?act=vat_remove&vat_id={$vat_id}" class="sc-btn">删除</a>
+                                </div>
+                            </div>						
+                        </div>
+                    </div>
+                    <div class="ii-section iis-aptitude">
+                        <div class="title">增票资质信息</div>
+                        <div class="info">
+                            <p>单位名称：{$vat_info.company_name}</p>
+                            <p>纳税人识别码：{$vat_info.tax_id}</p>
+                            <p>注册地址：{$vat_info.company_address}</p>
+                            <p>注册电话：{$vat_info.company_telephone}</p>
+                            <p>开户银行：{$vat_info.bank_of_deposit}</p>
+                            <p>银行账户：{$vat_info.bank_account}</p>
+                        </div>
+                    </div>
+                    <div class="ii-section iis-ticket last-child">
+                        <div class="title">票据收件信息
+						{if $vat_info.consignee_name || $vat_info.consignee_address || $vat_info.consignee_mobile_phone || $vat_info.consignee_province}
+						<a href="user.php?act=vat_consignee&vat_id={$vat_id}" class="ftx-01">修改</a>
+						{/if}
+						</div>
+                        <div class="info">
+							{if !$vat_info.consignee_name && !$vat_info.consignee_address && !$vat_info.consignee_mobile_phone && !$vat_info.consignee_province}
+                            <p>您还未设置收票地址：<a href="user.php?act=vat_consignee" class="sc-btn">设置</a></p>
+							{else}
+                            <p>收票人姓名：{$vat_info.consignee_name}</p>
+                            <p>收票人手机号：{$vat_info.consignee_mobile_phone}</p>
+                            <p>收票人省份：{$new_vat_consignee_list.region}</p>
+                            <p>收票人地址：{$vat_info.consignee_address}</p>							
+							{/if}
+                        </div>
+                    </div>
+                    <div class="user-prompt mt50">
+                        <div class="tit"><span>注意事项</span><i class="iconfont icon-down"></i></div>
+                        <div class="info">
+                            <p>1、我们会在一个工作日内完成审核工作。</p>
+                            <p>2、注意有效增值税发票开票资质仅为一个。</p>
+                            <p>3、发票常见问题查看<a href="#" class="ftx-05">增票资质帮助</a>。</p>
+                            <p>4、本页面信息仅供增值税专用发票-资质审核使用，切勿进行支付相关业务，谨防上当受骗。</p>
+                        </div>
+                    </div>
+					{else}
+					<form action="user.php" method="post" name="inv_form" ectype="inv_form">
+                    <div class="user-items">
+                        <div class="item">
+                            <div class="label"><em class="red">*</em>单位名称：</div>
+                            <div class="value"><input type="text" value="{$vat_info.company_name}" name="company_name" class="text"><div class="notic">请正确填写公司名称</div><div class="form_prompt"></div></div>
+                        </div>
+						<div class="item">
+                            <div class="label"><em class="red">*</em>注册地址：</div>
+                            <div class="value"><input type="text" value="{$vat_info.company_address}" name="company_address" class="text"><div class="notic">请正确填写公司注册地址</div><div class="form_prompt"></div></div>
+                        </div>
+                        <div class="item">
+                            <div class="label"><em class="red">*</em>纳税人识别码：</div>
+                            <div class="value"><input type="text" value="{$vat_info.tax_id}" name="tax_id" class="text"><div class="notic">纳税人识别码一般是15到18位数字</div><div class="form_prompt"></div></div>
+                        </div>
+                        <div class="item">
+                            <div class="label"><em class="red">*</em>注册电话：</div>
+                            <div class="value"><input type="text" value="{$vat_info.company_telephone}" name="company_telephone" class="text"><div class="notic">请正确填写联系方式</div><div class="form_prompt"></div></div>
+                        </div>
+                        <div class="item">
+                            <div class="label"><em class="red">*</em>开户银行：</div>
+                            <div class="value"><input type="text" value="{$vat_info.bank_of_deposit}" name="bank_of_deposit" class="text"><div class="notic">开户行精确到某某支行</div><div class="form_prompt"></div></div>
+                        </div>
+                        <div class="item">
+                            <div class="label"><em class="red">*</em>银行账户：</div>
+                            <div class="value"><input type="text" value="{$vat_info.bank_account}" name="bank_account" ectype="bank_card" class="text"><div class="notic">请正确银行账号</div><div class="form_prompt"><label class="error" ectype="bname"></label></div></div>
+                        </div>
+                        <div class="item mb0">
+                            <div class="label">&nbsp;</div>
+                            <div class="value">
+                                <div class="checkbox-item lh30">
+                                    <input type="checkbox" name="have_read" checked="checked" value='1' class="ui-checkbox" id="invoice_checkbox">
+                                    <label for="invoice_checkbox" class="ui-label">我已阅读并同意<a href="article.php?id=56" target="_blank">《增票资质确认书》</a></label>
+                                </div>
+								<div class="form_prompt" id="have_read"></div>
+                            </div>
+                        </div>
+                        <div class="item item-button">
+                            <div class="label">&nbsp;</div>
+                            <div class="value">
+                                <input type="submit" class="sc-btn sc-redBg-btn" name="submit" value="提交" ectype="submitBtn">
+                                <input type="reset" class="sc-btn" name="reset" value="重置">
+								<input type="hidden" name="act" value="{$edit|default:vat_insert}">
+								<input type="hidden" name="status" value="{$status|default:insert}">
+								<input type="hidden" name="vat_id" value="{$vat_id}">
+                            </div>
+                        </div>
+                    </div>
+                    </form>
+					{/if}
+                </div>
+            </div>
+        </div> 
+        <!--{/if}-->
+		
+		<!-- {if $action eq 'vat_consignee'} -->
+        <div class="user-mod">
+            <div class="user-title">
+                <h2>{$lang.my_invoice}</h2>
+                <ul class="tabs" ectype="invoice-tabs">
+                    <li><a href="user.php?act=invoice">{$lang.order_invoice_state}</a></li>
+                    <li  class="active"><a href="user.php?act=vat_invoice_info">{$lang.increment_invoice_info}</a></li>
+                    <li><a href="javascript:void(0);">{$lang.invoice_help}</a></li>
+                </ul>
+            </div>
+            <div>
+                <div class="increment_invoice_info">
+					<div class="ii-section iis-state">
+                        <div class="iis-state-warp">
+							{if $audit_status eq 0}
+                            <i class="icon icon-iis-1"></i>
+                            <div class="iis-state-info">
+                                <div class="tit">您的增票资质已提交，等待审核。</div>
+							{elseif $audit_status eq 1}
+                            <i class="icon icon-iis-3"></i>
+                            <div class="iis-state-info">
+                                <div class="tit">恭喜！您的增票资质信息审核通过。</div>
+
+							{elseif $audit_status eq 2}
+                            <i class="icon icon-iis-2"></i>
+                            <div class="iis-state-info">
+                                <div class="tit">抱歉！您的增票资质信息错误，审核不通过。</div>						
+							{/if}
+                                <div class="iis-btn">
+                                    <a href="user.php?act=vat_update&vat_id={$vat_id}" class="sc-btn">修改</a>
+                                    <a href="user.php?act=vat_remove&vat_id={$vat_id}" class="sc-btn">删除</a>
+                                </div>
+                            </div>								
+                        </div>
+                    </div>
+                    <div class="ii-section iis-aptitude">
+                        <div class="title">增票资质信息</div>
+                        <div class="info">
+                            <p>单位名称：{$vat_info.company_name}</p>
+                            <p>纳税人识别码：{$vat_info.tax_id}</p>
+                            <p>注册电话：{$vat_info.company_telephone}</p>
+                            <p>开户银行：{$vat_info.bank_of_deposit}</p>
+                            <p>银行账户：{$vat_info.bank_account}</p>
+                        </div>
+                    </div>
+                    <div class="ii-section iis-ticket last-child">
+                        <div class="title">票据收件信息</div>
+                        <div class="info">
+							<form action="user.php" method="post" name="vat_form" id="vat_form">
+							<div class="user-items">
+								<div class="item">
+									<div class="label">收票人姓名：</div>
+									<div class="value"><input type="text" value="{$vat_info.consignee_name}" name="consignee_name" class="text"></div>
+								</div>
+								<div class="item">
+									<div class="label">收票人手机号：</div>
+									<div class="value"><input type="text" value="{$vat_info.consignee_mobile_phone}" name="consignee_mobile_phone" class="text"></div>
+								</div>
+								<div class="item">
+									<div class="label">收票人省份：</div>
+									<div class="form-value" ectype="regionLinkage">
+										<dl class="mod-select mod-select-small" ectype="smartdropdown">
+											<dt>
+												<span class="txt" ectype="txt">{$lang.please_select}{$name_of_region[0]}</span>
+												<input type="hidden" value="{$consignee.country}" name="country">
+											</dt>
+											<dd ectype="layer">
+												<!-- {foreach from=$country_list item=country} -->
+												<div class="option" data-value="{$country.region_id}" data-text="{$country.region_name}" ectype="ragionItem" data-type="1">{$country.region_name}</div>
+												<!-- {/foreach} -->
+											</dd>
+										</dl>
+										<dl class="mod-select mod-select-small" ectype="smartdropdown">
+											<dt><span class="txt" ectype="txt">{$lang.please_select}{$name_of_region[1]}</span>
+											<input type="hidden" value="{$consignee.province}" ectype="ragionItem" name="province"></dt>
+											<dd ectype="layer">
+												<div class="option" data-value="0">{$lang.please_select}{$name_of_region[1]}</div>
+												<!-- {foreach from=$province_list item=province} -->
+												<div class="option" data-value="{$province.region_id}" data-text="{$province.region_name}" data-type="2" ectype="ragionItem">{$province.region_name}</div>
+												<!-- {/foreach} -->
+											</dd>
+										</dl>
+										<dl class="mod-select mod-select-small" ectype="smartdropdown">
+											<dt><span class="txt" ectype="txt">{$lang.please_select}{$name_of_region[2]}</span>
+											<input type="hidden" value="{$consignee.city}" name="city" ></dt>
+											<dd ectype="layer">
+												<div class="option" data-value="0">{$lang.please_select}{$name_of_region[2]}</div>
+												<!-- {foreach from=$city_list item=city} -->
+												<div class="option" data-value="{$city.region_id}" data-type="3" data-text="{$city.region_name}" ectype="ragionItem">{$city.region_name}</div>
+												<!-- {/foreach} -->
+											</dd>
+										</dl>
+										<dl class="mod-select mod-select-small" ectype="smartdropdown" style="display:none">
+											<dt><span class="txt" ectype="txt">{$lang.please_select}{$name_of_region[3]}</span>
+											<input type="hidden" value="{$consignee.district}" name="district"></dt>
+											<dd ectype="layer">
+												<div class="option" data-value="0">{$lang.please_select}{$name_of_region[3]}</div>
+												<!-- {foreach from=$district_list item=district} -->
+												<div class="option" data-value="{$district.region_id}" data-type="4" data-text="{$district.region_name}" ectype="ragionItem">{$district.region_name}</div>
+												<!-- {/foreach} -->
+											</dd>
+										</dl>
+										<dl class="mod-select mod-select-small" ectype="smartdropdown" style="display:none">
+											<dt><span class="txt" ectype="txt">{$lang.please_select}{$name_of_region[3]}</span><input type="hidden" value="{$consignee.street}" name="street"></dt>
+											<dd ectype="layer">
+												<div class="option" data-value="0">{$lang.please_select}{$name_of_region[3]}</div>
+												<!-- {foreach from=$street_list item=street} -->
+												<div class="option" data-value="{$street.region_id}" data-type="5" data-text="{$street.region_name}" ectype="ragionItem">{$street.region_name}</div>
+												<!-- {/foreach} -->
+											</dd>
+										</dl>
+									</div>
+								</div>
+								<div class="item">
+									<div class="label">收票人地址：</div>
+									<div class="value"><input type="text" value="{$vat_info.consignee_address}" name="consignee_address" class="text"></div>
+								</div>
+								<div class="item item-button">
+									<div class="label">&nbsp;</div>
+									<div class="value">
+										<input type="submit" class="sc-btn sc-redBg-btn" name="submit" value="提交">
+										<input type="button" class="sc-btn" name="cannel" value="取消">
+										<input type="hidden" name="act" value="vat_consignee">
+										<input type="hidden" name="status" value="update">
+									</div>
+								</div>
+							</div>
+							</form>						
+                        </div>
+                    </div>
+                    <div class="user-prompt mt50">
+                        <div class="tit"><span>注意事项</span><i class="iconfont icon-down"></i></div>
+                        <div class="info">
+                            <p>1、我们会在一个工作日内完成审核工作。</p>
+                            <p>2、注意有效增值税发票开票资质仅为一个。</p>
+                            <p>3、发票常见问题查看<a href="#" class="ftx-05">增票资质帮助</a>。</p>
+                            <p>4、本页面信息仅供增值税专用发票-资质审核使用，切勿进行支付相关业务，谨防上当受骗。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+		<!--{/if}-->
+        <!-- 我的发票 end-->
+     </div>
+</div>
+
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+
+{insert_scripts files='jquery.SuperSlide.2.1.1.js,jquery.yomi.js,common.js,jquery.validation.min.js,jquery.nyroModal.js,perfect-scrollbar/perfect-scrollbar.min.js'}
+<!--{if $action eq 'comment_list' || $action eq 'commented_view' || $action eq 'goods_report' || $action eq 'complaint_apply'}-->
+{insert_scripts files='plupload.full.min.js'}
+<!--{/if}-->
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/dsc-common.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.purebox.js"></script>
+<script type="text/javascript">
+//复制粘贴邀请链接
+$("#clip_button").click(function(){
+	var val = $("#affTextarea").val();
+	
+	copyTextToClipboard(val);
+});
+
+$(function(){
+    $(".nyroModal").nyroModal();
+});
+
+<!--{if $action eq 'store_list'}-->
+$(".shop-right").slide({mainCell:".shop-bd ul",effect:"left",pnLoop:false,autoPlay:false,autoPage:true,prevCell:".prev",nextCell:".next",vis:4});
+<!--{/if}-->
+</script>
+    
+<!--{if $action eq 'add_booking'} 缺货登记-->
+<script type="text/javascript">
+$(function(){
+    $("#submitBtn").click(function(){
+        if($("#formBooking").valid()){
+            $("#formBooking").submit();
+        }
+    });
+    $('#formBooking').validate({
+        errorPlacement:function(error, element){
+            var error_div = element.parents('div.form-value').find('div.form_prompt');
+            //element.parents('div.label_value').find(".notic").hide();
+            error_div.append(error);
+        },
+        rules : {
+                number : {
+                    required : true
+                },
+                desc : {
+                    required : true
+                },
+                linkman : {
+                    required : true
+                },
+                email : {
+                    required : true,
+                    email : true
+                },
+                tel : {
+                    required : true
+                }
+
+            },
+            messages : {
+                number : {
+                    required : '数量不能为空'
+                },
+                desc : {
+                    required : '描述不能为空'
+                },
+                linkman : {
+                    required : '联系人不能为空'
+                },
+                email : {
+                    required : '邮箱不能为空',
+                    email : '邮箱格式不正确'
+                },
+                tel : {
+                    required : '联系电话不可为空'
+                }
+            }
+    });
+});
+</script>
+<!--{/if}-->
+
+<!--{if $action eq 'goods_report' || $action eq 'complaint_apply'}-->
+<script type="text/javascript">
+		var url = '';
+		<!--{if $action eq 'goods_report'}-->
+        url = "ajax_user.php?act=ajax_report_img&goods_id={$goods_info.goods_id}&sessid={$sessid}";
+		<!--{else}-->
+		url = "ajax_user.php?act=complaint_img&order_id={$order_id}&sessid={$sessid}";
+		<!--{/if}-->
+		var uploader_gallery = new plupload.Uploader({//创建实例的构造方法
+                runtimes: 'html5,flash,silverlight,html4', //上传插件初始化选用那种方式的优先级顺序
+                browse_button: 'uploadbutton', // 上传按钮
+                url: url, //远程上传地址
+                filters: {
+                        max_file_size: '2mb', //最大上传文件大小（格式100b, 10kb, 10mb, 1gb）
+                        mime_types: [//允许文件上传类型
+                                {title: "files", extensions: "bmp,gif,jpg,png,jpeg"}
+                        ]
+                },
+                multi_selection: true, //true:ctrl多文件上传, false 单文件上传
+                init: {
+                   FilesAdded: function(up, files) { //文件上传前
+                           var len = $("*[ectype='imglist'] li").length;
+                                plupload.each(files, function(file){
+                                        //遍历文件
+                                        len ++;
+                                });
+                                if(len > 5){
+                                        pbDialog("最多只能上传5张图片","",0);
+                                }else{
+                                        submitBtn();
+                                }
+                        },
+                        FileUploaded: function(up, file, info) { //文件上传成功的时候触发
+                                var data = eval("(" + info.response + ")");
+                                if(data.error > 0){
+                                        pbDialog(data.message,"",0);
+                                        return;
+                                }else{
+                                        $("*[ectype='imglist']").html(data.content);
+                                }
+                        },
+                        UploadComplete:function(up,file){
+                                //所有文件上传成功时触发	
+                        },
+                        Error: function(up, err){
+                                //上传出错的时候触发
+                                pbDialog(err.message,"",0);
+                        }
+                }
+        });
+	
+        uploader_gallery.init();
+	
+        function submitBtn(){
+			//设置传参
+			uploader_gallery.setOption("multipart_params");
+			//开始控件
+			uploader_gallery.start();
+        };
+		
+		<!--{if $action eq 'complaint_apply'}-->
+		var height = $("*[ectype='talk_list'] .talk_list_info").height();
+		$("[ectype='talk_list']").scrollTop(height);
+		
+		$("[ectype='talk_list']").perfectScrollbar("destroy");
+		$("[ectype='talk_list']").perfectScrollbar();
+		
+		$(document).on("click","*[ ectype='compimg-remove']",function(){
+            var $this = $(this);
+            var re_imgId = $this.data("imgid");
+            var order_id = $("input[name='order_id']").val();
+            Ajax.call('ajax_user.php?act=del_reportpic', 're_imgId=' + re_imgId + '&order_id='+order_id + "&complaint=1", function(data){
+                if(data.error > 0){
+                    pbDialog(data.message,"",0);
+                }else{
+                    $("*[ectype='imglist']").html(data.content);
+                }
+            }, 'POST', 'JSON');
+        });   
+		$("#submitBtn").click(function(){
+            
+            if($("#reportForm").valid()){
+                $("#reportForm").submit();
+            }
+        });
+        $('#reportForm').validate({
+            errorPlacement:function(error, element){
+                var error_div = element.parents('div.value').find('div.form_prompt');
+                //element.parents('div.label_value').find(".notic").hide();
+                error_div.append(error);
+            },
+            ignore : "",
+            rules : {
+                title_id : {
+                    required : true
+                },
+                complaint_content : {
+                    required : true
+                }
+            },
+            messages : {
+                title_id : {
+                    required : '{$lang.complaint_title_null}'
+                },
+                complaint_content : {
+                    required : '{$lang.inform_content_null}'
+                }
+            }
+        });
+		<!--{/if}-->
+		
+		<!--{if $action eq 'goods_report'}-->
+        //删除图片
+        $(document).on("click","*[ ectype='reimg-remove']",function(){
+            var $this = $(this);
+            var re_imgId = $this.data("imgid");
+            var goods_id = $("input[name='goods_id']").val();
+            Ajax.call('ajax_user.php?act=del_reportpic', 're_imgId=' + re_imgId + '&goods_id='+goods_id, function(data){
+                if(data.error > 0){
+                    pbDialog(data.message,"",0);
+                }else{
+                    $("*[ectype='imglist']").html(data.content);
+                }
+            }, 'POST', 'JSON');
+        });   
+		
+        $("#submitBtn").click(function(){
+            if($("#reportForm").valid()){
+                $("#reportForm").submit();
+            }
+        });
+        $('#reportForm').validate({
+            errorPlacement:function(error, element){
+                var error_div = element.parents('div.value').find('div.form_prompt');
+                //element.parents('div.label_value').find(".notic").hide();
+                error_div.append(error);
+            },
+            ignore : "",
+            rules : {
+                title_id : {
+                    required : true
+                },
+                type_id : {
+                    required : true
+                },
+                inform_content : {
+                    required : true
+                }
+            },
+            messages : {
+                title_id : {
+                    required : '{$lang.title_null}'
+                },
+                type_id : {
+                    required : '{$lang.type_null}'
+                },
+                inform_content : {
+                    required : '{$lang.inform_content_null}'
+                }
+            }
+        });
+		<!--{/if}-->
+</script>
+<!--{/if}-->
+ 
+<!-- {if $action eq 'vat_consignee'} -->
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/region.js"></script>
+<script>
+$.levelLink(1);//地区三级联动
+</script>
+<!--{/if}-->
+ 
+<!-- {if $action eq 'vat_invoice_info'} -->
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/region.js"></script>
+<script type="text/javascript">
+
+$.levelLink(1);//地区三级联动
+$("*[ectype='submitBtn']").click(function(){
+	frm  = document.forms['inv_form'];
+	if(!frm.elements['have_read'].checked){
+		$("#have_read").html("<i>请阅读并同意《增票资质确认书》</i>");
+		return false;
+	};
+	
+	if($("*[ectype='inv_form']").valid()){
+		$("*[ectype='inv_form']").submit();
+	}
+});
+$("*[ectype='inv_form']").validate({
+	errorPlacement:function(error, element){
+		var error_div = element.parents('div.value').find('div.form_prompt');
+		element.parents('div.value').find(".notic").hide();
+		error_div.append(error);
+	},
+	ignore : "",
+	rules : {
+		company_name : {
+			required : true
+		},
+		tax_id : {
+			required : true,
+			minlength : 15
+		},
+		company_address : {
+			required : true
+		},
+		company_telephone : {
+			required : true
+		},
+		bank_of_deposit : {
+			required : true
+		},
+		bank_account : {
+			required : true,
+			bankCardNum : true
+		}
+	},
+	messages : {
+		company_name : {
+			required : "请填写增值发票单位名称"
+		},
+		tax_id : {
+			required : "请填写纳税人识别码",
+			minlength: "纳税人识别码位数不正确"
+		},
+		company_address : {
+			required : "请填写注册地址"
+		},
+		company_telephone : {
+			required : "请填写联系电话"
+		},
+		bank_of_deposit : {
+			required : "请填写开户行名称"
+		},
+		bank_account : {
+			required : "请填写银行卡",
+			bankCardNum :"银行卡号不正确"
+		}
+	}
+});
+</script>
+<!--{/if}-->
+
+<!--{if $action eq 'message_list'} 我的留言界面 start-->
+<script type="text/javascript">
+$(function(){
+    $("#pingjia_form").on("click",function(){
+        if($("form[name='formMsg']").valid()){
+            $("form[name='formMsg']").submit();
+        }
+    });
+    
+    $("form[name='formMsg']").validate({
+        errorPlacement:function(error, element){
+            var error_div = element.parents('div.item').find('div.form_prompt');
+            error_div.html("").append(error);
+        },
+        ignore:".ignore",
+        rules : {
+            msg_title : {
+                required : true,
+                minlength: 2,
+                maxlength: 50
+            },
+            msg_content:{
+                required : true
+            },
+            user_email:{
+                required : true,
+                email : true
+            }
+            <!--{if $enabled_captcha}-->
+            ,captcha:{
+                required : true,
+                maxlength : 4,
+                remote : {
+                    cache: false,
+                    async:false,
+                    type:'POST',
+                    url:'ajax_dialog.php?act=ajax_captcha&seKey='+$("input[name='captcha']").siblings(".captcha_img").data("key"),
+                    data:{
+                        captcha:function(){
+                            return $("input[name='captcha']").val();
+                        }
+                    },
+                    dataFilter:function(data,type){
+                        if(data == "false"){
+                            $("input[name='captcha']").siblings(".captcha_img").click();
+                        }
+                        return data;
+                    }
+                }
+            }
+            <!--{/if}-->
+        },
+        messages : {
+            msg_title : {
+                required : "<i class='iconfont icon-info-sign'></i> {$lang.commentTitle_not}",
+                minlength: "<i class='iconfont icon-info-sign'></i> {$lang.commentTitle_xz}",
+                maxlength: "<i class='iconfont icon-info-sign'></i> {$lang.commentTitle_xz}"
+            },
+            msg_content : {
+                required : "<i class='iconfont icon-info-sign'></i> {$lang.content_not}"
+            },
+            user_email:{
+                required : "<i class='iconfont icon-info-sign'></i> " + json_languages.null_email_goods,
+                email : "<i class='iconfont icon-info-sign'></i> " + json_languages.email_error
+            }
+            <!--{if $enabled_captcha}-->
+            ,captcha:{
+                required : "<i class='iconfont icon-info-sign'></i> " + json_languages.captcha_not,
+                maxlength: "<i class='iconfont icon-info-sign'></i> " + json_languages.captcha_xz,
+                remote : "<i class='iconfont icon-info-sign'></i> " + json_languages.captcha_cw
+            }
+            <!--{/if}-->
+        },
+        success:function(label){
+            label.removeClass().addClass("succeed").html("<i></i>");
+        },
+        onkeyup:function(element,event){
+            var name = $(element).attr("name");
+            if(name == "captcha"){
+                //不可去除，当是验证码输入必须失去焦点才可以验证（错误刷新验证码）
+                return true;
+            }else{
+                $(element).valid();
+            }
+        }
+    });
+});
+</script>
+<!--{/if} 我的留言界面 end-->
+</body>
+</html>

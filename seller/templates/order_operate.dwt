@@ -1,0 +1,205 @@
+<!-- $Id -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+				{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="ecsc-form-goods">
+                <form name="theForm" method="get" action="order.php" onsubmit="return check()">
+                <div class="wrapper-list border1">
+                	<dl>
+                    	<dt>{if $require_note}{$lang.require_field}{/if}&nbsp;{$lang.label_action_note}</dt>
+                        <dd><textarea name="action_note" cols="60" rows="3" class="textarea">{$action_note}</textarea></dd>
+                    </dl>
+                    {if $show_cancel_note}
+                    <dl>
+                    	<dt>{$lang.require_field}&nbsp;{$lang.label_cancel_note}</dt>
+                        <dd>
+                        	<textarea name="cancel_note" cols="60" rows="3" id="cancel_note" class="textarea fl">{$cancel_note}</textarea>
+                        	<div class="notic">{$lang.notice_cancel_note}</div>
+                        </dd>
+                    </dl>
+                    {/if}
+                    {if $show_invoice_no}
+                    <dl>
+                    	<dt>{$lang.label_invoice_no}</dt>
+                        <dd><input name="invoice_no" type="text" size="30" /></dd>
+                    </dl>
+                    {/if}
+                    {if $show_refund || $show_refund1}
+                        {if !$is_baitiao}
+                        <dl>
+                            <dt>{$lang.refund_money}：</dt>
+                            <dd>
+                                <!--{if $refound_pay_points > 0}-->
+                                <div class="fl lh30">{$lang.pay_points}：</div><input name="refound_pay_points" id="refound_pay_points" class="text text_3 mr10" type="text" size="10" value="{$refound_pay_points}" onchange="refound_points(this.value)" />
+                                <!--{/if}-->
+                                <div class="fl lh30">{$lang.money}：</div><input name="refound_amount" id="refoundAmount" class="text text_3 mr10" type="text" size="10" value="{$refound_amount|default:0}" onchange="get_refound_amount(this.value, 1)" />
+                                <div class="fl lh30">{$lang.shipping_money}：</div><input type="text" name="shipping" value="{$shipping_fee|default:0}" id="shippingFee" size="6" onchange="get_refound_amount(this.value, 2)" class="text text_3 mr10" />
+                                <div class="checkbox_items">
+                                    <div class="checkbox_item"><input type="radio" name="is_shipping" value="0" class="ui-radio" id="is_shipping_1" autocomplete="off" {if $operation neq 'return'}checked{/if} /><label class="ui-radio-label" for="is_shipping_1">{$lang.no_shipping_money}</label></div>
+                                    <div class="checkbox_item"><input type="radio" name="is_shipping" value="1" class="ui-radio" id="is_shipping_0" autocomplete="off" {if $operation eq 'return'}checked{/if} /><label class="ui-radio-label" for="is_shipping_0">{$lang.is_shipping_money}</label></div>
+                                </div>
+                                </div>
+                            </dd>
+                        </dl>
+                        
+                            {if $value_card && $is_whole neq 1}
+                            	<dl>
+                                    <dt>{$lang.18_value_card}：</dt>
+                                    <dd>
+                                    	<div class="fl lh30">{$lang.money}：</div>
+                                        <input name="refound_vcard" id="refound_vcard" class="text text_3 mr10" type="text" size="10" value="{$value_card.use_val}" autocomplete="off" onchange="get_refound_value_card(this.value, {$value_card.vc_id|default:0})" />
+                                        <input type="hidden" name="vc_id" value="{$value_card.vc_id|default:0}" />
+                                    </dd>
+                        		</dl>
+                            {/if}
+                        {/if}
+                    {/if}    
+                    {if $show_refund1}
+                    <dl>
+                    	<dt>{$lang.label_handle_refund}</dt>
+                        <dd>
+                        	<div class="checkbox_items">
+                        	{if $is_baitiao}
+                            <!--当前退款订单如果是白条订单 只显示"退回白条额度"-->
+                            <div class="checkbox_item"><input type="radio" checked="checked" class="ui-radio" name="refund" value="5" id="refund_5" /><label class="ui-radio-label" for="refund_5">{$lang.return_baitiao}</label></div><!--退回白条额度 bylu-->
+                            {else}
+                            {if !$anonymous}<div class="checkbox_item"><input type="radio" name="refund" class="ui-radio" value="1" id="refund_1" checked="checked" autocomplete="off" /><label class="ui-radio-label" for="refund_1">{$lang.return_user_money}</label></div>{/if}
+                            <div class="checkbox_item"><input type="radio" name="refund" value="2" class="ui-radio" id="refund_2" autocomplete="off" /><label class="ui-radio-label" for="refund_2">{$lang.return_user_line}</label></div>
+                            {/if}
+                            </div>
+                        </dd>
+                    </dl>
+                    <dl>
+                    	<dt>{$lang.label_refund_note}</dt>
+                        <dd><textarea name="refund_note" cols="60" rows="3" class="textarea" id="refund_note">{$refund_note}</textarea></dd>
+                    </dl>
+                    {/if}
+                    {if $show_refund}
+                    <dl>
+                    	<dt>{$lang.label_handle_refund}</dt>
+                        <dd>
+                        	<div class="checkbox_items">
+                                {if !$anonymous}<div class="checkbox_item"><input type="radio" class="ui-radio" name="refund" value="1" id="refund_1" checked="checked" autocomplete="off" /><label class="ui-radio-label" for="refund_1">{$lang.return_user_money}</label></div>{/if}
+                                <div class="checkbox_item"><input type="radio" class="ui-radio" name="refund" value="2" id="refund_2" {if $anonymous}checked="checked"{/if} autocomplete="off" /><label class="ui-radio-label" for="refund_2">{$lang.create_user_account}</label></div>
+                                <div class="checkbox_item"><input name="refund" type="radio" class="ui-radio" value="3" id="refund_3" autocomplete="off" /><label class="ui-radio-label" for="refund_3">{$lang.not_handle}</label></div>
+                            </div>
+                        </dd>
+                    </dl>
+                    <dl>
+                    	<dt>{$lang.label_refund_note}</dt>
+                        <dd><textarea name="refund_note" cols="60" rows="3" class="textarea" id="refund_note">{$refund_note}</textarea></dd>
+                    </dl>
+                    {/if}
+                    <dl class="button_info">
+                    	<dt>&nbsp;</dt>
+                        <dd>
+                        	<input type="submit" name="submit" value="{$lang.button_submit}" class="sc-btn sc-blueBg-btn btn35" />
+                            <input type="button" name="back" value="{$lang.back}" class="sc-btn btn35 sc-blue-btn" onclick="history.back()" />
+                            <input type="hidden" id="orderId" name="order_id" value="{$order_id|default:0}" />
+                            <input type="hidden" id="recId" name="rec_id" value="{$rec_id|default:0}"/>
+                            <input type="hidden" id="retId" name="ret_id" value="{$ret_id|default:0}"/>
+                            <input type="hidden" name="operation" value="{$operation}" />
+                            <input type="hidden" name="act" value="{if $batch}batch_operate_post{else}operate_post{/if}" />
+                        </dd>
+                    </dl>
+                </div>
+                </form>
+                </div>
+            </div>
+         </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script language="JavaScript">
+  var require_note = '{$require_note}';
+  var show_refund  = '{$show_refund}';
+  var show_cancel = '{$show_cancel_note}';
+{literal}
+  function check()
+  {
+    if (require_note && document.forms['theForm'].elements['action_note'].value == '')
+    {
+      alert(pls_input_note);
+      return false;
+    }
+	if (show_cancel && document.forms['theForm'].elements['cancel_note'].value == '')
+	{
+	  alert(pls_input_cancel);
+	  return false;
+	}
+    if (show_refund)
+    {
+      var selected = false;
+      for (var i = 0; i < document.forms['theForm'].elements.length; i++)
+      {
+        ele = document.forms['theForm'].elements[i];
+        if (ele.tagName == 'INPUT' && ele.name == 'refund' && ele.checked)
+        {
+          selected = true;
+          break;
+        }
+      }
+      if (!selected)
+      {
+        alert(pls_select_refund);
+        return false;
+      }
+    }
+    return true;
+  }
+  
+  function get_refound_amount(t, type){
+	  var orderId = document.getElementById('orderId').value;
+	  var recId = document.getElementById('recId').value;
+	  var retId = document.getElementById('retId').value;
+	  
+	  Ajax.call('order.php?is_ajax=1&act=edit_refound_amount', "refound_amount="+ t + "&type=" + type + "&order_id=" + orderId + "&rec_id=" + recId + "&ret_d=" + retId, refound_amountResponse, "GET", "JSON");
+  }
+  
+  function refound_amountResponse(result){
+	  if(result.content.type == 1){
+		  if(result.content.refound_amount > result.content.should_return){
+			  document.getElementById('refoundAmount').value = result.content.should_return;
+		  }
+	  }else{
+		  document.getElementById('shippingFee').value = result.content.shipping_fee;
+	  }
+	  
+  }
+  
+  function get_refound_value_card(refound_vcard, vc_id){
+	  
+	  var order_id = document.getElementById('orderId').value;
+	  var retId = document.getElementById('retId').value;
+	  
+	  Ajax.call('order.php?is_ajax=1&act=edit_refound_value_card', "vc_id="+ vc_id + "&order_id=" + order_id + "&refound_vcard=" + refound_vcard + "&ret_id=" + retId, refoundValueCardResponse, "GET", "JSON");
+  }
+  
+  function refoundValueCardResponse(result){
+	  $("#refound_vcard").val(result.content.refound_vcard);
+  }
+  
+  /*判断返回积分的值   BY kong*/
+  function refound_points(refound_pay_points){
+      var old_refound_pay_points = parseInt(Number("{$refound_pay_points}"));
+      var refound_points = parseInt(refound_pay_points);
+      if(refound_points  > old_refound_pay_points  || refound_points < 0 ){
+          $("#refound_pay_points").val(old_refound_pay_points);
+      }else{
+          $("#refound_pay_points").val(refound_points);
+      }
+  }
+{/literal}
+</script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>{if $page_title}{$page_title}{else}{$lang.store_page}{/if}</title>
+    
+    
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <link href="css/purebox.css" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" type="text/css" href="css/iconfont.css" />
+	<link rel="stylesheet" type="text/css" href="css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="../js/perfect-scrollbar/perfect-scrollbar.min.css" />
+    {insert_scripts files="../js/jquery-1.9.1.min.js,../js/jquery.json.js,../js/transport_jquery.js,../js/utils.js,listtable.js,common.js,jquery.validation.min.js,../js/jquery.form.js,../js/perfect-scrollbar/perfect-scrollbar.min.js,../js/lib_ecmobanFunc.js"}
+	<!--[if lt IE 9]>
+		<script src="js/css3-mediaqueries.js"></script>
+	<![endif]-->
+</head>
+<body>
+	<div class="print-main">
+		{include file='library/order_print.lbi'}
+    </div>
+	<input type="hidden" name="order_id" value="{$smarty.get.order_id}">
+	<input type="hidden" name="order_sn" value="{$smarty.get.order_sn}">
+    <input type="hidden" name="order_type" value="{$order_type}">
+    <script type="text/javascript" src="../js/LodopFuncs.js"></script>
+	<script type="text/javascript">
+	$.divselect("#print_specification","#print_specification_val",function(obj){
+		var order_id = $("input[name='order_id']").val();
+		var order_sn = $("input[name='order_sn']").val();
+        var order_type = $("input[name='order_type']").val();
+        var val = obj.attr("data-value");
+		$.jqueryAjax('tp_api.php', 'act=change_order_print&order_id='+order_id+'&order_sn='+order_sn+'&order_type='+order_type+'&specification='+val, function(data){
+			if(data.content){
+				$(".print-main").html(data.content);
+			}
+		})
+    });
+	
+	$(document).on("click","*[ectype='btnPrint']",function() {
+		$(".print_textarea").each(function(){
+			$(this).hide();
+			$(this).siblings(".print-remark").html($(this).val()).show();
+		});
+		var printer = $("input[name='printer']").val();
+		var width = $("input[name='width']").val();
+		 
+		if (printer == '' || printer == null) {
+			alert("该打印规格还没有设置指定的打印机");
+			return false;
+		}
+		var html = $("#printContent").html();
+		var title = "购物清单";
+		lodop_print_html(title, html, printer,width);
+	});
+	
+	$(document).on("click","*[ectype='btnPreview']",function(){
+		$(".print_textarea").each(function(){
+			$(this).hide();
+			$(this).siblings(".print-remark").html($(this).val()).show();
+		});
+		var printer = $("input[name='printer']").val();
+		var width = $("input[name='width']").val();
+		
+		if (printer == '' || printer == null) {
+			alert("该打印规格还没有设置指定的打印机");
+			return false;
+		}
+		var html = $("#printContent").html();
+		var title = "购物清单";
+		lodop_preview_html(title, html, printer,width);
+	});
+
+	$(".print-remark").click(function() {
+		$(this).hide();
+		$(this).siblings(".print_textarea").val($(this).html()).show();
+	});
+	</script>
+</body>
+</html>

@@ -1,0 +1,388 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<div class="step-tit">
+    <h3>送货清单</h3>
+    <a href="flow.php" class="returnCart">返回购物车</a>
+</div>
+<div class="step-cont">
+	<!-- {foreach from=$goods_list item=goodsRu} 第一层 商家层 -->
+    <div class="shopping-list">
+        <div class="cart-tbody">
+            
+            <div class="shopping-seller">
+            	
+                <div class="item-seller-l">
+                	<div class="shop">
+                        <div class="shop-txt"><h3>商家：{$goodsRu.ru_name}</h3></div>
+                    </div>
+                    <!-- {foreach from=$goodsRu.new_list item=activity key=key name=nogoods } 活动开始 -->
+                        <!-- {if $activity.act_id gt 0} -->
+                            <div class="item-list">
+                                <div class="item-goods-list">
+                                    <div class="goods-suit-tit">
+                                        <div class="f-txt">
+                                            <span class="full-icon">{$activity.act_type_txt}<b></b></span>
+                                            <!-- {if $activity.act_type eq 0} 如果是满赠 -->
+            
+                                                <!-- {if $activity.act_type_ext eq 0} -->
+                                                    <!-- {if $activity.available} 满足最低消费-->
+                                                    <a href="javascript:;">
+                                                    <span>活动商品已购满{$activity.min_amount}元 ，可领取赠品{if $activity.cart_favourable_gift_num gt 0}，已领取{$activity.cart_favourable_gift_num}件{/if} 
+                                                    </span>
+                                                    </a>
+            
+                                                    <!-- {else} -->
+                                                    <a href="javascript:;"><span>活动商品购满{$activity.min_amount}元即可领取赠品，先到先得 </span></a>
+                                                    <!-- {/if} -->
+                                                <!-- {else} -->
+                                                    <!-- {if $activity.available} 满足最低消费-->
+                                                    <a href="javascript:;"><span>活动商品已购满{$activity.min_amount}元 ，
+                                                    {if $activity.cart_favourable_gift_num gt 0}您已经领取了赠品{else}您可以返回购物车领取赠品{/if}</span></a>
+                                                    
+                                                    <!-- {else} -->
+                                                    <a href="javascript:;"><span>活动商品购满{$activity.min_amount}元即可领取赠品，先到先得</span></a>
+                                                    
+                                                    <!-- {/if} -->
+                                                <!-- {/if} -->
+            
+                                            <!-- {elseif $activity.act_type eq 1} 满减 -->
+            
+                                                <!-- {if $activity.available} 满足最低消费-->
+                                                <a href="javascript:;"><span>活动商品已购满{$activity.min_amount}元 ,已减{$activity.act_type_ext_format}元现金</span></a>
+                                                <!-- {else} -->
+                                                <a href="javascript:;"><span>活动商品购满{$activity.min_amount}元， 即可享受满减优惠</span></a>
+                                                <!-- {/if} -->
+            
+                                            <!-- {elseif $activity.act_type eq 2} 折扣 -->
+            
+                                                <!-- {if $activity.available} 满足最低消费-->
+                                                <a href="javascript:;"><span>活动商品已购满{$activity.min_amount}元 ，已享受{$activity.act_type_ext_format}折优惠</span></a>
+                                                <!-- {else} -->
+                                                <a href="javascript:;"><span>活动商品购满{$activity.min_amount}元， 即可享受折扣</span></a>
+                                                <!-- {/if} -->
+                                            <!-- {/if} -->
+                                        </div>
+                                    </div>
+                                    <!-- {foreach from=$activity.act_cart_gift item=goods}  赠品 -->
+                                    <div class="item-item">
+                                        <div class="item-form">
+                                            <div class="cell p-goods">
+                                                <div class="goods-item">
+                                                    <div class="p-img"><a href="{$goods.url}" target="_blank"><img src="{$goods.goods_thumb}" width="80" height="80"></a></div>
+                                                    <div class="item-msg">
+                                                        <div class="p-name">
+                                                        	<em class="s-ico">赠品</em>
+                                                            <a href="{$goods.url}" target="_blank">{$goods.goods_name}</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="cell p-attr">
+                                                {$goods.goods_attr|nl2br}
+                                            </div>
+                                            <div class="cell p-price">
+                                                <strong>{if $goods.rec_type == 5}定金：{$goods.formated_presale_deposit}{else}{$goods.formated_goods_price}{/if}</strong>
+                                                {if $goods.dis_amount > 0}
+                                                <font style="text-decoration:line-through; color:#999;">原价:￥{$goods.original_price}</font>
+                                                <font style="color:#F60">(优惠：{$goods.discount_amount})</font>
+                                                {/if}
+                                                <span class="num">x{$goods.goods_number}</span>
+                                            </div>
+                                            <div class="cell p-number">
+                                                <!-- {if $goods.attr_number} -->
+                                                	有货
+                                                    <input name="rec_number" type="hidden" id="{$goods.rec_id}" value="0">
+                                                <!-- {else} -->
+                                                	<font style="color:#e4393c">无货</font>
+                                                    <input name="rec_number" type="hidden" id="{$goods.rec_id}" value="1">
+                                                <!-- {/if} -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- {/foreach} 赠品结束 -->
+            
+                                    <!-- {foreach from=$activity.act_goods_list item=goods}  优惠活动商品 -->
+                                    <div class="item-item">
+                                        <div class="item-form">
+                                            <div class="cell p-goods">
+                                                <div class="goods-item">
+                                                    <div class="p-img"><a href="{$goods.url}" target="_blank"><img src="{$goods.goods_thumb}" width="80" height="80"></a></div>
+                                                    <div class="item-msg">
+                                                        <div class="p-name">
+                                                            <a href="{$goods.url}" target="_blank">{$goods.goods_name}</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="cell p-attr">
+                                                {$goods.goods_attr|nl2br}
+                                            </div>
+                                            <div class="cell p-price">
+                                                <strong>{if $goods.rec_type == 5}定金：{$goods.formated_presale_deposit}{else}{$goods.formated_goods_price}{/if}</strong>
+                                                {if $goods.dis_amount > 0}
+                                                <font style="text-decoration:line-through; color:#999;">原价:￥{$goods.original_price}</font>
+                                                <font style="color:#F60">(优惠：{$goods.discount_amount})</font>
+                                                {/if}
+                                                <span class="num">x{$goods.goods_number}</span>
+                                            </div>
+                                            <div class="cell p-number">
+                                                <!-- {if $goods.attr_number} -->
+                                                	有货
+                                                    <input name="rec_number" type="hidden" id="{$goods.rec_id}" value="0">
+                                                <!-- {else} -->
+                                                	<font style="color:#e4393c">无货</font>
+                                                    <input name="rec_number" type="hidden" id="{$goods.rec_id}" value="1">
+                                                <!-- {/if} -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- {/foreach} 活动结束-->
+                                </div>
+                            </div>
+                        <!-- {else} -->
+                            <!-- {foreach from=$activity.act_goods_list item=goods}  普通商品开始 -->
+                            <div class="item-list">
+                                <div class="item-goods-list">
+                                    <div class="item-item">
+                                        <div class="item-form">
+                                            <div class="cell p-goods">
+                                                <div class="goods-item">
+                                                    <!-- {if $goods.goods_id gt 0 && $goods.extension_code neq 'package_buy'} -->
+                                                    <div class="p-img"><a href="{$goods.url}" target="_blank"><img src="{$goods.goods_thumb}" width="80" height="80"></a></div>
+                                                    <!-- {/if} -->
+                                                    <div class="item-msg">
+                                                        <div class="p-name">
+                                                            <!-- {if $goods.goods_id gt 0 && $goods.extension_code eq 'package_buy'} -->
+                                                            <a href="javascript:void(0)" onclick="setSuitShow({$goods.goods_id})" class="f6">{$goods.goods_name}<span style="color:#FF0000;">（{$lang.remark_package}）</span></a>
+                                                            <div id="suit_{$goods.goods_id}" class="package_goods">
+                                                                <ul>
+                                                                <!-- {foreach from=$goods.package_goods_list item=package_goods_list name=nopackage} -->	
+                                                                <!-- {if !$smarty.foreach.nopackage.first} -->
+                                                                <li {if $smarty.foreach.nopackage.index > 3} style="display:none;"{/if}>
+                                                                    <a href="goods.php?id={$package_goods_list.goods_id}" target="_blank" class="f6">
+                                                                        <img src="{$package_goods_list.goods_thumb}" width="40" height="40" />
+                                                                        {$package_goods_list.goods_name}
+                                                                    </a>
+                                                                </li>
+                                                                <!-- {/if} -->
+                                                                <!-- {/foreach} -->
+                                                                </ul>
+                                                                <span class="ellipsis">......</span>
+                                                                <a href="javascript:void(0);" class="package-prolist-more">查看更多︾</a>
+                                                            </div>
+                                                            <!-- { else } -->
+                                                            <a href="{$goods.url}" target="_blank">{$goods.goods_name}</a>
+                                                            <!-- {/if} -->
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="cell p-attr">
+                                                {$goods.goods_attr|nl2br}
+                                            </div>
+                                            <div class="cell p-price">
+                                                <strong>{if $goods.rec_type == 5}定金：{$goods.formated_presale_deposit}{else}{$goods.formated_goods_price}{/if}</strong>
+                                                {if $goods.dis_amount > 0}
+                                            	<font style="text-decoration:line-through; color:#999;">原价:￥{$goods.original_price}</font>
+                                                <font style="color:#F60">(优惠：{$goods.discount_amount})</font>
+                                                {/if}
+                                                <span class="num">x{$goods.goods_number}</span>
+                                            </div>
+                                            <div class="cell p-number">
+                                                <!-- {if $goods.attr_number} -->
+                                                	有货
+                                                    <input name="rec_number" type="hidden" id="{$goods.rec_id}" value="0">
+                                                <!-- {else} -->
+                                                	<font style="color:#e4393c">无货</font>
+                                                    <input name="rec_number" type="hidden" id="{$goods.rec_id}" value="1">
+                                                <!-- {/if} -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- {/foreach} 普通商品结束 -->
+                        <!-- {/if} -->
+            
+                        <!-- {if !$smarty.foreach.nogoods.last} -->
+                            <div class="shopping-blank"></div>
+                        <!-- {/if} -->
+                    <!-- {/foreach} 活动结束 -->
+                </div>
+                <div class="item-list-r">
+                    <div class="shop"><div class="shop-txt"><h3>配送方式</h3></div></div>
+                    <div class="item-content">
+                        <div class="mode-tab-nav radio-list">
+                            <ul>
+                                <li class="mode-tab-item shopping-list-checked {if $goodsRu.shipping_type eq 0}item-selected{/if}" data-ruid="{$goodsRu.ru_id}" data-type="0" data-shipping="{$goodsRu.shipping.shipping_id}">
+                                    快递运输
+                                </li>
+                                {if $goodsRu.ru_id == 0 && $goodsRu.self_point != ""}
+                                <li class="mode-tab-item shopping-list-checked {if $goodsRu.shipping_type eq 1}item-selected{/if}" data-ruid="{$goodsRu.ru_id}" data-type="1" data-shipping="{$goodsRu.self_point.shipping_id}">
+                                    上门自取
+                                </li>
+                                {/if}
+                            </ul>
+                            <input type="hidden" name="shipping[]" value="{if $goodsRu.shipping_type eq 0}{$goodsRu.shipping.shipping_id|default:0}{else}{$goodsRu.self_point.shipping_id|default:0}{/if}"/>
+                        </div>
+                        <div class="mode-tab-con">
+                            <div class="mode-list {if $goodsRu.shipping_type eq 0}show{else}hide{/if}">
+                                <div class="mode-list-item">
+                                    <label class="tit">配送方式：</label>
+                                    <input type="hidden" name="ru_id[]" value="{$goodsRu.ru_id}" />
+                                    <input type="hidden" name="ru_name[]" value="{$goodsRu.ru_name}" />
+                                    <span class="value">{if $goodsRu.shipping.shipping_name}{$goodsRu.shipping.shipping_name}{else}该地区不支持配送{/if}</span>
+                                    
+                                    <a href="#none" class="ftx-05 hide" data-dialog="shopping_dialog" data-divid="shopping_seller_list" data-name="选择配送方式" data-width="730" data-height="210" data-url="#">修改</a>
+                                </div>
+                                {if $goodsRu.shipping.shipping_name}
+                                <div class="mode-list-item">
+                                    <label class="tit">运&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;费：</label>
+                                    <span class="value">{if $goodsRu.shipping.shipping_fee}{$goodsRu.shipping.format_shipping_fee}{else}免运费{/if}</span>
+                                </div>
+                                {/if}
+                            </div>
+                            {if $goodsRu.self_point != ""}
+                            <div class="mode-list {if $goodsRu.shipping_type eq 1}show{else}hide{/if}">
+                                <div class="mode-list-item">
+                                    <label class="tit">自提地点：</label>
+                                    <span class="value">{$goodsRu.self_point.name}</span>
+                                    <a href="javascript:void(0);" class="ftx-05" data-dialog="flow_dialog" data-mark="0" data-width="700" data-height="350" data-divid="picksite_box" data-title="选择自提点" data-url="flow.php?step=pickSite">修改</a>
+                                </div>
+                                <div class="mode-list-item">
+                                  <label class="tit">自提日期：</label>
+                                    <span class="value">{$goodsRu.self_point.shipping_dateStr}</span>
+                                    <a href="javascript:void(0);" class="ftx-05" data-dialog="flow_dialog" data-mark="1" data-divid="take_their_time" data-title="自提时间" data-width="600" data-height="250" data-url="flow.php?step=pickSite&mark=1">修改</a>
+                                </div>
+                                <div class="yunfei">免运费</div>
+                                <input type="hidden" name="point_id" value="{$goodsRu.self_point.point_id}">
+                                <input type="hidden" name="shipping_dateStr" value="{$goodsRu.self_point.shipping_dateStr}">
+                            </div>
+                            {/if}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- {/foreach} -->
+</div>
+<div class="order-remarks">
+    <div class="remark-tit">添加订单备注</div>
+    <div class="form remark-cont">
+        <input name="postscript" type="text" id="remarkText" maxlength="45" size="15" class="itxt itxt01" placeholder="限60个字" onblur="if(this.value==''||this.value=='限60个字'){this.value='限60个字';this.style.color='#cccccc'}" onfocus="if(this.value=='限60个字') {this.value='';};this.style.color='#000000';">
+        <span class="ml10">&nbsp;&nbsp;提示：请勿填写有关支付、收货、发票方面的信息</span>
+    </div>
+</div>
+<!-- {if $how_oos_list} 是否使用缺货处理 -->
+<div class="order-remarks hide">
+    <div class="remark-tit">{$lang.booking_process}</div>
+    <div class="form remark-cont">
+        <!-- {foreach from=$how_oos_list key=how_oos_id item=how_oos_name} -->
+        <label><input name="how_oos" type="radio" value="{$how_oos_id}" {if $order.how_oos eq $how_oos_id}checked{/if} onclick="changeOOS(this)" />{$how_oos_name}</label>
+        <!-- {/foreach} -->
+    </div>
+</div>
+<!-- {/if} 缺货处理结束 -->
+
+
+<script>
+$(function(){
+   //快速运输和上门自取切换
+    $(".shopping-list-checked").live('click',function(){
+
+            var index = $(this).index();
+            var ru_id = $(this).data('ruid');
+            var type = $(this).data('type');
+            var shipping_id = $(this).data('shipping');
+
+            $(this).addClass("item-selected").siblings().removeClass("item-selected");
+            $(this).parent("ul").next("input[type='hidden']").val(shipping_id);
+
+            var mode_tab_nav = $(this).parents(".mode-tab-nav");
+            mode_tab_nav.next().find(".mode-list").eq(index).show();
+            mode_tab_nav.next().find(".mode-list").eq(index).siblings().hide();
+
+            Ajax.call('ajax_dialog.php?act=shipping_type', 'ru_id=' + ru_id + '&type=' + type, changeShippingResponse, 'POST','JSON');
+    });
+	
+	//结算页面多个礼包产品展开
+	$(".package-prolist-more").click(function(){
+		$(this).prevAll("ul").find("li").show();
+		$(this).prev().hide();
+		$(this).hide();
+	});
+    
+    function changeShippingResponse(result){
+        if (result.error)
+        {
+          alert(result.massage);
+          location.href = './';
+        }
+
+        try
+        {
+          var layer = document.getElementById("ECS_ORDERTOTAL");
+
+          layer.innerHTML = (typeof result == "object") ? result.content : result;
+        }
+        catch (ex) { }
+    }
+
+    //自提点
+    $("*[data-dialog='flow_dialog']").live('click',function(){
+            var ok_title,cl_title,url,title,width,height,divId,mark,ajax_picksite;
+
+            url = $(this).data('url'); //删除连接地址
+            title = $(this).data('title');
+            width = $(this).data('width');
+            height = $(this).data('height');
+            divId = $(this).data('divid');
+            mark = $(this).data('mark'); //区分提货站与日期修改
+
+            ok_title = "保存";
+            cl_title = "取消";
+
+            Ajax.call(url,'',shopResponse, 'POST', 'JSON');
+            function shopResponse(result){
+                    pb({
+                            id:divId,
+                            title:title,
+                            width:width,
+                            height:height,
+                            ok_title:ok_title, 	//按钮名称
+                            cl_title:cl_title, 	//按钮名称
+                            content:result.result, 	//调取内容
+                            drag:false,
+                            foot:true,
+                            onOk:function(){ //保存回调函数
+                                if(mark == 0){
+                                    var district = $("#pickRegion_select").val();
+                                    var picksite_id = $("input[name='picksite_radio']:checked").val();
+                                    ajax_picksite = 'district='+ district +'&picksite_id='+ picksite_id + 'mark=' + mark ;
+                                }else{
+                                    var shipping_date = $("input[name='shipping_date']:checked").attr('data-shippingDate');
+                                    var time_range = $("input[name='shipping_date']:checked").attr('data-range');
+                
+                                    if(typeof(shipping_date) == "undefined"){
+                                        alert("请选择提货时间段!");return false;
+                                    }
+                                    ajax_picksite = 'shipping_date='+ shipping_date + '&time_range='+ time_range +'&mark=' + mark ;
+                                }
+                                
+                                Ajax.call('flow.php?step=select_picksite', ajax_picksite, selectPicksiteResponse, 'POST', 'JSON');
+                            },
+                            onCancel:function(){ //取消回调函数
+                            }
+                    });
+            }
+    });
+    function selectPicksiteResponse(result){
+            if(result.error == 0){
+                    $("#goods_inventory").html(result.content);
+            }else{
+                alert(result.massage);location.href = './';
+            }
+    }
+});
+</script>

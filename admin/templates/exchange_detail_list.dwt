@@ -1,0 +1,116 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+
+<body class="iframe_body">
+    <div class="warpper">
+        <div class="title">{$lang.report_form} - {$lang.integral_detail}</div>
+        <div class="content">
+            <div class="tabs_info">
+                <ul>
+                    <li {if $menu_select.current eq 'exchange_count'}class="curr"{/if}><a href="exchange_detail.php?act=detail">{$lang.exchange_count}</a></li>
+                </ul>
+            </div>
+            <div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.list.0}</li>
+                </ul>
+            </div>
+            <div class="flexilist mt30">
+            	<div class="query_result">
+                    <div class="common-head">
+                        <div class="fl">
+                            <div class="fbutton m0" id="fbutton_1"><a href="javascript:void(0);"><div class="csv" title="{$lang.export_list}"><span><i class="icon icon-download-alt"></i>{$lang.export_list}</span></div></a></div>
+                        </div>
+                        <div class="refresh">
+                            <div class="refresh_tit" onclick="getList(this)" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                        	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                        </div>
+                    </div>
+                    <div class="common-content">
+                        <div class="list-div" id="listDiv">
+                            {/if}
+                            <table cellpadding="0" cellspacing="0" border="0">
+                                <thead>
+                                <tr>
+                                    <th width="25%"><div class="tDiv">{$lang.goods_steps_name}</div></th>
+                                    <th width="25%"><div class="tDiv">{$lang.gift_consumption_score}</div></th>
+                                    <th width="25%"><div class="tDiv">{$lang.gift_grade_integral}</div></th>
+                                    <th width="25%" class="handle">{$lang.handler}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {foreach from=$detail item=vo}
+                                <tr>
+                                    <td><div class="tDiv">{$vo.shop_name}</div></td>
+                                    <td><div class="tDiv">{$vo.give_integral|default:0}</div></td>
+                                    <td><div class="tDiv">{$vo.rank_integral|default:0}</div></td>
+                                    <td class="handle">
+                                        <div class="tDiv">
+                                            <a href="exchange_detail.php?act=exchange_goods&user_id={$vo.user_id}" class="btn_see"><i class="sc_icon sc_icon_see"></i>{$lang.view_goods}</a>
+                                            <a href="exchange_detail.php?act=order_view&user_id={$vo.user_id}" class="btn_see"><i class="sc_icon sc_icon_see"></i>{$lang.view_order}</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {foreachelse}
+                                <tr>
+                                    <td colspan="12" class="no_record"><div class="tDiv">{$lang.no_records}</div></td>
+                                </tr>
+                                {/foreach}
+                                </tbody>
+                                <tfoot>
+                                <tr>
+                                    <td colspan="12">
+                                        <div class="list-page">
+                                            {include file="library/page.lbi"}
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tfoot>
+                            </table>
+                            {if $full_page}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+        //分页传值
+        listTable.recordCount = {$record_count|default:0};
+        listTable.pageCount = {$page_count|default:1};
+        listTable.url = "exchange_detail.php?is_ajax=1";
+        listTable.query = "detail_query";
+    
+        {foreach from=$filter item=item key=key}
+        listTable.filter.{$key} = '{$item}';
+        {/foreach}
+        
+        function getList()
+        {
+            var act = 'detail_query';
+            $.ajax({
+                url:"exchange_detail.php?is_ajax=1",
+                dataType:"json",
+                type:'post',
+                data:{
+                    "act" : act,
+                },
+                success:function(data){
+                    $('.list-div').eq(0).html(data.content);
+                }
+            })
+        }
+    
+        //导出报表(销售明细)
+        $('#fbutton_1').click(function(){
+            location.href='exchange_detail.php?act=download';
+        })
+    </script>
+</body>
+</html>
+{/if}

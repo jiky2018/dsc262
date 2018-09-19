@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<link rel="icon" href="animated_favicon.gif" type="image/gif" />
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/base.css" />
+<link href="{$ecs_css_path}" rel="stylesheet" type="text/css" />
+<link href="{$ecs_css_suggest}" rel="stylesheet" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS|{$page_title}" href="{$feed_url}" />
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/quickLinks.css" />
+<link rel="stylesheet" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/purebox.css">
+{* 包含脚本文件 *}
+{insert_scripts files='jquery-1.9.1.min.js,jquery.json.js,jquery.SuperSlide.2.1.1.js,common.js'}
+{insert_scripts files='transport_jquery.js,utils.js,suggest.js,cart_common.js,cart_quick_links.js'} 
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/sc_common.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/rotate3di.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/scroll_city.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/notLogin.js"></script>
+<!-- #BeginLibraryItem "/library/js_languages.lbi" --><!-- #EndLibraryItem -->
+</head>
+<body>
+<!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
+<!--当前位置 start-->
+<div class="ecsc-breadcrumb w1200 pb0">
+    <!-- #BeginLibraryItem "/library/ur_here.lbi" --><!-- #EndLibraryItem -->
+</div>
+<!--当前位置 end-->
+
+<div id="content" class="pt0">
+	<!-- {if $wholesale_list} 如果有批发商品 -->
+    <div class="w1200">
+    	<div class="wholesale-search w1200">
+            <form method="post" action="wholesale.php?act=list" name="wholesale_search">
+            	<div class="select">
+                <select name="search_category" id="search_category">
+                <option value="0">{$lang.all_category}</option>
+                {*$category_list*}
+				{foreach from=$categories_pro item="cat"}
+				<option value="{$cat.id}">{$cat.name}</option>
+                {/foreach}				
+                </select>
+                </div>
+                <input name="search_keywords" type="text" id="search_keywords" value="{$search_keywords|escape}" placeholder="{$lang.title_goods}"/>
+                <input name="search" type="submit" value="{$lang.search}" class="go" />
+                <input type="hidden" name="search_display" value="{$pager.display}" id="search_display" />
+            </form>
+        </div>
+      	<form name="wholesale_goods" class="wholesale_goods" action="wholesale.php?act=add_to_cart" method="post">
+          <table width="100%" cellpadding="0" cellspacing="0" class="table">
+            <tr>
+              <th class="th fore1">{$lang.goods_name}</th>
+              <th class="th fore2">{$lang.goods_attr}</th>
+              <th class="th fore3">{$lang.goods_price_ladder}</th>
+              <th class="th fore4">{$lang.number}</th>
+              <th class="th fore5">{$lang.handle}</th>
+            </tr>
+
+            <!-- {foreach from=$wholesale_list item=wholesale} 循环批发商品开始 -->
+            <tr>
+              <td class="td fore1">
+                  <div class="p-product">
+                      <div class="p-img"><a href="{$wholesale.goods_url}" target="_blank"><img src="{$wholesale.goods_thumb}" width="55" height="55" alt="{$wholesale.goods_name}" /></a></div>
+                      <div class="p-name"><a href="{$wholesale.goods_url}" target="_blank" class="f6">{$wholesale.goods_name}</a></div>
+                  </div>
+              </td>
+              <td class="td fore2">
+                <div class="attr">
+                  <!-- {foreach from=$wholesale.goods_attr item=property_group key=key} -->
+                  <!-- {foreach from=$property_group item=property} -->
+                   	{$property.name|escape:html}
+                    {$property.value|escape:html}
+                  <!-- {/foreach}-->
+                  <!-- {/foreach}-->
+                </div>
+              </td>
+
+              <td class="td fore3">
+                <!-- {foreach from=$wholesale.price_ladder key=key item=attr_price} -->
+                <div class="price">
+                	<!-- {if $attr_price.attr neq ''} -->
+                    	<!-- {foreach from=$attr_price.attr key=attr_key item=attr_value} -->{$attr_value.attr_name}:{$attr_value.attr_val}&nbsp;<!-- {/foreach} -->
+                    <!-- {/if} -->
+                	<div class="tit">
+                    	<div class="tit-l">{$lang.number}</div>
+                        <div class="tit-r">{$lang.ladder_price}</div>
+                    </div>
+                    <!-- {foreach from=$attr_price.qp_list key=qp_list_key item=qp_list_value} -->
+                    <div class="con">
+                    	<div class="con-num">{$qp_list_key}</div>
+                        <div class="con-val">{$qp_list_value}</div>
+                    </div>
+                    <!-- {/foreach} --> 
+                </div>
+                <!-- {/foreach} -->
+              </td>
+              <td class="td fore4">
+                <!-- {foreach from=$wholesale.price_ladder key=key1 item=attr_price1} -->
+                <div class="quantity-form">
+                  <!-- {if $attr_price1.attr neq ''} -->
+                  <div class="number">
+                      <a href="javascript:void(0)" class="decrement btn-reduce">-</a>
+                      <input name="goods_number[{$wholesale.act_id}][{$key1}]" type="text" id="quantity" class="itxt buy-num" value="1" size="10" />
+                      <!-- {foreach from=$attr_price1.attr key=attr_key1 item=attr_value1} -->
+                      <input name="attr_id[{$wholesale.act_id}][{$key1}][{$attr_key1}][attr_id]" type="hidden" value="{$attr_value1.attr_id}"/>
+                      <input name="attr_id[{$wholesale.act_id}][{$key1}][{$attr_key1}][attr_val_id]" type="hidden" value="{$attr_value1.attr_val_id}"/>
+                      <input name="attr_id[{$wholesale.act_id}][{$key1}][{$attr_key1}][attr_name]" type="hidden" value="{$attr_value1.attr_name}"/>
+                      <input name="attr_id[{$wholesale.act_id}][{$key1}][{$attr_key1}][attr_val]" type="hidden" value="{$attr_value1.attr_val}"/>
+                      <!-- {/foreach} -->
+                      <a href="javascript:void(0)" class="increment btn-add">+</a>
+                  </div>
+                  <!-- {else} -->
+                  <div class="number">
+                  	<a href="javascript:void(0)" class="decrement btn-reduce">-</a>
+                    <!-- {foreach from=$attr_price.qp_list key=qp_list_key item=qp_list_value name=list_key} -->
+                    <!--{if $smarty.foreach.list_key.index<1}-->
+                    <input name="goods_number[{$wholesale.act_id}]" type="text" id="quantity" class="itxt buy-num" value="{$qp_list_key}" size="10" />
+                    <!--{/if}-->
+                    <!--{/foreach}-->
+                    <a href="javascript:void(0)" class="increment btn-add">+</a>
+                  </div>
+                  <!-- {/if} -->
+
+                  <!-- {foreach from=$attr_price.qp_list key=qp_list_key item=qp_list_value} -->
+                  <span>&nbsp;</span>
+                  <!-- {/foreach} -->
+                  </div>
+                <!-- {/foreach} -->
+              </td>
+              <td class="td fore5">
+              	<input name="" type="submit" onClick="this.form.elements['act_id'].value = {$wholesale.act_id}" class="operate-btn" value="立即购买" />
+              </td>
+            </tr>
+            <!--{/foreach}-->
+          </table>
+          <input type="hidden" name="act_id" value="" />
+          <input type="hidden" name="display" value="{$pager.display}" id="display" />
+        </form>
+     <!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+	</div>
+    <!-- {else} -->
+    <div style="margin:2px 10px; font-size:14px; text-align:center; line-height:36px;"><B>{$lang.no_wholesale}</B></div>
+    <!-- {/if} -->
+    
+    <!-- {if $cart_goods} 如果有批发商品 -->
+    <!-- 批发商品购物车 -->
+    <div class="w1200 mt30">
+        <h3 class="wholesale_cart_title">{$lang.wholesale_goods_cart}</h3>
+        <form method="post" class="wholesale_goods wholesale_cart" action="wholesale.php?act=submit_order">
+        <table width="100%" cellpadding="0" cellspacing="0" class="table">
+          <tr>
+            <th class="th fore1">{$lang.goods_name}</th>
+            <th class="th fore2">{$lang.goods_attr}</th>
+            <th class="th fore3">{$lang.number}</th>
+            <th class="th fore4">{$lang.ws_price}</th>
+            <th class="th fore5">{$lang.ws_subtotal}</th>
+            <th class="th fore6">{$lang.handle}</th>
+          </tr>
+          <!-- {foreach from=$cart_goods key=key item=goods} 循环批发商品开始 -->
+          <tr>
+            <td class="td fore1"><a href="{$goods.goods_url}" target="_blank" class="ftx-05">{$goods.goods_name}</a></td>
+            <td class="td fore2">{$goods.goods_attr}</td>
+            <td class="td fore3">{$goods.goods_number}</td>
+            <td class="td fore4">{$goods.formated_goods_price}</td>
+            <td class="td fore5">{$goods.formated_subtotal}</td>
+            <td class="td fore6"><a href="wholesale.php?act=drop_goods&key={$key}" class="ftx-05">{$lang.drop}</a></td>
+          </tr>
+          <!--{/foreach}-->
+        </table>
+        <div class="wholesale_desc">
+        	<div class="label"><em class="ftx-01">*</em> {$lang.ws_remark}：</div>
+            <textarea name="remark" rows="4" class="border"></textarea><br />
+            <div class="ftx-01 fr mt10" style="width:100%; text-align:right;">{$lang.wholesale_desc}</div><br />
+            <input type="submit" class="bnt_bonus"  value="{$lang.submit}" />
+        </div>
+        </form>
+    </div>
+    <!-- {/if} -->
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+{* ECSHOP 提醒您：动态载入user_menu_position.lbi，显示首页分类小广告 *}{insert name='user_menu_position'}
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.purebox.js"></script>
+</body>
+</html>
+<script>
+function quantity(){
+	$(".btn-reduce").click(function(){
+		var quantity = Number($(this).siblings('.buy-num').val());
+		if(quantity>1){
+			quantity-=1;
+			$(this).siblings('.buy-num').val(quantity);
+		}else{
+			return false;
+		}
+	});
+	
+	$(".btn-add").click(function(){
+		var quantity = Number($(this).siblings('.buy-num').val());
+		quantity+=1;
+		$(this).siblings('.buy-num').val(quantity);
+	})
+}
+quantity();
+</script>
+{if $search_category > 0}
+<script language="javascript">
+document.getElementById('search_category').value = '{$search_category}';
+</script>
+{/if}

@@ -1,0 +1,170 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+<div class="warpper">
+    <div class="title">{$ur_here}</div>
+    <div class="content">
+        <div class="flexilist">
+            <div class="common-head">
+                <div class="fl">
+                    <a href="{$action_link.href}"><div class="fbutton"><div class="piliang" title="{$action_link.text}"><span><i class="icon icon-copy"></i>{$action_link.text}</span></div></div></a>
+                </div>
+            </div>
+            <div class="common-content">
+                <div class="mian-info">
+                    <form method="post" action="merchants_account.php" name="theForm"  id="account_info">
+                        <div class="switch_info">
+                            <div class="item">
+                                <div class="label">{$lang.goods_steps_name}：</div>
+                                <div class="label_value font14">{$seller_info.shop_name}</div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.require_field}&nbsp;{$lang.label_change_desc}</div>
+                                <div class="label_value">
+                                    <textarea name="change_desc" cols="60" rows="4" class="textarea" id="change_desc"></textarea>
+                                    <div class="form_prompt"></div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.require_field}{$lang.status}：</div>
+                                <div class="label_value">
+                                    <div class="checkbox_items">
+                                         <div class="checkbox_item">
+                                            <input type="radio" name="money_status" value="0" class="ui-radio" id="money_status0" checked>
+                                            <label class="ui-radio-label" for="money_status0">{$lang.label_user_money}</label>
+                                        </div>
+                                        <div class="checkbox_item">
+                                            <input type="radio" name="money_status" value="1" class="ui-radio" id="money_status1">
+                                            <label class="ui-radio-label" for="money_status1">{$lang.label_frozen_money}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item" id="label_user_money">
+                                <div class="label">&nbsp;</div>
+                                <div class="label_value">
+                                    <div class="date-item">
+                                        <div id="user_month" class="imitate_select select_w75">
+                                          <div class="cite">{$lang.add}</div>
+                                          <ul>
+                                             <li><a href="javascript:;" data-value="1" class="ftx-01">{$lang.add}</a></li>
+                                             <li><a href="javascript:;" data-value="-1" class="ftx-01">{$lang.subtract}</a></li>
+                                          </ul>
+                                          <input name="add_sub_user_money" type="hidden" value="1" id="month_val">
+                                        </div>
+                                        <input type="text" name="user_money"  class="text w100 ml10" autocomplete="off" id="user_money"/>
+                                        <div class="notic">{$lang.current_value}{$seller_info.formated_seller_money}</div>
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item hide" id="label_frozen_money">
+                                <div class="label">&nbsp;</div>
+                                <div class="label_value">
+                                    <div class="date-item">
+                                        <div id="user_year" class="imitate_select select_w75">
+                                          <div class="cite">{$lang.add}</div>
+                                          <ul>
+                                             <li><a href="javascript:;" data-value="1" class="ftx-01">{$lang.add}</a></li>
+                                             <li><a href="javascript:;" data-value="-1" class="ftx-01">{$lang.subtract}</a></li>
+                                          </ul>
+                                          <input name="add_sub_frozen_money" type="hidden" value="1" id="year_val">
+                                        </div>
+                                        <input type="text" name="frozen_money"  class="text w100 ml10" autocomplete="off" id="frozen_money"/>
+                                        <div class="notic">{$lang.current_value}{$seller_info.formated_frozen_money}</div>
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">&nbsp;</div>
+                                <div class="label_value info_btn">
+                                    <input name="submitBtn" type="submit" class="button" id="submitBtn" value="{$lang.button_submit}" />
+                                    <input type="hidden" name="act" value="insert" />
+                                    <input type="hidden" name="sc_guid" value="{$sc_guid}">
+                                    <input type="hidden" name="sc_rand" value="{$sc_rand}">
+                                    <input type="hidden" name="user_id" value="{$seller_info.ru_id}" />
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/pagefooter.lbi'}
+<script type="text/javascript">
+//列表导航栏设置下路选项
+$(".ps-container").perfectScrollbar();
+
+//会员基本信息 div仿select 
+$.divselect("#user_year","#year_val");
+$.divselect("#user_month","#month_val");
+
+$(function(){
+	$(":input[name='add_sub_user_money']").val(1);
+	$(":input[name='add_sub_frozen_money']").val(1);
+	
+	checked_prop('money_status');
+
+	$(":input[name='money_status']").click(function(){
+		var index = $(this).val();
+		
+		if(index == 1){
+			$("#label_user_money").hide();
+			$("#label_frozen_money").show();
+			$(":input[name='user_money']").val('');
+		}else{
+			$("#label_user_money").show();
+			$("#label_frozen_money").hide();
+			$(":input[name='frozen_money']").val('');
+		}
+	});
+	
+	$("#submitBtn").click(function(){
+		if($("#account_info").valid()){
+			//防止表单重复提交
+			if(checkSubmit() == true){
+				$(this).parents("form").submit();
+			}else{
+				return false;
+			}
+		}
+	});
+	
+	$('#account_info').validate({
+		errorPlacement:function(error, element){
+			var error_div = element.parents('div.label_value').find('div.form_prompt');
+			element.parents('div.label_value').find(".notic").hide();
+			error_div.append(error);
+		},
+		rules : {
+			change_desc : {
+				required : true
+			},
+			user_money : {
+				number : true
+			},
+			frozen_money : {
+				number : true
+			}
+		},
+		messages : {
+			change_desc : {
+				required : '<i class="icon icon-exclamation-sign"></i>'+no_change_desc
+			},
+			user_money : {
+				number : '<i class="icon icon-exclamation-sign"></i>'+user_money_not_number
+			},
+			frozen_money : {
+				number :'<i class="icon icon-exclamation-sign"></i>'+frozen_money_not_number
+			}
+		}
+	});
+});
+</script>     
+</body>
+</html>

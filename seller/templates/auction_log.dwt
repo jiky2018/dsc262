@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+            	{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="clear"></div>
+                <div class="act-div">
+                    <div class="indBlock">
+                        <i class="sc_icon sc_icon_lt"></i>
+                        <i class="sc_icon sc_icon_rb"></i>
+                        <div class="item">
+                            <div class="label">{$lang.label_act_name}</div>
+                            <div class="value"><h4>{$auction.act_name}</h4></div>
+                        </div>
+                        <div class="item">
+                            <div class="label">{$lang.label_goods_name}</div>
+                            <div class="value">{$auction.goods_name}</div>
+                        </div>
+                        <div class="item">
+                            <div class="label">&nbsp;</div>
+                            <div class="value"><a href="auction.php?act=edit&id={$auction.act_id}" class="blue"> [ {$lang.view} ] </a></div>
+                        </div>
+                    </div>
+                </div>
+                <table class="ecsc-default-table">
+                    <thead>
+                      <tr>
+                        <th>{$lang.bid_user}</th>
+                        <th>{$lang.bid_price}</th>
+                        <th width="30%">{$lang.bid_time}</th>
+                        <th>{$lang.status}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    {foreach from=$auction_log item=log name="fe_log"}
+                    <tr>
+                      <td>{$log.user_name}</td>
+                      <td align="right">{$log.formated_bid_price}</td>
+                      <td align="center">{$log.bid_time}</td>
+                      <td align="center">{if $smarty.foreach.fe_log.first}OK{else}&nbsp;{/if}</td>
+                    </tr>
+                    {foreachelse}
+                    <tr><td class="no-records" colspan="4">{$lang.no_records}</td></tr>
+                    {/foreach}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="20">
+                            {include file="page.dwt"}
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript" language="JavaScript">
+<!--
+  listTable.recordCount = {$record_count|default:0};
+  listTable.pageCount = {$page_count|default:1};
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+
+  {literal}
+  onload = function()
+  {
+    startCheckOrder();
+  }
+  
+  {if $priv_ru eq 1}
+    function get_store_search(val){
+        if(val == 1){
+            document.forms['searchForm'].elements['merchant_id'].style.display = '';
+            document.forms['searchForm'].elements['store_keyword'].style.display = 'none';
+            document.forms['searchForm'].elements['store_type'].style.display = 'none';
+        }else if(val == 2){
+            document.forms['searchForm'].elements['merchant_id'].style.display = 'none';
+            document.forms['searchForm'].elements['store_keyword'].style.display = '';
+            document.forms['searchForm'].elements['store_type'].style.display = 'none';
+        }else if(val == 3){
+            document.forms['searchForm'].elements['merchant_id'].style.display = 'none';
+            document.forms['searchForm'].elements['store_keyword'].style.display = '';
+            document.forms['searchForm'].elements['store_type'].style.display = '';
+        }else{
+            document.forms['searchForm'].elements['merchant_id'].style.display = 'none';
+            document.forms['searchForm'].elements['store_keyword'].style.display = 'none';
+            document.forms['searchForm'].elements['store_type'].style.display = 'none';
+        }
+    }
+    {/if}
+
+  /**
+   * 搜索团购活动
+   */
+  function searchGroupBuy()
+  {
+      
+	{if $priv_ru eq 1}
+	listTable.filter['store_search'] = Utils.trim(document.forms['searchForm'].elements['store_search'].value);
+	listTable.filter['merchant_id'] = Utils.trim(document.forms['searchForm'].elements['merchant_id'].value);
+	listTable.filter['store_keyword'] = Utils.trim(document.forms['searchForm'].elements['store_keyword'].value);
+	listTable.filter['store_type'] = Utils.trim(document.forms['searchForm'].elements['store_type'].value);
+	{/if}
+
+    var keyword = Utils.trim(document.forms['searchForm'].elements['keyword'].value);
+    listTable.filter['keyword'] = keyword;
+    listTable.filter['page'] = 1;
+    listTable.loadList("group_buy_list");
+  }
+  {/literal}
+//-->
+</script>
+</body>
+</html>

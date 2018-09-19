@@ -1,0 +1,182 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>供求 - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content_common}</li>
+                    <li>可选择已有的顶级批发分类。</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+						 <form action="wholesale_cat.php" method="post" name="theForm" enctype="multipart/form-data" id="wholesale_cat_form">
+                            <div class="switch_info">
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}{$lang.cat_name}：</div>
+                                    <div class="label_value">
+										<input type="text" name="cat_name" value="{$cat_info.cat_name|escape:html}" size="40" class="text" autocomplete="off" />
+                                        <div class="form_prompt"></div>
+									</div>
+                                </div>
+								{if $cat_info.parent_id eq 0}
+                                <div class="item">
+                                    <div class="label">分类别名：</div>
+                                    <div class="label_value">
+                                        <input type='text' name='cat_alias_name' class="text w100" id="cat_alias_name" maxlength="20" value='{$cat_info.cat_alias_name|escape:html}' size='27'/>
+                                        <div class="notic">（注：分类名过长设置别名方便显示，字数设置为2-4个汉字字符）</div>
+                                    </div>
+                                </div>
+								{/if}
+                                <div class="item">
+									<div class="label">{$lang.parent_id}：</div>
+									<div id="parent_id" class="imitate_select select_w320">
+									    <div class="cite">{$lang.cat_top}</div>
+									    <ul>
+									    {foreach from=$cat_select item=list}
+											<li><a href="javascript:;" data-value="{$list.cat_id}" class="ftx-01">{$list.name}</a></li>
+									    {/foreach}
+									    </ul>
+										<input name="parent_id" type="hidden" value="{$cat_info.parent_id}" id="parent_id_val">
+									</div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.is_show}：</div>
+                                    <div class="label_value">
+                                        <div class="checkbox_items">
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="is_show" id="is_show_1" value="1" {if $cat_info.is_show neq 0} checked="true" {/if}  />
+                                                <label for="is_show_1" class="ui-radio-label">{$lang.yes}</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="is_show" id="is_show_0" value="0" {if $cat_info.is_show eq 0} checked="true" {/if}  />
+                                                <label for="is_show_0" class="ui-radio-label">{$lang.no}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.show_in_nav}：</div>
+                                    <div class="label_value">
+                                        <div class="checkbox_items">
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="show_in_nav" id="show_in_nav_1" value="1" {if $cat_info.show_in_nav neq 0} checked="true" {/if}  />
+                                                <label for="show_in_nav_1" class="ui-radio-label">{$lang.yes}</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="show_in_nav" id="show_in_nav_0" value="0" {if $cat_info.show_in_nav eq 0} checked="true" {/if}  />
+                                                <label for="show_in_nav_0" class="ui-radio-label">{$lang.no}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.sort_order}：</div>
+                                    <div class="label_value">
+										<input type="text" class="text w120" name='sort_order' {if $cat_info.sort_order} value='{$cat_info.sort_order}'{else} value="50"{/if} size="15" autocomplete="off" />
+									</div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">分类菜单图标：</div>
+                                    <div class="label_value">
+                                    	<div class="checkbox-items checkbox-cateicon-items" ectype="style_icon">
+											{foreach from=$lang.icon item=icon key=key}
+                                        	<div class="checkbox-item">
+                                            	<input type="radio" name="style_icon" class="ui-radio" id="radio_{$key}" data-name="{$key}" value="{$key}" {if $cat_info.style_icon eq $key}checked{/if} />
+                                                <label class="ui-radio-label" for="radio_{$key}"><i class="iconfont icon-{$key}"></i></label>
+                                            </div>
+											{/foreach}
+                                            <div class="checkbox-other">
+                                                <div class="checkbox-item">
+                                                    <input type="radio" name="style_icon" class="ui-radio" id="radio_other" data-name="other" value="other" {if $cat_info.style_icon eq 'other'}checked{/if} />
+                                                    <label class="ui-radio-label" for="radio_other"><span>自定义</span></label>
+                                                </div>
+                                                <div class="type-file-box ml10 {if $cat_info.style_icon neq 'other'}hide{/if}" ectype="cat_icon">
+                                                    <input type="button" name="button" id="button" class="type-file-button" value="" />
+                                                    <input type="file" class="type-file-file" id="cat_icon" name="cat_icon" size="30" data-state="imgfile" hidefocus="true" value="" />
+                                                    {if $cat_info.cat_icon}
+                                                    <span class="show">
+                                                        <a href="../{$cat_info.cat_icon}" target="_blank" class="nyroModal"><i class="icon icon-picture" onmouseover="toolTip('<img src=../{$cat_info.cat_icon}>')" onmouseout="toolTip()"></i></a>
+                                                    </span>
+                                                    {/if}
+                                                    <input type="text" name="textfile" class="type-file-text" id="textfield" readonly />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="notic">图标尺寸为18*18比例，大小不能超过200KB，图片只能为jpg、png、gif格式</div>
+                                    </div>
+                                </div>									
+                                <div class="item">
+                                    <div class="label">{$lang.keywords}：</div>
+                                    <div class="label_value">					
+										<input type="text" name="keywords" value='{$cat_info.keywords}' size="50" class="text mr10" autocomplete="off" />										
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.cat_desc}：</div>
+                                    <div class="label_value">					
+										<textarea name='cat_desc' rows="6" cols="48" class="textarea">{$cat_info.cat_desc}</textarea>							
+                                    </div>
+                                </div>	
+                                <div class="item">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="label_value info_btn">
+									  <input type="submit" value="{$lang.button_submit}" id="submitBtn" class="button" />
+								      <input type="hidden" name="act" value="{$form_act}" />
+									  <input type="hidden" name="old_cat_name" value="{$cat_info.cat_name}" />
+									  <input type="hidden" name="cat_id" value="{$cat_info.cat_id}" />
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+ 	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+	$(function(){
+		
+		$("*[ectype=style_icon] input:radio").click(function(){
+			if($(this).val() == 'other'){
+				$("*[ectype=cat_icon]").removeClass('hide');
+			}else{
+				$("*[ectype=cat_icon]").addClass('hide');
+			}
+		})		
+		
+		
+		$("#submitBtn").click(function(){
+			if($("#presale_cat_form").valid()){
+				$("#presale_cat_form").submit();
+			}
+		});
+	
+		$('#presale_cat_form').validate({
+			errorPlacement:function(error, element){
+				var error_div = element.parents('div.label_value').find('div.form_prompt');
+				element.parents('div.label_value').find(".notic").hide();
+				error_div.append(error);
+			},
+			rules:{
+				cat_name :{
+					required : true
+				}
+			},
+			messages:{
+				cat_name:{
+					required : '<i class="icon icon-exclamation-sign"></i>请输入分类名称'
+				}
+			}			
+		});
+	});
+	</script>
+</body>
+</html>

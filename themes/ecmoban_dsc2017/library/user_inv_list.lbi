@@ -1,0 +1,118 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<div class="user-order-list user-invoice-list">
+    {foreach from=$invoice_list.order_list item=list key=key}
+    <dl class="item">
+        <dt class="item-t">
+            <div class="t-info">
+                <span class="info-item">订单号：{$list.order_sn}</span>
+                <span class="info-item">{$list.add_time}</span>
+                <span class="info-item">
+                    <a href="merchants_store.php?merchant_id=1" class="user-shop-link">{$list.shop_name}</a>
+                    {if $list.is_IM eq 1 || $list.is_dsc}
+                    <a id="IM" onclick="openWin(this)" href="javascript:;" ru_id="{$list.ru_id}"  class="iconfont icon-kefu user-shop-kefu"></a>
+                    {else}
+                    {if $list.kf_type eq 1}
+                    <a href="http://www.taobao.com/webww/ww.php?ver=3&touid={$list.kf_ww}&siteid=cntaobao&status=1&charset=utf-8" class="iconfont icon-kefu user-shop-kefu" target="_blank"></a>
+                    {else}
+                    <a href="http://wpa.qq.com/msgrd?v=3&uin={$list.kf_qq}&site=qq&menu=yes" class="iconfont icon-kefu user-shop-kefu" target="_blank"></a>
+                    {/if}
+                    {/if}
+                </span>
+                <span class="info-item">{$list.mobile}</span>
+            </div>
+        </dt>
+        <dd class="item-c relative">
+            <table>
+                <tr>
+                    <td>
+                        {foreach from=$list.order_goods item=goods name=foo}
+                        <div class="c-goods" ectype="c-goods" {if $smarty.foreach.foo.index > 2} style="display:none;"{/if}>
+                            {if $goods.extension_code neq 'package_buy'}
+                            <div class="c-img"><a href="{$goods.url}" target="_blank"><img src="{if $goods.goods_thumb}{$goods.goods_thumb}{else}{$order.no_picture}{/if}" alt=""></a></div>
+                            {else}
+                            <div class="c-img"><a href="javascript:void(0);"><img src="../images/17184624079016pa.jpg" alt=""></a></div>
+                            {/if}
+                            <div class="c-name">
+                                    {if $goods.extension_code eq 'package_buy'}
+                                    <a href="{$goods.url}" target="_blank" class="ftx-03">{$goods.goods_name|truncate:30}</a>
+                                    <span class="red">{$lang.remark_package}</span>
+                                    {else}
+                                    <a href="{$goods.url}" target="_blank" class="ftx-03">{$goods.goods_name}</a>
+                                    {/if}
+                            </div>
+                            <div class="c-number">X{$goods.goods_number}</div>
+                        </div>
+                        {/foreach}
+                        {if $order.order_goods_count gt 3}
+                        <span class="ellipsis">......</span>
+                        <a href="javascript:void(0);" class="order-prolist-more" ectype="opm">{$lang.see_more}︾</a>
+                        {/if}
+                    </td>
+                    <td class="c-state"><div class="ftx-01">{$list.inv_status}</div></td>
+                    <td>
+                        <div class="c-handle">
+                            <a href="#" class="sc-btn">发票详情</a>
+                            <div class="arrowWarp">
+                                <i class="arrowTop"></i>
+                                <div class="arrowContent">
+									{if $list.vat_info}
+									<div class="arrowItems">
+                                        <div class="arrowItem">
+                                            <div class="label">类型：</div>
+                                            <div class="value">{$list.invoice_type}</div>
+                                        </div>
+                                        <div class="arrowItem">
+                                            <div class="label">抬头：</div>
+                                            <div class="value">{$list.vat_info.company_name}</div>
+                                        </div>
+                                        <div class="arrowItem">
+                                            <div class="label">状态：</div>
+                                            <div class="value">
+												{if $list.vat_info.audit_status eq 1}
+												审核通过
+												{else}
+												审核未通过
+												{/if}
+											</div>
+                                        </div>
+                                    </div>
+									{else}
+                                    <div class="arrowItems">
+                                        <div class="arrowItem">
+                                            <div class="label">类型：</div>
+                                            <div class="value">{$list.invoice_type}</div>
+                                        </div>
+                                        <div class="arrowItem">
+                                            <div class="label">抬头：</div>
+                                            <div class="value">{$list.inv_payee}</div>
+                                        </div>
+                                        <div class="arrowItem">
+                                            <div class="label">内容：</div>
+                                            <div class="value">{$list.inv_content}</div>
+                                        </div>
+                                    </div>
+									{/if}
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </dd>
+    </dl>
+    {foreachelse}
+    <div class="no_records">
+        <i class="no_icon"></i>
+        <div class="no_info">
+            <h3>
+                {$lang.no_records}
+            </h3>
+        </div>
+    </div>
+    {/foreach}
+</div>
+{if $invoice_list.order_list}
+<div class="pages pages_warp">{$invoice_list.pager}</div>
+{/if}
+
+

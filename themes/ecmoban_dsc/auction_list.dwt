@@ -1,0 +1,252 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable --><!-- TemplateBeginEditable name="head" --><!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<link rel="icon" href="animated_favicon.gif" type="image/gif" />
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/base.css" />
+<link href="{$ecs_css_path}" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/quickLinks.css" />
+<link rel="stylesheet" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/purebox.css">
+{* 包含脚本文件 *}
+{insert_scripts files='jquery-1.9.1.min.js,jquery.json.js,transport_jquery.js'}
+{insert_scripts files='common.js,global.js,utils.js,compare.js,cart_common.js,cart_quick_links.js'}
+
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/sc_common.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.tabso_yeso.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.yomi.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/rotate3di.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/scroll_city.js"></script>
+<script type="text/javascript">
+  {foreach from=$lang.js_languages item=item key=key}
+    var {$key} = "{$item}";
+  {/foreach}
+  process_request ='';
+</script>
+</head>
+<body>
+<!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
+
+<!--当前位置 start-->
+<div class="w1200">
+    <div class="nch-breadcrumb-layout">
+        <div class="nch-breadcrumb w1200" id="ur_here">
+            <!-- #BeginLibraryItem "/library/ur_here.lbi" --><!-- #EndLibraryItem -->
+        </div>
+    </div>      
+</div>
+<!--当前位置 end-->
+
+<!-- TemplateBeginEditable name="热门拍卖商品" -->
+<!-- #BeginLibraryItem "/library/auction_hot.lbi" -->
+
+
+<!-- {if $hot_goods}-->
+<div class="wrapper">
+	<!--热派推荐 Begin-->
+	<div id="hot">
+    	<h1>{$lang.recommended_host}</h1>
+      	<div class="hot_wrapper">
+        	<div class="hd">
+				<a class="next"></a>
+				<a class="prev"></a>
+			</div>
+            <div class="bd">
+             	<ul>
+        	<!--{foreach from=$hot_goods item=goods}-->
+        	<div class="hot_product Left">
+            	<a href="{$goods.url}" target="_blank"><img src="{$goods.thumb}"/></a>
+                <dl>
+                	<dt><a href="{$goods.url}" title="{$goods.name|escape:html}" target="_blank">{$goods.short_style_name}</a></dt>
+                    <dd class="fs12 tac">
+                    	{$lang.residue_time}<span  class="end_date_{$goods.auction.act_id}" showday='show' value="{$goods.auction.end_time}" style="background:none; margin:0px; padding:0px;"></span>
+                    </dd>
+                    <dd>
+                    	<button onClick="location.href='{$goods.url}'">{$lang.offer_my}</button>
+                        <span class="fc_red Right mr10">{$lang.starting_price}{$goods.start_price}</span>
+                    </dd>
+                </dl>
+            </div>
+            
+			<!--{/foreach}-->
+            </ul>
+           </div>
+        </div>
+    </div>
+    <!--热派推荐 End-->
+</div>
+<script type="text/javascript">
+            	$(function(){
+					setInterval(function(){
+					  $(".end_date_" + {$goods.auction.act_id}).each(function(){
+						var obj = $(this);
+						
+						var endTime = new Date(parseInt(obj.attr('value')) * 1000);
+						var show_day =  obj.attr('showday');
+						var nowTime = new Date();
+						var nMS=endTime.getTime() - nowTime.getTime() + 28800000;
+						var myD=Math.floor(nMS/(1000 * 60 * 60 * 24));
+						var myH_show=Math.floor(nMS/(1000*60*60) % 24);
+						var myH=Math.floor(nMS/(1000*60*60));
+						var myM=Math.floor(nMS/(1000*60)) % 60;
+						var myS=Math.floor(nMS/1000) % 60;
+						var myMS=Math.floor(nMS/100) % 10;
+						
+						var myHZero = '';
+						var myMZero = '';
+						var mySZero = '';
+						if (myH < 10)
+						{
+							var myHZero = '0';
+						}
+						if (myM < 10)
+						{
+							var myMZero = '0';
+						}
+						if (myS < 10)
+						{
+							var mySZero = '0';
+						}
+							
+							
+						if(parseInt(myS+myM+myH+myD) > 0){
+							if(show_day == 'show')
+							{
+								var str = '<strong class="tcd-d">'+myD+'</strong>'+day+'<strong class="tcd-h">'+myH_show+'</strong>'+hour+'<strong class="tcd-m">'+myM+'</strong>'+minute+'strong class="tcd-s">'+myS+'</strong>'+seconds;
+							}
+							else
+							{
+								var str = '<span class="times">'+myHZero+myH+'</span><em>'+hour_two+'</em><span class="times">'+myMZero+myM+'</span><em>'+minute+'</em><span class="times">'+mySZero+myS+'</span><em>'+seconds+'</em>';
+							}
+						}else{
+							var str = has_ended;	
+						}
+						obj.html(str);
+					  });
+					}, 100);	
+				})
+            </script>
+<!-- {/if} -->
+<script type="text/javascript">
+	jQuery(".hot_wrapper").slide({titCell:".hd ul",mainCell:".bd ul",autoPage:true,effect:"left",autoPlay:true,vis:3,trigger:"click",delayTime:700});
+</script>
+ <!-- #EndLibraryItem -->
+<!-- TemplateEndEditable -->
+<div id="filter">
+    <div class="component-filter-sort w1200 mt0">
+        <div class="filter-sortbar">
+            <div class="button-strip">
+                <a href="auction.php?sort=act_id&order=<!-- {if $pager.search.sort == 'act_id' && $pager.search.order == 'DESC'} -->ASC<!-- {else} -->DESC<!-- {/if} -->" class="button-strip-item {if $pager.search.sort == 'act_id'}current{/if}">默认<i class="icon <!-- {if $pager.search.sort == 'act_id' && $pager.search.order == 'DESC'} -->icon-down<!-- {else} -->icon-up<!-- {/if} -->"></i></a>
+                <a href="auction.php?sort=start_time&order=<!-- {if $pager.search.sort == 'start_time' && $pager.search.order == 'DESC'} -->ASC<!-- {else} -->DESC<!-- {/if} -->" class="button-strip-item {if $pager.search.sort == 'start_time'}current{/if}">开始时间<i class="icon <!-- {if $pager.search.sort == 'start_time' && $pager.search.order == 'DESC'} -->icon-down<!-- {else} -->icon-up<!-- {/if} -->"></i></a>
+                <a href="auction.php?sort=end_time&order=<!-- {if $pager.search.sort == 'end_time' && $pager.search.order == 'DESC'} -->ASC<!-- {else} -->DESC<!-- {/if} -->" class="button-strip-item {if $pager.search.sort == 'end_time'}current{/if}">即将结束<i class="icon <!-- {if $pager.search.sort == 'end_time' && $pager.search.order == 'DESC'} -->icon-down<!-- {else} -->icon-up<!-- {/if} -->"></i></a>
+            </div>
+            <form method="GET" class="sort" name="listform">
+            <div class="f-search">
+                <div class="fl">{$lang.goods_name}：</div>
+                <div class="fl"><input name="keywords" type="text" class="text-stock-search" value="{$pager.search.keywords}" /></div>
+                <div class="fl"><a href="javascript:void(0);" class="btn-stock-search ui-btn-submit">{$lang.assign}</a></div>
+            </div>
+            <input type="hidden" name="page" value="{$pager.page}" />
+            <input type="hidden" name="sort" value="{$pager.search.sort}" />
+            <input type="hidden" name="order" value="{$pager.search.order}" />
+            </form>
+			<!--{if !$category_load_type} 瀑布流 by wu start-->
+            <div class="button-page">
+                <span class="pageState"><span>{$pager.page}</span>/{$pager.page_count}</span>
+                <a href="{$pager.page_next}" class="pageNext">></a>
+                <a href="{$pager.page_prev}" class="pagePrev"><</a>
+            </div>
+			<!--{/if} 瀑布流 by wu end-->
+        </div>
+    </div>
+</div>
+
+<!-- {if $auction_list} 如果有拍卖活动 -->
+<div id="content" class="w1200 clearfix">
+	<!--拍卖商品列表 Begin-->
+    <div class="f_ly f_ly_auction">
+        <div class="f_ly_wrapper">
+            <div class="f_ly_content">
+            	<ul class="line" ectype="items">
+                	<!-- {foreach from=$auction_list item=auction} 循环拍卖活动开始 -->
+                	<li>
+                        <div class="item">
+                            <div class="p-img"><a href="{$auction.url}" target="_blank"><img src="{$auction.goods_thumb}" width="200" height="200"></a></a>
+                            </div>
+                            <div class="p-name"><a href="{$auction.url}" title="{$auction.goods_name|escape:html}">{$auction.act_name|escape:html}</a></div>
+                            <div class="pl">
+                                <div class="pl-item">
+                               		<span class="label">{$lang.au_start_price}：</span>
+                                	<div class="p-price size12 box_red">{$auction.formated_start_price}</div>
+                                </div>
+                                <div class="pl-item">
+                                    <span class="label">{$lang.au_end_price}：</span>
+                                    <div class="p-price size12">{$auction.formated_end_price}</div>
+                                </div>
+                            </div>
+                            <div class="pr">
+                                <div class="p-number"><em>{$auction.count}</em><br />{$lang.au_number}</div>
+                            </div>
+
+                            <!-- {if $auction.status_no eq 1} 进行中 -->
+                            <a href="{$auction.url}" target="_blank" class="bid_btn"><em></em>{$lang.me_bid}<s></s></a>
+                            <!-- {elseif $auction.status_no eq 2} -->
+                                <!-- {if $auction.is_winner} 竞拍获得者 -->
+                                    <a href="{$auction.url}" target="_blank" class="bid_btn bid_wait"><em></em>{$lang.button_buy}<s></s></a>
+                                <!-- {else} 竞拍结束 -->
+                                    <a href="{$auction.url}" target="_blank" class="bid_btn bid_end"><em></em>{$lang.au_end}<s></s></a>
+                                <!-- {/if} -->
+                            <!-- {/if} -->
+                        </div>
+                    </li>
+                    <!--{/foreach}-->
+                </ul>
+                
+                <!-- {if $category_load_type} 商品加载方式 AJAX瀑布流-->
+				<div id="floor_loading" class="floor_loading" ectype="floor_loading"><img src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/images/loading.gif"></div>
+                <!--{else}-->
+                <div class="w1200 mt40 fl">
+                	<!-- TemplateBeginEditable name="列表分页" -->
+                	<!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+                    <!-- TemplateEndEditable --> 
+                </div>
+                <!--{/if}-->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- {else} -->
+<div class="wrapper" style="overflow:hidden;">  
+	<span style="margin:2px 10px; font-size:14px; line-height:36px;">{$lang.no_auction}</span>
+</div>
+<!-- {/if} -->    
+
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+{* DSC 提醒您：动态载入user_menu_position.lbi，显示首页分类小广告 *}{insert name='user_menu_position'}
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.purebox.js"></script>
+<script type="text/javascript">
+$(function(){
+	//价格筛选提交
+    $('.ui-btn-submit').click(function(){
+        $("form[name='listform']").submit();
+    });
+});
+</script>
+<!--瀑布流 by wu start-->
+{if $category_load_type}
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/asyLoadfloor.js"></script>
+<script>
+	var query_string = '{$query_string}';
+	$.goodsLoad('.f_ly_content','','',query_string,0);
+</script>
+{/if}
+<!--瀑布流 by wu end-->
+</body>
+</html>

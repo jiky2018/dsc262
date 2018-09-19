@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="bonus.php?act=list" class="s-back">{$lang.back}</a>{$lang.promotion} - {$ur_here}</div>
+        <div class="content">
+			<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.send.0}</li>
+                    <li>{$lang.operation_prompt_content.send.1}</li>
+                    <li>{$lang.operation_prompt_content.send.2}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+						<div class="switch_info">
+                        	<form action="bonus.php" method="post" name="theForm" enctype="multipart/form-data" id="bonus_form">
+							<div class="items">
+								<div class="item">
+									<div class="label">{$lang.bonus_type_id}：</div>
+									<div class="label_value">
+										<div id="bonus_type_id" class="imitate_select select_w320">
+											<div class="cite">{$lang.please_select}</div>
+											  <ul>
+											  {foreach from=$type_list item=list key=key}
+												 <li><a href="javascript:;" data-value="{$key}" class="ftx-01">{$list}</a></li>
+											  {/foreach}
+											  </ul>
+                                              <input name="bonus_type_id" type="hidden" value="{$id}" id="bonus_type_id_val">
+										</div>
+									</div>
+								</div>
+								<div class="item">
+									<div class="label">{$lang.send_bonus_count}：</div>
+									<div class="label_value">
+										<input type="text" name="bonus_sum" id="bonus_sum" class="text" autocomplete="off" />
+                                        <div class="form_prompt"></div>
+									</div>
+								</div>
+								<div class="item">
+									<div class="label">&nbsp;</div>
+									<div class="label_value info_btn">
+										<input type="submit" value="{$lang.button_submit}" class="button" id="submitBtn" />
+                                        <input type="reset" value="{$lang.button_reset}" class="button button_reset" />
+                                        <input type="hidden" name="act" value="send_by_print" />
+									</div>
+								</div>
+							</div>
+                            </form>
+						</div>
+                    </div>
+                </div>
+            </div>
+		
+		</div>
+	</div>
+    {include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+        $.divselect("#bonus_type","#bonus_type_val");
+		
+		$(function(){
+			//表单验证
+			$("#submitBtn").click(function(){
+				if($("#bonus_form").valid()){
+					$("#bonus_form").submit();
+				}
+			});
+		
+			$('#bonus_form').validate({
+				errorPlacement:function(error, element){
+					var error_div = element.parents('div.label_value').find('div.form_prompt');
+					element.parents('div.label_value').find(".notic").hide();
+					error_div.append(error);
+				},
+				rules:{
+					bonus_sum :{
+						required : true,
+						digits:true
+					}
+				},
+				messages:{
+					bonus_sum:{
+						required : '<i class="icon icon-exclamation-sign"></i>'+bonus_sum_empty,
+						digits : '<i class="icon icon-exclamation-sign"></i>'+bonus_sum_number
+					}
+				}			
+			});
+		});
+    </script>   
+</body>
+</html>

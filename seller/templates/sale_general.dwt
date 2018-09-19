@@ -1,0 +1,221 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body style="padding: 0px;">
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+            	{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="clear"></div>
+                <div class="order_stats">
+                    <div class="order_stats_search clearfix">
+                        <form action="javascript:searchGeneral()" name="searchForm">
+                            <div class="screeItme">
+                                <strong class="fl lh mr10">选择日期：</strong>
+                                <div class="text_time select_time" id="text_time1">
+                                    <input name="date_start_time" type="text" id="start_time" value="{$start_time}" class="text" />
+                                </div>
+                                <span class="bolang">&nbsp;&nbsp;~&nbsp;&nbsp;</span>
+                                <div class="text_time" id="text_time2">
+                                    <input name="date_end_time" type="text" id="end_time" value="{$end_time}" class="text" />
+                                </div>
+                            </div>
+                            <div class="screeItme mt10">
+                                <strong class="fl lh mr10">时间类型：</strong>
+                                <div  class="imitate_select select_w145">
+                                    <div class="cite">请选择</div>
+                                    <ul>
+                                        <li><a href="javascript:;" data-value="0" class="ftx-01">按发货时间</a></li>
+                                        <li><a href="javascript:;" data-value="1" class="ftx-01">按下单时间</a></li>
+                                    </ul>
+                                    <input name="time_type" type="hidden" value="1" autocomplete="off" />
+                                </div>
+                            </div>
+                            <div class="screeItme mt10">
+                                <div class="bf100 fl order_status">
+                                    <strong class="fl lh mr10">订单状态：</strong>
+                                    {foreach from=$os_list item=os key=key}
+                                    <div class="checkbox_item fl lh mr10">
+                                        <input name="order_status[]" type="checkbox" value="{$key}" class="ui-checkbox" id="order_{$key}"  autocomplete="off" />
+                                        <label class="ui-label" for="order_{$key}">{$os}</label>
+                                    </div>
+                                    {/foreach}
+                                </div>
+                                <div class="bf100 fl mt5 shipping_status">
+                                    <strong class="fl lh mr10">发货状态：</strong>
+                                    {foreach from=$ss_list item=ss key=key}
+                                    <div class="checkbox_item fl lh mr10">
+                                    <input name="shipping_status[]" type="checkbox" value="{$key}" class="ui-checkbox" id="shipping_{$key}"  autocomplete="off" />
+                                    <label class="ui-label" for="shipping_{$key}">{$ss}</label>
+                                    </div>
+                                    {/foreach}
+                                </div>
+                                <div class="bf100 fl mt5">
+                                    <strong class="fl lh mr10">分类名称：</strong>
+                                    <input name="cat_name" value="" type="text" class="text text_2 mr10"  autocomplete="off" />
+                                    <input type="submit" name="query_by_date" value="{$lang.query}" class="sc-btn sc-blueBg-btn btn30" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="list-div" id="listDiv">
+                        {/if}
+                        <table width="100%" class="ecsc-default-table ecsc-table-seller mt20">
+                            <tr>
+                                <th width="40%">商品名称</th>
+                                <th width="10%">货号</th>
+                                <th width="10%">分类</th>
+                                <th width="10%"><a href="javascript:listTable.sort('goods_number');">数量</a></th>
+                                <th width="10%">单价</th>
+                                <th width="10%">总金额</th>
+                                {if $filter.time_type eq 1}
+                                <th width="10%">下单日期</th>
+                                {else}
+                                <th width="10%">发货日期</th>
+                                {/if}
+                            </tr>
+                            {foreach from=$data_list item=list}
+                            <tr align="center">
+                                <td class="tl" style="padding-left:10px; padding-right:10px;">{$list.goods_name}</td>
+                                <td align="center">{$list.goods_sn}</td>
+                                <td align="center">{$list.cat_name}</td>
+                                <td align="center">{$list.goods_number}</td>
+                                <td align="center">{$list.goods_price}</td>
+                                <td align="center">{$list.total_fee}</td>
+                                {if $filter.time_type eq 1}
+                                	<td align="center">{$list.add_time}</td>
+                                {else}
+                                	<td align="center">{$list.shipping_time}</td>
+                                {/if}
+                            </tr>
+                            {foreachelse}
+                            <tr><td class="no-records" colspan="7">{$lang.no_records}</td></tr>
+                            {/foreach}
+                            <tfoot>
+                                <tr>
+                                    <td colspan="7">{include file="page.dwt"}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        {if $full_page}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript">
+	
+	listTable.recordCount = {$record_count};
+	listTable.pageCount = {$page_count};
+	
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+							
+	{literal}
+	onload = function()
+	{
+		document.forms['searchForm'].elements['date_start_time'].value = '{$start_time}';
+		document.forms['searchForm'].elements['date_end_time'].value = '{$end_time}';
+
+		// 开始检查订单
+		startCheckOrder();
+	}
+	
+	$(function(){
+		$(".screeItme .imitate_select ul li a.ftx-01").click(function(){
+			var val = $(this).data('value');
+			if(val == 1){
+				$(".order_status").show();
+				$(".shipping_status").show();
+			}else{
+				$(".order_status").hide();
+				$(".shipping_status").hide();
+			}
+		});
+	});
+
+	function searchGeneral(){
+
+		var where_cat = '';
+		var where_order = '';
+		var where_shipping = '';
+		var order_arr = new Array();
+		var order_status = document.forms['searchForm'].elements['order_status[]'];
+
+		var shipping_arr = new Array();
+		var shipping_status = document.forms['searchForm'].elements['shipping_status[]'];
+
+		for(var i=0; i<order_status.length;i++){
+			if(order_status[i].checked == true){
+				order_arr.push(order_status[i].value);
+			}
+		}
+
+		listTable.filter['order_status'] = order_arr;
+
+		for(var i=0; i<shipping_status.length;i++){
+			if(shipping_status[i].checked == true){
+				shipping_arr.push(shipping_status[i].value);
+			}
+		}
+
+		listTable.filter['shipping_status'] = shipping_arr;
+		listTable.filter['time_type'] = document.forms['searchForm'].elements['time_type'].value;
+		listTable.filter['date_start_time'] = document.forms['searchForm'].elements['date_start_time'].value;
+		listTable.filter['date_end_time'] = document.forms['searchForm'].elements['date_end_time'].value;
+		listTable.filter['cat_name'] = document.forms['searchForm'].elements['cat_name'].value;
+
+		if(listTable.filter['order_status'] == ''){
+			listTable.filter['order_status'] = -1;
+		}
+		
+		where_order = '&order_status=' + listTable.filter['order_status'];
+
+		if(listTable.filter['shipping_status'] == ''){
+			listTable.filter['shipping_status'] = -1;
+		}
+		
+		where_shipping = '&shipping_status=' + listTable.filter['shipping_status'];
+
+		if(listTable.filter['cat_name'] != ''){
+			where_cat = '&cat_name=' + listTable.filter['cat_name'];
+		}
+
+		var a_action = $(".icon-download-alt").parent('a');
+		var href = 'sale_general.php?act=download&date_start_time=' + listTable.filter['date_start_time'] + '&date_end_time=' + listTable.filter['date_end_time'] + '&time_type=' + listTable.filter['time_type'] + where_order + where_shipping + where_cat;
+		a_action.attr('href', href);
+		
+		listTable.filter['page'] = 1;
+		listTable.loadList();
+	}
+
+	//日期选择插件调用start sunle
+	var opts1 = {
+		'targetId':'start_time',//时间写入对象的id
+		'triggerId':['start_time'],//触发事件的对象id
+		'alignId':'text_time1',//日历对齐对象
+		'format':'-'//时间格式 默认'YYYY-MM-DD HH:MM:SS'
+	},opts2 = {
+		'targetId':'end_time',
+		'triggerId':['end_time'],
+		'alignId':'text_time2',
+		'format':'-'
+	}
+
+	xvDate(opts1);
+	xvDate(opts2);
+	//日期选择插件调用end sunle
+	{/literal}
+</script>
+</body>
+</html>
+{/if}

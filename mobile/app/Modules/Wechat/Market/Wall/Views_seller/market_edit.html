@@ -1,0 +1,282 @@
+<link rel="stylesheet" type="text/css" href="../js/calendar/calendar.min.css" />
+<script src="../js/calendar/calendar.min.js"></script>
+
+<style>
+/*.dates_box {width: 300px;}*/
+.dates_box_top {height: 32px;}
+.dates_bottom {height: auto;}
+.dates_hms {width: auto;}
+.dates_btn {width: auto;}
+.dates_mm_list span {width: auto;}
+
+.form-control {font-size: 12px;}
+
+#footer {position: static;bottom:0px;}
+</style>
+<div class="wrapper-right of" >
+    <div class="tabmenu">
+        <ul class="tab">
+            <li><a href="{url('market_list', array('type' => $config['keywords']))}" class="s-back">返回</a></li>
+            <li class="active"><a href="#">{$config.name} - {if $info['id']}编辑{else}添加{/if}</a></li>
+        </ul>
+    </div>
+
+    <div class="wrapper-list mt20" >
+
+        <form action="{url('market_edit', array('type' => $config['keywords']))}" method="post" class="form-horizontal" role="form" enctype="multipart/form-data" onsubmit="return false;" >
+        <div class="account-setting ecsc-form-goods">
+            <dl>
+                <dt>活动名称：</dt>
+                <dd>
+                    <div class="col-md-4">
+                        <input type="text" name="data[name]" class="form-control" value="{$info['name']}" />
+                    </div>
+                    <div class="form_prompt"></div>
+                    <div class="notic" style="width:50%"> * 必填 收款码名称建议不超过32个字符</div>
+                </dd>
+            </dl>
+            <dl>
+                <dt>公司LOGO：</dt>
+                <dd>
+                    <div class="col-md-3">
+                        <div class="type-file-box">
+                            <input type="button"  class="type-file-button" value="上传...">
+                            <input type="file" class="type-file-file" name="logo" data-state="imgfile" hidefocus="true" >
+                            <span class="show">
+                                <a href="#inline_logo" class="nyroModal fancybox" title="预览">
+                                    <i class="fa fa-picture-o" ></i>
+                                </a>
+                            </span>
+                            <input type="text" name="logo_path" class="type-file-text" value="{$info['logo']}" style="display:none">
+                        </div>
+                    </div>
+                    <div class="form_prompt"></div>
+                    <div class="notic" style="width:50%"> logo图片建议尺寸：335×55 px ，支持格式：jpeg,png</div>
+                </dd>
+            </dl>
+            <dl>
+                <dt>活动背景：</dt>
+                <dd>
+                    <div class="col-md-3">
+                        <div class="type-file-box">
+                            <input type="button"  class="type-file-button" value="上传...">
+                            <input type="file" class="type-file-file" name="logo" data-state="imgfile" hidefocus="true" >
+                            <span class="show">
+                                <a href="#inline_background" class="nyroModal fancybox" title="预览">
+                                    <i class="fa fa-picture-o" ></i>
+                                </a>
+                            </span>
+                            <input type="text" name="background_path" class="type-file-text" value="{$info['background']}"  style="display:none">
+                        </div>
+                    </div>
+                    <div class="form_prompt"></div>
+                    <div class="notic" style="width:60%"> 背景图片建议尺寸：1920×1080 px (普通宽屏电脑分辨率)， 支持格式：jpeg,png</div>
+                </dd>
+            </dl>
+            <dl>
+                <dt>开始时间：</dt>
+                <dd>
+                    <div class="col-md-4 col-sm-4">
+                        <div class="text_time" id="text_time1">
+                        <input type="text" name="data[starttime]" class="form-control text" id="promote_start_date" value="{$info['starttime']}" />
+                        </div>
+                    </div>
+                </dd>
+            </dl>
+            <dl>
+                <dt>结束时间：</dt>
+                <dd>
+                    <div class="col-md-4 col-sm-4">
+                        <div class="text_time" id="text_time2">
+                        <input type="text" name="data[endtime]" class="form-control text" id="promote_end_date" value="{$info['endtime']}" />
+                        </div>
+                   </div>
+                </dd>
+            </dl>
+            <dl>
+                <dt>奖品列表：</dt>
+                <dd>
+                    <table class="table ectouch-table prize_list">
+                        <tr>
+                            <th class="text-center" width="10%"><a href="javascript:;" class="glyphicon glyphicon-plus" onClick="addprize(this)"></a></th>
+                            <th class="text-center"  width="20%">奖项</th>
+                            <th class="text-center" width="20%">奖品</th>
+                            <th class="text-center" width="20%">数量</th>
+                        </tr>
+                        {foreach $info['prize_arr'] as $v}
+                        <tr>
+                            <td class="text-center"><a href="javascript:;" class="glyphicon glyphicon-minus" onClick="delprize(this)"></a></td>
+                            <td class="text-center"><input type="text" name="config[prize_level][]" class="form-control" placeholder="例如：一等奖" value="{$v['prize_level']}"></td>
+                            <td class="text-center"><input type="text" name="config[prize_name][]" class="form-control" placeholder="例如：法拉利跑车" value="{$v['prize_name']}"></td>
+                            <td class="text-center"><input type="text" name="config[prize_count][]" class="form-control" placeholder="例如：3" value="{$v['prize_count']}"></td>
+                       </tr>
+                       {/foreach}
+                    </table>
+                    <div class="form_prompt"></div>
+                    <p class="notic">最后一项必须设为未中奖项，内容可随意填写（例如：差一点就中奖了）。</p>
+                </dd>
+            </dl>
+            <dl>
+                <dt>活动说明：</dt>
+                <dd>
+                    <div class="col-md-4 col-sm-4">
+                        <textarea name="data[description]" class="form-control bd1" rows="3">{$info['description']}</textarea>
+                    </div>
+                </dd>
+            </dl>
+            <dl>
+                <dt>赞助支持：</dt>
+                <dd>
+                    <div class="col-md-4 col-sm-4">
+                        <textarea name="data[support]" class="form-control bd1"  placeholder="例如：本次活动由XX公司赞助支持" rows="3">{$info['support']}</textarea>
+                    </div>
+                </dd>
+            </dl>
+            <dl>
+                <dt>活动链接：</dt>
+                <dd>
+                    <div class="col-sm-12 step_value" >
+                        <span class="text weixin_url">{$info['url']}</span>
+                        <input type="hidden" name="data[url]" value="{$info['url']}" />
+                    </div>
+                    <div class="notic">自动生成推送微信素材消息时所需的活动链接</div>
+                </dd>
+            </dl>
+            <dl>
+                <dt>&nbsp;</dt>
+                <dd class="button_info">
+                    <input type="hidden" name="id" value="{$info['id']}">
+                    <input type="hidden" name="handler" value="{$config['handler']}">
+                    <input type="hidden" name="marketing_type" value="wall">
+                    <input type="hidden" name="data[command]" value="{if $info['command']}{$info['command']}{else}{$config.command}{/if}" />
+                    <input type="submit" name="submit" class="sc-btn sc-blueBg-btn btn35" value="{$lang['button_submit']}" />
+                    <input type="reset" name="reset" class="sc-btn sc-blue-btn btn35" value="{$lang['button_reset']}" />
+                </dd>
+            </dl>
+
+        </div>
+        </form>
+
+    </div>
+</div>
+
+<!-- 图片预览 start -->
+<div class="panel panel-default" style="display: none;" id="inline_logo">
+  <div class="panel-body">
+     <img src="{$info['logo']}" class="img-responsive" />
+  </div>
+</div>
+<div class="panel panel-default" style="display: none;" id="inline_background">
+  <div class="panel-body">
+     <img src="{$info['background']}" class="img-responsive" />
+  </div>
+</div>
+<!-- 图片预览 end -->
+<script type="text/javascript">
+    //file移动上去的js
+    $(".type-file-box").hover(function(){
+        $(this).addClass("hover");
+    },function(){
+        $(this).removeClass("hover");
+    });
+
+    //添加奖项
+    var num = $('.prize_list tr').length > 0 ? $('.prize_list tr').length : 1;
+    function addprize(obj){
+
+        switch(num)
+        {
+            case 1:
+              prize_level = "一等奖";
+              break;
+            case 2:
+              prize_level = "二等奖";
+              break;
+            case 3:
+              prize_level = "三等奖";
+              break;
+            case 4:
+              prize_level = "四等奖";
+              break;
+            case 5:
+              prize_level = "五等奖";
+              break;
+            case 6:
+              prize_level = "未中奖";
+              break;
+            default:
+              prize_level = "";
+        }
+        var html = '<tr><td class="text-center"><a href="javascript:;" class="glyphicon glyphicon-minus" onClick="delprize(this)"></a></td><td class="text-center"><input type="text" name="config[prize_level][]" class="form-control" placeholder="例如：一等奖" value="'+prize_level+'"></td><td class="text-center"><input type="text" name="config[prize_name][]" class="form-control" placeholder="例如：法拉利跑车"></td><td class="text-center"><input type="text" name="config[prize_count][]" class="form-control" placeholder="例如：3"></td></tr>';
+        if(num <= 6){
+            $(obj).parent().parent().parent().append(html);
+        }else{
+            layer.msg('奖项不能超过6项');
+            return false;
+        }
+        num++;
+    }
+    //删除奖项
+    function delprize(obj){
+        $(obj).parent().parent().remove();
+    }
+
+    // 大商创PC日历插件
+    var opts1 = {
+        'targetId':'promote_start_date',
+        'triggerId':['promote_start_date'],
+        'alignId':'text_time1',
+        'format':'-',
+        'hms':'on',
+        'min':'{$info.starttime}' //最小时间
+    },opts2 = {
+        'targetId':'promote_end_date',
+        'triggerId':['promote_end_date'],
+        'alignId':'text_time2',
+        'format':'-',
+        'hms':'on',
+        'min':'{$info.endtime}' //最小时间
+    }
+
+    xvDate(opts1);
+    xvDate(opts2);
+
+
+$(function(){
+    // 提交
+    $('input[type="submit"]').click(function(){
+
+        if($('.prize_list tr').length > 7 ){
+            layer.msg('奖项不能超过6项');
+            return false;
+        }
+
+        var ajax_data = $(".form-horizontal").serialize();
+        $(".form-horizontal").ajaxSubmit({
+            type: "POST",
+            dataType: "json",
+            url: "{url('market_edit', array('type' => $config['keywords']))}",
+            data: {
+                ajax_data
+            },
+            contentType: false,
+            cache: false,
+            processData:false,
+            success: function(data, textStatus) {
+                layer.msg(data.msg);
+                if(data.error == 0){
+                    if(data.url != ''){
+                        window.location.href = data.url;
+                    }else{
+                        window.location.reload();
+                    }
+                }else{
+                    return false;
+                }
+            },
+        });
+
+    });
+})
+
+</script>

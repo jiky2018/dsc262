@@ -1,0 +1,85 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+ 
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="area_manage.php?act=list" class="s-back">{$lang.back}</a>地区列表 - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul> 
+                	<li>地区首字母是所有二级市区生成的字母</li>
+                    <li>把每个城市按首字母归类，便于前台查找;注意生成地区首字母是城市不会出现县级</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+						<div class="list-div">
+						当前需要修改的数据有{$record_count|default:0}条
+						</div>
+						<div style=" width:100px; height:10px; clear:both; overflow:hidden;"></div>
+						<div class="list-div">
+						<table id="listTable">
+							<tr>
+                            	<th width="10%"><div class="tDiv">{$lang.record_id}</div></th>
+                            	<th width="10%"><div class="tDiv">市级地区ID</div></th>
+								<th width="10%"><div class="tDiv">市级地区名称</div></th>
+								<th width="15%"><div class="tDiv">首字母</div></th>
+							</tr>
+						</table>
+						</div>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+	{include file ='library/pagefooter.lbi'}
+    {insert_scripts files="jquery.purebox.js"}
+    <script type="text/javascript">
+        $(function(){
+            start({$page});
+			ajax_title();
+        });
+        
+        function start(page)
+        {
+            Ajax.call('area_manage.php?act=ajax_region_initial', 'page=' + page, start_response, 'POST', 'JSON');
+        }
+        
+        /**
+         * 处理反馈信息
+         * @param: result
+         * @return
+         */
+        function start_response(result)
+        {
+            if(result.is_stop == 1){
+                var tbl = document.getElementById("listTable"); //获取表格对象
+                var row = tbl.insertRow(-1);
+                
+				cell = row.insertCell(0);
+                cell.innerHTML = "<div class='tDiv'>"+result.filter_page+"</div>";
+                cell = row.insertCell(1);
+                cell.innerHTML = "<div class='tDiv'>"+result.list.region_id+"</div>";
+                cell = row.insertCell(2);
+                cell.innerHTML = "<div class='tDiv'>"+result.list.region_name+"</div>";
+                cell = row.insertCell(3);
+                cell.innerHTML = "<div class='tDiv'>"+result.list.initial+"</div>";
+				
+                if(result.is_stop == 1){
+                    start(result.page);
+                }	
+            }
+            
+            if(result.is_stop == 0){
+				$("#title_name").addClass("red");
+                $("#title_name").html("已完成更新，请关闭该窗口！");
+            }else{
+				$("#title_name").html("正在生成地区首字母中，请勿关闭该窗口！");
+			}
+        }
+    </script>
+</body>
+</html>

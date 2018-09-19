@@ -1,0 +1,171 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$lang.11_system} - {$ur_here}</div>
+            <div class="content">
+            <div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>可添加多个配送方式。</li>
+                    <li>{$lang.operation_prompt_content_common}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="mian-info">
+                    <form method="post" action="warehouse.php" name="theForm" enctype="multipart/form-data"  id="link_form">
+                        <div class="switch_info user_basic" style="display:block;">
+                            <div class="item pb20 mb20 bor_bt_das">
+                                <div class="label">{$lang.originating_place}：</div>
+                                <div class="label_value">
+                                    <div class="fl">
+                                        <div id="warehouse_id" class="imitate_select select_w140">
+                                            <div class="cite">{$lang.select_please}</div>
+                                            <ul style="display: none;">
+                                                <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.select_please}</a></li>
+                                                {foreach from=$warehouse_list item=warehouse}
+                                                    <li><a href="javascript:;" data-value="{$warehouse.region_id}" class="ftx-01">{$warehouse.region_name}</a></li>
+                                                {/foreach}
+                                            </ul>
+                                            <input name="warehouse_id" type="hidden" value="{$parent_id}" id="warehouse_val_id">
+                                        </div>
+                                    </div>
+                                    <div class="jt"></div>
+                                    <div class="destination" id="region_name">
+                                        <strong>{$lang.reach_the_destination}：</strong><span class="red">{$region_name}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="item">
+                                <div class="label">{$lang.distribution_mode}：</div>
+                                <div class="label_value">
+                                    <div id="shipping_id_box" class="imitate_select select_w320">
+                                      <div class="cite">{$lang.select_please} </div>
+                                      <ul>
+                                         <li><a href="javascript:;" data-value="" class="ftx-01">{$lang.select_please}</a></li>
+                                         {foreach from=$shipping_list item=shipping}
+                                         <li><a href="javascript:;" data-value="{$shipping.shipping_id}" class="ftx-01">{$shipping.shipping_name}</a></li>
+                                         {/foreach}
+                                      </ul>
+                                      <input name="shipping_id" type="hidden" value="{$seller_shopinfo.shipping_id}" id="shipping_id">
+                                    </div>
+                                </div>
+                            </div>
+                            <div  id="freightArea">
+                                
+                            </div>
+                            <div class="item">
+                                <div class="label">&nbsp;</div>
+                                <div class="label_value info_btn">
+                                    <input type="submit" value="{$lang.button_submit}" class="button"  id="submitBtn"/>
+                                    <input type="hidden" name="act" value="{$form_action}" />
+                                    <input name="id" value="{$region_id}" type="hidden"  id="region_id"/>
+                                    <input name="rId" value="{$regionId}" type="hidden"  id="regionId"/>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="step">
+                        <div class="step_title"><i class="ui-step"></i><h3>{$lang.logistics_info}</h3></div>
+                        <div class="step_content">
+                        	<div class="list-div">
+                                <table cellspacing="0" cellpadding="0" border="0">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <div class="tDiv">
+                                                    <div class="item">
+                                                        <div class="label">{$lang.select_logistics_company}：</div>
+                                                        
+                                                        <div class="label_value">
+                                                            {foreach from=$freight_list item=freight name=nofreight}
+                                                            <a href="warehouse_shipping_mode.php?act=list&shipping_id={$freight.shipping_id}&id={$freight.region_id}" class="blue">{$freight.shipping_name}</a>
+                                                            {foreachelse}
+                                                            <div style="color:#aaa;">{$lang.not_distribution_mode}</div>
+                                                            {/foreach}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>        
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+ {include file ='library/pagefooter.lbi'}
+<script type="text/javascript">
+
+$.divselect("#warehouse_id","#warehouse_val_id",function(obj){
+	var val = obj.attr("data-value");
+	var shipping_id = $("#shipping_id").val();
+	area_freight(shipping_id,val);
+});
+
+ $.divselect("#shipping_id_box","#shipping_id",function(obj){
+	var val = obj.attr("data-value");
+	var warehouse_id = $("#warehouse_id").val();
+	area_freight(val,warehouse_id);
+});
+
+onload = function()
+{
+	var shipping_id = $("#shipping_id").val();
+	var warehouse_id = $("#warehouse_id").val();
+	area_freight(shipping_id, warehouse_id);
+}
+/**
+ * 查询运费模式参数
+ */
+function area_freight(shipping_id, warehouse_id){
+
+	
+	var warehouse_id = $(":input[name='warehouse_id']").val();
+	var region_id = $("#regionId").val();
+	$.jqueryAjax('warehouse.php', 'act=get_freight_area&shipping_id=' + shipping_id + '&warehouse_id=' + warehouse_id + '&region_id=' + region_id, function(res){
+	   $("#freightArea").html(res.content);
+	}, "GET", "JSON");
+}  
+
+     // 配送费用计算方式
+function compute_mode(shipping_code,mode)
+{
+    var base_fee  = $("#base_fee");
+    var step_fee  = $("#step_fee");
+    var item_fee  = $("#item_fee");
+    if(shipping_code == 'post_mail' || shipping_code == 'post_express')
+    {
+     var step_fee1  = $("#step_fee1");
+    }
+
+    if(mode == 'number')
+    {
+      item_fee.css('display','');
+      base_fee.css('display','none');
+      step_fee.css('display','none');
+      if(shipping_code == 'post_mail' || shipping_code == 'post_express')
+      {
+          step_fee1.css('display','none');
+      }
+    }
+    else
+    {
+        item_fee.css('display','none');
+        base_fee.css('display','');
+        step_fee.css('display','');
+      if(shipping_code == 'post_mail' || shipping_code == 'post_express')
+      {
+          step_fee1.css('display','');
+      }
+    }
+}  
+    </script>
+</body>
+</html>

@@ -1,0 +1,176 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.seller} - {$ur_here}</div>
+        <div class="content">
+        	<div class="tabs_info">
+            	<ul>
+                	<li {if $act_type eq 'merchants_seller_account'}class="curr"{/if}><a href="{$action_link3.href}">{$action_link3.text}</a></li>
+                    <li {if $act_type eq 'detail' && $log_type eq 4}class="curr"{/if}><a href="{$action_link2.href}">{$action_link2.text}</a></li>
+                    <li {if $act_type eq 'detail' && $log_type eq 3}class="curr"{/if}><a href="{$action_link1.href}">{$action_link1.text}</a></li>
+                    <li {if $act_type eq 'detail' && $log_type eq 2}class="curr"{/if}><a href="{$action_link4.href}">{$action_link4.text}</a></li>
+                    <li {if $act_type eq 'detail' && $log_type eq 5}class="curr"{/if}><a href="{$action_link5.href}">{$action_link5.text}</a></li>
+                    <li {if $act_type eq 'account_log'}class="curr"{/if}><a href="{$action_link.href}">{$action_link.text}</a></li> 
+                    <li {if $act_type eq 'account_log_list'}class="curr"{/if}><a href="{$action_link6.href}">{$action_link6.text}</a></li>
+                </ul>
+            </div>
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.seller_account.0}</li>
+                    <li>{$lang.operation_prompt_content.seller_account.1}</li>
+                    <li>{$lang.operation_prompt_content.seller_account.2}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-head">
+                   	<div class="refresh ml0">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+                    <div class="search">
+                    	<form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+                        <div class="select">
+                            <div class="fl">{$lang.steps_shop_name}：</div>
+                            <div id="" class="imitate_select select_w170">
+                                <div class="cite">{$lang.please_select}</div>
+                                <ul>
+                                    <li><a href="javascript:get_store_search(-1);" data-value="-1" class="ftx-01">{$lang.select_please}</a></li>
+                                    <li><a href="javascript:get_store_search(1);" data-value="1" class="ftx-01">{$lang.s_shop_name}</a></li>
+                                    <li><a href="javascript:get_store_search(2);" data-value="2" class="ftx-01">{$lang.s_qw_shop_name}</a></li>
+                                    <li><a href="javascript:get_store_search(3);" data-value="3" class="ftx-01">{$lang.s_brand_type}</a></li>
+                                </ul>
+                                <input name="store_search" type="hidden" value="-1" id="">
+                            </div>
+                            <div id="" class="imitate_select select_w170" style="display:none">
+                                <div class="cite">{$lang.please_select}</div>
+                                <ul>
+                                    <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.please_select}</a></li>
+                                    {foreach from=$store_list item=store}
+                                    <li><a href="javascript:;" data-value="{$store.ru_id}" class="ftx-01">{$store.store_name}</a></li>
+                                    {/foreach}
+                                </ul>
+                                <input name="merchant_id" type="hidden" value="0" id="">
+                            </div>
+                            <input name="store_keyword" type="text" style="display:none" class="text text_2"/>
+                            <div id="" class="imitate_select select_w170" style="display:none">
+                                <div class="cite">{$lang.please_select}</div>
+                                <ul>
+                                    <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.steps_shop_type}</a></li>
+                                    <li><a href="javascript:;" data-value="{$lang.flagship_store}" class="ftx-01">{$lang.flagship_store}</a></li>
+                                    <li><a href="javascript:;" data-value="{$lang.exclusive_shop}" class="ftx-01">{$lang.exclusive_shop}</a></li>
+                                    <li><a href="javascript:;" data-value="{$lang.franchised_store}" class="ftx-01">{$lang.franchised_store}</a></li>
+                                    <li><a href="javascript:;" data-value="{$lang.shop_store}" class="ftx-01">{$lang.shop_store}</a></li>
+                                </ul>
+                                <input name="store_type" type="hidden" value="0" id="">
+                            </div>							
+                        </div>			
+                    	<div class="input">
+                        	<input type="text" name="keywords" class="text nofocus" placeholder="{$lang.username}" autocomplete="off">
+							<input type="submit" class="btn" name="secrch_btn" ectype="secrch_btn" value="" />
+                        </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="common-content">
+                	<div class="list-div" id="listDiv">
+                        {/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                  <th width="15%"><div class="tDiv">{$lang.goods_steps_name}</div></th>
+                                  <th width="15%"><div class="tDiv">{$lang.title_balance}</div></th>
+                                  <th width="15%"><div class="tDiv">{$lang.title_frozen_money}</div></th>
+                                  <th width="6%"><div align="center">{$lang.handler}</div></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+								{foreach from=$log_list item=log name=nolog}
+                                <tr>
+                                  <td><div class="tDiv"><font class="red">{$log.shop_name}</font></div></td>
+                                  <td><div class="tDiv">{$log.seller_money}</div></td>
+                                  <td><div class="tDiv">{$log.frozen_money}</div></td>  
+                                  <td class="handle"><div class="tDiv a3" align="center">
+                                    <a href="merchants_account.php?act=edit_seller&ru_id={$log.ru_id}" class="btn_see"><i class="icon icon-edit"></i>{$lang.edit}</a>
+                                    <a href="merchants_account.php?act=account_log_list&ru_id={$log.ru_id}" class="btn_see"><i class="sc_icon sc_icon_see"></i>{$lang.fund_details}</a>
+                                  </div></td>
+                                </tr>
+                              {foreachelse}
+                              <tr><td class="no-records" colspan="8">{$lang.no_records}</td></tr>
+                              {/foreach}
+                            </tbody>   
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="12">
+                                        <div class="list-page">
+                                            {include file="library/page.lbi"}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>    
+                        {if $full_page}
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+	listTable.act_type = 'merchants_seller_account';
+
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+	
+	$.divselect("#shop_name_select","#shop_name_val",function(obj){
+		var val = obj.attr("data-value");
+		get_store_search(val);
+	});
+	
+	function get_store_search(val){
+		if(val == 1){
+			$("input[name=merchant_id]").parent(".imitate_select").show();
+			$("input[name=store_keyword]").hide();
+			$("input[name=store_type]").parent(".imitate_select").hide();
+		}else if(val == 2){
+			$("input[name=merchant_id]").parent(".imitate_select").hide();
+			$("input[name=store_keyword]").show();
+			$("input[name=store_type]").parent(".imitate_select").hide();			
+		}else if(val == 3){
+			$("input[name=merchant_id]").parent(".imitate_select").hide();
+			$("input[name=store_keyword]").show();
+			$("input[name=store_type]").parent(".imitate_select").show();			
+		}else{
+			$("input[name=merchant_id]").parent(".imitate_select").hide();
+			$("input[name=store_keyword]").hide();
+			$("input[name=store_type]").parent(".imitate_select").hide();			
+		}
+	}
+
+	/**
+	 * 搜索用户
+	 */
+	function searchUser()
+	{
+		
+		var frm = $("form[name='formSearch_senior']");
+		listTable.filter['store_search'] = Utils.trim(frm.find("input[name='store_search']").val());
+		listTable.filter['merchant_id'] = Utils.trim(frm.find("input[name='merchant_id']").val());
+		listTable.filter['store_keyword'] = Utils.trim(frm.find("input[name='store_keyword']").val());
+		listTable.filter['store_type'] = Utils.trim(frm.find("input[name='store_type']").val());
+		listTable.filter['keywords'] = Utils.trim(frm.find("input[name='keywords']").val());
+		listTable.filter['page'] = 1;
+		
+		listTable.loadList();
+	}
+    </script>
+</body>
+</html>
+{/if}

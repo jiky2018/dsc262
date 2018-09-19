@@ -1,0 +1,143 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<div class="ecsc-icon">
+    <i class="ecsc-left"></i>
+    <i class="ecsc-right">></i>
+    <i class="ecsc-count cart_num">{$str}</i>
+    <a href="flow.php">{$lang.cat_list}</a>
+</div>
+<div class="ecscup-content">
+	{if $goods}
+    <div class="ecscmc">
+        <ul>
+        	{foreach from=$goods item=goods name=goods}
+            <li>
+            	<!-- {if $goods.rec_id gt 0} -->
+                <div class="ecsc-img"><a href="{$goods.url}" target="_blank"><img src="{$goods.goods_thumb}" /></a></div>
+                <!-- {/if} -->
+                <div class="ecsc-way">
+                	<!-- {if $goods.rec_id gt 0 && $goods.extension_code eq 'package_buy'} -->
+                    <a href="javascript:void(0);" class="title">{$goods.short_name}<span style="color:#FF0000">（{$lang.remark_package}）</span></a>
+                    <!-- {elseif $goods.rec_id gt 0 && $goods.is_gift neq 0} -->
+                    <a href="javascript:void(0);" class="title">{$goods.short_name}<span style="color:#FF0000">（{$lang.largess}）</span></a>
+                    <!-- {else} -->
+                    <a href="{$goods.url}" target="_blank" class="title">{$goods.short_name}</a>
+                    <!-- {/if} -->
+                    <div class="deal">
+                    	<!-- {if $goods.rec_id gt 0 && $goods.extension_code neq 'package_buy' && $goods.is_gift eq 0} -->
+                        <div class="count">
+                            <a href="javascript:void(0);" id="min_number" onclick="changenum({$goods.rec_id}, -1, {$goods.warehouse_id}, {$goods.area_id})" class="count-subtract"><s></s></a><span class="num" id="goods_number_{$goods.rec_id}">{$goods.goods_number|default:1}</span><a href="javascript:void(0);" onclick="changenum({$goods.rec_id},1, {$goods.warehouse_id}, {$goods.area_id})" class="count-add"><s></s><b></b></a>
+                        </div>
+                        <div class="price">{$goods.goods_price}</div>
+                        <!-- {else} -->
+                        <div class="price" style=" margin:0px;">{$goods.goods_price}</div>
+                        <!-- {/if} -->
+                        <a href="javascript:void(0);" onClick="deleteCartGoods({$goods.rec_id},0)" class="close">{$lang.drop}</a>
+                    </div>
+                </div>
+            </li>
+            {/foreach}
+        </ul>
+    </div>
+    <div class="ecscmb">
+    	<input name="cart_value" id="cart_value" value="{$cart_value}" type="hidden" />
+        <div class="total"><span class="total-num cart_num">{$str}</span>{$lang.piece_total}：<span class="total-price">{$cart_info.amount}</span></div>
+        <a href="flow.php" class="ecsc-cart">{$lang.go_to_cart} <i class="ecsc-right">></i></a>
+    </div>
+    {else}
+    <div class="prompt"><div class="nogoods"><b></b>{$lang.goods_null_cart}</div></div>
+	{/if}    
+</div>
+
+<script type="text/javascript">
+
+function changenum(rec_id, diff, warehouse_id, area_id)
+{
+	var cValue = $('#cart_value').val();
+    var goods_number =Number($('#goods_number_' + rec_id).text()) + Number(diff);
+ 
+	if(goods_number < 1)
+	{
+		return false;	
+	}
+	else
+	{
+		change_goods_number(rec_id,goods_number, warehouse_id, area_id, cValue);
+	}
+}
+function change_goods_number(rec_id, goods_number, warehouse_id, area_id, cValue)
+{
+	if(cValue != '' || cValue == 'undefined'){
+	   var cValue = $('#cart_value').val(); 
+	}   
+	
+	Ajax.call('flow.php?step=ajax_update_cart', 'rec_id=' + rec_id +'&goods_number=' + goods_number +'&cValue=' + cValue +'&warehouse_id=' + warehouse_id +'&area_id=' + area_id, change_goods_number_response, 'POST','JSON');                
+}
+function change_goods_number_response(result)
+{    
+	var rec_id = result.rec_id;           
+    if (result.error == 0)
+    {
+       $('#goods_number_' +rec_id).val(result.goods_number);//更新数量
+       $('#goods_subtotal_' +rec_id).html(result.goods_subtotal);//更新小计
+       if (result.goods_number <= 0)
+        {// 数量为零则隐藏所在行
+            $('#tr_goods_' +rec_id).style.display = 'none';
+            $('#tr_goods_' +rec_id).innerHTML = '';
+        }
+        $('#total_desc').html(result.flow_info);//更新合计
+        if($('ECS_CARTINFO'))
+        {//更新购物车数量
+            $('#ECS_CARTINFO').html(result.cart_info);
+        }
+
+		if(result.group.length > 0){
+			for(var i=0; i<result.group.length; i++){
+				$("#" + result.group[i].rec_group).html(result.group[i].rec_group_number);//配件商品数量
+				$("#" + result.group[i].rec_group_talId).html(result.group[i].rec_group_subtotal);//配件商品金额
+			
+			}
+		}
+
+		$("#goods_price_" + rec_id).html(result.goods_price);
+		$(".cart_num").html(result.subtotal_number);
+	}
+	else if (result.message != '')
+	{
+		$('#goods_number_' +rec_id).val(result.cart_Num);//更新数量
+		alert(result.message);
+	}                
+}
+
+
+function deleteCartGoods(rec_id,index)
+{
+	Ajax.call('delete_cart_goods.php', 'id='+rec_id+'&index='+index, deleteCartGoodsResponse, 'POST', 'JSON');
+}
+
+/**
+ * 接收返回的信息
+ */
+function deleteCartGoodsResponse(res)
+{
+  if (res.error)
+  {
+    alert(res.err_msg);
+  }
+  else if(res.index==1)
+  {
+		Ajax.call('get_ajax_content.php?act=get_content', 'data_type=cart_list', return_cart_list, 'POST', 'JSON');
+  }
+  else
+  {
+	  $("#ECS_CARTINFO").html(res.content);
+	  $(".cart_num").html(res.cart_num);
+  }
+}
+
+function return_cart_list(result)
+{
+	$(".cart_num").html(result.cart_num);
+	$(".pop_panel").html(result.content);
+}
+</script>

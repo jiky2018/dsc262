@@ -1,0 +1,67 @@
+{if $goods_type_list}
+<div class="step">
+	<div class="step_title">
+		<i class="ui-step"></i>
+		<h3 class="fl">商品属性</h3>
+	</div>
+	<div class="step_content relative">
+		<div class="step_item">
+			<div class="step_item_left"><h5>属性类型：</h5></div>
+			<div class="step_item_right">
+				<div class="item_right_li">
+					<div class="value_select">
+						<div id="attr_select" class="imitate_select select_w320" ectype="attrTypeSelect">
+							<div class="cite">{if $goods_type_name}{$goods_type_name}{else}{$lang.please_select}{/if}</div>
+							<ul style="display: none;">
+								<li><a href="javascript:getAttrList({$wholesale.goods_id|default:0});" data-value="0" class="ftx-01">请选择商品类型</a></li>
+								{foreach from=$goods_type_list item=goods_type key=key}
+								<li><a href="javascript:getAttrList({$wholesale.goods_id|default:0});" data-value="{$goods_type.cat_id}" class="ftx-01">{$goods_type.cat_name}</a></li>
+								{/foreach}
+							</ul>
+							<input name="goods_type" type="hidden" value="{$wholesale.goods_type|default:0}" id="select_attr_val">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="step_item step_item_bg pb0" id="tbody-wholesale-goodsAttr"></div>
+		<!--属性模式-->
+		<div class="step_item step_item_bg" id="attribute_model" {if $wholesale.model_price eq 0}style="display:none;"{/if}>
+			<div class="step_item_left"><h5>商品仓库：</h5></div>
+			<div class="step_item_right">
+				<div class="item_right_li" id="attribute_warehouse">
+					<div class="value">
+						<div class="checkbox_tiems">
+							{foreach from=$warehouse_list item=warehouse name=warehouse}
+							<div class="checkbox_item mr20" data-wareid="{$warehouse.region_id}">
+								<input type="radio" name="warehouse" class="ui-radio" id="warehouse_{$warehouse.region_id}" {if $smarty.foreach.warehouse.first}checked{/if} value="{$warehouse.region_id}" data-type="warehouse_id"/>
+								<label for="warehouse_{$warehouse.region_id}" class="ui-radio-label blod">{$warehouse.region_name}</label>
+							</div>
+							{/foreach}
+						</div>
+					</div>
+				</div>
+				<div class="item_right_li" id="attribute_region" {if $wholesale.model_price neq 2}style="display:none;"{/if}>
+					<div class="label">地区：</div>
+					{foreach from=$warehouse_list item=warehouse name=warehouse}
+					<div class="value" {if !$smarty.foreach.warehouse.first}style="display:none;"{/if} data-wareid="{$warehouse.region_id}">
+						<div class="checkbox_tiems">
+							{foreach from=$warehouse.area_list item=area name=area}
+							<div class="checkbox_item">
+								<input type="radio" name="region" class="ui-radio" id="region_{$area.region_id}" {if $smarty.foreach.area.first && $smarty.foreach.warehouse.first}checked{/if} value="{$area.region_id}" data-type="region_id"/>
+								<label for="region_{$area.region_id}" class="ui-radio-label">{$area.region_name}</label>
+							</div>
+							{/foreach}
+						</div>
+					</div>
+					{/foreach}
+				</div>
+			</div>
+		</div>
+		<!--属性模式-->
+		<div class="step_item_table" id="attribute_table"></div>
+	</div>
+</div>
+{/if}
+
+<div class="step" id="goods_attr_gallery"></div>

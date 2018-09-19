@@ -1,0 +1,136 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<div class="login-wrap">
+    <form name="formLogin" action="user.php" method="post" onSubmit="userLogin();return false;">
+    <div class="login-form">
+        <div class="mt">
+            <h1>{$lang.Welcome_login}</h1>
+            <a href="user.php?act=register" class="jump">{$lang.Free_registration}</a>
+        </div>
+        <div class="mc">
+            <div class="msg-wrap">
+                <div class="msg-error" style="display:none">
+                    <b></b>{$lang.passport_one}
+                </div>
+            </div>
+            <div class="form">
+                <div class="item last">
+                    <div class="item-info">
+                        <i class="i-name"></i>
+                        <input type="text" id="loginname" name="username" class="text text-2" value="" placeholder="{$lang.label_username}" />
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="item-info">
+                        <input type="password"   style="display:none"/>
+                        <input type="password" id="nloginpwd" name="password" value="" class="text text-2" placeholder="{$lang.label_password}" />
+                        <i class="i-pass"></i>
+                    </div>
+                </div>
+                <!-- 判断是否启用验证码{if $enabled_captcha} -->
+                <div class="item">
+                    <div class="item-info">
+                        <i class="i-captcha"></i>
+                        <input type="text" id="captcha" name="captcha" value="" class="text text-3 text-4" placeholder="{$lang.comment_captcha}" />
+                        <img src="captcha_verify.php?captcha=is_login&{$rand}" alt="captcha" class="fl ml5" onClick="this.src='captcha_verify.php?captcha=is_login&'+Math.random()" />
+                    </div>
+                </div>
+                <!--{/if}-->
+                <div class="safe">
+                    <span>
+                        <input id="remember" name="remember" type="checkbox" class="jdcheckbox" style="outline: rgb(109, 109, 109) none 0px;">
+                        <label for="remember">{$user_lang.remember}</label>
+                    </span>
+                </div>
+                <div class="item">
+                    <span class="forget-pw-safe"><a href="user.php?act=get_password" target="_blank">{$lang.passportforgot_password}</a></span>
+                    <input type="hidden" name="dsc_token" value="{$dsc_token|default:0}" />
+                    <input type="hidden" name="act" value="act_login" />
+                    <input type="hidden" name="back_act" value="{$back_act}" />
+                    <div class="login-btn"><input type="submit" name="submit" value="{$lang.signin_now}" class="btn-entry" /></div>
+                </div>
+            </div>
+            {if $website_list}
+            <div class="coagent">
+                <h4>{$lang.Third_party_Lgion}：</h4>
+                <ul>
+                	{foreach from=$website_list item=website}
+                    {if $website.web_type eq 'weixin'}
+                    	<li><a href="wechat_oauth.php?act=login{if $website.back_act neq ''}&user_callblock={$website.back_act}{/if}" class="{$website.web_type}"></a></li>
+                    {else}
+                        <li><a href="user.php?act=oath&type={$website.web_type}{if $website.back_act neq ''}&user_callblock={$website.back_act}{/if}" class="{$website.web_type}"></a></li>
+                    {/if}
+                    {/foreach}
+                </ul>
+            </div>
+            {/if}
+        </div>
+    </div>
+    </form>
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/placeholder.js"></script>
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/focus.js"></script>
+    <script type="text/javascript">
+	{foreach from=$user_lang.passport_js item=lang key=k}
+	var {$k}="{$lang}";
+    {/foreach}
+		/* *
+		 * 会员登录
+		*/ 
+		function userLogin()
+		{
+			var frm = $("form[name='formLogin']");
+			var username = frm.find("input[name='username']");
+			var password = frm.find("input[name='password']");
+			var captcha = frm.find("input[name='captcha']");
+			var dsc_token = frm.find("input[name='dsc_token']");
+			var error = frm.find(".msg-error");
+			var msg = '';
+			
+			if(username.val()==""){
+				error.show();
+				username.parents(".item").addClass("item-error");
+				msg += username_empty;
+				showMesInfo(msg);
+				return false;
+			}
+			
+			if(password.val()==""){
+				error.show();
+				password.parents(".item").addClass("item-error");
+				msg += password_empty;
+				showMesInfo(msg);
+				return false;
+			}
+			
+			if(captcha.val()==""){
+				error.show();
+				captcha.parents(".item").addClass("item-error");
+				msg += captcha_empty;
+				showMesInfo(msg);
+				return false;
+			}
+			var back_act=frm.find("input[name='back_act']").val();
+			Ajax.call( 'user.php?act=act_login', 'username=' + username.val()+'&password='+password.val()+'&dsc_token='+dsc_token.val()+'&captcha='+captcha.val()+'&back_act='+back_act, return_login , 'POST', 'JSON');
+		}
+		
+		function return_login(result)
+		{
+			if(result.error>0)
+			{
+				showMesInfo(result.message);	
+			}
+			else
+			{
+				if(result.ucdata){
+					$("body").append(result.ucdata)
+				}
+				location.href=result.url;
+			}
+		}
+		
+		function showMesInfo(msg) {
+			$('.login-wrap .msg-wrap').empty();
+			var info = '<div class="msg-error"><b></b>' + msg + '</div>';
+			$('.login-wrap .msg-wrap').append(info);
+		}
+	</script>
+</div>

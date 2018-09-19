@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>众筹 - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content_common}</li>
+                    <li>注意上传等级标识图片的尺寸，以免出错。</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+                        <form action="zc_initiator.php?act={$state}" method="post" name="theForm" enctype="multipart/form-data" id="zc_logo_form">
+                            <div class="switch_info">
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}{$lang.rank_name}：</div>
+                                    <div class="label_value">
+										<input type='text' size="20" class="text" name='logo_name' value='{$result.logo_name}' />
+                                    	<div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}{$lang.rank_logo}：</div>
+                                    <div class="label_value">
+										<div class="type-file-box">
+                                            <input type="button" name="button" id="button" class="type-file-button" value="" />
+                                            <input type="file" class="type-file-file" id="img" name="img" data-state="imgfile" size="30" hidefocus="true" value="" />
+                                            {if $result.img}
+                                            <span class="show">
+                                                <a href="../{$result.img}" class="nyroModal"><i class="icon icon-picture" data-tooltipimg="../{$result.img}" ectype="tooltip" title="tooltip"></i></a>
+                                            </span>
+                                            {/if}
+                                            <input type="text" name="textfile" class="type-file-text" value="{if $result.img}../{$result.img}{/if}" id="textfield" autocomplete="off" readonly />
+                                        </div>
+                                    	<div class="form_prompt"></div>
+                                    </div>
+                                </div>								
+                                <div class="item">
+                                    <div class="label">{$lang.rank_desc}：</div>
+                                    <div class="label_value">
+										<textarea rows="5" cols="40" name='intro' class="textarea">{$result.logo_intro}</textarea>
+                                    </div>
+                                </div>							
+                                <div class="item">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="label_value info_btn">
+										<input type="submit" class='button' value="{$lang.button_submit}" id="submitBtn" />
+										<input type="reset" class='button button_reset' value="{$lang.button_reset}" />
+										<input type='hidden' name='logo_id' value='{$logo_id}' />
+                                    </div>
+                                </div>								
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+    </div>
+ {include file ='library/pagefooter.lbi'}
+    
+	<script type="text/javascript">
+	$(function(){
+		//表单验证
+		$("#submitBtn").click(function(){
+			if($("#zc_logo_form").valid()){
+				$("#zc_logo_form").submit();
+			}
+		});
+	
+		$('#zc_logo_form').validate({
+			errorPlacement:function(error, element){
+				var error_div = element.parents('div.label_value').find('div.form_prompt');
+				element.parents('div.label_value').find(".notic").hide();
+				error_div.append(error);
+			},
+			rules:{
+				logo_name :{
+					required : true
+				},
+				textfile:{
+					required : true
+				}
+			},
+			messages:{
+				logo_name:{
+					 required : '<i class="icon icon-exclamation-sign"></i>{$lang.rank_name}{$lang.empty}'
+				},
+				textfile:{
+					required : '<i class="icon icon-exclamation-sign"></i>{$lang.rank_logo}{$lang.empty}'
+				}
+			}			
+		});
+		
+		//图片
+		$('.nyroModal').nyroModal();
+	});
+	</script>
+</body>
+</html>

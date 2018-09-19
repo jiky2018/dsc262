@@ -1,0 +1,191 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="order.php?act=delivery_list" class="s-back">{$lang.back}</a>{$lang.order_word} - {$ur_here}</div>
+        <div class="content">
+        	<div class="flexilist order_info">
+			<form method="post" action="order.php?act=operate" name="listForm" onsubmit="return check()">
+                <div class="common-content">
+                	<!--订单基本信息-->
+                    <div class="step">
+                    	<div class="step_title"><i class="ui-step"></i><h3>{$lang.base_info}</h3></div>
+                      	<div class="section">
+                        	<dl>
+								<dt>{$lang.delivery_sn_number}</dt>
+                                <dd>{$delivery_order.delivery_sn}</dd>
+                                <dt>{$lang.label_order_sn}</dt>
+                                <dd>{$delivery_order.order_sn}{if $delivery_order.extension_code eq "group_buy"}<a href="group_buy.php?act=edit&id={$delivery_order.extension_id}">{$lang.group_buy}</a>{elseif $delivery_order.extension_code eq "exchange_goods"}<a href="exchange_goods.php?act=edit&id={$delivery_order.extension_id}">{$lang.exchange_goods}</a>{/if}</dd>
+                            </dl>
+                            <dl>
+                            	<dt>{$lang.label_order_time}</dt>
+                                <dd>{$delivery_order.formated_add_time}</dd>
+                                <dt>{$lang.label_user_name}</dt>
+                                <dd>{$delivery_order.user_name|default:$lang.anonymous}</dd>
+                            </dl>
+                            <dl>
+                            	<dt>{$lang.label_shipping_time}</dt>
+                                <dd>{$delivery_order.formated_update_time}</dd>
+                                <dt>{$lang.label_shipping}</dt>
+                                <dd>{if $exist_real_goods}{if $delivery_order.shipping_id > 0}{$delivery_order.shipping_name}{else}{$lang.require_field}{/if} {if $delivery_order.insure_fee > 0}（{$lang.label_insure_fee}{$delivery_order.formated_insure_fee}）{/if}{/if}</dd>
+                            </dl>
+                            <dl>
+                            	<dt>{$lang.label_how_oos}</dt>
+                                <dd>{$delivery_order.how_oos}</dd>
+                                <dt>{$lang.label_insure_yn}</dt>
+                                <dd>{if $insure_yn}{$lang.yes}{else}{$lang.no}{/if}</dd>
+                            </dl>
+                            <dl>
+                            	<dt>{$lang.label_shipping_fee}</dt>
+                                <dd>{$delivery_order.shipping_fee}</dd>
+                                <dt>{$lang.label_invoice_no}</dt>
+                                <dd>{if $delivery_order.status neq 1}<input name="invoice_no" type="text" class="text w120 mt2 {if $delivery_order.status eq 0} text_readonly{/if}" value="{$delivery_order.invoice_no}" {if $delivery_order.status eq 0} readonly {/if} autocomplete="off" />{else}{$delivery_order.invoice_no}{/if}</dd>
+                            </dl>
+                            <dl>
+                            	<dt>{$lang.label_insure_fee}</dt>
+                                <dd>{$delivery_order.insure_fee|default:0.00}</dd>
+                            </dl>
+                        </div>
+                    </div>
+                    
+                    <!--收货人信息-->
+                    <div class="step">
+                    	<div class="step_title"><i class="ui-step"></i><h3>{$lang.consignee_info}</h3></div>
+                      	<div class="section">
+                        	<dl>
+                            	<dt>{$lang.label_consignee}</dt>
+                                <dd>{$delivery_order.consignee|escape}</dd>
+                                <dt>{$lang.label_email}</dt>
+                                <dd>{$delivery_order.email}</dd>
+                            </dl>
+                            <dl>
+                            	<dt>{$lang.label_tel}</dt>
+                                <dd>{$delivery_order.tel}</dd>
+                                <dt>{$lang.label_mobile}</dt>
+                                <dd>{$delivery_order.mobile|escape}</dd>
+                            </dl>
+                            <dl>
+                            	<dt>{$lang.label_best_time}</dt>
+                                <dd>{$delivery_order.best_time|escape}</dd>
+                                <dt>{$lang.label_sign_building}</dt>
+                                <dd>{$delivery_order.sign_building|escape}</dd>
+                            </dl>
+                            <dl style="width:25%">
+                            	<dt>{$lang.label_address}</dt>
+                                <dd>[{$delivery_order.region}] {$delivery_order.address|escape}</dd>
+                                <dt>{$lang.label_zipcode}</dt>
+                                <dd>{$delivery_order.zipcode|escape}</dd>
+                            </dl>
+                            <dl style="width:25%">
+                            	<dt>{$lang.label_postscript}</dt>
+                                <dd>{$delivery_order.postscript}</dd>
+                                <dt>&nbsp;</dt>
+                                <dd>&nbsp;</dd>
+                            </dl>
+                        </div>
+                    </div>
+                    
+                    <!--商品信息-->
+                    <div class="step">
+                    	<div class="step_title"><i class="ui-step"></i><h3>{$lang.goods_info}</h3></div>
+                      	
+                        <div class="step_info">
+                            <div class="order_goods_fr">
+                            	<table class="table" border="0" cellpadding="0" cellspacing="0">
+                                    <thead>
+                                        <tr>
+											<th width="30%" class="first">{$lang.goods_name_brand}</th>
+                                            <th width="15%">{$lang.goods_sn}</th>
+											<th width="15%">{$lang.product_sn}</th>
+                                            <th width="20%">{$lang.goods_attr}</th>
+                                            <th width="10%">{$lang.label_send_number}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+										{foreach from=$goods_list item=goods}
+                                        <tr>
+                                        	<td>
+                                            	<div class="order_goods_div">
+                                                    <div class="img"><a href="../goods.php?id={$goods.goods_id}" target="_blank"><img src="{$goods.goods_thumb}" width="72" height="72" /></a></div>
+                                                    <div class="name ml10"><a href="../goods.php?id={$goods.goods_id}" target="_blank">{$goods.goods_name} {if $goods.brand_name}[ {$goods.brand_name} ]{/if}</a></div>
+                                                </div>
+                                            </td>
+											<td>{$goods.goods_sn}</td>
+											<td>{$goods.product_sn}</td>
+											<td>{$goods.goods_attr|nl2br}</td>
+											<td>{$goods.send_number}</td>
+                                        </tr>
+                                    	{/foreach}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                    <!--操作信息-->
+                    <div class="step order_total">
+                    	<div class="step_title"><i class="ui-step"></i><h3>{$lang.op_ship}{$lang.action_info}</h3></div>
+                        <div class="step_info">
+                        	<div class="order_operation order_operation100">
+                            	<div class="item">
+                                	<div class="label">{$lang.action_user}：</div>
+                                    <div class="value">{$delivery_order.action_user}</div>
+                                </div>
+                                <div class="item">
+                                	<div class="label">{$lang.label_agency}</div>
+                                    <div class="value">{$delivery_order.agency_name}</div>
+                                </div>
+                                <div class="item">
+                                	<div class="label">{$lang.label_action_note}</div>
+                                    <div class="value"><textarea name="action_note" cols="80" rows="3" class="textarea"></textarea></div>
+                                </div>
+                                {if $delivery_order.status neq 1}
+                                <div class="item">
+                                	<div class="label">{$lang.label_operable_act}</div>
+                                    <div class="value">
+                                    	{if $delivery_order.status eq 2}<input name="delivery_confirmed" type="submit" value="{$lang.op_ship}" class="btn btn25 red_btn"/>{else}<input name="unship" type="submit" value="{$lang.op_cancel_ship}" class="btn btn25 red_btn" />{/if}
+                                        <input name="order_id" type="hidden" value="{$delivery_order.order_id}">
+                                        <input name="delivery_id" type="hidden" value="{$delivery_order.delivery_id}">
+                                        <input name="act" type="hidden" value="{$action_act}">
+                                    </div>
+                                </div>
+                                {/if}
+                            </div>
+                            <div class="operation_record">
+                            	<table cellpadding="0" cellspacing="0">
+                                	<thead>
+                                    	<th width="5%">&nbsp;</th>
+                                        <th width="15%">{$lang.action_user}</th>
+                                        <th width="15%">{$lang.action_time}</th>
+                                        <th width="15%">{$lang.order_status}</th>
+                                        <th width="15%">{$lang.pay_status}</th>
+                                        <th width="15%">{$lang.shipping_status}</th>
+                                        <th width="20%">{$lang.action_note}</th>
+                                    </thead>
+                                    <tbody>
+									{foreach from=$action_list item=action}
+										<tr>
+                                        <td width="5%">&nbsp;</td>
+                                    	<td>{$action.action_user}</td>
+                                        <td>{$action.action_time}</td>
+                                        <td>{$action.order_status}</td>
+                                        <td>{$action.pay_status}</td>
+                                        <td>{$action.shipping_status}</td>
+                                        <td>{$action.action_note|nl2br}</td>
+										</tr>
+									{/foreach}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                	</div>
+				</form>
+            </div>
+		</div>
+	</div>
+ {include file ='library/pagefooter.lbi'}
+</body>
+</html>

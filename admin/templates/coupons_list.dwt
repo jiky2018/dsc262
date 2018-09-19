@@ -1,0 +1,88 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="coupons.php?act=list" class="s-back">{$lang.back}</a>{$lang.promotion} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.view.0}</li>
+                    <li>{$lang.operation_prompt_content.view.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+				<form method="post" action="" name="listForm">
+                	<div class="list-div" id="listDiv">
+						{/if}
+                    	<table cellpadding="1" cellspacing="1" >
+                        	<thead>
+                            	<tr>
+                                	<th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars"></label></div></th>
+                                    <th width="5%"><div class="tDiv">{$lang.record_id}</div></th>
+                                    <th width="18%"><div class="tDiv">{$lang.coupons_sn}</div></th>
+                                    <th width="17%"><div class="tDiv">{$lang.user_name}</div></th>
+                                    <th width="11%"><div class="tDiv">{$lang.type_money}</div></th>
+                                    <th width="17%"><div class="tDiv">{$lang.order_id}</div></th>
+                                    <th width="17%"><div class="tDiv">{$lang.used_time}</div></th>
+                                    <th width="12%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+							{foreach from=$coupons_list item=coupons}
+                            	<tr>
+                                	<td class="sign"><div class="tDiv"><input type="checkbox" name="checkbox" class="checkbox" id="checkbox_{$coupons.uc_id}" /><label for="checkbox_{$coupons.uc_id}" class="checkbox_stars"></label></div></td>
+                                    <td><div class="tDiv">{$coupons.uc_id}</div></td>
+                                	<td><div class="tDiv">{$coupons.uc_sn}</div></td>
+                                    <td><div class="tDiv ">{$coupons.user_name}</div></td>
+                                    <td><div class="tDiv ">{$coupons.cou_money}</div></td>
+                                    <td><div class="tDiv ">{$coupons.order_sn}</div></td>
+                                    <td><div class="tDiv">{$coupons.is_use_time}</div></td>
+                                    <td class="handle">
+										<div class="tDiv a1">
+											<a href="javascript:;" onclick="listTable.remove({$coupons.uc_id}, '{$lang.drop_confirm}', 'remove_coupons')" title="{$lang.remove}" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>									
+										</div>
+									</td>
+                                </tr>
+							{foreachelse}
+							<tr><td class="no-records"colspan="11">{$lang.no_records}</td></tr>
+							{/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="12">
+                                    	<div class="list-page">
+											{include file="library/page.lbi"}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+						{if $full_page}
+                    </div>
+				</form>
+                </div>
+            </div>
+        </div>
+    </div>
+	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+	listTable.query = 'user_query_coupons';
+	listTable.cou_id = '{$cou_id}';
+	
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+	
+	//列表导航栏设置下路选项
+	$(".ps-container").perfectScrollbar();
+	</script>
+</body>
+</html>
+{/if}

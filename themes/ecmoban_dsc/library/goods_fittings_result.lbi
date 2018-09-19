@@ -1,0 +1,205 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<input type="hidden" name="fittings_goods" id="fittings_goods" value="{$goods_id}">
+<div class="J_ComboDialog scroll">
+    <div class="header">
+        <div class="tm-combo-mitem tm-combo-i10739529005">
+        	<!--{foreach from=$fittings item=goods_list name=no key=key}--> 
+            {if $key eq 0}
+            <div class="tm-img"><a href="{$goods_list.url}" title="{$goods_list.short_name}" target="_blank" class="combo_goods_{$goods_list.goods_id}"><img src="{$goods_list.goods_thumb}" width="60" height="60"></a></div>
+            {/if}
+            <!-- {/foreach} -->
+        </div>
+        <div class="tm-combo-spliter">+</div>
+        <div class="slideBox">
+            <div class="bd">
+                <ul>
+                	<!--{foreach from=$fittings_top item=goods_list name=no key=key}--> 
+                    <li>
+                    	<div class="tm-combo-item tm-combo-item_div">
+            				<div class="tm-img">
+                            	<a href="javascript:void(0);" title="{$goods_list.short_name}" class="combo_goods_{$goods_list.goods_id}"><img src="{$goods_list.goods_thumb}" width="60" height="60"></a>
+                            </div>
+                            <div class="tm-enable {if $goods_list.selected eq 1}selected{/if}" rev='{$goods_list.group_top}'></div>
+                        </div>
+                    </li>
+                    <!-- {/foreach} -->
+				</ul>
+            </div>
+            <div class="hd">
+               <a href="javascript:void(0);" class="prev icon-chevron-left"></a>
+               <a href="javascript:void(0);" class="next icon-chevron-right"></a>                        	
+            </div>
+        </div>
+        <div class="tm-combo-info">
+            <p class="tm-combo-price">{$lang.Match_price}：<s class='fittings_minMax' id='fittings_minMax_top'>{$fittings_minMax}</s></p>
+            <p class="tm-save-price">{$lang.sheng}<s class='save_minMaxPrice'>{$save_minMaxPrice}</s></p>
+            <p class="tm-original-price">{$lang.combo_markPrice}：<s class='market_minMax'>{$market_minMax}</s></p>
+            <p class="tm-count">{$lang.Already_match}<s class='collocation_number'>{$collocation_number}</s>{$lang.jian}</p>
+        </div>
+        <div class="tm-combo-warnning"></div>
+    </div>
+    <div class="body fitts_body">
+        <div class="title">
+            {$lang.Package_flow_desc}
+        </div>
+        <div class="scroll">
+            <!--{foreach from=$fittings item=goods_list name=no key=key}--> 
+            <form action="javascript:void(0);" method="post" name="ECS_FORMBUY_{$goods_list.goods_id}" id="ECS_FORMBUY_{$goods_list.goods_id}" >
+            <div style="clear: {if $key mod 2 eq 0}left{else}none{/if};" class="tm-combo-item {if $goods_list.goods_number eq 0}hover{/if}" id="tm-combo-item_{$goods_list.goods_id}">
+                <div class="tm-img">
+                    <a href="{$goods_list.url}" title="{$goods_list.short_name}" target="_blank" class="combo_goods_{$goods_list.goods_id}"><img src="{$goods_list.goods_thumb}" width="60" height="60"></a>
+                </div>
+                <div class="tm-meta" rev="{$goods_list.goods_id}">
+                    {foreach from=$goods_list.properties.spe item=spec name=nospec key=spec_key}
+                    {if $spec.name}
+                    <dl class="tb-prop tm-clear fitt_input">
+                        <dt class="tm-metatit">{$spec.name}：</dt>
+                        <dd>
+                            <ul class="J_combosSaleProp">
+                            {if $spec.is_checked > 0}
+                                {foreach from=$spec.values item=value name=novalue key=val_key}
+                                <li class="tb-txt"> 
+                                	{if $key eq 0}
+                                	<a {if $value.combo_checked eq 1}class="tb-txt-a"{/if} href="javascript:void(0);" rev="{$value.id}" onclick="fitt_changeAtt(this, {$goods_list.goods_id}, '{$group_rev}', 1, $('#fittings_goods').val());"> 
+                                	{else}
+                                    <a {if $value.combo_checked eq 1}class="tb-txt-a"{/if} href="javascript:void(0);" rev="{$value.id}" onclick="fitt_changeAtt(this, {$goods_list.goods_id}, '{$group_rev}', 0, $('#fittings_goods').val());"> 
+                                    {/if}
+                                    <span>
+                                		{if $value.img_flie}
+                                        <img width="25" height="25" src="{$value.img_flie}" style=" padding-right:5px; margin-left:-5px; padding:2px;" />
+                                        {/if}
+                                        <i>{$value.label}</i>
+                                   	</span>
+                                    <input style="display:none" id="fitt_spec_value_{$value.id}" type="radio" name="fitt_spec_{$spec_key}" class="fitt_spec_value" value="{$value.id}" {if $value.combo_checked eq 1}checked="checked"{/if} /> 
+                                    </a> 
+                                </li>
+                                {/foreach}
+                            {else}
+                            	{foreach from=$spec.values item=value name=novalue key=val_key}
+                                <li class="tb-txt"> 
+                                	{if $key eq 0}
+                                    <a {if $value.combo_checked eq 1}class="tb-txt-a"{/if} href="javascript:void(0);" onclick="fitt_changeAtt(this, {$goods_list.goods_id}, '{$group_rev}', 1, $('#fittings_goods').val());"> 
+                                	{else}
+                                    <a {if $value.combo_checked eq 1}class="tb-txt-a"{/if} href="javascript:void(0);" onclick="fitt_changeAtt(this, {$goods_list.goods_id}, '{$group_rev}', 0, $('#fittings_goods').val());"> 
+                                    {/if}
+                                    	<span>{$value.label}</span>
+                                    	<input style="display:none" id="fitt_spec_value_{$value.id}" type="radio" name="fitt_spec_{$spec_key}" class="fitt_spec_value" value="{$value.id}" {if $value.combo_checked eq 1}checked="checked"{/if} />  
+                                	</a> 
+                                    
+                                </li>
+                                {/foreach}    
+                            {/if}
+                            </ul>
+                        </dd>
+                    </dl>
+                    {/if}
+                    {/foreach}
+                    <dl style="display: none;" class="tb-prop hidden">
+                        <dt class="tm-metatit">{$lang.service_flow}：</dt>
+                        <dd>
+                            <ul class="J_combosService tb-service"></ul>
+                        </dd>
+                    </dl>
+                    <dl class="tb-stock tm-clear">
+                        <dt class="tm-metatit">{$lang.Stock_flow}：</dt>
+                        <dd>
+                        	<span class="tm-stock_{$goods_list.goods_id}">{$goods_list.goods_number}</span>&nbsp;&nbsp
+                        	<span class="tm-stock_title_{$goods_list.goods_id}">{if $goods_list.goods_number eq 0}<font style="color:#F00;">({$lang.goods_null})</font>{/if}</span>
+                        </dd>
+                    </dl>
+                </div>
+                <div class="tm-notice">{$lang.goods_info_select}</div>
+                <input name="fitt_jq_{$goods_list.goods_id}" class="fitt_jq_{$goods_list.goods_id}" value="" type="hidden">
+            </div>
+            </form>
+            <!-- {/foreach} -->
+        </div>
+    </div>
+    <div class="footer">
+        <div class="tm-buy">
+        	<form name="{$group}_result" method="post" action="" onSubmit="return false;"> 
+            <input class="{$group}_result" stock="{$group_number}" style="display:none" />
+            {$lang.btn_buy}
+            <input value="{$number|default:1}" style="text-align:center" id="J_SComboAmount_group" name="{$group}_result_number">
+            {$lang.tao} &nbsp;&nbsp;
+            <span class="tm-combo-totalPrice">{$lang.Total_flow}&nbsp;&nbsp;<s class='fittings_minMax' id='list_select'>{if $list_select eq 1}{$fittings_minMax}{else}{$null_money}{/if}</s></span>
+            <button style="display: none;" class="J_ComboBuy">{$lang.confirm_buy}</button>
+            <button class="J_ComboAddCart" onClick="addMultiToCart('{$group}', '{$goods_id}', '{$warehouse_id}', '{$area_id}')">{$lang.confirm_cart}</button>
+            <span class="tm-combo-notice" style="display:none">{$lang.confirm_cart_two}</span> 
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+jQuery(".slideBox").slide({titCell:".hd ul",mainCell:".bd ul",autoPage:true,effect:"left",autoPlay:false,scroll:1,vis:4,pnLoop:false});
+$(function(){
+	$('.tm-combo-item_div').click(function(){
+		var fitt_goods = [];//删除之前组合配件商品ID
+		var group        = new Object();
+		group.group_rev = $(this).find('.tm-enable').attr('rev');
+		
+		$('.tm-meta').each(function(index, element) {
+			fitt_goods.push($(element).attr('rev'));  
+		});
+			
+		group.fitt_goods = fitt_goods;	
+		
+		var str, str1, tsr2;
+		str = group.group_rev;
+		str1 = str.split('|');
+
+		
+		var goods_id = str1[0];
+		var region_id = str1[1];
+		var area_id = str1[2];
+		
+		str2 = str1[3];
+		str2 = str2.split('=');
+		var group_item = str2[0];
+		var parent_id = str2[1];
+		
+		var group_arr = group_item.split('_');
+		var group_id = group_arr[2];
+		
+		var m_goods_list = $('.m_goods_list_' + group_item + "_" + goods_id).val();
+		
+		var add_group = group_item + "_" + parent_id  + "_" + region_id  + "_" + area_id;
+		group.add_group = add_group;
+		
+		var clasSName = $(this).find('.tm-enable').attr('class');
+		if(clasSName == 'tm-enable selected' || clasSName == 'tm-enable  selected'){
+			$(this).find('.tm-enable').removeClass('selected');
+			
+			if(m_goods_list == goods_id){
+				$('.m_goods_list_' + group_item + "_" + goods_id).prop("checked", false);
+				$('#' + goods_id + "_" + group_id).removeClass('checked');
+			}
+
+			Ajax.call('flow.php?step=add_del_cart_combo_list', 'group=' + $.toJSON(group), add_delResponse, 'POST', 'JSON'); //兼容jQuery by mike
+		}else{
+			$(this).find('.tm-enable').addClass('selected');
+			
+			if(m_goods_list == goods_id){
+				$('.m_goods_list_' + group_item + "_" + goods_id).prop("checked", true);
+				$('#' + goods_id + "_" + group_id).addClass('checked');
+			}
+			
+			ec_group_addToCart(group_item, goods_id, parent_id, region_id, area_id, add_group, fitt_goods); //新增配件(组,配件,主件)
+		}
+
+	});
+	
+	//可以购买套餐的最大数量
+	$("#J_SComboAmount_group").keyup(function(){
+		var group = $(this).parents('form').attr('name');
+		getMaxStock(group, 2);//根据套餐获取该套餐允许购买的最大数
+	});
+	
+});
+
+function add_delResponse(result){
+	get_cart_combo_open_list(result.add_group, result.fitt_goods);
+}
+</script>

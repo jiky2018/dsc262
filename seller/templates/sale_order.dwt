@@ -1,0 +1,132 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body style="padding: 0px;">
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+            	{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="search-info">
+                    <form name="TimeInterval"  action="javascript:getList()" style="margin:0px">
+                        <div class="search-form">    
+                            <strong class="fl lh mr10">{$lang.start_end_date}：</strong>
+                            <div class="text_time" id="text_time1">
+                                <input name="start_date" type="text" id="start_date" size="15" value='{$start_date}' readonly class="text"/>
+                            </div>
+                            <span class="bolang">&nbsp;&nbsp;~&nbsp;&nbsp;</span>
+                            <div class="text_time" id="text_time2">
+                                <input name="end_date" type="text" id="end_date" size="15" value='{$end_date}' readonly class="text" />
+                            </div>
+                            <input type="submit" name="submit" value="{$lang.query}" class="sc-btn sc-blueBg-btn btn30 ml10" />
+                        </div>
+                    </form>
+                </div>
+                <div class="clear"></div>
+                <form method="POST" action="" name="listForm">
+                    <div class="list-div" id="listDiv">
+                        {/if}
+                        <table width="100%" class="ecsc-default-table ecsc-table-seller mt20">
+                            <tr>
+                                <th width="10%">{$lang.order_by}</th>
+                                <th width="30%">{$lang.goods_name}</th>
+                                <th width="15%">{$lang.goods_sn}</th>
+                                <th width="15%"><a href="javascript:listTable.sort('goods_num', 'DESC'); ">{$lang.sell_amount}</a>{$sort_goods_num}</th>
+                                <th width="15%"><a href="javascript:listTable.sort('turnover', 'DESC'); ">{$lang.sell_sum}</a>{$sort_turnover}</th>
+                                <th width="10%">{$lang.percent_count}</th>
+                            </tr>
+                            {foreach from=$goods_order_data item=list name=val}
+                            <tr>
+                                <td>{$smarty.foreach.val.iteration}</td>
+                                <td><a href="../goods.php?id={$list.goods_id}" target="_blank">{$list.goods_name}</a></td>
+                                <td>{$list.goods_sn}</td>
+                                <td>{$list.goods_num}</td>
+                                <td>{$list.turnover}</td>
+                                <td>{$list.wvera_price}</td>
+                            </tr>
+                            {foreachelse}
+                            <tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+                            {/foreach}
+                            <tfoot>
+                                <tr>
+                                    <td colspan="10">{include file="page.dwt"}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <script type="text/javascript">
+                        	listTable.recordCount = {$record_count};
+							listTable.pageCount = {$page_count};
+							{foreach from=$filter item=item key=key}
+							listTable.filter.{$key} = '{$item}';
+							{/foreach}
+                        </script>
+                        {if $full_page}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript">
+	{literal}
+			onload = function()
+	{
+		// 开始检查订单
+		startCheckOrder();
+		getDownUrl();
+	}
+	
+	function getList()
+	{
+		var frm =  document.forms['TimeInterval'];
+		listTable.filter['start_date'] = frm.elements['start_date'].value;
+		listTable.filter['end_date'] = frm.elements['end_date'].value;
+		listTable.filter['page'] = 1;
+		listTable.loadList();
+		getDownUrl();
+	}
+	
+	function getDownUrl()
+	{
+		var aTags = document.getElementsByTagName('A');
+		for (var i = 0; i < aTags.length; i++)
+		{
+			if (aTags[i].href.indexOf('download') >= 0)
+			{
+				if (listTable.filter['start_date'] == "")
+				{
+					var frm =  document.forms['TimeInterval'];
+					listTable.filter['start_date'] = frm.elements['start_date'].value;
+					listTable.filter['end_date'] = frm.elements['end_date'].value;
+				}
+				aTags[i].href = "sale_order.php?act=download&start_date=" + listTable.filter['start_date'] + "&end_date=" + listTable.filter['end_date'];
+			}
+		}
+	}
+	//日期选择插件调用start sunle
+	var opts1 = {
+		'targetId':'start_date',//时间写入对象的id
+		'triggerId':['start_date'],//触发事件的对象id
+		'alignId':'text_time1',//日历对齐对象
+		'format':'-'//时间格式 默认'YYYY-MM-DD HH:MM:SS'
+	},opts2 = {
+		'targetId':'end_date',
+		'triggerId':['end_date'],
+		'alignId':'text_time2',
+		'format':'-'
+	}
+	
+	xvDate(opts1);
+	xvDate(opts2);
+	//日期选择插件调用end sunle
+	//-->
+</script>
+</body>
+</html>
+{/if}

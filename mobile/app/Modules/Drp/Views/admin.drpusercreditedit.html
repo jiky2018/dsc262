@@ -1,0 +1,65 @@
+{include file="admin_pageheader"}
+
+<div class="">
+    <div class="title">编辑分销商等级</div>
+        <div class="flexilist of">
+            <div class="main-info">
+                <form action="{url('drp_user_credit_edit')}" method="post" class="form-horizontal" role="form" onsubmit="return false;">
+                    <div class="switch_info">
+                        <div class="item">
+                            <div class="label-t">分销商等级名称：</div>
+                            <div class="label_value col-md-4">
+                                <input type="text" name="data[credit_name]" class="text w200" value="{$info['credit_name']}" />
+                            </div>
+                        </div>
+
+                        <div class="item">
+                            <div class="label-t">佣金下限：</div>
+                            <div class="label_value col-md-4">
+                                <input type="number" name="data[min_money]" class="text w200" value="{$info['min_money']}" />
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="label-t">佣金上限：</div>
+                            <div class="label_value col-md-4">
+                                <input type="number" name="data[max_money]" class="text w200"  value="{$info['max_money']}" />
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="label-t">&nbsp;</div>
+                            <div class="label_value col-md-4">
+                                <div class="info_btn">
+                                    <input type="hidden" name="id" value="{$info['id']}" />
+                                    <input type="submit" value="{$lang['button_submit']}" class="button btn-danger bg-red fn" />
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                </form>
+            </div>
+        </div>
+</div>
+<script type="text/javascript">
+$(function(){
+    $(".form-horizontal").submit(function(){
+
+        var minval =parseInt($("input[name='data[min_money]']").val());
+        var maxval = parseInt($("input[name='data[max_money]']").val());
+        if(minval > maxval){
+            layer.msg('佣金上限必须大于佣金下限');
+            return false;
+        }
+
+        var ajax_data = $(this).serialize();
+        $.post("{url('drp_user_credit_edit')}", ajax_data, function(data){
+            layer.msg(data.msg);
+            if(data.error == 0){
+                window.parent.location = "{url('drp_user_credit')}";
+            }else{
+                return false;
+            }
+        }, 'json');
+    });
+})
+</script>
+{include file="admin/footer"}

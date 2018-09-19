@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$lang.seller} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.list.0}</li>
+                    <li>{$lang.operation_prompt_content.list.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<div class="common-head">
+					<div class="fl">
+                        {if $parent_id > 0}
+                        <a href="entry_criteria.php?act=list"><div class="fbutton"><div class="add" title="{$action_link2.text}"><span><i class="icon icon-reply"></i>{$lang.go_back_level}</span></div></div></a>
+						{/if}
+                        <a href="{$action_link.href}"><div class="fbutton"><div class="add" title="{$action_link.text}"><span><i class="icon icon-plus"></i>{$action_link.text}</span></div></div></a>
+                        <a href="{$action_link2.href}"><div class="fbutton"><div class="add" title="{$action_link2.text}"><span><i class="icon icon-plus"></i>{$action_link2.text}</span></div></div></a>
+					</div>
+                </div>
+                <div class="common-content">
+                	<div class="list-div" id="listDiv" >
+                    	<table cellpadding="1" cellspacing="1">
+                        	<thead>
+                            	<tr>
+									<th width="{if $parent_id eq 0}30%{else}8%{/if}"></th>
+                                	<th width="{if $parent_id eq 0}40%{else}15%{/if}"><div class="tDiv">{$lang.criteria_name}</div></th>
+                                    {if $parent_id > 0}
+                                    <th width="11%"><div class="tDiv">{$lang.parent}</div></th>
+									<th width="11%"><div class="tDiv">{$lang.type}</div></th>
+                                    <th width="11%"><div class="tDiv">{$lang.is_mandatory}</div></th>
+                                    <th width="11%"><div class="tDiv">{$lang.option_value}</div></th>
+                                    <th width="15%"><div class="tDiv">{$lang.charge}</div></th>
+                                    {/if}
+                                    <th width="{if $parent_id eq 0}30%{else}19%{/if}" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+							    {foreach from=$entry_criteria item=list}
+								<tr>
+								<td>
+									<div class="tDiv first_setup">
+										<div class="setup_span">
+											<em><i class="icon icon-cog"></i>{$lang.setup}<i class="arrow"></i></em>
+											<ul>
+												<li><a href="entry_criteria.php?act=add&parent_id={$list.id}">{$lang.add_next_level}</a></li>
+												<li><a href="entry_criteria.php?act=list&parent_id={$list.id}">{$lang.view_next_level}</a></li>
+											</ul>
+										</div>
+									</div>
+								</td>
+								<td><div class="tDiv">{$list.criteria_name|escape}</div></td>
+                                {if $parent_id > 0}
+								<td><div class="tDiv">{if $list.parent_name}{$list.parent_name|escape}{else}{$lang.wu}{/if}</div></td>	
+								<td><div class="tDiv">{if $list.type}{$list.type|escape}{else}{$lang.wu}{/if}</div></td>
+							    <td>
+									<div class="tDiv">
+										<div class="switch mauto {if $list.is_mandatory}active{/if}" onclick="listTable.switchBt(this, 'toggle_show', {$list.id})" title="{$lang.yes}">
+											<div class="circle"></div>
+										</div>
+										<input type="hidden" value="" name="is_mandatory">
+									</div>
+								</td>
+								<td><div class="tDiv">{if $list.option_value}{$list.option_value|escape}{else}无{/if}</div></td>
+								<td><div class="tDiv">{if $list.type eq '缴纳费用'}<input type="text" name="charge" class="text w100" value="{$list.charge|escape:html}" onBlur="listTable.editInput(this, 'edit_charge', '{$list.id}')"/>{else}{$lang.wu}{/if}</div></td>  
+							    {/if}
+                                <td class="handle">
+									<div class="tDiv a2">
+										<a href="entry_criteria.php?act=edit&id={$list.id}" title="{$lang.edit}" class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>
+										<a href="javascript:;" onclick="listTable.remove({$list.id}, '{$lang.drop_confirm}')" title="{$lang.remove}" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>	
+									</div>
+								</td>
+								</tr>
+								{foreachelse}
+								<tr><td class="no-records" colspan="8">{$lang.no_records}</td></tr>
+								{/foreach}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+ {include file ='library/pagefooter.lbi'}
+</body>
+</html>

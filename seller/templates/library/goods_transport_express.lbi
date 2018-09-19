@@ -1,0 +1,27 @@
+{if $transport_express}
+<table class="ecsc-default-table ecsc-table-seller mb10">
+	<tr>
+		<td width="50%" class="tl">快递名称</td>
+		<td width="20%" class="tc">额外运费（元）</td>
+		<td width="30%" class="tc">操作</td>
+	</tr>
+	{foreach from=$transport_express item=express}
+	<tr>
+		<td width="50%" class="tl">{if $express.express_list}{$express.express_list}{else}未指定快递{/if}</td>
+		<td width="20%">
+			<input type="hidden" name="id" value="{$express.id}" />
+			<input type="text" name="shipping_fee[{$express.id}]" class="text w80 tc fn" onblur="insertexpress(this.value,{$express.id});" autocomplete="off" value="{$express.shipping_fee}" />
+		</td>
+		<td width="30%">
+			<input type="button" value="编辑" class="sc-btn btn30 sc-blueBg-btn fn mr10" data-role="edit_express" ectype="edit_express">
+			<input type="button" value="删除" class="sc-btn btn30 sc-blueBg-btn fn mr10" data-role="drop_express" ectype="drop_express">
+		</td>
+	</tr>
+	{/foreach}
+</table>
+<script type="text/javascript">
+function insertexpress(fee,id){
+	Ajax.call('goods_transport.php','act=edit_express_fee&fee='+fee+'&id='+id,'','POST','JSON');
+}
+</script>
+{/if}

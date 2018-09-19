@@ -1,0 +1,94 @@
+{include file="pageheader"}
+<div class="wrapper">
+	<div class="title">{$lang['wechat_menu']} - {$lang['qrcode']}</div>
+	<div class="content_tips">
+        <div class="tabs_info">
+            <ul>
+                <li class="curr"><a href="{url('qrcode_list')}">{$lang['qrcode']}</a></li>
+                <li><a href="{url('share_list')}">{$lang['share_qrcode']}</a></li>
+            </ul>
+        </div>
+	    <div class="explanation" id="explanation">
+            <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4><span id="explanationZoom" title="收起提示"></span></div>
+            <ul>
+                <li>渠道二维码。可生成临时二维码或永久二维码 用于线下某些场景展示，让用户扫描关注，效果类似关注微信公众号。</li>
+                <li>临时二维码，是有过期时间的，最长可以设置为在二维码生成后的30天（即2592000秒）后过期，但能够生成较多数量。临时二维码主要用于帐号绑定等不要求二维码永久保存的业务场景</li>
+                <li>永久二维码，是无过期时间的，但数量较少（目前为最多10万个）。永久二维码主要用于适用于帐号绑定、用户来源统计等场景。</li>
+                <li>应用场景值ID，临时二维码时为32位非0整型(100001-4294967295)，永久二维码时最大值为100000（目前参数只支持1--100000），请从小大到依次填写</li>
+            </ul>
+        </div>
+		<div class="flexilist of">
+			<div class="common-head">
+                <div class="fl">
+                	<a href="{url('qrcode_edit')}" class="fancybox fancybox.iframe"><div class="fbutton"><div class="add " title="添加二维码"><span><i class="fa fa-plus"></i>{$lang['add'].$lang['qrcode']}</span></div></div></a>
+                </div>
+            </div>
+            <div class="common-content">
+            	<div class="list-div">
+    				<table cellspacing="0" cellpadding="0" border="0">
+						<tr>
+							<th width="15%"><div class="tDiv">{$lang['qrcode_scene_value']}</div></th>
+							<th width="15%"><div class="tDiv">{$lang['qrcode_type']}</div></th>
+                            <th width="10%"><div class="tDiv">{$lang['scan_num']}</div></th>
+							<th width="15%"><div class="tDiv">{$lang['qrcode_function']}</div></th>
+							<th width="10%"><div class="tDiv">{$lang['sort_order']}</div></th>
+							<th width="20%"><div class="tDiv">{$lang['handler']}</div></th>
+						</tr>
+                        {if $list}
+                        {foreach $list as $key=>$val}
+    					<tr>
+    						<td><div class="tDiv">{$val['scene_id']}</div></td>
+    						<td><div class="tDiv">{if $val['type'] == 0}{$lang['qrcode_short']}{else}{$lang['qrcode_forever']}{/if}</div></td>
+    						<td><div class="tDiv">{$val['scan_num']}</div></td>
+                            <td><div class="tDiv">{$val['function']}</div></td>
+    						<td><div class="tDiv">{$val['sort']}</div></td>
+    						<td class="handle">
+    							<div class="tDiv a3">
+    								<a href="{url('qrcode_get', array('id'=>$val['id']))}" class="btn_region fancybox fancybox.iframe getqr"><i class="fa fa-qrcode"></i>{$lang['qrcode_get']}</a>
+
+                                    {if $val['status'] == 1}
+                                    <a href="{url('qrcode_edit', array('id'=>$val['id'],'status'=> 0))}" class="btn_trash"><i class="fa fa-toggle-on"></i>已{$lang['enabled']}</a>
+                                    {else}
+                                    <a href="{url('qrcode_edit', array('id'=>$val['id'],'status'=> 1))}" class="btn_trash"><i class="fa fa-toggle-off"></i>已{$lang['disabled']}</a>
+                                    {/if}
+
+    								<a href="javascript:if(confirm('{$lang['confirm_delete']}')){window.location.href='{url('qrcode_del', array('id'=>$val['id']))}'};" class="btn_trash"><i class="fa fa-trash-o"></i>{$lang['drop']}</a>
+    						   </div>
+    						</td>
+    					</tr>
+    					{/foreach}
+
+                        {else}
+                        <tbody>
+                                <tr><td class="no-records" colspan="6">没有找到任何记录</td></tr>
+                        </tbody>
+                        {/if}
+    					<tfoot>
+                        	<tr>
+                                <td colspan="6">
+                                	{include file="pageview"}
+                                </td>
+                            </tr>
+                        </tfoot>
+    				</table>
+		        </div>
+		    </div>
+	    </div>
+	</div>
+</div>
+<script type="text/javascript">
+$(function(){
+	$(".getqr").click(function(){
+		var url = $(this).attr("href");
+	    $.get(url, '', function(data){
+	        if(data.status <= 0 ){
+	        	layer.msg(data.msg);
+                $.fancybox.close();
+	            return false;
+		    }
+		}, 'json');
+	});
+})
+</script>
+
+{include file="pagefooter"}

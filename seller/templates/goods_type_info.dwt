@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="ecsc-form-goods">
+                    <form action="" method="post" name="theForm" id="goods_type_form">
+                    <div class="wrapper-list border1">
+                    	<dl>
+                        	<dt>{$lang.require_field}&nbsp;{$lang.goods_type_name}：</dt>
+                        	<dd>
+								<input type="text" name="cat_name" value="{$goods_type.cat_name|escape}" size="40" class="text" />
+								<div class="form_prompt"></div>
+							</dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.the_cat}：</dt>
+                        	<dd>
+                                       <div ectype="type_cat">
+                                        <div id="parent_id1" class="imitate_select select_w145" ectype="typeCatSelect">
+                                            <div class="cite">{$lang.top_level}</div>
+                                            <ul>
+                                                <li><a href="javascript:;" data-value="0" data-level='1' class="ftx-01">{$lang.top_level}</a></li>
+                                                {foreach from=$cat_level item=cat}
+                                                <li><a href="javascript:;" data-value="{$cat.cat_id}" data-level="{$cat.level}" class="ftx-01">{$cat.cat_name}</a></li>
+                                                {/foreach}
+                                            </ul>
+                                            <input type="hidden" value="{$cat_tree1.checked_id|default:0}" id="parent_id_val1" ectype="typeCatVal">
+                                        </div>
+                                         {if $cat_tree1.arr}
+                                        <div id="parent_id2" class="imitate_select select_w145" ectype="typeCatSelect">
+                                            <div class="cite">请选择</div>
+                                            <ul>
+                                                <li><a href="javascript:;" data-value="0" data-level='2' class="ftx-01">请选择</a></li>
+                                                {foreach from=$cat_tree1.arr item=cat}
+                                                <li><a href="javascript:;" data-value="{$cat.cat_id}" data-level="{$cat.level}" class="ftx-01">{$cat.cat_name}</a></li>
+                                                {/foreach}
+                                            </ul>
+                                            <input type="hidden" value="{$cat_tree.checked_id|default:0}" id="parent_id_val2" ectype="typeCatVal">
+                                        </div>
+                                        {/if}
+                                         {if $cat_tree.arr}
+                                        <div id="parent_id{if $cat_tree1.arr}3{else}2{/if}" class="imitate_select select_w145" ectype="typeCatSelect">
+                                            <div class="cite">请选择</div>
+                                            <ul>
+                                                <li><a href="javascript:;" data-value="0" data-level='{if $cat_tree1.arr}3{else}2{/if}' class="ftx-01">请选择</a></li>
+                                                {foreach from=$cat_tree.arr item=cat}
+                                                <li><a href="javascript:;" data-value="{$cat.cat_id}" data-level="{$cat.level}" class="ftx-01">{$cat.cat_name}</a></li>
+                                                {/foreach}
+                                            </ul>
+                                            <input type="hidden" value="{$goods_type.c_id|default:0}" id="parent_id_val{if $cat_tree1.arr}3{else}2{/if}" ectype="typeCatVal">
+                                        </div>
+                                        {/if}
+                                        <input name="attr_parent_id" type="hidden" value="{$goods_type.c_id|default:0}">
+                                    </div>
+                                </dd>
+                        </dl>
+                        <dl style="display:none">
+                        	<dt>{$lang.goods_type_status}:</dt>
+                        	<dd>{html_radios name="enabled" options=$lang.arr_goods_status checked=$goods_type.enabled}</dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.attr_groups}：</dt>
+                        	<dd>
+                            	<textarea name="attr_group" rows="5" cols="40" class="textarea">{$goods_type.attr_group|escape}</textarea>
+                            	<div class="notic" id="noticeAttrGroups">{$lang.notice_attr_groups}</div>
+                            </dd>
+                        </dl>
+                        <dl class="button_info">
+                        	<dt>&nbsp;</dt>
+                        	<dd>
+                            	<input type="submit" value="{$lang.button_submit}" class="sc-btn sc-blueBg-btn btn35" id="submitBtn" />
+                                <input type="reset" value="{$lang.button_reset}" class="sc-btn btn35 sc-blue-btn" />
+                                <input type="hidden" name="cat_id" value="{$goods_type.cat_id}" />
+                                <input type="hidden" name="act" value="{$form_act}" />
+                            </dd>
+                        </dl>
+                    </div>  
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript">
+$(function(){
+	//表单验证
+	$("#submitBtn").click(function(){
+		if($("#goods_type_form").valid()){
+			$("#goods_type_form").submit();
+		}
+	});
+
+	$('#goods_type_form').validate({
+		errorPlacement:function(error, element){
+			var error_div = element.parents('dl').find('div.form_prompt');
+			//element.parents('dl').find(".notic").hide();
+			error_div.append(error);
+		},
+		rules:{
+			cat_name:{
+				required : true
+			}
+		},
+		messages:{
+			cat_name:{
+				required : '<i class="icon icon-exclamation-sign"></i>'+type_name_empty
+			}
+		}			
+	});
+});	
+
+//属性类型分类
+$.divselect("*[ectype='typeCatSelect']","*[ectype='typeCatVal']",function(obj){
+	var level = obj.data('level'),
+		val = obj.data("value");
+		
+	if(level != 3){
+		get_childcat(obj,1);
+	}else{
+		if(val == 0){
+			val = obj.parents(".imitate_select").prev(".imitate_select").find("[ectype='typeCatVal']").val();
+		}
+		$("input[name='attr_parent_id']").val(val);
+	}
+});
+</script>
+</body>
+</html>

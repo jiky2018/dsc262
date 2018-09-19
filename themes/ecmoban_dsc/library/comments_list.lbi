@@ -1,0 +1,203 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- {if $comments} -->
+<ul>
+	<!-- {foreach from=$comments item=comment name=no} -->
+    <li class="ratelist-item">
+        <div class="user-info-block">
+            <div class="avatar-wrapper">
+            	{if $comment.user_picture}
+            	<img src="{$comment.user_picture}" width="85" height="85" />
+                {else}
+                <img src="images/touxiang.jpg" width="85" height="85" />
+                {/if}
+            </div>
+            <p class="name-wrapper">{$comment.username|escape:html}</p>
+        </div>
+        <div class="review-content-wrapper">
+            <div class="info">
+                <div class="rate-status">
+                    <span class="common-rating"><span class="rate-stars" style="width:{if $comment.rank eq 1}20{elseif $comment.rank eq 2}40{elseif $comment.rank eq 3}60{elseif $comment.rank eq 4}80{elseif $comment.rank eq 5}100{/if}%"></span></span>
+                </div>
+            </div>
+            <div class="normal-view">
+            	<div class="comment-content">
+                    <p class="content">
+                        {$comment.content}<b class="hqrate-badge">{$comment.add_time}</b>
+                    </p>
+                    <dl>
+                        <dd class="p-bfc">
+                            <!-- {foreach from=$comment.goods_tag item=tag name=no} -->
+                            <!-- {if $tag.txt} -->			
+                            <p class="conmm-tags"><span>{$tag.txt}</span></p>
+                            <!-- {/if} -->	
+                            <!-- {/foreach} -->
+                        </dd>
+                    </dl>
+                </div>
+                {if $comment.img_list}
+                <div class="comment-content">
+                    <div class="p-show-img clearfix">
+                        <ul>
+                        	{foreach from=$comment.img_list item=img}
+                            <li><img src="{$img.img_thumb}" width="65"></li>
+                            {/foreach}
+                        </ul>
+                        <span class="show-number">{$lang.total} {$comment.img_cont} {$lang.pic_count}</span>
+                        <a href="#none" class="view-show">{$lang.cilck_view}</a>
+                    </div>
+                    <div class="p-photos hide">
+                        <div class="p-photos-viewer">
+                            <div class="p-photos-wrap">
+                                <div class="bd">
+                                    <ul>
+                                    	{foreach from=$comment.img_list item=img}
+                                        <li><img src="{$img.comment_img}" width="292"></li>
+                                        {/foreach}
+                                    </ul>
+                                </div>
+                                <div class="hd">
+                                    <ul>
+                                    	{foreach from=$comment.img_list item=img}
+                                        <li><img src="{$img.comment_img}" width="65"></li>
+                                        {/foreach}
+                                    </ul>
+                                </div>
+                                <a href="javascript:void(0);" class="photo_prev"></a>
+                                <a href="javascript:void(0);" class="photo_next"></a>
+                            </div>
+                        </div>
+                        <span class="show-number">{$lang.total} {$comment.img_cont} {$lang.pic_count}</span>
+                        <a href="#none" class="view-hide">{$lang.cilck_retract}</a>
+                    </div>
+                </div>        
+                {/if}                                 
+                {if $comment.re_content}
+                <div class="hf comment-content">
+                	
+                    <span class="ftx-01">{$comment.shop_name}：</span>
+                    <span class="qingse">{$comment.re_content}<b class="hqrate-badge">{$comment.re_add_time}</b></span>
+                    
+                </div>
+                {/if}
+                
+                <div class="comment-content comment-reply{$comment.id}" id="reply_comment_ECS_COMMENT{$comment.id}">
+                	{foreach from=$comment.reply_list item=reply}
+                    <div class="comment-reply-item">                    
+                        <div class="reply-infor">                        
+                            <a href="javascript:;" class="user-name">{$reply.user_name}</a>：
+                            <span class="words">{$reply.content}</span>
+                            <span class="time">&#12288;{$reply.add_time}</span>                    
+                        </div>                            
+                    </div>
+                    {/foreach}
+                    {if $comment.reply_count > $comment.reply_size}
+                    <div class="pages26 hide">
+                        <div class="pages">
+                            <div class="pages-it">
+                        		{$comment.reply_pager}
+                    		</div>
+                    	</div>
+                    </div>
+                    {/if}
+                </div>
+
+                <div class="comment-content comment-operate">
+                    <span class="reply{if $comment.reply_count > 0} red{/if}" ><i class="icon"></i>(<font class="reply-count{$comment.id}">{$comment.reply_count}</font>)</span>
+                    <span class="nice comment_nice {if $comment.useful > 0} red{/if}" data-commentid="{$comment.id}" data-idvalue="{$comment.id_value}"><i class="icon"></i>(<font class="reply-nice{$comment.id}" >{$comment.useful}</font>)</span>
+                </div>
+                <div class="comment-content reply-textarea hide" id="reply-textarea{$comment.id}">
+                    <div class="reply-arrow"><b class="layer"></b></div>
+                    <div class="inner">
+                        <textarea class="reply-input" name="reply_content{$comment.id}" id="reply_content{$comment.id}" placeholder="{$comment.username|escape:html}："></textarea>
+                    </div>
+                    <div class="btnbox">
+                    	<span id="reply-error{$comment.id}"></span>
+                    	<input name="comment_goods{$comment.id}" id="comment_goods{$comment.id}" type="hidden" value="{$comment.id_value}">
+                    	<input name="comment_user{$comment.id}" id="comment_user{$comment.id}" type="hidden" value="{$comment.user_id}">
+                    	<button type="button" class="reply-submit" value="{$comment.id}">{$lang.submit_goods}</button>
+                    </div>
+                </div>
+                {if $comment.reply_count gt 0}
+                <a href="comment_repay.php?act=repay&comment_id={$comment.id}" class="fr ftx-05 mt15">{$lang.View_all_replies}>></a>
+                {/if}
+            </div>
+        </div>
+        {if $comment.buy_goods.goods_attr}
+        <div class="ratelist-history">
+            <span class="history-title">
+            	{$comment.buy_goods.goods_attr}
+            </span>
+            <!--<span class="history-add-time">{$comment.buy_goods.add_time}&nbsp;{$lang.btn_buy}</span>-->
+        </div> 
+        {/if}
+    </li>
+    <!-- {/foreach} -->
+</ul>
+<!--{/if}-->
+
+{if $count > $size}
+<div class="pages26">
+    <div class="pages">
+        <div class="pages-it">
+        {$pager}
+        </div>
+    </div>
+</div>
+{/if}
+<script type="text/javascript">
+	$(function(){
+		$('.reply-submit').click(function(){
+			var T = $(this);
+			var comment_id = T.val();
+			var reply_content = $("#reply_content" + comment_id).val();
+			var user_id = $("#comment_user" + comment_id).val();
+			var goods_id = $("#comment_goods" + comment_id).val();
+			
+			if(reply_content == ''){
+				$("#reply-error" + comment_id).html("{$lang.write_message}");
+				return false;
+			}
+			
+			Ajax.call('comment.php', 'act=comment_reply&comment_id=' + comment_id + '&reply_content=' + reply_content + '&goods_id=' + goods_id + '&user_id=' + user_id, commentReplyResponse, 'POST', 'JSON');
+		});
+		
+		$('.comment_nice').click(function(){
+			var T = $(this);
+			var comment_id = T.data('commentid');
+			var goods_id = T.data('idvalue');
+			var type = 'comment';
+			
+			Ajax.call('comment.php', 'act=add_useful&id=' + comment_id + '&goods_id=' + goods_id + '&type=' + type, niceResponse, 'GET', 'JSON');
+		});
+	});
+	
+	function commentReplyResponse(res){
+		if(res.err_no == 1){
+			var back_url = res.url;
+			$.notLogin("get_ajax_content.php?act=get_login_dialog",back_url);
+			return false;
+		}else if(res.err_no == 2){
+			$("#reply-error" + res.comment_id).html("{$lang.been_evaluated}");
+		}else{
+			$("#reply-error" + res.comment_id).html("{$lang.Add_success}");
+			$("#reply_content" + res.comment_id).val('');
+			$("#reply-textarea" + res.comment_id).addClass('hide');
+            $(".reply-count").addClass('red');
+		}
+		$(".comment-reply" + res.comment_id).html(res.content);
+		$(".reply-count" + res.comment_id).html(res.reply_count);
+	}
+	
+	function niceResponse(res){
+		if(res.err_no == 1){
+			var back_url = res.url;
+			$.notLogin("get_ajax_content.php?act=get_login_dialog",back_url);
+			return false;
+		}else if(res.err_no == 0){
+			$(".reply-nice" + res.id).html(res.useful);
+            $(".comment_nice").addClass('red');
+		}
+	}
+</script>
+
+

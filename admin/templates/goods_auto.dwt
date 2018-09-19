@@ -1,0 +1,154 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{if $auto_type eq 1}{$lang.article}{else}{$lang.goods_alt}{/if} - {$ur_here}</div>
+        <div class="content">	
+            <!--{if $article_type neq 1}-->
+        	{include file ='library/batch_tab.lbi'}
+            <!--{/if}-->
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.0}</li>
+                    <li>{$lang.operation_prompt_content.1}</li>
+                </ul>
+            </div>
+            {if !$crons_enable}
+            <ul class="lilist mt20">
+                <li>{$lang.enable_notice}</li>
+            </ul>
+            {/if}
+            <div class="flexilist">
+                <div class="common-head">
+                    <div class="refresh ml0">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+                    <div class="search">
+                    	<form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+                    	<div class="input">
+                            <input type="text" name="goods_name" class="text nofocus" placeholder="{$lang.goods_name}" autocomplete="off" />
+							<input type="submit" class="btn" name="secrch_btn" ectype="secrch_btn" value="" />
+                        </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="common-content">
+                    <form method="post" action=""  id="listForm" enctype="multipart/form-data">
+                	<div class="list-div" id="listDiv">
+                        {/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                            <thead>
+                            	<tr>
+                                    <th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars"></label></div></th>
+                                    <th width="47%"><div class="tDiv">{$lang.goods_name}</div></th>
+                                    
+                                    <th width="10%"><div class="tDiv">{if $priv_ru eq 1}{$lang.goods_steps_name}{else}{$lang.02_articlecat_list}{/if}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.starttime}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.endtime}</div></th>
+                                    <th width="15%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {foreach from=$goodsdb item=val}
+                            	<tr>
+                                    <td class="sign"><div class="tDiv"><input type="checkbox" name="checkboxes[]" value="{$val.goods_id}" class="checkbox" id="checkbox_{$val.goods_id}" /><label for="checkbox_{$val.goods_id}" class="checkbox_stars"></label></div></td>
+                                    <td><div class="tDiv">{$val.goods_name}</div></td>
+                                    
+                                    <td><div class="tDiv">{if $priv_ru eq 1}{$val.user_name}{else}{$val.cat_name}{/if}</div></td>
+                                    <td><div class="tDiv"><!-- {if $val.starttime} -->{$val.starttime}<!-- {else} -->0000-00-00<!-- {/if} --></div></td>
+                                    <td><div class="tDiv"><!-- {if $val.endtime} -->{$val.endtime}<!-- {else} -->0000-00-00<!-- {/if} --></div></td>
+                                    <td class="handle">
+                                    	<div class="tDiv">
+                                            <span id="del{$val.goods_id}" class="font12">
+                                            {if $val.endtime || $val.starttime}
+                                              <a href="{$thisfile}?goods_id={$val.goods_id}&act=del" onclick="return confirm('{$lang.deleteck}');" class="btn_trash"><i class="icon icon-trash"></i>{$lang.delete}</a>
+                                            {else}
+                                              -
+                                            {/if}
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {foreachelse}
+                                    <tr><td class="no-records" colspan="12">{$lang.no_records}</td></tr>
+                                {/foreach}
+                            </tbody>
+                        </table>
+                        <table cellpadding="0" cellspacing="0" border="0" id="page-table">
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="12">
+                                        <div class="tDiv">
+                                           	<input type="hidden" name="act" value="" />
+                                            <div class="text_time" id="text_time_start">
+                                                <input type="text" name="date"  value='0000-00-00' id="start_time_id" class="text" readonly autocomplete="off" />
+                                            </div>
+                                            <div class="tfoot_btninfo">
+                                                <input type="button" value="{$lang.button_start}" ectype="btnSubmit" class="btn btn_disabled" onClick="return validate('batch_start')" disabled />
+                                                <input type="button" value="{$lang.button_end}" ectype="btnSubmit" class="btn btn_disabled" onClick="return validate('batch_end')" disabled />
+                                            </div>
+                                            <div class="list-page">
+                                                {include file="library/page.lbi"}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        {if $full_page}
+                    </div>
+                </form>
+                </div>
+            </div>
+		</div>
+	</div>
+ 	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+	
+	function opts_time(){
+		//时间选择
+		var opts1 = {
+			'targetId':'start_time_id',
+			'triggerId':['start_time_id'],
+			'alignId':'text_time_start',
+			'format':'-',
+			'hms':'off',
+			'min':''
+		}
+		xvDate(opts1);
+	}
+	opts_time();
+	
+	function validate(name)
+	{
+		var val = $("input[name='date']").val();
+		var crons_enable = {$crons_enable|default:0};
+		if(val == "0000-00-00")
+		{
+			alert('{$lang.select_time}');
+			return;	
+		}
+		else
+		{
+			if(crons_enable != 0){
+				$("input[name=act]").val(name);
+				$("#listForm").submit();
+			}else{
+				alert('{$lang.enable_notice}');
+			}
+		}
+	}
+   </script>
+</body>
+</html>
+{/if}

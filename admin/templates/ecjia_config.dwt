@@ -1,0 +1,529 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">移动应用 - {$ur_here}</div>
+		<div class="content">
+        	<div class="tabs_info">
+            	<ul>
+                    <li class="curr"><a href="javascript:void(0);">基本信息</a></li>
+                    <!-- <li><a href="javascript:void(0);">微商城设置</a></li> -->
+                    <li><a href="javascript:void(0);">APP下载地址</a></li>
+                    <li><a href="javascript:void(0);">移动广告位设置</a></li>
+                    <li><a href="javascript:void(0);">登录页色值设置</a></li>
+                    <li><a href="javascript:void(0);">热门城市设置</a></li>
+                </ul>
+            </div>
+            <div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>请注意选择文章分类；请严谨描述文章内容。</li>
+                    <li>{$lang.operation_prompt_content_common}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="mian-info">
+                    <form action="ecjia_config.php" method="post" enctype="multipart/form-data" name="theForm" id="article_form">
+                        <div class="switch_info" style="display:block;">
+                            <div class="item">
+                                <div class="label">移动应用 Logo：</div>
+                                <div class="label_value">
+                                    <div class="type-file-box">
+                                        <input type="button" name="button" id="button" class="type-file-button" value="" />
+                                        <input type="file" class="type-file-file" id="shop_app_icon" name="shop_app_icon" data-state="imgfile" size="30" hidefocus="true" value="" />
+                                        {if $shop_app_icon}
+                                        <span class="show">
+                                            <a href="../{$shop_app_icon}" target="_blank" class="nyroModal"><i class="icon icon-picture" data-tooltipimg="../{$shop_app_icon}" ectype="tooltip" title="tooltip"></i></a>
+                                        </span>
+                                        <input type="text" name="shop_app_icon_textfile" class="type-file-text" id="shop_app_icon_textfield" value="{$shop_app_icon}" autocomplete="off" readonly />
+                                        {/if}
+                                    </div>
+                                </div>  
+                            </div>
+                            <div class="item">
+                                <div class="label">移动应用简介：</div>
+                                <div class="label_value">
+                                    <input type="text" name="shop_app_description" class="text" value="{$shop_app_description|escape}" autocomplete="off" id="shop_app_description"/>
+                                    <div class="form_prompt"></div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">红包使用说明：</div>
+                                <div class="label_value">
+                                    <div id="bonus_readme_url_div" class="imitate_select select_w320">
+                                        <div class="cite">{$lang.please_select}</div>
+                                        <ul class="ps-container" style="display: none;">
+                                            <li><a href="javascript:;" data-value="{$bonus_readme_url|escape}" class="ftx-01">{$lang.please_select}</a></li>
+                                        </ul>
+                                        <input name="bonus_readme_url" type="hidden" value="{$bonus_readme_url|escape}" id="bonus_readme_url">
+                                    </div>
+                                    <input type="text" class="text w120" value="" autocomplete="off" id="article_keywords"/>
+                                    <input type="button" onclick="search_bonus_article()" class="button fl" value="搜索" autocomplete="off">
+                                    <div class="form_prompt">&nbsp;请选择一篇文章，作为您的红包使用说明</div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">咨询默认回复设置：</div>
+                                <div class="label_value">
+                                    <input type="text" name="mobile_feedback_autoreply" class="text" value="{$mobile_feedback_autoreply|escape}" autocomplete="off" id="title"/>
+                                    <div class="form_prompt"></div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">掌柜UrlScheme设置：</div>
+                                <div class="label_value">
+                                    <input type="text" name="mobile_shopkeeper_urlscheme" class="text" value="{$mobile_shopkeeper_urlscheme|escape}" autocomplete="off" id="title"/>
+                                    <div class="form_prompt"></div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">PC商城地址：</div>
+                                <div class="label_value">
+                                    <input type="text" name="shop_pc_url" class="text" value="{$shop_pc_url|escape}" autocomplete="off" id="title"/>
+                                    <div class="form_prompt"></div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">分享链接：</div>
+                                <div class="label_value">
+                                    <input type="text" name="mobile_share_link" class="text" value="{$mobile_share_link|escape}" autocomplete="off" id="title"/>
+                                    <div class="form_prompt"></div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">新人有礼红包：</div>
+                                <div class="label_value">
+                                    <div id="mobile_signup_reward_div" class="imitate_select select_w320">
+                                        <div class="cite">{if $bonus_name}{$bonus_name}{else}{$lang.please_select}{/if}</div>
+                                        <ul class="ps-container" style="display: none;">
+                                            {$bonus_select}
+                                        </ul>
+                                        <input name="mobile_signup_reward" type="hidden" value="{$mobile_signup_reward|escape}" id="mobile_signup_reward">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">新人有礼说明：</div>
+                                <div class="label_value">
+                                    <textarea class="textarea" name="mobile_signup_reward_notice" id="role_describe">{$mobile_signup_reward_notice|escape}</textarea>
+                                    <div class="notic">新人有礼说明。</div>
+                                </div>
+                            </div>      
+                        </div>
+                        <div class="switch_info" style="display:none">
+                            <div class="item">
+                                <div class="label">iPhone下载二维码：</div>
+                                <div class="label_value">
+                                    <div class="type-file-box">
+                                        <input type="button" name="button" id="button" class="type-file-button" value="" />
+                                        <input type="file" class="type-file-file" id="mobile_iphone_qr_code" name="mobile_iphone_qr_code" data-state="imgfile" size="30" hidefocus="true" value="" />
+                                        {if $mobile_iphone_qr_code}
+                                        <span class="show">
+                                            <a href="../{$mobile_iphone_qr_code}" target="_blank" class="nyroModal"><i class="icon icon-picture" data-tooltipimg="../{$mobile_iphone_qr_code}" ectype="tooltip" title="tooltip"></i></a>
+                                        </span>
+                                        <input type="text" name="mobile_iphone_qr_code_textfile" class="type-file-text" id="mobile_iphone_qr_code_textfield" value="{$mobile_iphone_qr_code}" autocomplete="off" readonly />
+                                        {/if}
+                                    </div>
+                                </div>  
+                            </div>
+                            <div class="item">
+                                <div class="label">iPhone下载地址：</div>
+                                <div class="label_value">
+                                    <input type="text" name="shop_iphone_download" class="text" value="{$shop_iphone_download|escape}" autocomplete="off" id="title"/>
+                                    <div class="form_prompt"></div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">Android下载二维码：</div>
+                                <div class="label_value">
+                                    <div class="type-file-box">
+                                        <input type="button" name="button" id="button" class="type-file-button" value="" />
+                                        <input type="file" class="type-file-file" id="mobile_android_qr_code" name="mobile_android_qr_code" data-state="imgfile" size="30" hidefocus="true" value="" />
+                                        {if $mobile_android_qr_code}
+                                        <span class="show">
+                                            <a href="../{$mobile_android_qr_code}" target="_blank" class="nyroModal"><i class="icon icon-picture" data-tooltipimg="../{$mobile_android_qr_code}" ectype="tooltip" title="tooltip"></i></a>
+                                        </span>
+                                        <input type="text" name="mobile_android_qr_code_textfile" class="type-file-text" id="mobile_android_qr_code_textfield" value="{$mobile_android_qr_code}" autocomplete="off" readonly />
+                                        {/if}
+                                    </div>
+                                </div>  
+                            </div>
+                            <div class="item">
+                                <div class="label">Android下载地址：</div>
+                                <div class="label_value">
+                                    <input type="text" name="shop_android_download" class="text" value="{$shop_android_download|escape}" autocomplete="off" id="title"/>
+                                    <div class="form_prompt"></div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">iPad下载二维码：</div>
+                                <div class="label_value">
+                                    <div class="type-file-box">
+                                        <input type="button" name="button" id="button" class="type-file-button" value="" />
+                                        <input type="file" class="type-file-file" id="mobile_ipad_qr_code" name="mobile_ipad_qr_code" data-state="imgfile" size="30" hidefocus="true" value="" />
+                                        {if $mobile_ipad_qr_code}
+                                        <span class="show">
+                                            <a href="../{$mobile_ipad_qr_code}" target="_blank" class="nyroModal"><i class="icon icon-picture" data-tooltipimg="../{$mobile_ipad_qr_code}" ectype="tooltip" title="tooltip"></i></a>
+                                        </span>
+                                        <input type="text" name="mobile_ipad_qr_code_textfile" class="type-file-text" id="mobile_ipad_qr_code_textfield" value="{$mobile_ipad_qr_code}" autocomplete="off" readonly />
+                                        {/if}
+                                    </div>
+                                </div>  
+                            </div>
+                            <div class="item">
+                                <div class="label">iPad下载地址：</div>
+                                <div class="label_value">
+                                    <input type="text" name="shop_ipad_download" class="text" value="{$shop_ipad_download}" autocomplete="off" id="title"/>
+                                    <div class="form_prompt"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="switch_info" style="display:none">
+                            <div class="item">
+                                <div class="label">移动启动页广告图：</div>
+                                <div class="label_value">
+                                    <div id="mobile_launch_adsense_div" class="imitate_select select_w320">
+                                      <div class="cite">{if $launch_ad_name}{$launch_ad_name}{else}{$lang.please_select}{/if}</div>
+                                      <ul>
+                                         {$mobile_launch_select}
+                                      </ul>
+                                      <input name="mobile_launch_adsense" type="hidden" value="{$launch_ad_id}" id="mobile_launch_adsense">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">移动首页广告组：</div>
+                                <div class="move_div" style="margin-left: 500px;">
+                                        <div class="move_left" style="width: 200px;">
+                                            <h4>可选广告</h4>
+                                            <div class="move_info">
+                                                <div class="move_list ps-container ps-active-y" id="source_select">
+                                                    <ul>
+                                                    {foreach from=$ad_list item=ad_list key=key}
+                                                    <li><i class="sc_icon sc_icon_ok"></i><a href="javascript:;" data-value="{$ad_list.ad_id}" class="ftx-01">{$ad_list.ad_name}</a><input type="hidden" name="user_search[]" value="{$ad_list.ad_id}"></li>
+                                                    {/foreach}
+                                                    </ul> 
+                                                <div class="ps-scrollbar-x-rail" style="width: 692px; display: none; left: 0px; bottom: -97px;"><div class="ps-scrollbar-x" style="left: 0px; width: 0px;"></div></div><div class="ps-scrollbar-y-rail" style="top: 100px; height: 250px; display: inherit; right: 0px;"><div class="ps-scrollbar-y" style="top: 10px; height: 25px;"></div></div></div>
+                                            </div>
+                                            <div class="move_handle">
+                                                <a href="javascript:void(0);" class="btn btn25 moveAll" ectype="moveAll">{$lang.check_all}</a>
+                                                <a href="javascript:void(0);" onclick="addGoods()" class="btn btn25 red_btn" ectype="sub">{$lang.button_submit_alt}</a>
+                                            </div>
+                                        </div>
+                                        <div class="move_middle">
+                                            <div class="move_point" onclick="addGoods()"></div>
+                                        </div>
+                                        <div class="move_right" style="width: 200px;">
+                                            <h4>已选广告</h4>
+                                            <div class="move_info">
+                                                <div class="move_list ps-container" id="target_select">
+                                                    <ul>
+                                                        {if $mobile_home_adsense_group}
+                                                        {foreach from=$mobile_home_adsense_group item=ads_list key=key}
+                                                        <li><i class="sc_icon sc_icon_no"></i><a href="javascript:void(0);">{$ads_list.ad_name}</a><input type="hidden" name="mobile_home_adsense_group[]" value="{$ads_list.ad_id}"></li>
+                                                        {/foreach}
+                                                        {/if}
+                                                    </ul>                                           
+                                                    <div class="ps-scrollbar-x-rail" style="width: 692px; display: none; left: 0px; bottom: 3px;">
+                                                        <div class="ps-scrollbar-x" style="left: 0px; width: 0px;"></div>
+                                                    </div>
+                                                    <div class="ps-scrollbar-y-rail" style="top: 0px; height: 250px; display: none; right: 0px;">
+                                                        <div class="ps-scrollbar-y" style="top: 0px; height: 0px;"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="move_handle">
+                                                <a href="javascript:void(0);" class="btn btn25 moveAll" ectype="moveAll">{$lang.check_all}</a><a href="javascript:void(0);" onclick="delGoods()" class="btn btn25 btn_red">{$lang.remove}</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">首页主题类设置：</div>
+                                <div class="label_value">
+                                    <div id="mobile_topic_adsense_div" class="imitate_select select_w320">
+                                      <div class="cite">{if $topic_ad_name}{$topic_ad_name}{else}{$lang.please_select}{/if}</div>
+                                      <ul>
+                                         {$mobile_topic_select}
+                                      </ul>
+                                      <input name="mobile_topic_adsense" type="hidden" value="{$topic_ad_id}" id="mobile_topic_adsense">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="switch_info" style="display:none">
+                            <div class="item">
+                                <div class="label"><h2>手机端登录页设置</h2></div>
+                            </div>
+                            <div class="item">
+                                <div class="label">手机端登录页前景色：</div>
+                                <div class="label_value">
+                                    <input type="text" name="mobile_phone_login_fgcolor" class="text" value="{$mobile_phone_login_fgcolor|escape}" autocomplete="off" id="title"/>
+                                    <div class="form_prompt"></div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">手机端登录页背景色：</div>
+                                <div class="label_value">
+                                    <input type="text" name="mobile_phone_login_bgcolor" class="text" value="{$mobile_phone_login_bgcolor|escape}" autocomplete="off" id="title"/>
+                                    <div class="form_prompt"></div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">手机端登录页背景图片：</div>
+                                <div class="label_value">
+                                    <div class="type-file-box">
+                                        <input type="button" name="button" id="button" class="type-file-button" value="" />
+                                        <input type="file" class="type-file-file" id="mobile_phone_login_bgimage" name="mobile_phone_login_bgimage" data-state="imgfile" size="30" hidefocus="true" value="" />
+                                        {if $mobile_phone_login_bgimage}
+                                        <span class="show">
+                                            <a href="../{$mobile_phone_login_bgimage}" target="_blank" class="nyroModal"><i class="icon icon-picture" data-tooltipimg="../{$mobile_phone_login_bgimage}" ectype="tooltip" title="tooltip"></i></a>
+                                        </span>
+                                        <input type="text" name="mobile_phone_login_bgimage_textfile" class="type-file-text" id="mobile_phone_login_bgimage_textfield" value="{$mobile_phone_login_bgimage}" autocomplete="off" readonly />
+                                        {/if}
+                                    </div>
+                                </div>  
+                            </div>
+                            <div class="item">
+                                <div class="label"><h2>Pad登录页设置</h2></div>
+                            </div>
+                            <div class="item">
+                                <div class="label">Pad登录页前景色：</div>
+                                <div class="label_value">
+                                    <input type="text" name="mobile_pad_login_fgcolor" class="text" value="{$mobile_pad_login_fgcolor|escape}" autocomplete="off" id="title"/>
+                                    <div class="form_prompt"></div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">Pad登录页背景色：</div>
+                                <div class="label_value">
+                                    <input type="text" name="mobile_pad_login_bgcolor" class="text" value="{$mobile_pad_login_bgcolor|escape}" autocomplete="off" id="title"/>
+                                    <div class="form_prompt"></div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">Pad登录页背景图片：</div>
+                                <div class="label_value">
+                                    <div class="type-file-box">
+                                        <input type="button" name="button" id="button" class="type-file-button" value="" />
+                                        <input type="file" class="type-file-file" id="mobile_pad_login_bgimage" name="mobile_pad_login_bgimage" data-state="imgfile" size="30" hidefocus="true" value="" />
+                                        {if $mobile_pad_login_bgimage}
+                                        <span class="show">
+                                            <a href="../{$mobile_pad_login_bgimage}" target="_blank" class="nyroModal"><i class="icon icon-picture" data-tooltipimg="../{$mobile_pad_login_bgimage}" ectype="tooltip" title="tooltip"></i></a>
+                                        </span>
+                                        <input type="text" name="mobile_pad_login_bgimage_textfile" class="type-file-text" id="mobile_pad_login_bgimage_textfield" value="{$mobile_pad_login_bgimage}" autocomplete="off" readonly />
+                                        {/if}
+                                    </div>
+                                </div>  
+                            </div>
+                        </div>
+                        <div class="switch_info" style="display:none">
+                            <div class="item">
+                                <div class="label">请选择热门城市：</div>
+                                <div class="goods_search_div mb0" style="margin-left: 500px;">
+                                    <div class="level_linkage">
+                                        <div id="dlcountry" class="ui-dropdown smartdropdown alien">
+                                            <input type="hidden" value="1" name="country" id="selcountry">
+                                            <div class="txt">国家</div>
+                                            <i class="down u-dropdown-icon"></i>
+                                            <div class="options clearfix" style="max-height:300px;">
+                                                <span class="liv" data-text="中国" data-type="1"  data-value="1">中国</span>
+                                            </div>
+                                        </div>
+                                        <div id="dlProvinces" class="ui-dropdown smartdropdown alien">
+                                            <input type="hidden" value="{$province.region_id}" name="province" id="selProvinces">
+                                            <div class="txt">省/直辖市</div>
+                                            <i class="down u-dropdown-icon"></i>
+                                            <div class="options clearfix" style="max-height:300px;">
+                                                {foreach from=$province_all item=list}
+                                                <span class="liv" data-text="{$list.region_name}" data-type="2"  data-value="{$list.region_id}">{$list.region_name}</span>
+                                                {/foreach}
+                                            </div>
+                                        </div>
+                                        <div id="dlCity" class="ui-dropdown smartdropdown alien">
+                                            <input type="hidden" value="{$city.region_id}" name="city" id="selCities">
+                                            <div class="txt">市</div>
+                                            <i class="down u-dropdown-icon"></i>
+                                            <div class="options clearfix" style="max-height:300px;">
+                                                {foreach from=$city_all item=list}
+                                                <span class="liv" data-text="{$list.region_name}" data-type="3"  data-value="{$list.region_id}">{$list.region_name}</span>
+                                                 {/foreach}
+                                            </div>
+                                        </div>  
+                                        
+                                        <div id="dlRegion" class="ui-dropdown smartdropdown alien">
+                                            <input type="hidden" value="{$district.region_id}" name="district" id="selDistricts">
+                                            <div class="txt">区/县</div>
+                                            <i class="down u-dropdown-icon"></i>
+                                            <div class="options clearfix" style="max-height:300px;">
+                                                {foreach from=$district_all item=list}
+                                                <span class="liv" data-text="{$list.region_name}" data-type="4"  data-value="{$list.region_id}">{$list.region_name}</span>
+                                                {/foreach}
+                                            </div>
+                                        </div>
+                                        <a href="javascript:void(0);" class="btn btn30" ectype="areaSearch"><i class="icon icon-search"></i>{$lang.search_word}</a>
+                                    </div>
+                                </div>
+                                <div class="region_info" style="width: 800px; margin-left: 500px;">
+                                    <div class="region_items" id="regionCell"><span class="ecnotic">请先搜索地区</span></div>
+                                    <div class="regionAdd">
+                                        <div class="region_all">
+                                            <input type="checkbox" name="checkboxAll" class="ui-checkbox" id="region_all" />
+                                            <label for="region_all" class="ui-label">{$lang.check_all}</label>
+                                        </div>
+                                        <a href="javascript:void(0);" class="btn btn30 btn_blue" ectype="shiping_add">添加</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">已选择的热门城市：</div>
+                                <div class="regionResult">
+                                    <div class="filter" id="shipping_region">
+                                        {foreach from=$regions item=region key=key}
+                                        <span>{$region.region_name}<a href="javascript:void(0);" class="delete" onclick="remove_rigion(this)"></a><input type="hidden" name="regions[]" value="{$region.region_id}"/></span>
+                                        {/foreach}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="info_btn info_btn_bf100 button-info-item0" id="info_btn_bf100">
+                            <div class="label">&nbsp;</div>
+                            <div class="value">
+                                <input type="submit" name="submit" value="{$lang.button_submit}" class="button mr10" id="submitBtn" />
+                                <input type="hidden" name="act" value="{$form_action}" />
+                                <input type="hidden" name="old_title" value="{$article.title}"/>
+                                <input type="hidden" name="id" value="{$article.article_id}" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <style type="text/css">
+		.button-info-item0,.button-info-item3{ text-align:left;}
+    	.button-info-item0 .label,.button-info-item3 .label{ width:30%; padding-right:9px;}
+    </style>
+    {include file ='library/pagefooter.lbi'}
+    <script type="text/javascript" src="js/region.js"></script>
+	<script type="text/javascript">
+        $.levelLink();
+
+        $("input[name='checkboxAll']").click(function(){
+            if($(this).is(":checked")){
+                $(".region_items").find("input[name='region_name']").prop("checked",true);
+            }else{
+                $(".region_items").find("input[name='region_name']").prop("checked",false);
+            }
+        });
+        /*地区搜索 实现多选*/             
+        $("a[ectype='areaSearch']").on("click",function(){
+            var selcountry = $('#selcountry');
+            var selProvince = $('#selProvinces');
+            var selCity     = $('#selCities');
+            var selDistrict     = $('#selDistricts');
+            var regionCell  = $('#regionCell');
+            
+            var regionId = 0;
+            var regionType = '';
+            
+            if(selDistrict.val()> 0){
+                regionId = selDistrict.val();
+                regionType = 4;
+            }else{
+                if(selCity.val() > 0){
+                    regionId = selCity.val();
+                    regionType = 3;
+                }else{
+                    if(selProvince.val() > 0){
+                        regionId = selProvince.val();
+                        regionType = 2;
+                    }else{
+                        if(selcountry.val() > 0){
+                            regionId = selcountry.val();
+                            regionType = 1;
+                        }else{
+                            regionId = 0;
+                            regionType = "";
+                        }
+                    }
+                }
+            }
+            
+            if(regionId == 0){
+                alert("请选择地区");exit;
+            }else{
+                $.jqueryAjax('region.php', 'type='+regionType+'&parent='+regionId+"&shipping=1", function(data){
+                        regionCell.html(data.content);
+                });
+            }
+        });
+     
+        /*添加配送地址*/
+        $("a[ectype='shiping_add']").on("click",function(){
+            var html = $("#shipping_region");
+            var val = '';
+            
+            $('#regionCell').find("input[name='region_name']:checked").each(function(){
+                var _this = $(this);
+                var exists = false;
+                html.find("input:hidden").each(function(){
+                    if($(this).val() == _this.val()){
+                        exists = true;
+                        return false;
+                    }
+                });
+                if(exists == false){
+                    html.append('<span>'+_this.attr("data-region")+'<a href="javascript:void(0);" class="delete" onclick="remove_rigion(this)"></a><input type="hidden" name="regions[]" value="'+_this.val()+'"/></span>');
+                }
+            });
+        })
+
+        function remove_rigion(i){
+          $(i).parents('span').remove();
+        }
+		
+        function search_bonus_article(){
+            var article_keywords = $("#article_keywords").val();
+
+            $.jqueryAjax("ecjia_config.php", "act=search_article&article_keywords="+article_keywords, function(data){
+                var content = data.content;
+                $("#bonus_readme_url_div").html(content);
+            });
+        }
+
+        function addGoods()
+        {
+            var step = $("#source_select").parents(".step[ectype=filter]:first");
+            $("#source_select").find("li").each(function(){
+                if($(this).attr("class") == 'current'){
+                    var user = $(this).text();
+                    var user_id = $(this).find("input").val();
+                    var exists = false;
+                    $("#target_select").find("li").each(function(){
+                        if($(this).find("input").val() == user_id){
+                            exists = true;
+                            return false;
+                        }
+                    })
+                    if(exists == false){
+                        $("#target_select").children("ul").append("<li><i class='sc_icon sc_icon_no'></i><a href='javascript:void(0);'>"+user+"</a><input type='hidden' name='mobile_home_adsense_group[]' value='"+user_id+"'></li>")        
+                    }
+                }
+            });       
+            step.find(".move_left .move_list, .move_all .move_list").perfectScrollbar();
+        }
+    
+        function delGoods()
+        {
+            $("#target_select").find("li").each(function(){
+                if($(this).attr("class") == 'current'){
+                    $(this).remove();
+                }
+            });
+        }
+    </script>
+</body>
+</html>

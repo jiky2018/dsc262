@@ -1,0 +1,133 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="search-info">
+                    <div class="search-form">
+					{if $parent_id > 0}
+                    	<a href="category_store.php?act=list&parent_id={$parent_id}&back_level={$level}" class="sc-btn sc-blue-btn"><i class="icon icon-reply"></i>&nbsp;返回上一级</a>
+					{/if}
+                    </div>
+                </div>
+                <div class="list-div" id="listDiv">
+                {/if}
+                <table id="list-table" class="ecsc-default-table">
+					<thead>
+						<tr>
+							<th width="10%" class="tl pl10">级别({$cat_level}级)</th>
+							<th width="30%" class="tl">分类名称</th>
+							<th width="10%">商品数量</th>
+							<th width="10%">数量单位</th>
+							<th width="10%">价格分级</th>
+							<th width="11%">排序</th>
+							<th width="7%">是否显示</th>
+							<th width="12%" class="handle">操作</th>
+						</tr>
+					</thead>
+					<tbody>
+                        {foreach from=$cat_info item=cat}
+                        <tr align="center" class="{$cat.level}" id="{$cat.level}_{$cat.cat_id}">
+						  <td class="tl pl10">
+							<div class="tDiv first_setup">
+								<div class="setup_span">
+									<em><i class="icon icon-cog"></i>设置<i class="arrow"></i></em>
+									<ul>
+										{if $level lt 2}
+										<li><a href="category_store.php?act=add&parent_id={$cat.cat_id}">新增下一级</a></li>
+										<li><a href="category_store.php?act=list&parent_id={$cat.cat_id}&level={$level}">查看下一级</a></li>
+										{/if}
+										<li><a href="javascript:void(0);" ectype="transfer_goods" data-cid="{$cat.cat_id}">转移商品</a></li>                                      
+									</ul>
+								</div>
+							</div>
+						  </td>
+                          <td class="first-cell tl" id="level_{$cat.level}_{$cat.cat_id}">
+                              <div class="first_column">
+                              	<span><a href="goods.php?act=list&cat_id={$cat.cat_id}&cat_type=seller">{$cat.cat_name}</a></span>
+                              </div>
+                              {if $cat.cat_image}
+                              <img src="../{$cat.cat_image}" border="0" style="vertical-align:middle;" width="60px" height="21px">
+                              {/if}
+                          </td>
+                          <td>{$cat.goods_num}</td>
+                          <td><span onclick="listTable.edit(this, 'edit_measure_unit', {$cat.cat_id})"><!-- {if $cat.measure_unit} -->{$cat.measure_unit}<!-- {else} -->&nbsp;&nbsp;&nbsp;&nbsp;<!-- {/if} --></span></td>
+                          <td><span onclick="listTable.edit(this, 'edit_grade', {$cat.cat_id})">{$cat.grade}</span></td>
+                          <td align="center"><span onclick="listTable.edit(this, 'edit_sort_order', {$cat.cat_id})">{$cat.sort_order}</span></td>
+						  <td>
+                            <div class="switch {if $cat.is_show}active{/if}" title="{if $cat.is_show}是{else}否{/if}" onclick="listTable.switchBt(this, 'toggle_is_show', {$cat.cat_id})">
+                                <div class="circle"></div>
+                            </div>
+                            <input type="hidden" value="0" name="">
+						  </td>
+						  <td class="ecsc-table-handle tr">
+							  <span><a href="category_store.php?act=edit&amp;cat_id={$cat.cat_id}" class="btn-green"><i class="icon icon-edit"></i><p>{$lang.edit}</p></a></span>
+							  <span><a href="javascript:void(0);" onclick="listTable.remove({$cat.cat_id}, '{$lang.drop_confirm}')" class="btn-red"><i class="icon icon-trash"></i><p>{$lang.drop}</p></a></span>
+						  </td>
+                        </tr>
+                        {foreachelse}
+                        <tr><td class="no-records" colspan="11">{$lang.no_records}</td></tr>
+                        {/foreach}
+                    </tbody>
+                    <tfoot>
+                        <tr><td colspan="10">{include file="page.dwt"}</td></tr>
+                    </tfoot>
+                </table>
+                    {if $full_page}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript" src="js/jquery.purebox.js"></script>
+<script type="text/javascript">
+
+listTable.recordCount = {$record_count};
+listTable.pageCount = {$page_count};
+
+{foreach from=$filter item=item key=key}
+listTable.filter.{$key} = '{$item}';
+{/foreach}
+{literal}
+  
+//转移分类
+$(document).on('click',"*[ectype='transfer_goods']",function(){
+	if(confirm('执行此操作时，当前分类所有下级分类也同时转移，确定执行吗？')){
+		var cat_id = $(this).data("cid");
+		$.jqueryAjax("category_store.php", "act=move&cat_id="+cat_id, function(data){
+			var content = data.content;
+			pb({
+				id:"transfer_dialog",
+				title:"转移商品",
+				width:732,
+				content:content,
+				ok_title:"开始转移",
+				cl_title:"重置",
+				drag:false,
+				foot:true,
+				onOk:function(){
+					$("#moveCategory").submit();
+				}
+			});
+			$.category();  //分类选择
+			$(".select-list").hover(function(){
+				$(".select-list").perfectScrollbar("destroy");
+				$(".select-list").perfectScrollbar();
+			});
+		});
+	}
+});
+</script>
+</body>
+</html>
+{/if}

@@ -1,0 +1,409 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+                {include file ='library/seller_menu_tab.lbi'}
+                <div class="explanation clear mb20" id="explanation">
+                    <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4></div>
+                    <ul>
+                    	<li>温馨提示：提交操作将会重新审核，请慎重提交确定。</li>
+                    </ul>
+                </div>
+                <form method="post" action="group_buy.php?act=insert_update" name="theForm" id="group_buy_form">
+                    {if !$group_buy.status}
+                    <div class="goods_search_div mb10">
+                        <div class="search_select">
+                            <div class="categorySelect">
+                                <div class="selection">
+                                    <input type="text" name="category_name" id="category_name" class="text w250 valid" value="{$lang.select_cat}" autocomplete="off" readonly data-filter="cat_name" />
+                                    <input type="hidden" name="category_id" id="category_id" value="0" data-filter="cat_id" />
+                                </div>
+                                <div class="select-container" style="display:none;">
+                                    {include file="library/filter_category.lbi"}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="search_select">
+                            <div class="brandSelect">
+                                <div class="selection">
+                                    <input type="text" name="brand_name" id="brand_name" class="text w120 valid" value="{$lang.select_barnd}" autocomplete="off" readonly data-filter="brand_name" />
+                                    <input type="hidden" name="brand_id" id="brand_id" value="0" data-filter="brand_id" />
+                                </div>
+                                <div class="brand-select-container" style="display:none;">
+                                    {include file="library/filter_brand.lbi"}
+                                </div>
+                            </div>                            
+                        </div>
+                        <div class="search-key">
+                            <input type="text" name="keyword" size="20" class="text text_2 mr10" placeholder="关键字" />
+                            <a href="javascript:void(0);" class="sc-btn sc-blueBg-btn" onclick="searchGoods()">搜索</a>
+                            <input type="hidden" name="ru_id" value="{$ru_id}" />
+                            <input type="hidden" name="cat_id" id="category">
+                        </div>
+                    </div>
+                    {/if}
+                    <div class="ecsc-form-goods">
+                        <div class="wrapper-list border1">
+                            <dl>
+                                <dt>{$lang.require_field}&nbsp;{$lang.label_goods_name}</dt>
+                                <dd>
+                                    <div id="goods_id" class="imitate_select select_w320 mr0">
+                                        <div class="cite">{if $group_buy.act_id}{$group_buy.goods_name}{else}请选择{/if}</div>
+                                        {if !$group_buy.status}
+                                        <ul>
+                                            <li class="li_not">请先搜索商品</li>
+                                        </ul>
+                                        {/if}
+                                        <input name="goods_id" type="hidden" value="{if $group_buy.act_id}{$group_buy.goods_id}{/if}" id="goods_id_val">
+                                    </div>
+									<div class="form_prompt"></div>
+                                </dd>
+                            </dl>
+                            <dl>
+                                <dt>{$lang.require_field}&nbsp;活动起止时间</dt>
+                                <dd>
+                                    <div class="text_time">
+                                        <input id="start_time" name="start_time" type="text" class="text" readonly value="{$group_buy.start_time}" />
+                                    </div>
+                                    <span class="bolang">&nbsp;&nbsp;~&nbsp;&nbsp;</span>
+                                    <div class="text_time">
+                                        <input id="end_time" name="end_time" type="text" class="text" readonly value="{$group_buy.end_time}" />
+                                    </div>
+                                    <div class="form_prompt"></div>
+                                </dd>
+                            </dl>
+                            <dl>
+                                <dt>{$lang.label_deposit}</dt>
+                                <dd>
+                                    <input class="w70 text" id="deposit" name="deposit" type="text" {if $group_buy.status}readonly{/if} value="{$group_buy.deposit|default:0}">
+									<div class="form_prompt"></div>
+                                </dd>
+                            </dl>
+                            <dl>
+                                <dt>{$lang.label_restrict_amount}</dt>
+                                <dd>
+                                    <input class="w70 text" id="restrict_amount" name="restrict_amount" type="text" value="{$group_buy.restrict_amount|default:0}">
+                                    <div class="form_prompt"></div>
+									<div class="notic">{$lang.notice_restrict_amount}</div>
+                                </dd>
+                            </dl>
+                            <dl>
+                                <dt>{$lang.label_gift_integral}</dt>
+                                <dd>
+                                    <input class="w70 text" id="gift_integral" name="gift_integral" type="text" value="{$group_buy.gift_integral|default:0}">
+									<div class="form_prompt"></div>
+								</dd>
+                            </dl>
+                            <dl>
+                                <dt>{$lang.lab_market_price}</dt>
+                                <dd id="market_price" class="lh">{$group_buy.market_price|default:0}</dd>
+                            </dl>
+                            <dl class="notBg">
+                                <dt>{$lang.label_price_ladder}</dt>
+                                <dd>
+                                    <div id="tbody-volume">
+                                        <table class="table_div table_heng">
+                                            <tr class="first_tr">
+                                                <td class="first_td w70">{$lang.notice_ladder_amount}</td>
+                                                {foreach from=$group_buy.price_ladder key=key item=item}
+                                                <td><input type="text" name="ladder_amount[]" value="{$item.amount}" class="text w50" autocomplete="off" /></td>
+                                                {/foreach}
+                                                <td class="last_td" rowspan="2"><a href="javascript:void(0);" class="addTd" onClick="add_clonetd_two(this,false);"></a></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="first_td">{$lang.notice_ladder_price}</td>
+                                                {foreach from=$group_buy.price_ladder key=key item=item}
+                                                <td><input type="text" name="ladder_price[]" value="{$item.price}" class="text w50" ectype="checkedPrice" autocomplete="off" /></td>
+                                                {/foreach}
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </dd>
+                            </dl>
+                            <dl>
+                                <dt>新品</dt>
+                                <dd>
+                                    <div class="switch switch_2 {if $group_buy.act_new}active{/if}" title="否">
+                                        <div class="circle"></div>
+                                    </div>
+                                    <input type="hidden" value="{$group_buy.act_new}" name="is_new">
+                                </dd>
+                            </dl>
+                            <dl>
+                                <dt>热销</dt>
+                                <dd>
+                                    <div class="switch switch_2 {if $group_buy.act_hot}active{/if}" title="否">
+                                        <div class="circle"></div>
+                                    </div>
+                                    <input type="hidden" value="{$group_buy.act_hot}" name="is_hot">
+                                </dd>
+                            </dl>
+                            <dl>
+                                <dt>{$lang.label_desc}</dt>
+                                <dd><textarea name="act_desc" cols="40" rows="3" class="textarea">{$group_buy.act_desc}</textarea></dd>
+                            </dl>
+                            {if $group_buy.act_id}
+                            <dl>
+                                <dt>{$lang.adopt_status}：</dt>
+                                <dd>
+                                	<div class="checkbox_items">
+                                        <div class="checkbox_item">
+    										{if $group_buy.groupby_status eq 1}
+                                            	{$lang.not_audited}
+                                            {elseif $group_buy.groupby_status eq 2}
+                                            	{$lang.audited_not_adopt}
+                                            {elseif $group_buy.groupby_status eq 3}
+                                            	{$lang.audited_yes_adopt}
+                                            {/if}
+                                        </div>
+                                    </div>
+                                </dd>
+                            </dl>
+                            {if $group_buy.groupby_status eq 2}
+                            <dl>
+                                <dt>{$lang.adopt_reply}：</dt>
+                                <dd>
+                                    <textarea name="review_content" cols="40" rows="3" class="textarea red" disabled="disabled" style="background:#FFF;">{$group_buy.groupby_review}</textarea>
+                                </dd>
+                            </dl>
+                            {/if}
+                            {/if}    
+                            <dl class="button_info">
+                                <dt>&nbsp;</dt>
+                                <dd>
+                                    <input name="act_id" type="hidden" id="act_id" value="{$group_buy.act_id}">
+                                    <input type="submit" name="submit" value="{$lang.button_submit}" class="sc-btn sc-blueBg-btn btn35" id="submitBtn" />
+                                    <input type="reset" value="{$lang.button_reset}" class="sc-btn btn35 sc-blue-btn mr15" />
+                                    
+                                    {if $group_buy.status eq 1}
+                                    <input type="submit" name="finish" value="{$lang.button_finish}" class="sc-btn sc-blueBg-btn btn35" onclick="return confirm('{$lang.notice_finish}')"/>
+                                    {elseif $group_buy.status eq 2}
+                                    <input type="submit" name="succeed" value="{$lang.button_succeed}" class="sc-btn sc-blueBg-btn btn35" onclick="return confirm(succeed_confirm)" />
+                                    <label class="fl lh">{$lang.notice_succeed}</label>
+                                    <input type="submit" name="fail" value="{$lang.button_fail}" class="sc-btn sc-blueBg-btn btn35" onclick="return confirm(fail_confirm)" />
+                                    <div class="notic">{$lang.notice_fail}</div>
+                                    {elseif $group_buy.status eq 3}
+                                    <input type="submit" name="mail" value="{$lang.button_mail}" class="sc-btn sc-blueBg-btn btn35" onclick="return confirm('{$lang.notice_mail}')" />
+                                    {/if}
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript">
+{literal}
+$(function(){
+	//表单验证
+	$("#submitBtn").click(function(){
+		if($("#group_buy_form").valid()){
+			$("#group_buy_form").submit();
+		}
+	});
+
+	$('#group_buy_form').validate({
+		errorPlacement:function(error, element){
+			var error_div = element.parents('dl').find('div.form_prompt');
+			//element.parents('dl').find(".notic").hide();
+			error_div.append(error);
+		},
+		ignore:'.ignore',
+		rules:{
+			goods_id :{
+				required : true
+			},
+			deposit:{
+				number : true
+			},
+			restrict_amount:{
+				digits : true
+			},
+			gift_integral:{
+				digits : true
+			},
+			'ladder_amount[]':{
+				min : 1
+			},
+			'ladder_price[]':{
+				min : 1
+			},
+			start_time :{
+				required : true
+			},
+			end_time :{
+				required : true,
+				compareDate:"#start_time",
+			}
+		},
+		messages:{
+			goods_id:{
+				required : '<i class="icon icon-exclamation-sign"></i>'+error_goods_null
+			},
+			deposit:{
+				number : '<i class="icon icon-exclamation-sign"></i>'+error_deposit
+			},
+			restrict_amount:{
+				digits : '<i class="icon icon-exclamation-sign"></i>'+error_restrict_amount,
+			},
+			gift_integral:{
+				digits : '<i class="icon icon-exclamation-sign"></i>'+error_gift_integral
+			},
+			'ladder_amount[]':{
+				min : '<i class="icon icon-exclamation-sign"></i>'+error_goods_price
+			},
+			'ladder_price[]':{
+				min : '<i class="icon icon-exclamation-sign"></i>'+error_goods_nunber
+			},
+			start_time :{
+				required : '<i class="icon icon-exclamation-sign"></i>'+start_data_notnull
+			},
+			end_time :{
+				required : '<i class="icon icon-exclamation-sign"></i>'+end_data_notnull,
+				compareDate:'<i class="icon icon-exclamation-sign"></i>'+data_invalid_gt
+			}
+		},
+		onfocusout:function(element,event){
+			//实时去除结束时间是否大于开始时间验证
+			var name = $(element).attr("name");
+			
+			if(name == "end_time"){
+				var endDate = $(element).val();
+				var startDate = $(element).parents("dd").find("input[name='start_time']").val();
+				
+				var date1 = new Date(Date.parse(startDate.replace(/-/g, "/")));
+				var date2 = new Date(Date.parse(endDate.replace(/-/g, "/")));
+				
+				if(date1 > date2){
+					$(element).removeClass("error");
+					$(element).parents("dd").find(".form_prompt").html("");
+				}
+			}
+		}
+	});
+	
+	//团购商品下拉选择
+	$.divselect("#goods_id","#goods_id_val",function(obj){
+		var value = obj.data("value");
+		groupGoods(value);
+	});
+});
+
+function groupGoods(val){
+	var filter = new Object;
+	filter.goods_id = val;
+	
+	Ajax.call('group_buy.php?is_ajax=1&act=group_goods', filter, groupGoodsResponse, 'GET', 'JSON');
+}
+
+function groupGoodsResponse(result){
+	$('#market_price').html(result.content.market_price);
+}
+
+/**
+* 搜索商品
+*/
+function searchGoods()
+{
+ var form = $("#group_buy_form");
+ var filter = new Object;
+ filter.cat_id   = form.find("input[name='category_id']").val();
+ filter.brand_id = form.find("input[name='brand_id']").val();
+ filter.keyword  = form.find("input[name='keyword']").val();
+ filter.ru_id = form.find("input[name='ru_id']").val();
+
+ Ajax.call('group_buy.php?is_ajax=1&act=search_goods', filter, searchGoodsResponse, 'GET', 'JSON');
+}
+
+function searchGoodsResponse(result)
+{
+       $("#goods_id").children("ul").find("li").remove();
+
+       var goods = result.content;
+       if (goods)
+       {
+               for (i = 0; i < goods.length; i++)
+               {
+                       $("#goods_id").children("ul").append("<li><i class='sc_icon sc_icon_no'></i><a href='javascript:;' data-value='"+goods[i].goods_id+"' class='ftx-01'>"+goods[i].goods_name+"</a><input type='hidden' name='user_search[]' value='"+goods[i].value+"'></li>")
+               }
+               $("#goods_id").children("ul").show();
+       }
+}
+/**
+ * 新增一个价格阶梯
+ */
+function addLadder(obj, amount, price)
+{
+    var obj = $(obj);
+    var tbl = obj.parents('#tbody-volume');
+    
+    var input = tbl.find('p:first').clone();
+    input.addClass("mt10");
+    input.find('.button').remove();
+    input.append("<a href='javascript:;' class='removeV' onclick='removeLadder(this)'><img src='images/no.gif' title='删除'></a>")
+    input.find(":input").each(function(i){
+        $(this).val('');
+    });
+    tbl.append(input);
+}
+
+/**
+ * 删除一个价格阶梯
+ */
+function removeLadder(obj)
+{
+    var obj = $(obj);
+    obj.parent('p').remove();
+}
+
+//日期选择插件调用start sunle
+{if !$group_buy.status}
+var opts1 = {
+    'targetId':'start_time',//时间写入对象的id
+    'triggerId':['start_time'],//触发事件的对象id
+    'alignId':'start_time',//日历对齐对象
+    'format':'-'//时间格式 默认'YYYY-MM-DD HH:MM:SS'
+},opts2 = {
+    'targetId':'end_time',
+    'triggerId':['end_time'],
+    'alignId':'end_time',
+    'format':'-'
+}
+
+xvDate(opts1);
+xvDate(opts2);
+{else}
+var opts2 = {
+    'targetId':'end_time',
+    'triggerId':['end_time'],
+    'alignId':'end_time',
+    'format':'-'
+}
+xvDate(opts2);       
+{/if}
+
+$(document).on("blur","[ectype='checkedPrice']",function(){
+    var deposit = parseInt($("input[name='deposit']").val());
+    var this_val =  parseInt($(this).val());
+    if(deposit > 0){
+        if(deposit > this_val){
+            alert('阶梯价格不能小于保证金');
+            $(this).val(deposit);
+        }
+    }    
+})
+{/literal}
+</script>
+</body>
+</html>

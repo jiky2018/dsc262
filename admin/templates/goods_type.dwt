@@ -1,0 +1,135 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.goods_alt} - {$ur_here}</div>
+        <div class="content">		
+            {include file="library/common_tabs_info.lbi"} 
+        	<div class="explanation m10" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.list.0}</li>
+                    <li>{$lang.operation_prompt_content.list.1}</li>
+                    <li>{$lang.operation_prompt_content.list.2}</li>
+                </ul>
+            </div>            
+            <div class="tabs_info">
+            	<ul>
+                    <li {if $act_type eq 'manage'}class="curr"{/if}><a href="{$action_link2.href}{$seller_list}">{$action_link2.text}</a></li>
+                    <li {if $act_type eq 'cat_list'}class="curr"{/if}><a href="{$action_link1.href}{$seller_list}">{$action_link1.text}</a></li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-head">
+                    <div class="fl">
+                    	<a href="goods_type.php?act=add"><div class="fbutton"><div class="add" title="{$lang.new_goods_type}"><span><i class="icon icon-plus"></i>{$lang.new_goods_type}</span></div></div></a>
+                    </div>				
+                    <div class="refresh">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+                    <div class="search">
+                    	<form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+                        {if $common_tabs.info}
+                    	<div id="" class="imitate_select select_w140">
+                            <div class="cite">{$lang.select_please}</div>
+                            <ul>
+                            	<li><a href="javascript:;" data-value="-1" class="ftx-01">{$lang.select_please}</a></li>
+                                {foreach from=$store_list item=store}
+                                <li><a href="javascript:;" data-value="{$store.ru_id}" class="ftx-01">{$store.store_name}</a></li>
+                                {/foreach}
+                            </ul>
+                            <input name="merchant_id" type="hidden" value="-1">
+                        </div>
+                        {/if}
+                    	<div class="input">
+                        	<input type="text" name="keyword" class="text nofocus w140" placeholder="{$lang.goods_type_name}" autocomplete="off">
+							<input type="submit" class="btn" name="secrch_btn" ectype="secrch_btn" value="" />
+                        </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="common-content">
+                	<div class="list-div" id="listDiv">
+						{/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                	<th width="5%"><div class="tDiv"><a href="javascript:listTable.sort('cat_id');">{$lang.record_id}</a>{$sort_cat_id}</div></th>
+                                    <th width="15%"><div class="tDiv">{$lang.goods_type_name}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.goods_steps_name}</div></th>
+                                    <th width="20%"><div class="tDiv">{$lang.attr_groups}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.type_cat}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.attribute_number}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.goods_type_status}</div></th>
+                                    <th width="20%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+								{foreach from=$goods_type_arr item=goods_type}
+                            	<tr>
+                                	<td><div class="tDiv">{$goods_type.cat_id}</div></td>
+                                    <td>
+                                        <div class="tDiv">
+                                            {if $attr_set_up eq 1}
+                                            <span onclick="javascript:listTable.edit(this, 'edit_type_name', {$goods_type.cat_id})">{$goods_type.cat_name}</span>
+                                            {else}
+                                            {$goods_type.cat_name}
+                                            {/if}
+                                        </div>
+                                    </td>
+									<td>
+                                        <div class="tDiv">
+                                            {if $goods_type.user_name}<font class="red">{$goods_type.user_name}</font>{else}<font class="blue3">{$lang.self}</font>{/if}
+                                        </div>
+                                    </td>
+									<td><div class="tDiv">{$goods_type.attr_group}</div></td>
+                                    <td><div class="tDiv">{$goods_type.gt_cat_name}</div></td>
+									<td><div class="tDiv">{$goods_type.attr_count}</div></td>
+									<td><div class="tDiv"><img src="images/{if $goods_type.enabled}yes{else}no{/if}.png" title="{$lang.click}" class="pointer"/></div></td>                              
+                                    <td class="handle">
+                                        <div class="tDiv a3">
+                                            <a href="attribute.php?act=list&goods_type={$goods_type.cat_id}" class="btn_see"><i class="sc_icon sc_icon_see"></i>{$lang.attribute}</a>
+                                            {if $attr_set_up eq 1}	
+                                            <a href="goods_type.php?act=edit&cat_id={$goods_type.cat_id}" class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>
+                                            <a href="javascript:;" onclick="listTable.remove({$goods_type.cat_id}, '{$lang.remove_confirm}')" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>										
+                                            {/if}
+                                        </div>
+                                    </td>
+                                </tr>
+								{foreachelse}
+								<tr><td class="no-records" colspan="20">{$lang.no_records}</td></tr>								
+								{/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="12">
+                                    	<div class="list-page">
+                                           {include file="library/page.lbi"}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+						{if $full_page}
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+ 	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+	
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+	</script>
+	{/literal}
+</body>
+</html>
+{/if}

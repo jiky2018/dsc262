@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+		{include file ='library/seller_menu_left.lbi'}
+		<div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+				{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="list-div order_desc" style="margin-bottom: 5px">
+                  <table class="ecsc-default-table ecsc-table-seller mt20" id="general-table" align="center" width="100%" cellpadding="1" cellspacing="1">
+                      <tr>
+                        <td colspan="2" width="100%">
+                        <strong>{$lang.select_template_pattern}：</strong>
+                        <label class="mr10"><input type="radio" name="model" id="model_1" class="checkbox" value="1" {if $shipping.print_model == 1}checked="checked"{/if} onclick="javascript:model_change('1');"><span>{$lang.code_pattern}</span></label>
+                        <label><input type="radio" name="model" id="model_2" class="checkbox" value="2" {if $shipping.print_model == 2}checked="checked"{/if} onclick="javascript:model_change('2');"><span>{$lang.what_you_see_pattern}</span></label>
+                        <label class="blue_label">{$lang.pattern_notice}</label>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th colspan="2"><strong class="ml10">{$lang.edit_template}</strong></th>
+                      </tr>
+                      <tr id="visual" {if $shipping.print_model == 1}style="display:none"{/if}>
+                        <td colspan="2" width="100%"><!--Flash播放器 start--><iframe id="goods_desc___Frame" src="shipping.php?act=print_index&shipping={$shipping_id}" width="99%" height="675" frameborder="0" scrolling="no"></iframe><!--Flash播放器 end--></td>
+                      </tr>
+                      <form method="post" name="theForm" action="shipping.php?act=do_edit_print_template&shipping={$shipping.shipping_id}">
+                          <input type="hidden" name="print_model" value="1">
+                          <input type="hidden" name="shipping_name" value="{$shipping.shipping_name}">
+                          <tr id="code_shipping_print" {if $shipping.print_model == 2}style="display:none"{/if}>
+                            <td width="75%"><textarea id="shipping_print" name="shipping_print" rows="16" cols="100" style="height:auto !important;" >{$shipping.shipping_print|escape:html}</textarea></td>
+                            <td align="left" valign="top" width="25%">{$lang.shipping_template_info}</td>
+                          </tr>
+                          <tr id="code_submit" {if $shipping.print_model == 2}style="display:none"{/if}>
+                            <td colspan="2"><input type="submit" value="{$lang.button_submit}" class="sc-btn-both btn35 sc-blueBg-btn"/></td>
+                          </tr>
+                      </form>
+                  </table>
+                </div>
+			</div>
+		</div>
+	</div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript">
+<!--
+var display_yes = (Browser.isIE) ? 'block' : '';
+/**
+ * 切换编辑模式
+ */
+function model_change(type)
+{
+  //获取表单对象
+  switch (type)
+  {
+    case '1': //代码模式
+
+        document.getElementById('code_shipping_print').style.display = display_yes;
+        document.getElementById('code_submit').style.display = display_yes;
+
+        document.getElementById('visual').style.display = 'none';
+
+    break;
+
+    case '2': //所见即所得模式
+
+        document.getElementById('code_shipping_print').style.display = 'none';
+        document.getElementById('code_submit').style.display = 'none';
+
+        document.getElementById('visual').style.display = display_yes;
+
+    break;
+  }
+
+  return true;
+
+}
+//-->
+</script>
+</body>
+</html>

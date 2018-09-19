@@ -1,0 +1,235 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="merchants_commission.php?act=list" class="s-back"></a>{$lang.seller} - {$ur_here}</div>
+        <div class="content">
+        	{include file="library/commission_tab.lbi"}
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.bill.0}</li>
+                    <li class="red">{$lang.operation_prompt_content.bill.1}</li>
+                    <li class="red">{$lang.operation_prompt_content.bill.2}</li>
+                    <li class="red">{$lang.operation_prompt_content.bill.3}</li>
+                    <li>{$lang.operation_prompt_content.bill.4}</li>
+                    <li>{$lang.operation_prompt_content.bill.5}</li>
+                    <li>{$lang.operation_prompt_content.bill.6}</li>
+                    <li>{$lang.operation_prompt_content.bill.7}</li>
+                    <li>......</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-head">
+                	<div class="fl ml0 red">{$lang.curr_mode}：{if $filter.commission_model eq 1}{$lang.category_model}{else}{$lang.seller_model}{/if}</div>
+                	<div class="search mr0">
+                    	<form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+                    	<div class="input mr10">
+                            <input type="text" name="bill_sn" value="" placeholder="{$lang.bill_number}" autocomplete="off" class="text" />
+                        </div>
+                        <div id="text_time_start" class="text_time">
+                            <input type="text" readonly placeholder="{$lang.order_start_time}" autocomplete="off" class="text mr0" id="start_time_id" name="start_time">
+                        </div>
+                        <span class="bolang">&nbsp;&nbsp;~&nbsp;&nbsp;</span>
+                        <div id="text_time_end" class="text_time">
+                            <input type="text" readonly autocomplete="off" placeholder="{$lang.order_end_time}" class="text" id="end_time_id" value="" name="end_time">
+                        </div>
+                        <input type="submit" value="{$lang.search_word}" class="btn btn30 blue_btn_2" />
+                        </form>
+                    </div>
+                </div>
+            
+                <div class="common-content">
+                	<div class="list-div"  id="listDiv" >
+						{/if}
+						<form method="post" action="" name="listForm" onsubmit="return confirm('{$lang.batch_confirm_settlement}');">
+                    	<table cellpadding="1" cellspacing="1">
+                        	<thead>
+                            	<tr>
+                                    <th><div class="tDiv">{$lang.bill_number}</div></th>
+                                    <th><div class="tDiv">{$lang.bill_money}</div></th>
+                                    <th><div class="tDiv">{$lang.freight_money}</div></th>
+                                    <th><div class="tDiv">{$lang.back_money}</div></th>
+                                    {if $is_dir}
+                                    <th><div class="tDiv">{$lang.drp_money}</div></th>
+                                    {/if}
+                                    {if $filter.commission_model neq 1}
+                                    <th><div class="tDiv">{$lang.proportion}</div></th>
+                                    {/if}
+                                    <th><div class="tDiv">{$lang.receive_commissions}</div></th>
+                                    {if $filter.commission_model neq 1}
+                                    <th><div class="tDiv">{$lang.proportions}</div></th>
+                                    {/if}
+                                    <th><div class="tDiv">{$lang.period_checkout}</div></th>
+                                    <th><div class="tDiv">{$lang.frozen_amount}</div></th>
+                                    <th width="5%"><div class="tDiv">{$lang.chargeoff_time}</div></th>
+                                    <th width="5%"><div class="tDiv">{$lang.order_start_time}</div></th>
+                                    <th width="5%"><div class="tDiv">{$lang.order_end_time}</div></th>
+                                    <th class="hide"><div class="tDiv tc">{$lang.uncollected_goods_order}</div></th>
+                                    <th><div class="tDiv">{$lang.out_of_account_state}</div></th>
+                                    <th><div class="tDiv">{$lang.application_status}</div></th>
+                                    <th width="14%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+								{foreach from=$bill_list item=bill name=nobill}
+								<tr>
+                                    <td>
+                                        <div class="tDiv">
+                                       	<p>{$bill.bill_sn}</p>
+                                        {if $bill.chargeoff_status neq 0 && $bill.model neq -1}
+                                        <p><em class="red">({if $bill.model eq 1}{$lang.category_model}{else}{$lang.seller_model}{/if})</em></p>
+                                        {/if}
+                                        </div>
+                                    </td>
+                                    <td><div class="tDiv">{$bill.format_order_amount}<br/><em class="org2">({$lang.freight_charges})</em></div></td>
+                                    <td><div class="tDiv">{$bill.format_shipping_amount}</div></td>
+                                    <td><div class="tDiv">{$bill.format_return_amount}</div></td>
+                                    
+                                    {if $is_dir}
+                                    <td><div class="tDiv">{$bill.format_drp_money}</div></td>
+                                    {/if}
+                                    
+                                    {if $filter.commission_model neq 1}
+                                    <td><div class="tDiv">{$bill.gain_proportion}%</div></td>
+                                    {/if}
+                                    <td>
+                                        <div class="tDiv">
+                                        	{if $bill.chargeoff_status neq 0 && $bill.model eq 0 && $filter.commission_model eq 1}
+                                                <p><em class="red">{$lang.commission_rate}：{$bill.gain_proportion}%</em></p>
+                                            {/if}
+                                        	<p>{$bill.format_gain_commission}<br/><em class="org2">({$lang.freight_charges_not})</em></p>
+                                        </div>
+                                    </td>
+                                    {if $filter.commission_model neq 1}
+                                    <td><div class="tDiv">{$bill.should_proportion}%</div></td>
+                                    {/if}
+                                    <td>
+                                        <div class="tDiv red">
+                                        	
+                                        	{if $bill.chargeoff_status neq 0 && $bill.model eq 0 && $filter.commission_model eq 1}
+                                            	<p><em class="red">{$lang.proportions}：{$bill.should_proportion}%</em></p>
+                                            {/if}
+                                            
+                                            {if $bill.settle_accounts > 0}
+                                            <p> + {$bill.should_amount}【{$lang.total}】</p>
+                                            <p> - {$bill.settle_accounts}【{$lang.knot}】</p>
+                                            {/if}
+                                            
+                                        	<p>{if $bill.settle_accounts > 0}={/if}{$bill.format_should_amount}{if $bill.settle_accounts > 0}【{$lang.real}】{/if}</p>
+                                            <p><em class="org2">({$lang.freight_charges})</em></p>
+                                        </div>
+                                    </td>
+                                    <td><div class="tDiv">{$bill.format_frozen_money}</div></td>
+                                    <td><div class="tDiv">{if $bill.format_chargeoff_time}{$bill.format_chargeoff_time}{else}<em class="red">{$lang.chargeoff_status.3}</em>{/if}</div></td>
+                                    <td><div class="tDiv">{$bill.format_start_time}</div></td>
+                                    <td><div class="tDiv">{$bill.format_end_time}</div></td>
+                                    <td class="hide">
+                                    	<div class="tDiv tc handle">
+                                        	{$bill.notake_order_count}
+                                            <a href="merchants_commission.php?act=bill_notake_order&bill_id={$bill.id}&seller_id={$bill.seller_id}&commission_model={$filter.commission_model}" class="btn_see" title="{$lang.view}"><i class="sc_icon sc_icon_see"></i></a>
+                                        </div>
+                                    </td>
+                                    <td>
+                                    	<div class="tDiv red">
+                                        	{if $bill.chargeoff_status eq 1}
+                                            	{$lang.chargeoff_status.0}
+                                            {elseif $bill.chargeoff_status eq 2}
+                                            	{$lang.chargeoff_status.1}<br/>（{$bill.format_settleaccounts_time}）
+                                            {elseif $bill.chargeoff_status eq 3}
+                                            	{$lang.chargeoff_status.2}
+                                            {else}
+                                            	{$lang.chargeoff_status.3}
+                                            {/if}
+                                        </div>
+                                    </td>
+                                    <td>
+                                    	<div class="tDiv blue">{if $bill.bill_apply eq 1}{$lang.application_yes}{else}{$lang.application_no}{/if}</div>
+                                    </td>
+                                    <td class="handle">
+                                        <div class="tDiv a2 ht_tdiv">
+                                        	<p>
+                                        		<a href="merchants_commission.php?act=apply_for&bill_id={$bill.id}" class="btn_edit"><i class="icon icon-edit"></i>{$lang.audit_bill}</a>
+                                        		<a href="merchants_commission.php?act=bill_detail&bill_id={$bill.id}&seller_id={$filter.id}&proportion={$bill.proportion}&commission_model={if $bill.chargeoff_status neq 0 && $bill.model neq -1}{$bill.model}{else}{$filter.commission_model}{/if}" class="btn_see"><i class="sc_icon sc_icon_see"></i>{$lang.commission_bill_detail}</a>
+											</p>
+                                            <p>
+                                            	{if $bill.frozen_money > 0}
+                                                	<a href="merchants_commission.php?act=apply_for&bill_id={$bill.id}&type=unfreeze" class="btn_edit"><i class="icon icon-edit"></i>{$lang.thawing_bill}</a>
+                                                {else}
+                                                    {if $bill.chargeoff_status neq 2 && $bill.bill_apply eq 1}
+                                                    <a href="merchants_commission.php?act=apply_for&bill_id={$bill.id}&type=frozen" class="btn_edit"><i class="icon icon-edit"></i>{$lang.frozen_bill}</a>
+                                                    {/if}
+                                                {/if}
+												{if $bill.bill_apply neq 1}
+                                                <a href="javascript:;" onclick="listTable.remove('0&bill_id={$bill.id}&seller_id={$filter.id}', '{$lang.trash_goods_confirm}', 'bill_remove')" class="btn_trash"><i class="icon icon-trash"></i>{$lang.delete_bill}</a>	
+                                                {/if}
+                                            </p>
+                                        </div>
+                                    </td>
+								</tr>
+								{foreachelse}
+								<tr><td class="no-records" colspan="20">{$lang.no_records}</td></tr>
+								{/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="20">
+                                        <div class="tDiv">
+                                            <div class="tfoot_btninfo">
+                                                &nbsp;
+                                            </div>
+                                            <div class="list-page">
+                                                {include file="library/page.lbi"}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+						</form>
+						{if $full_page}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input name="bill_seller" type="hidden" value="{$user_id|default:0}" />
+ 	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+	//检查结算账单
+	checkBill();
+	
+	//分页传值
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+	listTable.query = "commission_bill_query";
+
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+
+
+	//日期选择插件调用start sunle
+	var opts1 = {
+		'targetId':'start_time_id',//时间写入对象的id
+		'triggerId':['start_time_id'],//触发事件的对象id
+		'alignId':'text_time_start',//日历对齐对象
+		'format':'-',//时间格式 默认'YYYY-MM-DD HH:MM:SS'
+		'min':'' //最小时间
+	},opts2 = {
+		'targetId':'end_time_id',
+		'triggerId':['end_time_id'],
+		'alignId':'text_time_end',
+		'format':'-',
+		'min':''
+	}
+	xvDate(opts1);
+	xvDate(opts2);
+	//日期选择插件调用end sunle
+    </script>
+</body>
+</html>
+{/if}

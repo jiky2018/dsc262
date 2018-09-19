@@ -1,0 +1,118 @@
+<!--{if $type eq 'group_buy'} 团购活动 start-->
+<!-- {foreach from=$gb_list item=group_buy name=foo} 循环团购活动开始 --> 
+<li class="mod-shadow-card">
+                        <a href="{$group_buy.url}" target="_blank" class="img"><img src="{$group_buy.goods_thumb}" alt="{$group_buy.goods_name|escape:html}" title="{$group_buy.goods_name|escape:html}"></a>
+                        <div class="clearfix">
+                            <div class="price">¥{$group_buy.price_ladder.0.price}</div>
+                            <div class="man">{$group_buy.cur_amount}{$lang.people_participate}</div>
+                        </div>
+                        <a href="{$group_buy.url}" target="_blank" class="name" title="{$group_buy.goods_name|escape:html}">{$group_buy.goods_name|escape:html}</a>
+                        <div class="lefttime" data-time='{$group_buy.formated_end_date}'>
+                            <i class="iconfont icon-time"></i>
+                            <span>{$lang.residue_time}</span>
+                            <span class="days"></span>
+                            <em>:</em>
+                            <span class="hours"></span>
+                            <em>:</em>
+                            <span class="minutes"></span>
+                            <em>:</em>
+                            <span class="seconds"></span>
+                        </div>
+                        <!-- {if $group_buy.is_end eq 1} -->
+                        <a href="{$group_buy.url}" class="gb-btn bid_end">{$lang.Group_purchase_end}</a>
+                        <!-- {else} -->
+                        <a href="{$group_buy.url}" class="gb-btn">{$lang.Group_purchase_now}</a>
+                        <!-- {/if} -->
+                    </li>
+<!-- {/foreach}-->
+<!--{/if} 团购活动 end-->
+<!--{if $type eq 'snatch'} 夺宝奇兵 start-->
+<!-- {foreach from=$snatch_list item=list} 循环拍卖活动开始 -->
+<li class="mod-shadow-card">
+    <a href="{$list.url}" class="img"><img src="{$list.goods_thumb}" alt="{$list.snatch_name|escape:html}"></a>
+    <a href="{$list.url}" class="name">{$list.snatch_name|escape:html}</a>
+    <div class="info">
+        <p><em>{$lang.current_price}：</em><span class="price">{$list.formated_shop_price}</span></p>
+        <p class="lefttime" data-time="{$list.snatch.end_time_date}">
+            <span>{$lang.residual_time}：</span>
+            <span class="days">00</span>
+            <em>:</em>
+            <span class="hours">15</span>
+            <em>:</em>
+            <span class="minutes">40</span>
+            <em>:</em>
+            <span class="seconds">10</span>
+        </p>
+        <p><em>出价次数：</em><span>{$list.price_list_count}</span></p>
+    </div>
+    <!-- {if $list.current_time lt $list.end_time and $list.current_time gt $list.start_time } -->
+    <a href="{$list.url}" target="_blank" class="sn-btn"><em></em>{$lang.me_bid}<s></s></a>
+    <!-- {elseif $list.current_time gte $list.end_time } -->
+    <a href="{$list.url}" target="_blank" class="sn-btn bid_end"><em></em>{$lang.au_end}<s></s></a>
+    <!-- {else} -->
+    <a href="{$list.url}" target="_blank" class="sn-btn bid_wait"><em></em>{$lang.Wait_au}<s></s></a>
+    <!-- {/if} -->
+</li>
+<!--{/foreach}-->
+<!--{/if} 夺宝奇兵 end-->
+<!--{if $type eq 'auction'} 拍卖活动 start-->
+<!-- {foreach from=$auction_list item=auction} 循环拍卖活动开始 -->
+<li>
+    <a href="{$auction.url}" class="img" target="_blank"><img src="{$auction.goods_thumb}" alt="{$auction.act_name|escape:html}" title="{$auction.act_name|escape:html}"></a>
+    <div class="info">
+        <a href="{$auction.url}" class="name" target="_blank" title="{$auction.goods_name|escape:html}">{$auction.act_name|escape:html}</a>
+        <div class="desc">
+            <p>
+                <span>送拍机构：</span>
+                {$auction.rz_shopName}
+            </p>
+            <p>
+                <span class="fr red">{$auction.count}{$lang.au_number}</span>
+                <span>剩余时间：</span>
+                <span class="<!-- {if $auction.status_no eq 1} 进行中 -->lefttime<!-- {/if} -->" data-time="{$auction.end_time}">
+                    <span class="days">00</span>
+                    <em>:</em>
+                    <span class="hours">00</span>
+                    <em>:</em>
+                    <span class="minutes">00</span>
+                    <em>:</em>
+                    <span class="seconds">00</span>
+                </span>
+            </p>
+            <div class="timebar"><i style="width: 80%;"></i></div>
+        </div>
+        <div class="btn-wp">
+            <div class="price">{$auction.formated_start_price}</div>
+            <!-- {if $auction.status_no eq 1} 进行中 -->
+            <a href="{$auction.url}" target="_blank" class="au-btn"><em></em>{$lang.me_bid}<s></s></a>
+            <!-- {elseif $auction.status_no eq 2} -->
+                <!-- {if $auction.is_winner} 竞拍获得者 -->
+                    <a href="{$auction.url}" target="_blank" class="au-btn bid_wait"><em></em>{$lang.button_buy}<s></s></a>
+                <!-- {else} 竞拍结束 -->
+                    <a href="{$auction.url}" target="_blank" class="au-btn bid_end"><em></em>{$lang.au_end}<s></s></a>
+                <!-- {/if} -->
+            <!-- {/if} -->
+        </div>
+   </div>
+</li> 
+<!--{/foreach}-->
+<!--{/if} 拍卖活动 end-->
+<!--{if $type eq 'exchange'} 积分商城 start-->
+<!--{foreach from=$goods_list item=goods}-->
+    <!-- {if $goods.goods_id} -->
+        <li class="mod-shadow-card">
+            <a href="{$goods.url}" target="_blank" class="img"><img src="{$goods.goods_thumb}" alt="{$goods.name|escape:html}"></a>
+            <div class="clearfix">
+                <div class="score">{$lang.integral} {$goods.exchange_integral}</div>
+                <div class="market">{$goods.market_price}</div>
+            </div>
+            <a href="{$goods.url}" target="_blank" class="name" title="{$goods.name|escape:html}">{$goods.name}</a>
+            <div class="already">
+                <i class="iconfont icon-package"></i>
+                {$goods.sales_volume|default:0}{$lang.People_exchange}
+            </div>
+            <a href="{$goods.url}" class="ex-btn" target="_blank">{$lang.Redeem_now}</a>
+        </li>
+    <!--{/if}-->
+<!--{/foreach}-->
+<!--{/if} 积分商城 end-->

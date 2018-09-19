@@ -1,0 +1,171 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+
+<body class="iframe_body">
+<div class="warpper">
+    <div class="title">{$lang.report_form} - {$lang.sale_statistics}</div>
+    <div class="content">
+        <div class="tabs_info">
+            <ul>
+                <li {if $menu_select.current eq 'sale_list'}class="curr"{/if}><a href="sale_list.php?act=list">{$lang.sale_list}</a></li>
+                <li {if $menu_select.current eq 'sell_stats'}class="curr"{/if}><a href="sale_order.php?act=goods_num">{$lang.sell_stats}</a></li>
+                <li {if $menu_select.current eq 'report_sell'}class="curr"{/if}><a href="sale_general.php?act=list">{$lang.report_sell}</a></li>
+            </ul>
+        </div>
+        <div class="explanation" id="explanation">
+            <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+            <ul>
+                <li>{$lang.operation_prompt_content.list.0}</li>
+                <li>{$lang.operation_prompt_content.list.1}</li>
+            </ul>
+        </div>
+        <div class="flexilist mt30">
+            <div class="common-content">
+                <div class="mian-info sale_info">
+                    <div class="switch_info">
+                        <from id="from1" name="from1">
+                            <div class="items pb30 bor_bt_das">
+                            <div class="item">
+                                <div class="label"><em class="require-field">*</em>{$lang.start_end_date}：</div>
+                                <div class="label_value">
+                                    <div class="text_time" id="text_time_start">
+                                        <input type="text" class="text" name="use_start_date" id="use_start_date" value="{$start_date}" readonly>
+                                    </div>
+                                    <span class="bolang">&nbsp;&nbsp;~&nbsp;&nbsp;</span>
+                                    <div class="text_time" id="text_time_end">
+                                        <input type="text" class="text" name="use_end_date" id="use_end_date" value="{$end_date}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item mt20">
+                                <div class="label">&nbsp;</div>
+                                <div class="label_value">
+                                    <a href="javascript:void(0);" onclick="getList(this)" class="btn btn30 blue_btn" ectype="query"><i class="icon icon-search"></i>{$lang.query}</a>
+                                </div>
+                            </div>
+                        </div>
+                        </from>
+
+                        <div class="query_result mt30">
+                            <div class="common-head">
+                                <div class="fl">
+                                    <div class="fbutton m0" id="fbutton_1"><a href="javascript:void(0);"><div class="csv" title="{$lang.export_data}"><span><i class="icon icon-download-alt"></i>{$lang.export_list}</span></div></a></div>
+                                </div>
+                                <div class="refresh">
+                                    <div class="refresh_tit" onclick="getList(this)" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+
+                                </div>
+                            </div>
+                            <div class="list-div" id="listDiv" style="position: relative">
+                            	{/if}
+                                <div class="refresh_span" style="position: absolute;left:122px;top: 0px;">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                                <table cellpadding="0" cellspacing="0" border="0">
+                                    <thead>
+                                    <tr>
+                                        <th width="10%"><div class="tDiv">{$lang.order_by}</div></th>
+                                        <th width="30%"><div class="tDiv">{$lang.goods_name}</div></th>
+                                        <th width="10%"><div class="tDiv">{$lang.goods_steps_name}</div></th>
+                                        <th width="10%"><div class="tDiv">{$lang.goods_sn}</div></th>
+                                        <th width="10%"><div class="tDiv"><a href="javascript:listTable.sort('goods_num', 'DESC'); ">{$lang.sell_amount}</a>{$sort_goods_num}</div></th>
+                                        <th width="10%"><div class="tDiv"><a href="javascript:listTable.sort('turnover', 'DESC'); ">{$lang.sell_sum}</a>{$sort_turnover}</div></th>
+                                        <th width="10%"><div class="tDiv">{$lang.percent_count}</div></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {foreach from=$goods_order_data item=list name=val}
+                                    <tr>
+                                        <td><div class="tDiv">{$smarty.foreach.val.iteration}</div></td>
+                                        <td><div class="tDiv"><a href="../goods.php?id={$list.goods_id}" target="_blank">{$list.goods_name}</a></div></td>
+                                        <td><div class="tDiv">{$list.ru_name}</div></td>
+                                        <td><div class="tDiv">{$list.goods_sn}</div></td>
+                                        <td><div class="tDiv">{$list.goods_num}</div></td>
+                                        <td><div class="tDiv">{$list.turnover}</div></td>
+                                        <td><div class="tDiv">{$list.wvera_price}</div></td>
+                                    </tr>
+                                    {foreachelse}
+                                    <tr>
+                                        <td colspan="12" class="no_record"><div class="tDiv">{$lang.no_records}</div></td>
+                                    </tr>
+                                    {/foreach}
+                                    </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <td colspan="12">
+                                            <div class="list-page">
+                                                {include file="library/page.lbi"}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                                <script type="text/javascript">
+								listTable.recordCount = {$record_count|default:0};
+								listTable.pageCount = {$page_count|default:1};
+							
+								{foreach from=$filter item=item key=key}
+								listTable.filter.{$key} = '{$item}';
+								{/foreach}
+								</script>
+                                {if $full_page}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/pagefooter.lbi'}
+<script type="text/javascript">									
+    //时间选择1
+    var opts1 = {
+        'targetId':'use_start_date',//时间写入对象的id
+        'triggerId':['use_start_date'],//触发事件的对象id
+        'alignId':'text_time_start',//日历对齐对象
+        'format':'-',//时间格式 默认'YYYY-MM-DD HH:MM:SS'
+        'min':'' //最小时间
+    },opts2 = {
+        'targetId':'use_end_date',
+        'triggerId':['use_end_date'],
+        'alignId':'text_time_end',
+        'format':'-',
+        'min':''
+    }
+    xvDate(opts1);
+    xvDate(opts2);
+
+    function getList()
+    {
+        var act = 'query';
+        var start_date = $('#from1 input[name=use_start_date]').val();//起始时间
+        var end_date = $('#from1 input[name=use_end_date]').val();//截止时间
+        
+        $.ajax({
+            url:"sale_order.php?is_ajax=1",
+            dataType:"json",
+            type:'post',
+            data:{
+                "act" : act,
+                "start_date" : start_date,
+                "end_date" : end_date
+            },
+            success:function(data){
+
+                $('.list-div').eq(0).html(data.content);
+            }
+        })
+    }
+
+    //导出报表(销售统计)
+    $('#fbutton_1').click(function(){
+        var start_date=$('#from1 input[name=use_start_date]').val();
+        var end_date=$('#from1 input[name=use_end_date]').val();
+        location.href='sale_order.php?act=download&start_date='+start_date+'&end_date='+end_date;
+    });
+</script>
+</body>
+</html>
+{/if}

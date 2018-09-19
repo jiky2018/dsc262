@@ -1,0 +1,85 @@
+<div class="imitate_select select_w85 warehouse_area_city" data-key="{$akey}" data-goodsid="{$goods_id}" data-goodsid="{$goods_id}" data-userid="{$user_id}" id="warehouse_area_city_name_{$akey}">
+    <div class="cite" id="a_select_please">{if $type eq 0}{else}{$lang.select_please}{/if}</div>
+    <ul>
+        {foreach from=$area_list item=area key=key}
+        <li><a href="javascript:;" data-value="{$area.region_id}" data-name="{$area.region_name}" data-warehouseid="{$warehouse_id}" class="ftx-01 {if $type eq 0}get_area{/if}" id="area_{$key}">{$area.region_name}</a></li>
+        {/foreach}
+    </ul>
+    <input name="area_name" type="hidden" value="" id="warehouse_area_city_val_{$akey}">
+</div>
+
+{if $area_pricetype eq 1}
+<div class="imitate_select select_w85 area_city_list hide" id="warehouse_area_city_{$akey}">
+</div>
+{/if}
+
+{if $type eq 0}
+<script type="text/javascript">
+$(function(){
+	
+	var area_name = $("#area_0").data("name");
+	var area_id = $("#area_0").data("value");
+	
+	$(".warehouse_area_city :input[name='area_name']").val(area_id);
+	
+	//product_list({$warehouse_id}, area_id);
+	
+	$("#a_select_please").html(area_name);
+	
+	$(".get_area").click(function(){
+		
+		var warehouse_id = $(":input[name='warehouse_area_name']").val();
+		var area_id = $(":input[name='area_name']").val();
+		
+		product_list(warehouse_id, area_id);
+	});
+	
+	{if $area_pricetype eq 1}
+	$(document).on("click","*[ectype='get_area_city']",function(){
+		var warehouse_id = $(":input[name='warehouse_area_name']").val();
+		var area_id = $(":input[name='area_name']").val();
+		var city_id = $(":input[name='area_city_name']").val();
+		
+		product_list(warehouse_id, area_id, city_id);
+	});
+	{/if}
+});
+</script>
+{/if}
+
+{if $area_pricetype eq 1}
+<script type="text/javascript">
+$(function(){
+	
+	$.divselect("#warehouse_area_city_name_{$akey}","#warehouse_area_city_val_{$akey}",function(obj){
+		 var value = $(obj).data("value");
+		 
+		 get_warehouse_area_city(value, {$akey} ,{$goods_id}, {$user_id}, {$type});
+	});
+});
+
+function get_warehouse_area_city(area_id, key, goods_id, ru_id, type){
+	
+	var where = '';
+	if(type == 0){
+		where = "&type=" + type;
+	}
+	
+	Ajax.call('goods.php?is_ajax=1&act=edit_warehouse_area_city', "id="+area_id + "&key="+key + "&goods_id=" + goods_id + "&ru_id=" + ru_id + where, ResponseWarehouse_area_city, "GET", "JSON");
+
+}
+
+function ResponseWarehouse_area_city(result)
+{
+	if (result.content.error == 0)
+	{
+		$("#warehouse_area_city_" + result.content.key).removeClass('hide');
+		$("#warehouse_area_city_" + result.content.key).addClass('show');
+		$('#warehouse_area_city_' + result.content.key).html(result.content.html);
+	}else{
+		$('#warehouse_area_city_' + result.content.key).find('select').remove();
+		alert('{$lang.warehouse_null_region}');
+	}
+}
+</script>
+{/if}

@@ -1,0 +1,110 @@
+
+<div class="wrapper">
+	<div class="title"><a href="{url('market_list', array('type' => $config['keywords']))}" class="s-back">返回</a>{$config.name} - 收款码优惠</div>
+	<div class="content_tips">
+        <div class="tabs_info">
+            <ul>
+                <li><a href="{url('market_list', array('type' => $config['keywords']))}">收款码</a></li>
+                <li><a href="{url('data_list', array('type' => $config['keywords'], 'function' => 'qrpay_log_list'))}">收款记录</a></li>
+                <li class="curr"><a href="{url('data_list', array('type' => $config['keywords'], 'function' => 'qrpay_discounts'))}">收款码优惠</a></li>
+                <li><a href="{url('data_list', array('type' => $config['keywords'], 'function' => 'qrpay_tag_list'))}">标签管理</a></li>
+            </ul>
+        </div>
+        <div class="explanation" id="explanation">
+            <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4><span id="explanationZoom" title="收起提示"></span></div>
+            <ul>
+                <li>1. 每笔订单金额必须大于每笔立减金额</li>
+                <li>2. 每笔订单累计最高优惠必须大于等于立减的额度</li>
+                <li>3. 未设置每笔订单累计最高优惠, 则表示优惠金额无上限。</li>
+            </ul>
+        </div>
+		<div class="flexilist of">
+            <div class="main-info">
+                <form action="{url('data_list', array('type' => $config['keywords'], 'function' => 'qrpay_discounts', 'handler' => 'edit', 'id' => $config['market_id']))}" method="post" class="form-horizontal" role="form" enctype="multipart/form-data" onsubmit="return false;">
+                <div class="switch_info">
+                <table class="table table-hover ectouch-table form-inline">
+                    <tr>
+                        <td width="200" class="font16">优惠条件和优惠金额设置</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="row" style="margin:0px;">
+                              <div class="w200 fl">
+                                <label for="min_amount" >每满</label>
+                                <div class="input-group w150">
+                                    <input type="number" min="0" name="data[min_amount]" class="form-control" value="{$info['min_amount']}" id="min_amount" />
+                                    <span class="input-group-addon">元</span>
+                                </div>
+                              </div>
+                              <div class="w200 fl">
+                                <label for="discount_amount" >，立减</label>
+                                <div class="input-group w150">
+                                    <input type="number" min="0" step="0.01" name="data[discount_amount]" class="form-control" value="{$info['discount_amount']}" id="discount_amount" />
+                                    <span class="input-group-addon">元</span>
+                                </div>
+                              </div>
+                              <div class="w300 fl">
+                                <label for="max_discount_amount" >, 每笔订单累计最高优惠</label>
+                                <div class="input-group w150">
+                                    <input type="number" min="0" step="0.01" name="data[max_discount_amount]" class="form-control" value="{$info['max_discount_amount']}" id="max_discount_amount" />
+                                    <span class="input-group-addon">元</span>
+                                </div>
+
+                              </div>
+                              <div class="notic" > 未设置表示优惠金额无上限</div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="col-xs-4 col-md-4 info_btn text-center " style="float:right">
+                                <input type="hidden" name="id" value="{$info['id']}">
+                                <input type="hidden" name="data[marketing_type]" value="qrpay">
+                                <input type="submit" name="submit" class="button btn-danger bg-red" value="确认" />
+                                <input type="reset" name="reset" class="button button_reset" value="重置" />
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                </div>
+                </form>
+		    </div>
+	    </div>
+
+	</div>
+</div>
+<script type="text/javascript">
+$(function(){
+
+    $(".form-horizontal").submit(function(){
+
+        var min_amount = parseFloat($('input[name="data[min_amount]"]').val());
+        var discount_amount = parseFloat($('input[name="data[discount_amount]"]').val());
+        var max_discount_amount = parseFloat($('input[name="data[max_discount_amount]"]').val());
+        // 每笔订单金额必须大于每笔立减金额
+        if (min_amount <= discount_amount ) {
+            layer.msg('每笔订单金额必须大于每笔立减金额');
+            return false;
+        }
+        // 每笔订单累计最高优惠必须大于等于立减的额度
+        if (max_discount_amount && max_discount_amount < discount_amount) {
+            layer.msg('每笔订单累计最高优惠必须大于等于立减的额度');
+            return false;
+        }
+
+        var ajax_data = $(this).serialize();
+        $.post("{url('data_list', array('type' => $config['keywords'], 'function' => 'qrpay_discounts', 'handler' => 'edit', 'id' => $config['market_id']))}", ajax_data, function(data){
+            layer.msg(data.msg);
+            if (data.error == 0) {
+                if (data.url) {
+                    window.location.href = data.url;
+                } else {
+                    window.location.reload();
+                }
+            } else {
+                return false;
+            }
+        }, 'json');
+    });
+})
+</script>

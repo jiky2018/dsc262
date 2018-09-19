@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$lang.goods_alt} - {$ur_here}</div>
+            <div class="content">
+            <div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content_common}</li>
+                    <li>{$lang.operation_prompt_content.info.0}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="mian-info">
+                    <form method="post" action="gallery_album.php" name="theForm" enctype="multipart/form-data"  id="album_form">
+                        <div class="switch_info user_basic" style="display:block;">
+                            <div class="item">
+                                <div class="label">{$lang.require_field}&nbsp;{$lang.album_mame}：</div>
+                                <div class="label_value">
+                                    <input type="text" name='album_mame' value='{$album_info.album_mame}' class="text" autocomplete="off" />
+                                    <div class="form_prompt"></div>
+                                </div>
+                            </div>
+							<div class="item">
+									<div class="label">{$lang.superior_album}：</div>
+									<div id="parent_id" class="imitate_select select_w320">
+									    <div class="cite">{$lang.top_album}</div>
+									    <ul>
+									    {foreach from=$cat_select item=list}
+											<li><a href="javascript:;" data-value="{$list.album_id}" class="ftx-01">{$list.name}</a></li>
+									    {/foreach}
+									    </ul>
+										<input name="parent_id" type="hidden" value="{$album_info.parent_album_id}" id="parent_id_val">
+									</div>
+                                </div>
+                            <div class="item">
+                                <div class="label">{$lang.album_cover}：</div>
+                                <div class="label_value">
+                                    <div class="type-file-box">
+                                        <input type="button" name="button" id="button" class="type-file-button" value="" />
+                                        <input type="file" class="type-file-file"  name="album_cover" data-state="imgfile" size="30" hidefocus="true" value="" />
+                                        {if $album_info.album_cover}
+                                        <span class="show">
+                                            <a href="../{$album_info.album_cover}" target="_blank" class="nyroModal"><i class="icon icon-picture" data-tooltipimg="../{$album_info.album_cover}" ectype="tooltip" title="tooltip"></i></a>
+                                        </span>
+                                        {/if}
+                                        <input type="hidden" name="file_url" value="{$album_info.album_cover}" class="type-file-text"  autocomplete="off" readonly />
+                                    </div>
+                                    <div class="form_prompt"></div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.album_desc}：</div>
+                                <div class="label_value">
+                                    <textarea class="textarea" name="album_desc" id="role_describe">{$album_info.album_desc}</textarea>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.sort_order}：</div>
+                                <div class="label_value">
+                                    <input type="text" name='sort_order' value='{if $album_info.sort_order}{$album_info.sort_order}{else}50{/if}' class="text" autocomplete="off" id="suppliers_name"/>
+                                    <div class="form_prompt"></div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">&nbsp;</div>
+                                <div class="label_value info_btn">
+                                    <a href="javascript:;" class="button" id="submitBtn">{$lang.button_submit}</a>
+                                    <input type="hidden" name="act" value="{$form_action}" />
+                                    <input type="hidden" name="id" value="{$album_info.album_id}" />
+                                    <input type="hidden" name="seller_id" value="{$album_info.ru_id}" />
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+	$(function(){
+		$(".move_list").perfectScrollbar(); //滚动轴
+		
+		$("#submitBtn").click(function(){
+			if($("#album_form").valid()){
+				$("#album_form").submit();
+			}
+		});
+	
+		$('#album_form').validate({
+			errorPlacement:function(error, element){
+				var error_div = element.parents('div.label_value').find('div.form_prompt');
+				element.parents('div.label_value').find(".notic").hide();
+				error_div.append(error);
+			},
+			rules : {
+				album_mame : {
+					required : true
+				}	
+			},
+			messages : {
+				album_mame : {
+					required : '<i class="icon icon-exclamation-sign"></i>'+album_mame_null
+				}
+			}
+		});
+	});
+    </script>
+</body>
+</html>

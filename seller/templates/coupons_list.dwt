@@ -1,0 +1,122 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    {include file ='library/seller_html_head.lbi'}
+
+</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="list-div" id="listDiv">
+                    {/if}
+                    <table class="ecsc-default-table">
+                    	<thead>
+                        <tr>
+                            <th width="18%">
+                            	<a href="javascript:;">{$lang.record_id}</a>
+                            </th>
+                            <th width="16%"><a href="javascript:listTable.sort('type_name');">{$lang.coupons_sn}</a>{$sort_type_name}</th>
+                            <th width="16%"><a href="javascript:listTable.sort('user_id');">{$lang.user_name}</a>{$sort_user_id}</th>
+                            <th width="12%">{$lang.type_money}</th>
+                            <th width="16%"><a href="javascript:listTable.sort('order_id');">{$lang.order_id}</a>{$sort_order_id}</th>
+                            <th width="14%"><a href="javascript:listTable.sort('used_time');">{$lang.used_time}</a>{$sort_use_time}{$sort_used_time}</th>
+                            <th>{$lang.handler}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {foreach from=$coupons_list item=coupons}
+                        <tr class="bd-line">
+                            <td class="first_td_checkbox">
+                            	<label for="checkboxes_{$coupons.coupons_id}">{$coupons.uc_id}</label>
+                            </td>
+                            <td>{$coupons.uc_sn}</td>
+                            <td>{$coupons.user_name}</td>
+                            <td>{$coupons.cou_money}</td>
+                            <td>{$coupons.order_sn}</td>
+                            <td>{$coupons.is_use_time}</td>
+                            <td class="ecsc-table-handle">
+                                <span class="mr0"><a href="javascript:;" onclick="listTable.remove({$coupons.uc_id}, '{$lang.drop_confirm}', 'remove_coupons')" class="btn-red"><i class="icon icon-trash"></i><p>{$lang.drop}</p></a></span>
+                            </td>
+                        </tr>
+                        {foreachelse}
+                        <tr><td class="no-records" colspan="11">{$lang.no_records}</td></tr>
+                        {/foreach}
+                        </tbody>
+                        <tfoot>
+                        	<tr><td colspan="20">{include file="page.dwt"}</td></tr>
+                        </tfoot>
+                    </table>
+                    <span id="coupons_one_list" cou_id="{if $smarty.get.cou_id }{$smarty.get.cou_id}{else}{$cou_id}{/if}"></span>
+                    {if $full_page}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript">
+<!--
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+    //bylu
+    setInterval(function(){
+        listTable.filter.coupons_one_list = $('#coupons_one_list').attr('cou_id');
+    },100)
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+
+  {literal}
+  onload = function()
+  {
+     // 开始检查订单
+     startCheckOrder();
+  }
+  
+
+  /**
+   * 搜索优惠活动
+   */
+  function searchActivity()
+  {
+      var cou_type = Utils.trim(document.forms['searchForm'].elements['cou_type'].value);
+      var cou_name = Utils.trim(document.forms['searchForm'].elements['cou_name'].value);
+      listTable.filter['cou_type'] = cou_type;
+      listTable.filter['cou_name'] = cou_name;
+      listTable.filter['page'] = 1;
+      listTable.loadList("favourable_list");
+  }
+  {/literal}
+//-->
+
+/*  @author-bylu 优惠券删除 start  */
+function coupons_del(cou_id){
+    if(confirm('确定删除吗?'))
+        $.get('coupons.php?act=remove_coupons', { cou_id:cou_id }, function (data) { if(data=='ok')location.href=location.href;else alert('删除失败!') });
+}
+
+//修改秒杀排序;
+$(function(){
+    $('.cou_order').change(function(){
+        var cou_order=$(this).val();
+        var cou_id=$(this).attr('cou_id');
+        $.get('coupons.php?act=change_order', { cou_id:cou_id,cou_order:cou_order }, function (data) { if(data=='ok')alert('修改成功') });
+    })
+})
+
+
+/*  @author-bylu  end  */
+
+</script>
+</body>
+</html>
+{/if}

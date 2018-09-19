@@ -1,0 +1,210 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$lang.seller} - {$ur_here}</div>
+        <div class="content">
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info seller_apply">
+						<form method="post" enctype="multipart/form-data" action="seller_apply.php?act=operation" name="theForm" >
+                            <div class="step">
+                                <div class="step_title"><i class="ui-step"></i><h3>{$lang.grade_info}</h3></div>
+                                <div class="step_content">
+                                	<div class="item">
+                                        <div class="step_label">{$lang.seller_active_grade}：</div>
+                                        <div class="step_value">{$grade_name}</div>
+                                    </div>
+                                	{if $seller_grade}
+                                    <div class="item">
+                                        <div class="step_label">{$lang.apply_info_grade}：</div>
+                                        <div class="step_value">{$seller_grade.grade_name}</div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="step_label">{$lang.in_time}：</div>
+                                        <div class="step_value">{$seller_grade.addtime}</div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="step_label">{$lang.end_time}：</div>
+                                        <div class="step_value">{$seller_grade.end_time}</div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="step_label">{$lang.refund_grade}：</div>
+                                        <div class="step_value"><span class="m_price">￥<em>{$seller_apply_info.refund_price}</em></span></div>
+                                    </div>
+                                	{/if}
+                                </div>
+                            </div>
+                            {foreach from = $entry_criteriat_info item = info}
+                            {if $info.child}
+                            <div class="step">
+                                <div class="step_title"><i class="ui-step"></i><h3>{$info.criteria_name}</h3></div>
+                                <div class="step_content">
+                                {foreach from=$info.child  item=child}
+                                <div class="item">
+                                    <div class="step_label">{$child.criteria_name}：</div>
+                                    <div class="step_value">
+                                        {if $child.type eq 'text' || $child.type eq 'textarea' || $child.type eq 'select' }
+                                        {$apply_criteria.$child.id}
+                                        {elseif $child.type eq 'file'}
+                                            {if $apply_criteria.$child.id}
+                                                <a href="../{$apply_criteria.$child.id}" class="nyroModal">
+                                                    <i class="icon icon-picture" data-tooltipimg="../{$apply_criteria.$child.id}" ectype="tooltip" title="tooltip"></i>
+                                                </a>
+                                            {else}
+                                                {$lang.wu}   
+                                            {/if}
+                                        {elseif $child.type eq 'charge' &&  $child.charge > 0}
+                                            <span class="m_price">{$child.charge}/{$lang.nian}</span>
+                                        {/if}
+                                    </div>
+                                </div>
+                                {/foreach}
+                                </div>
+                            </div>
+                            {/if}
+                            {/foreach}
+                            <div class="step">
+                                <div class="step_title"><i class="ui-step"></i><h3>{$lang.information_count}</h3></div>
+                                <div class="step_content">
+                                    {if $seller_apply_info.total_amount > 0}
+                                    {if $seller_apply_info.fee_num > 0}
+                                    <div class="item">
+                                        <div class="step_label">{$lang.in_years_fixed}：</div>
+                                        <div class="step_value">{$seller_apply_info.fee_num}{$lang.nian}</div>
+                                    </div>
+                                    {/if}
+                                    <div class="item">
+                                        <div class="step_label">{$lang.02_payment_list}：</div>
+                                        <div class="step_value">{$seller_apply_info.pay_name}</div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="step_label">{$lang.z_total_amount}：</div>
+                                        <div class="step_value"><span class="m_price">￥<em>{$seller_apply_info.total_amount}</em></span></div>
+                                    </div>
+                                    {if $seller_apply_info.back_price > 0}
+                                    <div class="item">
+                                        <div class="step_label">{$lang.back_price}：</div>
+                                        <div class="step_value"><span class="m_price">￥<em>{$seller_apply_info.back_price}</em></span></div>
+                                    </div>
+                                    {/if}
+                                    <div class="item">
+                                        <div class="step_label">{$lang.payable_amount}：</div>
+                                        <div class="step_value"><span class="m_price">￥<em>{$seller_apply_info.payable_amount}</em></span></div>
+                                    </div>
+                                    {/if}
+                                    {if $ru_id eq 0}
+                                        <div class="item">
+                                            <div class="step_label">{$lang.pay_state}：</div>
+                                            <div class="step_value">
+                                                <div class="checkbox_items">
+                                                    <div class="checkbox_item">
+                                                        <input type="radio" name="is_paid" class="ui-radio" value="0" id="is_paid0" {if $seller_apply_info.is_paid eq 0}checked='checked'{/if}/>
+                                                        <label for="is_paid0" class="ui-radio-label">{$lang.no_pay}</label>
+                                                    </div>
+                                                    <div class="checkbox_item">
+                                                        <input type="radio" class="ui-radio" name="is_paid" value="1" id="is_paid1" {if $seller_apply_info.is_paid eq 1}checked='checked'{/if}/>
+                                                        <label for="is_paid1" class="ui-radio-label">{$lang.is_pay}</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {/if}
+                                    <div class="item">
+                                        <div class="step_label">{$lang.confirm_title}：</div>
+                                        <div class="step_value">
+                                            <div class="checkbox_items">
+                                                {if $seller_apply_info.apply_status neq 1}
+                                               
+                                                    <div class="checkbox_item">
+                                                        <input type="radio" name="apply_status" class="ui-radio" value="0" id="apply_status0" onclick="merchants_messages(this.value)" {if $seller_apply_info.apply_status eq 0}checked='checked'{/if}/>
+                                                        <label class="ui-radio-label" for="apply_status0">{$lang.is_confirm.0}</label>
+                                                    </div>
+                                                    <div class="checkbox_item">
+                                                        <input type="radio" name="apply_status" class="ui-radio" value="1" id="apply_status1" onclick="merchants_messages(this.value)" {if $seller_apply_info.apply_status eq 1}checked='checked'{/if}/>
+                                                        <label class="ui-radio-label" for="apply_status1">{$lang.is_confirm.1}</label>
+                                                    </div>
+                                                    <div class="checkbox_item">
+                                                        <input type="radio" class="ui-radio" name="apply_status" value="2" id="apply_status2" onclick="merchants_messages(this.value)" {if $seller_apply_info.apply_status eq 2}checked='checked'{/if}/>
+                                                        <label class="ui-radio-label" for="apply_status2">{$lang.is_confirm.2}</label>
+                                                    </div>
+                                                    <div class="checkbox_item">
+                                                        <input type="radio" name="apply_status" class="ui-radio" value="3" id="apply_status3" onclick="merchants_messages(this.value)"{if $seller_apply_info.apply_status eq 3}checked='checked'{/if}/>
+                                                        <label class="ui-radio-label" for="apply_status3">{$lang.is_confirm.3}</label>
+                                                    </div>
+                                                {else}
+                                                    <div class="checkbox_item">
+                                                        <input type="radio" name="apply_status" class="ui-radio" value="apply_status1"  onclick="merchants_messages(this.value)" {if $seller_apply_info.apply_status eq 1}checked='checked'{/if}/>
+                                                        <label class="ui-radio-label" for="apply_status1">{$lang.is_confirm.1}</label>
+                                                    </div>
+                                                {/if}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="item" id="merchants_message" {if $seller_apply_info.apply_status neq 2 &&  $seller_apply_info.apply_status neq 3 }style="display:none"{/if}>
+                                        <div class="step_label">{$lang.reply_merchant}：</div>
+                                        <div class="step_value"><textarea cols="50" name="reply_seller" class="textarea">{$seller_apply_info.reply_seller}</textarea></div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="step_label">&nbsp;</div>
+                                        <div class="step_value info_btn">
+                                            <input type="submit" class="button" name="sub" value="{$lang.button_submit}" />
+                                            <input name="grade_id" type="hidden" value="{$seller_apply_info.grade_id}"/>
+                                            <input name="apply_id" type="hidden" value="{$seller_apply_info.apply_id}"/>
+                                            <input name="pay_starts" type="hidden" value="{$seller_apply_info.pay_starts}"/>
+                                            <input name="ru_id" type="hidden" value="{$seller_apply_info.ru_id}"/>
+                                            <input name="year_num" type="hidden" value="{$seller_apply_info.fee_num}"/>
+                                            <input name="total_amount" type="hidden" value="{$seller_apply_info.total_amount}"/>
+                                        </div>
+                                    </div>
+                                </div>   
+                            </div>
+                            <table cellpadding="0" cellspacing="0" class="list-div order_goods_table">
+                                <tr>
+                                    <th width="25%"><div class="tDiv">{$lang.operator}</div></th>
+                                    <th width="25%"><div class="tDiv">{$lang.operator_time}</div></th>
+                                    <th width="25%"><div class="tDiv">{$lang.apply_status}</div></th>
+                                    <th width="25%"><div class="tDiv">{$lang.pay_starts}</div></th>
+                                </tr>
+                                {foreach from=$apply_log item=action}
+                                <tr>
+                                    <td><div class="tDiv">{$action.action_name}</div></td>
+                                    <td><div class="tDiv">{$action.action_time}</div></td>
+                                    <td><div class="tDiv">{$action.apply_status}</div></td>
+                                    <td><div class="tDiv">{$action.is_paid}</div></td>
+                                </tr>
+                                {foreachelse}
+                                <tr><td class="no-records"  colspan="5">{$lang.no_records}</td></tr>
+                                {/foreach}
+                            </table>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+        function merchants_messages(val){
+            var merchants_message = document.getElementById('merchants_message');
+            if(val == '2' || val == '3'){
+                merchants_message.style.display = '';
+            }else{
+                merchants_message.style.display = 'none';
+            }
+        }
+        function merchants_pay(val){
+            var message = document.getElementById('messages');
+            if(val == '1'){
+                message.style.display = '';
+            }else{
+                message.style.display = 'none';
+            }
+        }
+        $(function(){
+            $(".nyroModal").nyroModal();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,218 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<form action="javascript:;" method="post" name="ECS_FORMBUY" id="ECS_FORMBUY" >
+<div class="addCartAttr">
+	<div class="attr_list">
+    	{foreach from=$spe_array item=spe_list}
+    	<div class="item goods_info_attr">
+            <div class="dt">{$spe_list.name}：</div>
+            <div class="dd">
+                {if $spe_list.is_checked > 0}
+                <ul>
+                    {foreach from=$spe_list.values item=val name=spe}
+                    <li {if $val.checked eq 1}class="selected"{/if}>
+                        <b></b>
+                        <a href="javascript:void(0)">
+                        {if $val.img_flie}
+                        <img src="{$val.img_flie}" width="25" height="25" style="margin-right:3px;" />
+                        {$val.label}
+                        {else}
+                        {$val.label}
+                        {/if}
+                        </a>
+                        <input class="hide" id="spec_value_{$val.id}" type="{if $spe_list.attr_type eq 2}checkbox{else}radio{/if}" {if $val.checked eq 1}checked="checked"{/if} name="spec_{$spe_list.attr_id}" value="{$val.id}" />
+                    </li>
+                    {/foreach}
+                </ul>
+                {else}
+                <ul>
+                    {foreach from=$spe_list.values item=val name=spe key=key}
+                    <li {if $key eq 0}class="selected"{/if}>
+                        <b></b>
+                        <a href="javascript:void(0)">{$val.label}</a>
+                        <input class="hide" id="spec_value_{$val.id}" onClick="cat_changePrice();" type="{if $spe_list.attr_type eq 2}checkbox{else}radio{/if}" {if $key eq 0}checked="checked"{/if} name="spec_{$spe_list.attr_id}" value="{$val.id}" />
+                    </li>
+                    {/foreach}
+                </ul>
+                {/if} 
+            </div>
+        </div>
+        <input type="hidden" name="spec_list" value="{$spe_list.attr_id}" />
+        {/foreach}
+        <div class="item">
+        	<div class="dt">{$lang.Selling_price}：</div>
+            <div class="dd p-price" style="padding-top:7px; color:#e4393c; font-size:20px; font-weight:bold;" id="ECS_SHOPPRICE">
+            </div>
+        </div>
+        <div class="item choose-num">
+        	<div class="dt" style="padding-top:7px;">{$lang.gs_number}：</div>
+            <div class="dd" style="padding-top:7px;">
+            	<a class="btn-reduce" href="javascript:;" data-id="{$goods_id}">-</a>
+                <input class="text buy-num" id="quantity_{$goods_id}" onblur="cat_changePrice()" value="1" name="number" defaultnumber="1">
+                <input type="hidden" id="perNumber" value="1000">
+                <input type="hidden" id="perMinNumber" value="1">
+                <a class="btn-add" href="javascript:;" data-id="{$goods_id}">+</a>
+                <!-- {if $cfg.show_goodsnumber} 商品库存-->
+                <span>库存：<em id="goods_attr_num"></em>&nbsp;&nbsp;{if $goods.goods_unit}{$goods.goods_unit}{else}{$goods.measure_unit}{/if}</span>
+                <!-- {/if} -->
+            </div>
+        </div>
+    </div>
+</div>
+</form>
+
+<script type="text/javascript">
+$(function(){
+	cat_changePrice('onload');
+});
+
+/**
+ * 点选可选属性或改变数量时修改商品价格的函数
+ */
+function cat_changePrice(onload)
+{
+  var qty = document.forms['ECS_FORMBUY'].elements['number'].value;
+  
+  //ecmoban模板堂 --zhuo start 限购
+  if(onload != 'onload'){
+	  
+	  var goods_attr_id = getSelectedAttributes(document.forms['ECS_FORMBUY']);
+	  
+	  {if $xiangou eq 1}
+		 {if $goods.is_xiangou==1 && $goods.xiangou_num > 0}
+			var xuangou_num = {$goods.xiangou_num};
+			var xiangou = {$xiangou};
+			if(qty > xuangou_num && xuangou_num > 0 && xiangou == 1){
+				
+				var add_cart_divId = 'flow_add_cart';
+				var content = '<div id="flow_add_cart">' + 
+									'<div class="tip-box icon-box">' +
+										'<span class="warn-icon m-icon"></span>' + 
+										'<div class="item-fore">' +
+											'<h3 class="rem ftx-04">'+ json_languages.Purchase_quantity +'</h3>' +
+										'</div>' +
+									'</div>' +
+								'</div>';
+				pb({
+					id:add_cart_divId,
+					title:json_languages.title,
+					width:455,
+					height:58,
+					content:content, 	//调取内容
+					drag:false,
+					foot:false
+				});
+					
+				qty = 1;
+			}
+		 {/if}
+	   {/if}
+	   
+	   var goods_attr = '';
+	   {if $cfg.add_shop_price eq 0}
+	   		var attr_id = goods_attr = getSelectedAttributesGroup(document.forms['ECS_FORMBUY']);
+			goods_attr = '&goods_attr=' + attr_id;
+	   {/if}
+	   
+	   Ajax.call('goods.php', 'act=price&id=' + {$goods_id|default:0} + '&attr=' + goods_attr_id + goods_attr + '&number=' + qty + '&warehouse_id=' + {$region_id|default:0} + '&area_id=' + {$area_id|default:0}, changePriceResponse, 'GET', 'JSON');
+  }else{
+	  
+	  var attr = getSelectedAttributes(document.forms['ECS_FORMBUY']);
+	  attr = '&attr=' + attr;
+	  
+	  Ajax.call('goods.php', 'act=price&id=' + {$goods_id|default:0} + attr + '&number=' + qty + '&warehouse_id=' + {$region_id|default:0} + '&area_id=' + {$area_id|default:0} + '&onload=' + onload, changePriceResponse, 'GET', 'JSON');
+  }
+   //ecmoban模板堂 --zhuo end 限购
+}
+
+/**
+ * 接收返回的信息
+ */
+function changePriceResponse(res)
+{
+	if (res.err_msg.length > 0)
+	{
+		get_user_prompt_message(res.err_msg);
+	}else{
+		if (document.getElementById('goods_attr_num')){
+		  document.getElementById('goods_attr_num').innerHTML = res.attr_number;  
+		  document.getElementById('perNumber').value = res.attr_number;  
+		}
+		
+		if(res.onload == 'onload'){
+			document.getElementById('ECS_SHOPPRICE').innerHTML = res.result;
+		}else{
+			if(res.show_goods == 1){
+				document.getElementById('ECS_SHOPPRICE').innerHTML = res.spec_price;
+			}else{
+				document.getElementById('ECS_SHOPPRICE').innerHTML = res.result;
+			}
+		}
+	}
+}
+
+//数量选择
+function quantity(){
+
+	$(".btn-reduce").click(function(){
+		var goods_id = Number($(this).data("id"));
+		var quantity = Number($("#quantity_" + goods_id).val());
+		var perNumber = Number($("#perNumber").val());
+		var perMinNumber = Number($("#perMinNumber").val());
+	
+		if(quantity>perMinNumber){
+			quantity-=1;
+			$("#quantity_" + goods_id).val(quantity);
+            cat_changePrice();//@author bylu 数量减少后获取白条分期新价格;
+
+		}else{
+			$("#quantity_" + goods_id).val(perMinNumber);
+		}
+	});
+	
+	$(".btn-add").click(function(){
+		var goods_id = Number($(this).data("id"));
+		var quantity = Number($("#quantity_" + goods_id).val());
+		var perNumber = Number($("#perNumber").val());
+		var perMinNumber = Number($("#perMinNumber").val());
+		var err = 0;
+	
+		if(quantity < perNumber){
+			
+			quantity+=1;
+			
+			//限购
+			{if $xiangou eq 1}
+				{if $goods.is_xiangou==1 && $goods.xiangou_num > 0}
+					var xuangou_num = {$goods.xiangou_num};
+					var xiangou = {$xiangou};
+					
+					if ({$orderG_number} >= xuangou_num){
+						  err = 1;
+						  var message = json_languages.Already_buy+'{$orderG_number}' + json_languages.Already_buy_two;
+						  quantity = 1;
+					}else if(quantity > xuangou_num && xuangou_num > 0 && xiangou == 1){
+						  err = 1;
+						  var message = json_languages.Purchase_quantity;
+						  quantity = 1;
+					}
+					
+					if(err == 1){
+						get_user_prompt_message(message);
+					}
+				{/if}
+			{/if}
+			
+			if(quantity == 1){
+				err = 0;
+			}
+			$("#quantity_" + goods_id).val(quantity);
+            cat_changePrice();//@author bylu 数量增加后获取白条分期新价格;
+		}else{
+			$("#quantity_" + goods_id).val(perNumber);
+		}
+
+	})
+}
+quantity();
+</script>

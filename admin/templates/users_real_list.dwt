@@ -1,0 +1,188 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{if $user_type eq 1}{$lang.seller}{else}{$lang.08_members}{/if} - {$ur_here}</div>
+        <div class="content">
+        	{if $user_type eq 1}
+            	{include file ='library/seller_tab.lbi'}
+            {else}
+            	{include file ='library/users_tab.lbi'}
+            {/if}
+            <div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.list.0}</li>
+                    <li>{$lang.operation_prompt_content.list.1}</li>
+                    <li>{$lang.operation_prompt_content.list.2}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<div class="common-head">
+                   	<div class="refresh ml0">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+                    
+                    <div class="search">
+                    	<form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+                        <div class="select_w120 imitate_select">
+                            <div class="cite">{$lang.all}</div>
+                            <ul>
+                                <li><a href="javascript:;" data-value="-1">{$lang.all}</a></li>
+                                <li><a href="javascript:;" data-value="0">{$lang.not_audited}</a></li>
+                                <li><a href="javascript:;" data-value="1">{$lang.audited_adopt}</a></li>
+                                <li><a href="javascript:;" data-value="2">{$lang.audited_not_adopt}</a></li>
+                            </ul>
+                            <input name="review_status" type="hidden" value="-1">
+                        </div>
+                        <div class="input">
+                            <input type="text" name="keyword" class="text nofocus" placeholder="{$lang.user_name}" autocomplete="off" />
+                            <input type="submit" class="btn" name="secrch_btn" ectype="secrch_btn" value="" />
+                        </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="common-content">
+                    <form method="POST" action="" name="listForm" onsubmit="return confirmSubmit()">
+                	<div class="list-div"  id="listDiv">
+                        {/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                    <th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars"></label></div></th>
+                                    <th width="5%"><div class="tDiv">{$lang.record_id}</div></th>
+                                    <th width="20%"><div class="tDiv">{if $user_type eq 1}{$lang.goods_steps_name}{else}会员名称{/if}</div></th>
+                                    <th width="15%"><div class="tDiv">{$lang.real_name}</div></th>
+                                    <th width="15%"><div class="tDiv">{$lang.bank_mobile}</div></th>
+                                    <th width="20%"><div class="tDiv">{$lang.self_num}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.adopt_status}</div></th>
+                                    <th width="15%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {foreach from=$users_real_list item=users_real_list}
+                            	<tr>
+                                    <td class="sign"><div class="tDiv"><input type="checkbox" name="checkboxes[]" value="{$users_real_list.real_id}" class="checkbox" id="checkbox_{$users_real_list.real_id}" /><label for="checkbox_{$users_real_list.real_id}" class="checkbox_stars"></label></div></td>
+                                    <td><div class="tDiv">{$users_real_list.real_id}</div></td>
+                                    <td><div class="tDiv">{$users_real_list.user_name|escape}</div></td>
+                                    <td><div class="tDiv">{$users_real_list.real_name}</div></td>
+                                    <td><div class="tDiv">{$users_real_list.bank_mobile}</div></td>
+                                    <td><div class="tDiv">{$users_real_list.self_num}</div></td>
+                                    <td><div class="tDiv">{if $users_real_list.review_status eq 1}{$lang.audited_adopt}{elseif $users_real_list.review_status eq 2}{$lang.audited_not_adopt}{else}{$lang.not_audited}{/if}</div></td>
+                                    <td class="handle">
+                                        <div class="tDiv a2">
+                                            <a href="user_real.php?act=edit&real_id={$users_real_list.real_id}&user_type={$user_type}" title="{$lang.edit}" class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>
+                                            <a href="javascript:confirm_redirect('{$lang.confirm_redirect}', 'user_real.php?act=remove&real_id={$users_real_list.real_id}')" title="{$lang.remove}" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {foreachelse}
+                                    <tr><td class="no-records" colspan="12">{$lang.no_records}</td></tr>
+                                {/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                 <td colspan="12">
+                                        <div class="tDiv">
+                                            <div class="tfoot_btninfo">
+                                                <input type="hidden" value="batch" name="act">
+                                                <div class="item">
+                                                    <div id="drop_select" class="imitate_select select_w120">
+                                                      <div class="cite">{$lang.select_please}</div>
+                                                      <ul>
+                                                         <li><a href="javascript:;" data-value="" class="ftx-01">{$lang.select_please}</a></li>
+                                                         <li><a href="javascript:;" data-value="batch_remove" class="ftx-01">{$lang.drop}</a></li>
+                                                         <li><a href="javascript:;" data-value="review_to" class="ftx-01">{$lang.check}</a></li>
+                                                      </ul>
+                                                      <input name="type" type="hidden" value="" id="drop_val">
+                                                    </div>
+                                                </div>
+                                                <div class="item" style="display: none;" id="review_status">
+                                                    <div id="review_status_select" class="imitate_select select_w120">
+                                                      <div class="cite">{$lang.select_please}</div>
+                                                      <ul>
+                                                         <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.all}</a></li>
+                                                         <li><a href="javascript:;" data-value="1" class="ftx-01">{$lang.audited_adopt}</a></li>
+                                                         <li><a href="javascript:;" data-value="2" class="ftx-01">{$lang.audited_not_adopt}</a></li>
+                                                      </ul>
+                                                      <input name="review_status" type="hidden" value="0" id="review_status_val">
+                                                    </div>
+                                                </div>
+                                                <input name="review_content" type="text" value="" class="text text_2 mr10 lh26" style="display:none" />
+                                                <input type="submit" value="{$lang.button_submit_alt}" name="remove" ectype="btnSubmit" class="btn btn_disabled" disabled="">
+                                            </div>
+                                            <div class="list-page">
+                                                {include file="library/page.lbi"}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        {if $full_page}
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+	
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+	
+	$.divselect("#drop_select","#drop_val",function(obj){
+		changeAction();
+	});
+
+	$.divselect("#review_status_select","#review_status_val",function(obj){
+		var val = obj.attr("cat_type");
+		get_review_status(val);
+	});
+	
+	function confirmSubmit(frm, ext){
+		if ($("input[name='type']").val() == 'trash'){
+			return confirm('{$lang.real_confirm_redirect');
+		}else if ($("input[name='type']").val() == ''){
+			return false;
+		}else{
+			return true;
+		}
+	}
+    
+	function get_review_status(){
+		var type = $("input[name='type']").val();
+		if(type == 'review_to'){
+            if($("input[name='review_status']").val() == 2){
+                $("input[name='review_content']").css('display','');
+            }else{
+                $("input[name='review_content']").css('display','none');
+            }
+		}else{
+            $("input[name='review_content']").css('display','none');
+		}
+    }
+	
+	function changeAction(){
+        var type = $("input[name='type']").val();
+        var review_status = $("#review_status");
+
+        // 切换商品审核列表的显示
+        review_status.css("display",type == 'review_to' ? '' : 'none');
+        
+        if(type != 'review_to'){
+            review_status.css("display", 'none');
+        }
+	}
+    </script>
+</body>
+</html>
+{/if}

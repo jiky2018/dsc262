@@ -1,0 +1,162 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<div class="items">
+		<form action="" method="post">
+			<div class="item">
+				<div class="label w120">充值卡号：</div>
+				<div class="value"><input type="text" class="text w240 txt_input_cardnum2" autocomplete="off" name="pay_card_sn"/></div>
+			</div>
+			<div class="item">
+				<div class="label w120">密&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;码：</div>
+				<div class="value"><input type="password"   style="display:none"/><input type="password" class="text w240 txt_input_cardpw2" autocomplete="off" name="pay_card_password"/></div>
+			</div>
+			<div class="item">
+				<div class="label w120">验&nbsp;&nbsp;证&nbsp;&nbsp;码：</div>
+				<div class="value">
+					<input type="text" class="text fl captcha_error2" autocomplete="off" name="captcha"/>
+					<div class="yzm">
+					<img src="captcha_verify.php?captcha=is_pay_card&width=100&height=28&font_size=14&{$rand}" alt="captcha" class="fl" onClick="this.src='captcha_verify.php?captcha=is_pay_card&width=100&height=28&font_size=14&'+Math.random()" />
+					</div>
+				</div>
+			</div>
+			<div class="item"> 
+				<div class="label w120">&nbsp;</div>                           
+				<div class="value">
+					<a href="javascript:void(0);" id="bind_btn" class="btn btn-org" style=" float:left;" onclick="new_addPC();">去充值</a>
+				</div>
+			</div>
+		</form>
+	</div>
+	<script>
+	function new_addPC(){
+		var pc = new Object;
+		
+		pc.pay_card_sn = $(".txt_input_cardnum2").val();
+		pc.vid = {$vid};
+		pc.password = $(".txt_input_cardpw2").val();
+		pc.captcha = $(".captcha_error2").val();
+		
+		var foot = true;
+		var ok_title, cl_title, divId, title, width, height, hrefCont;
+		title = "提示";
+		width = 445;
+		height = 58;
+		ok_title = "确定";
+		cl_title = "取消";
+		
+		var divClass = 'warn-icon-wen';
+		if(pc.value_card_sn == ''){
+			message = '卡号不能为空';
+			divClass = 'warn-icon';
+			foot = false;
+		}else if(pc.password == ''){
+			message = '密码不能为空';
+			divClass = 'warn-icon';
+			foot = false;
+		}else if(pc.captcha == ''){
+			message = '验证码不能为空';
+			divClass = 'warn-icon';
+			foot = false;
+		}
+		
+		divId = "user_add_bonus"; 
+		
+		if(pc.value_card_sn != '' && pc.password != '' && pc.captcha != ''){
+			Ajax.call('user.php', 'act=use_pay_card&pc=' + $.toJSON(pc), function(data){
+				if(data.error == 2){
+					hrefCont = "user.php";
+					divClass = 'warn-icon-wen';
+					ok_title = "去登录";
+					
+				}else if(data.error == 3){
+					hrefCont = "";
+					divClass = 'warn-icon';
+					foot = false;
+				}else if(data.error == 0){
+					hrefCont = "user.php?act=value_card";
+					divClass = 'warn-icon-ok';
+				}
+				
+				var content = '<div id="user_add_bonus">' + 
+									'<div class="tip-box icon-box">' +
+										'<span class="' +divClass+ ' m-icon"></span>' + 
+										'<div class="item-fore">' +
+											'<h3 class="ftx-04">' + data.message + '</h3>' +
+										'</div>' +
+									'</div>' +
+								'</div>';
+				
+				pb({
+					id:divId,
+					title:title,
+					width:width,
+					height:height,
+					ok_title:ok_title,  //按钮名称
+					cl_title:cl_title,  //按钮名称
+					content:content,    //调取内容
+					drag:false,
+					foot:foot,
+					onOk:function(){
+						if(hrefCont){
+							location.href = hrefCont;
+						}
+					}
+				});
+				
+				$('#' + divId + ' .ftx-04').css({'padding': '11px 0px 0px 10px'});
+				$('#' + divId + ' .tip-box').css({
+					'width': '330px',
+					'height': '50px',
+					'padding': '0px 0px 10px 0px'
+				});
+				
+				$('#' + divId + ' .item-fore').css({
+					'margin': '0px 0px 0px 47px'
+				});
+				
+				$('#' + divId + ' .pb-bd').css({
+					'padding-left': '65px'
+				});
+				
+				$('.pb-ok').addClass('color_df3134');
+				
+			}, 'POST', 'JSON');
+		}else{
+			
+			var content = '<div id="user_add_bonus">' + 
+								'<div class="tip-box icon-box">' +
+									'<span class="' +divClass+ ' m-icon"></span>' + 
+									'<div class="item-fore">' +
+										'<h3 class="ftx-04">' + message + '</h3>' +
+									'</div>' +
+								'</div>' +
+							'</div>';
+			
+			pb({
+				id:divId,
+				title:title,
+				width:width,
+				height:height,
+				ok_title:ok_title,  //按钮名称
+				cl_title:cl_title,  //按钮名称
+				content:content,    //调取内容
+				drag:false,
+				foot:foot
+			});
+			
+			$('#' + divId + ' .ftx-04').css({'padding': '11px 0px 0px 10px'});
+			$('#' + divId + ' .tip-box').css({
+				'width': '330px',
+				'height': '50px',
+				'padding': '0px 0px 10px 0px'
+			});
+			
+			$('#' + divId + ' .item-fore').css({
+				'margin': '0px 0px 0px 47px'
+			});
+			
+			$('#' + divId + ' .pb-bd').css({
+				'padding-left': '65px'
+			});
+		}
+	}
+	</script>

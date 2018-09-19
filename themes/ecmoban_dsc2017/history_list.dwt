@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<!-- #BeginLibraryItem "/library/js_languages_new.lbi" --><!-- #EndLibraryItem -->
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/css/suggest.css" />
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/css/select.css" />
+</head>
+
+<body>
+	<!-- #BeginLibraryItem "/library/page_header_category.lbi" --><!-- #EndLibraryItem -->
+	<div class="w w1390">
+    	<div class="crumbs-nav">
+            <div class="crumbs-nav-main clearfix">
+                 <!-- #BeginLibraryItem "/library/ur_here.lbi" --><!-- #EndLibraryItem -->
+            </div>
+        </div>
+    </div>
+    <div class="container">
+    	<div class="w w1390">
+            <!-- #BeginLibraryItem "/library/goods_list.lbi" --><!-- #EndLibraryItem -->
+        </div>
+    </div>
+    {* DSC 提醒您：动态载入user_menu_position.lbi，显示首页分类小广告 *}{insert name='user_menu_position'}
+    <!-- @authro guan start	添加对比文件 start -->	 
+	<!-- #BeginLibraryItem "/library/duibi.lbi" --><!-- #EndLibraryItem -->
+    <!-- @authro guan start	添加对比文件 end -->
+    <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+    
+    {insert_scripts files='jquery.SuperSlide.2.1.1.js,common.js,compare.js,cart_common.js,parabola.js,shopping_flow.js,cart_quick_links.js,jd_choose.js'}
+	<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/dsc-common.js"></script>
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.purebox.js"></script>
+	<!-- {if $category_load_type}--><script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/asyLoadfloor.js"></script><!--{/if}-->
+	<script type="text/javascript">
+	$(function(){
+		$(".gl-i-wrap").slide({mainCell:".sider ul",effect:"left",pnLoop:false,autoPlay:false,autoPage:true,prevCell:".sider-prev",nextCell:".sider-next",vis:5});
+		
+		//对比
+		Compare.init();
+		
+		<!-- {if $category_load_type} 异步加载更多商品 by wu start-->
+		var query_string = '{$query_string}';
+		$.itemLoad('.gl-warp-large .goods-list-warp','.gl-item','.goods-spread',query_string,0);
+		<!-- {/if} 异步加载更多商品 by wu end-->
+	});
+	
+	//删除历史记录
+    function delHistory(goods_id){
+        pbDialog(json_languages.delete_history,"",0,'','',"",true,function delete_history(){
+			Ajax.call('history_list.php', 'act=delHistory&goods_id=' + goods_id, function(){
+				location.reload();
+			}, 'GET', 'JSON');
+		});
+    }
+    </script>
+</body>
+</html>

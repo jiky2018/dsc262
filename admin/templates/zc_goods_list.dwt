@@ -1,0 +1,87 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="zc_project.php?act=list" class="s-back"></a>众筹 - {$ur_here}</div>
+        <div class="content">	
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>一个众筹项目可有多个众筹方案。</li>
+                	<li>可在众筹方案管理进行修改编辑或删除。</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<!--商品列表-->
+                <div class="common-head">
+                    <div class="fl">
+                    	<a href="zc_project.php?act=add_product&id={$id}"><div class="fbutton"><div class="add" title="添加方案"><span><i class="icon icon-plus"></i>添加方案</span></div></div></a>
+                    </div>	
+                </div>
+                <div class="common-content">
+                	<div class="list-div" id="listDiv">
+						{/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                	<th width="5%"><div class="tDiv">{$lang.record_id}</div></th>
+                                    <th width="16%"><div class="tDiv">{$lang.zc_goods_img}</div></th>
+                                    <th width="16%"><div class="tDiv">{$lang.zc_goods_num}</div></th>
+                                    <th width="16%"><div class="tDiv">{$lang.zc_goods_price}</div></th>
+                                    <th width="14%"><div class="tDiv">{$lang.zc_shipping_fee}</div></th>
+                                    <th width="16%"><div class="tDiv">{$lang.zc_return_time}</div></th>
+                                    <th width="18%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+								{foreach from=$product_list item=item}
+                            	<tr>
+                                    <td><div class="tDiv">{$item.id}</div></td>
+                                    <td>
+                                        <div class="tDiv">
+                                            <span class="show">
+                                                <a href="../{$item.img}" class="nyroModal"><i class="icon icon-picture" data-tooltipimg="../{$item.img}" ectype="tooltip" title="tooltip"></i></a>
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="tDiv">
+                                            {if $item.limit eq '-1'}<span style='color:red' >{$lang.zc_unlimited}</span>{else}{$item.limit}{/if}
+                                        </div>
+                                    </td>
+                                    <td><div class="tDiv">{$item.price}</div></td>
+                                    <td><div class="tDiv">{$item.shipping_fee}</div></td>
+									<td><div class="tDiv">{$item.return_time}</div></td>                   
+                                    <td class="handle">
+                                        <div class="tDiv a3">
+                                            <a href="order.php?act=list&gid={$item.id}&is_zc=1" class="btn_see"><i class="sc_icon sc_icon_see"></i>{$lang.view_order}</a>
+                                            <a href="zc_project.php?act=edit_product&id={$id}&product_id={$item.id}" class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>
+                                            <a href='javascript:void(0);' onclick="if(confirm('{$lang.drop_confirm}')){window.location.href='zc_project.php?act=del_product&id={$id}&product_id={$item.id}'}" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>
+                                        </div>
+                                    </td>
+                                </tr>
+								{foreachelse}
+                                    <tr><td class="no-records" colspan="12">{$lang.no_records}</td></tr>
+                                {/foreach}
+                            </tbody>
+                        </table>
+						{if $full_page}
+                    </div>
+                </div>
+                <!--商品列表end-->
+            </div>
+		</div>
+	</div>
+ {include file ='library/pagefooter.lbi'}
+    
+	<script>
+		$(function(){
+			$('.nyroModal').nyroModal();
+		})	
+	</script>
+</body>
+</html>
+{/if}

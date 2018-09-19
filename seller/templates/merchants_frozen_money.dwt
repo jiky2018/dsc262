@@ -1,0 +1,97 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+{include file ='library/seller_html_head.lbi'}
+</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+				{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                {/if}
+                <div class="ecsc-form-goods">
+                <form method="post" action="merchants_account.php" name="listForm" enctype="multipart/form-data" id="submitForm">
+                <div class="wrapper-list">
+                	<dl>
+                    	<dt>冻结资金：</dt>
+                        <dd id="seller_money" class="txtline red">{$seller_shopinfo.frozen_money}</dd>
+                    </dl>
+                    <dl>
+                    	<dt>{$lang.require_field}&nbsp;申请解冻金额：</dt>
+                        <dd>
+                        	<input name="frozen_money" type="text" id="topup_account" class="text">
+                            <div class="form_prompt"></div>
+                        </dd>
+                    </dl>
+                    <dl>
+                    	<dt>解冻描述：</dt>
+                        <dd>
+                        	<textarea name="topup_note" cols="50" rows="10" class="textarea"></textarea>
+                            <div class="notic">请说明解冻因由，方便平台审核</div>
+                        </dd>
+                    </dl>
+                    <dl class="button_info">
+                    	<dt>&nbsp;</dt>
+                        <dd>
+                        	<input name="query" type="submit" class="sc-btn sc-blueBg-btn btn35" id="query" value="{$lang.button_submit}" />
+                            <input name="reset" type="reset" class="sc-btn btn35 sc-blue-btn" value="{$lang.button_reset}" />
+                            <input type="hidden" name="pay_id" id="pay_id" value="0">
+                            <input type="hidden" name="act" value="unfreeze"/>
+                            <input type="hidden" name="submit_act" value="1"/>
+                        </dd>
+                    </dl>
+                </div>
+                </form>
+                </div>
+                {if $full_page}
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+$(function(){
+	//表单验证
+	$("#query").click(function(){
+		if($("#submitForm").valid()){
+			//防止表单重复提交
+			if(checkSubmit() == true){
+				$(this).parents("form").submit();
+			}else{
+				return false;
+			}
+        }
+    });
+	
+	$('#submitForm').validate({
+        errorPlacement:function(error, element){
+            var error_div = element.parents('dl').find('div.form_prompt');
+            element.parents('dd').find(".notic").hide();
+            error_div.append(error);
+        },
+        rules : {
+            frozen_money : {
+                required : true,
+				min : 1,
+				max : {$seller_shopinfo.frozen_money}
+            }
+        },
+        messages : {
+            frozen_money : {
+                required : '<i class="icon icon-exclamation-sign"></i>'+frozen_money_not_null,
+				min:'<i class="icon icon-exclamation-sign"></i>'+number_is_0,
+				max : '<i class="icon icon-exclamation-sign"></i>'+frozen_money_is_seller_money,
+            }
+        }
+    });
+});
+</script>
+{include file ='library/seller_footer.lbi'}
+</body>
+</html>
+{/if}

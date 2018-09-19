@@ -1,0 +1,113 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="goods_psi.php?act=inventory" class="s-back">{$lang.back}</a>{$lang.03_psi_inventory} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit">
+					<i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span>
+				</div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.log.0}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<div class="common-head">
+                    <div class="refresh{if !$action_link} ml0{/if}">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+                    
+                    <div class="search">
+                    	<form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+                        <div class="input">
+                            <input type="text" name="keyword" class="text nofocus" placeholder="{$lang.log_number}" autocomplete="off" />
+                            <input type="submit" class="btn" name="secrch_btn" ectype="secrch_btn" value="" />
+                        </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="common-content">
+                	<div class="list-div" id="listDiv">
+                        {/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                    <th width="5%"><div class="tDiv">{$lang.record_id}</div></th>
+                                    <th width="27%"><div class="tDiv">{$lang.quality_name}</div></th>
+                                    <th width="8%"><div class="tDiv">{$lang.existing_stock}</div></th>
+									<th width="8%"><div class="tDiv">{$lang.psi_warehouse_name}</div></th>
+									<th width="8%"><div class="tDiv">{$lang.psi_region_name}</div></th>
+									<th width="8%"><div class="tDiv">{$lang.supplier}</div></th>
+                                    <th width="8%"><div class="tDiv">{$lang.log_number}</div></th>
+                                    <th width="8%"><div class="tDiv">{$lang.stock_change}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.remarks}</div></th>
+                                    <th width="10%" class="handle">{$lang.modify}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {foreach from=$goods_list item=goods}
+                            	<tr>
+                                    <td><div class="tDiv">{$goods.id}</div></td>
+                                    <td><div class="tDiv">
+										{$goods.goods_name|escape:html}
+										{if $goods.goods_attr}
+										{foreach from=$goods.goods_attr item=attr_value}
+										{$attr_value}
+										{/foreach}
+										{/if}
+									</div></td>
+                                    <td><div class="tDiv">{$goods.total_number|default:0}</div></td>
+									<td><div class="tDiv">{if $goods.warehouse_id}{$goods.warehouse_name}{else}N/A{/if}</div></td>
+									<td><div class="tDiv">{if $goods.area_id}{$goods.area_name}{else}N/A{/if}</div></td>
+									<td><div class="tDiv">{$goods.suppliers_name|default:-}</div></td>
+                                    <td><div class="tDiv">{$goods.batch_number|default:-}</div></td>
+                                    <td><div class="tDiv">{$goods.number|default:-}</div></td>
+                                    <td><div class="tDiv">{$goods.remark|default:-}</div></td>
+                                    <td class="handle">
+                                        <div class="tDiv a1">
+                                            <input type="text" name="number" value="" class="text" onblur="listTable.editInput(this, 'edit_psi_log', '{$goods.id}')" placeholder="{$lang.modify_placeholder}">
+                                        </div>
+                                    </td>
+                                </tr>
+								{foreachelse}
+								<tr><td class="no-records"  colspan="12">{$lang.no_records}</td></tr>
+								{/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="12">
+                                        <div class="list-page">
+                                            {include file="library/page.lbi"}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        {if $full_page}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+ 	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+	listTable.query = 'psi_log_query';
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+	
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+	
+	//数量变化
+	$(document).on('blur', "input[name='number']", function(){
+		listTable.loadList();
+	});
+    </script>
+</body>
+</html>
+{/if}

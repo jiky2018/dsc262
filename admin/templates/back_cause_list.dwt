@@ -1,0 +1,84 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.order_word} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.return_cause_list.0}</li>
+                    <li>{$lang.operation_prompt_content.return_cause_list.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<div class="common-head">
+                	<div class="fl">
+						<a href="order.php?act=add_return_cause"><div class="fbutton"><div class="add" title="{$lang.add_return_cause}"><span><i class="icon icon-plus"></i>{$lang.add_return_cause}</span></div></div></a>
+					</div>
+                </div>
+                <div class="common-content">
+                	<div class="list-div" id="listDiv" >
+						{/if}
+                    	<table cellpadding="1" cellspacing="1">
+                        	<thead>
+                            	<tr>
+									<th width="10%"></th>
+                                	<th width="30%"><div class="tDiv">{$lang.return_reason}</div></th>
+                                    <th width="20%"><div class="tDiv">{$lang.whether_display}</div></th>
+                                    <th width="20%"><div class="tDiv">{$lang.sort_order}</div></th>
+                                    <th width="20%" class="handle">{$lang.return_status}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+							    {foreach from=$cause_list item=cat}
+								<tr  class="{$cat.parent_id}{if $cat.level > 0}_{$cat.level}{/if}" style="{if $cat.level neq 0}display:none;{/if}" id="{$cat.level}_{$cat.cause_id}">
+								<td>
+									<div class="tDiv first_setup">
+										<div class="setup_span">
+											<em><i class="icon icon-cog"></i>{$lang.setup}<i class="arrow"></i></em>
+											<ul>
+												<li><a href="order.php?act=add_return_cause&parent_id={$cat.cause_id}">{$lang.add_next_level}</a></li>
+												<li><a href="order.php?act=back_cause_list&parent_id={$cat.cause_id}">{$lang.view_next_level}</a></li>
+											</ul>
+										</div>
+									</div>
+								</td>
+								<td><div class="tDiv">{$cat.cause_name}</div></td>
+								<td><div class="tDiv">{if $cat.is_show eq '1'}<img src="images/yes.png">{else}<img src="images/no.png">{/if}</div></td>
+                                <td><div class="tDiv"><input name="sort_order" class="text w40" value="{$cat.sort_order}" onkeyup="listTable.editInput(this, 'edit_bank_sort_order',{$cat.cause_id} )" type="text"></div></td>
+							    <td align="center" class="handle">
+                                    <div class="tDiv a2">
+                                        <a href="order.php?act=edit_cause&amp;c_id={$cat.cause_id}" title="{$lang.edit}" class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>
+                                        <a href="javascript:;" onclick="listTable.remove({$cat.cause_id}, '{$lang.drop_confirm}' , 'remove_cause')" title="{$lang.remove}" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>	
+                                    </div>
+								</td>
+								</tr>
+								{foreachelse}
+								<tr><td class="no-records"  align="center" colspan="11">{$lang.no_records}</td></tr>
+								{/foreach}
+                            </tbody>
+                        </table>
+						{if $full_page}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+ 	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+	//分页传值
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+	listTable.query = 'cause_query';
+
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}	
+    </script>
+</body>
+</html>
+{/if}

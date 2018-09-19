@@ -1,0 +1,228 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+		<div class="title">{$lang.12_template} - {$lang.mail_template}</div>
+		<div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.list.0}</li>
+                	<li>{$lang.operation_prompt_content.list.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info mian-info-temp">
+                    	<form method="post" name="theForm" action="mail_template.php?act=save_template">
+                    	<div class="switch_info" id="conent_area">
+                        {/if}
+                        	<div class="items">
+                            	<div class="item">
+                                	<div class="label">{$lang.select_template}</div>
+                                    <div class="label_value">
+                                        <div id="selTemplate" class="imitate_select select_w320" rank="1">
+                                        	<div class="cite">{$lang.select_cat}</div>
+                                            <ul>
+                                                {foreach from=$templates item=vo key=key}
+                                                <li><a href="javascript:;" data-value="{$key}" class="ftx-01">{$vo}</a></li>
+                                                {/foreach}
+                                            </ul>
+                                        	<input name="catFirst" type="hidden" value="{$cur}" id="selTemplate_val">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                	<div class="label">{$lang.mail_subject}：</div>
+                                    <div class="label_value"><input type="text" name="subject" id="subject" value="{$template.template_subject}" class="text" /></div>
+                                </div>
+                                <div class="item">
+                                	<div class="label">{$lang.mail_type}：</div>
+                                    <div class="label_value">
+                                    	<div class="checkbox_items">
+                                            <div class="checkbox_item">
+                                                <input type="radio" name="mail_type" class="ui-radio" value="0" id="mail_type0" {if $template.is_html eq '0'}checked="true"{/if} onclick="javascript:change_editor();"/>
+                                                <label class="ui-radio-label" for="mail_type0">{$lang.mail_plain_text}</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                                <input type="radio" name="mail_type" class="ui-radio" value="1" id="mail_type1" {if $template.is_html eq '1'}checked="true"{/if} onclick="javascript:change_editor();"/>
+                                                <label class="ui-radio-label" for="mail_type1">{$lang.mail_html}</label>
+                                            </div>
+                                        	<input type="hidden" name="tpl" value="{$tpl}" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                	<div class="label">&nbsp;</div>
+                                    <div class="label_value">
+                                    	<div class="mail_tmp">
+                                        {if $template.is_html eq '1'}
+                                          {$FCKeditor}
+                                        {else}
+                                          <textarea name="content" id="content" data-value='111' rows="16" class="textarea">{$template.template_content}</textarea>
+                                        {/if}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                	<div class="label">&nbsp;</div>
+                                    <div class="label_value info_btn"><input type="submit" value="{$lang.button_submit}" class="button" /></div>
+                                </div>
+                            </div>
+                            {if $full_page}
+                        </div>
+                    	</form>
+                    </div>
+                </div>
+    		</div>
+    	</div>                            
+	</div>
+	{include file ='library/pagefooter.lbi'}
+    {literal}
+    <script type="text/javascript">
+        $.divselect("#selTemplate","#selTemplate_val",function(obj){
+            var val = obj.data("value");
+            loadTemplate(val);
+        });
+    
+        var orgContent = '';
+        
+        /* 定义页面状态变量 */
+        var STATUS_is_html = '{$template.is_html}'; //文本邮件|HTML邮件
+        
+        /**
+         * 修改页面状态变量
+         */
+        function update_page_status_variables()
+        {
+          var em = document.forms['theForm'].elements;
+        
+          /* STATUS_is_html */
+          var em_radio = em['mail_type'];
+        
+          for (i = 0; i < em_radio.length; i++)
+          {
+            if (em_radio[i].checked)
+            {
+              STATUS_is_html = em_radio[i].value;
+        
+              break;
+            }
+          }
+        }
+        
+        /**
+         * 载入模板
+         */
+        function loadTemplate(tpl)
+        {
+          curContent = document.getElementById('content').value;
+        
+          if (orgContent != curContent && orgContent != '')
+          {
+            if (!confirm(save_confirm))
+            {
+              return;
+            }
+          }
+          Ajax.call('mail_template.php?is_ajax=1&act=loat_template', 'tpl=' + tpl, loadTemplateResponse, "GET", "JSON");
+        }
+        
+        /**
+         * 更改邮件类型
+         */
+        function change_editor()
+        {
+          var em = document.forms['theForm'].elements;
+        
+          //取单选框 mail_type 的当前选中值
+          var em_radio = em['mail_type'];
+        
+          for (i = 0; i < em_radio.length; i++)
+          {
+            if (em_radio[i].checked)
+            {
+              type = em_radio[i].value;
+              break;
+            }
+          }
+        
+          //如果 onclick 是当前选中的单选框
+          if (STATUS_is_html == type)
+          {
+            return; //返回空值
+          }
+        
+          var tpl = document.getElementById('selTemplate_val').value;
+          Ajax.call('mail_template.php?is_ajax=1&act=loat_template&mail_type=' + type, 'tpl=' + tpl, loadTemplateResponse, "GET", "JSON");
+        }
+        
+        /**
+         * 将模板的内容载入到文本框中
+         */
+        function loadTemplateResponse(result, textResult)
+        {
+          if (result.error == 0)
+          {
+            document.getElementById('conent_area').innerHTML = result.content;
+        
+            orgContent = '';
+          }
+        
+          update_page_status_variables();
+        
+          if (result.message.length > 0)
+          {
+            alert(result.message);
+          }
+        }
+        
+        /**
+         * 保存模板内容
+         */
+        function saveTemplate()
+        {
+            var selTemp = document.getElementById('selTemplate').value;
+            var subject = document.getElementById('subject').value;
+            var content = document.getElementById('content').value;
+            var type    = 0;
+            var em      = document.forms['theForm'].elements;
+        
+            for (i = 0; i < em.length; i++)
+            {
+                if (em[i].type == 'radio' && em[i].name == 'mail_type' && em[i].checked)
+                {
+                    type = em[i].value;
+                }
+            }
+        
+            Ajax.call('mail_template.php?is_ajax=1&act=save_template', 'tpl=' + selTemp + "&subject=" + subject + "&content=" + content + "&is_html=" + type, saveTemplateResponse, "POST", "JSON");
+        }
+        
+        /**
+         * 提示用户保存成功或失败
+         */
+        function saveTemplateResponse(result)
+        {
+          if (result.error == 0)
+          {
+            orgContent = document.getElementById('content').value;
+          }
+          else
+          {
+            document.getElementById('content').value = orgContent;
+          }
+        
+          if (result.message.length > 0)
+          {
+            alert(result.message);
+          }
+        }
+    </script>
+    {/literal}
+</body>
+</html>
+{/if}

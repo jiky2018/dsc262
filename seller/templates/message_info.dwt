@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+				{include file ='library/url_here.lbi'}
+                {if $action_link}
+				<div class="btn-info">
+					{if $action_link}
+					<a class="sc-btn sc-blue-btn" href="{$action_link.href}"><i class="{$action_link.class}"></i>{$action_link.text}</a>
+					{/if}
+					{if $action_link2}
+					<a class="sc-btn sc-blue-btn" href="{$action_link2.href}"><i class="{$action_link2.class}"></i>{$action_link2.text}</a>
+					{/if}
+					{if $action_link3}
+					<a class="sc-btn sc-blue-btn" href="{$action_link3.href}"><i class="{$action_link3.class}"></i>{$action_link3.text}</a>
+					{/if}
+				</div>
+				{/if}
+                <div class="explanation clear mb20" id="explanation">
+                    <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4></div>
+                    <ul>
+                    	<li>温馨提示：编辑查看管理员留言信箱。</li>
+                    </ul>
+                </div>
+                <div class="ecsc-form-goods">
+                    <div class="items-info">
+                        <form action="message.php" method="post" name="theForm" enctype="multipart/form-data" id="message_form">
+                        	<div class="wrapper-list border1">
+                            	{if $action eq "add"}
+                            	<dl>
+                                	<dt>{$lang.receiver_id}：</dt>
+                                    <dd>
+                                    	<select name="receiver_id[]" size="5" multiple="true" class="fl mr10" style="width:400px; height:200px; margin:0;">
+                                            <option value="0" selected="true">{$lang.all_amdin}</option>
+                                            {foreach from=$admin_list item=val}
+                                                {if $val.user_name neq $admin_user}
+                                                    <option value="{$val.user_id}">{$val.user_name}</option>
+                                                {/if}
+                                            {/foreach}
+                                        </select>
+                                        <div class="form_prompt">按住ctrl可以多选</div>
+									</dd>
+                                </dl>
+                                {/if}
+                                {if $action eq "reply"}
+                                <dl>
+                                	<dt>{$lang.receiver_id}：</dt>
+                                    <dd>
+                                    	<div class="imitate_select select_w320 mr0">
+                                            <div class="cite">{$lang.select_please}</div>
+                                            <ul>
+                                                <li><a href="javascript:;" data-value="{$msg_val.sender_id}" class="ftx-01">{$msg_val.user_name}</a></li>
+                                            </ul>
+                                            <input name="receiver_id" type="hidden" value="">
+                                        </div>
+                                    </dd>
+                                </dl>
+                                {/if}
+                                <dl>
+                                	<dt>{$lang.require_field}&nbsp;{$lang.title}：</dt>
+                                    <dd>
+                                    	<input type="text" name="title" maxlength="50" value="{$msg_arr.title}" size="40" class="text" />
+                                    	<div class="form_prompt"></div>
+                                    </dd>
+                                </dl>
+                                <dl>
+                                	<dt>{$lang.require_field}&nbsp;{$lang.message}：</dt>
+                                    <dd>
+                                    	<textarea name="message" cols="55" rows="8" class="textarea mr0" />{$msg_arr.message}</textarea>
+                                        <div class="form_prompt"></div>
+                                    </dd>
+                                </dl>
+                                <dl class="button_info">
+                                	<dt>&nbsp;</dt>
+                                    <dd>
+                                    	<input type="submit" value="{$lang.button_submit}" class="sc-btn sc-blueBg-btn btn35" id="submitBtn" />
+                                        <input type="reset" value="{$lang.button_reset}" class="sc-btn btn35 sc-blue-btn" />
+                                        <input type="hidden" name="act" value="{$form_act}" />
+                                        <input type="hidden" name="id" value="{$msg_arr.message_id}" />
+                                    </dd>
+                                </dl>
+                            </div>
+                        </form>
+                	</div>
+            	</div>                
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript">
+$(function(){
+	//表单验证
+	$("#submitBtn").click(function(){
+		if($("#message_form").valid()){
+			$("#message_form").submit();
+		}
+	});
+
+	$('#message_form').validate({
+		errorPlacement:function(error, element){
+			var error_div = element.parents('dl').find('div.form_prompt');
+			element.parents('dl').find(".notic").hide();
+			error_div.append(error);
+		},
+		rules:{
+			title :{
+				required : true
+			},
+			message :{
+				required : true
+			}
+		},
+		messages:{
+			title:{
+				required: '<i class="icon icon-exclamation-sign"></i>' + title_empty
+			},
+			message :{
+				required : '<i class="icon icon-exclamation-sign"></i>' + message_empty
+			}
+			
+		}			
+	});
+});
+</script>
+</body>
+</html>

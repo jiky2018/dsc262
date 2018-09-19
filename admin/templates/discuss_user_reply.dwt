@@ -1,0 +1,186 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="javascript:;" ectype="goback" class="s-back">{$lang.back}</a>{$lang.goods_alt} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.reply.0}</li>
+                    <li>{$lang.operation_prompt_content.reply.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-head">
+                    <div class="refresh ml0">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+                </div>
+                <div class="common-content">
+                    <form method="POST" action="discuss_circle.php" name="listForm" onsubmit="return confirm_bath()">
+                	<div class="list-div" id="listDiv">
+						{/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                	<th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars"></label></div></th>
+                                	<th width="3%"><div class="tDiv">{$lang.record_id}</div></th>
+                                    <th width="15%"><div class="tDiv">{$lang.user_name}</div></th>
+                                    <th width="39%"><div class="tDiv">{$lang.reply_centent}</div></th>
+                                    <th width="15%"><div class="tDiv">{$lang.quote_name}</div></th>
+                                    <th width="15%"><div class="tDiv">{$lang.discuss_time}{$sort_ip_address}</div></th>
+                                    <th width="6%"><div class="tDiv">{$lang.adopt_status}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.handler}</div></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+								{foreach from=$reply_list item=list}
+                            	<tr>
+                                    <td class="sign"><div class="tDiv"><input type="checkbox" name="checkboxes[]" value="{$list.dis_id}" class="checkbox" id="checkbox_{$list.dis_id}" /><label for="checkbox_{$list.dis_id}" class="checkbox_stars"></label></div></td>
+                                    <td><div class="tDiv">{$list.dis_id}</div></td>
+									<td><div class="tDiv">{$list.user_name}</div></td>
+									<td><div class="tDiv">{$list.dis_text}</div></td>
+									<td><div class="tDiv">{if $list.quote_id}{$list.quote_name}{else}{$lang.this_text}{/if}</div></td>
+									<td><div class="tDiv">{$list.add_time}</div></td>
+                                    <td>
+                                        <div class="tDiv">
+                                            {if $list.review_status eq 1}
+                                            <font class="org2">{$lang.not_audited}</font>
+                                            {elseif $list.review_status eq 2}
+                                            <font class="red">{$lang.audited_not_adopt}</font><br/>
+                                            <i class="tip yellow" title="{$list.review_content}" data-toggle="tooltip">{$lang.prompt}</i>
+                                            {elseif $list.review_status eq 3}
+                                            <font class="blue">{$lang.audited_yes_adopt}</font>
+                                            {/if}
+                                        </div>
+                                    </td>
+                                    <td class="handle">
+                                        <div class="tDiv a1">
+                                            <a onclick="listTable.remove({$list.dis_id}, '{$lang.drop_reply_confirm}')" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>
+                                        </div>
+                                    </td>
+                                </tr>
+								{foreachelse}
+								<tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+								{/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                	<td colspan="12">
+                                        <div class="tDiv">
+                                            <div class="tfoot_btninfo">
+
+                                                <input type="hidden" value="batch" name="act">
+                                                <input type="hidden" name="dis_id" value="{$dis_id}" />
+                                                <div class="item">
+                                                    <div id="drop_select" class="imitate_select select_w120">
+                                                      <div class="cite">{$lang.select_please}</div>
+                                                      <ul>
+                                                         <li><a href="javascript:;" data-value="" class="ftx-01">{$lang.select_please}</a></li>
+                                                         <li><a href="javascript:;" data-value="batch_remove" class="ftx-01">{$lang.drop}</a></li>
+                                                         <li><a href="javascript:;" data-value="review_to" class="ftx-01">{$lang.check}</a></li>
+                                                      </ul>
+                                                      <input name="type" type="hidden" value=""  id="drop_val">
+                                                    </div>
+                                                </div>
+                                                <div class="item" style="display: none;" id="review_status">
+                                                    <div id="review_status_select" class="imitate_select select_w120">
+                                                      <div class="cite">{$lang.select_please}</div>
+                                                      <ul>
+                                                         <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.all}</a></li>
+                                                         <li><a href="javascript:;" data-value="2" class="ftx-01">{$lang.audited_not_adopt}</a></li>
+                                                         <li><a href="javascript:;" data-value="3" class="ftx-01">{$lang.audited_adopt}</a></li>
+                                                      </ul>
+                                                      <input name="review_status" type="hidden" value="0" id="review_status_val">
+                                                    </div>
+                                                </div>
+                                                <input type="submit" value="{$lang.button_submit_alt}" name="remove" ectype="btnSubmit" class="btn btn_disabled" disabled="">
+
+
+                                                <!--<div class="shenhe">
+                                                    <input type="hidden" name="dis_id" value="{$dis_id}" />
+                                                    <input type="hidden" name="act" value="batch_drop" />
+                                                    <input type="hidden" name="sel_action" value="remove" />
+                                                    <input type="submit" name="drop" id="btnSubmit" value="{$lang.drop_select}" class="btn btn_disabled" disabled="true" ectype="btnSubmit" />
+                                                </div>-->
+                                            </div>
+                                            <div class="list-page">
+                                               {include file="library/page.lbi"}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+						{if $full_page}
+                    </div>
+                    </form>
+                </div>
+            </div>
+		</div>
+	</div>
+	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+	listTable.query = 'discuss_reply_query';
+	cfm = new Object();
+	cfm['remove'] = '{$lang.cfm_remove}';
+
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+
+	{literal}
+	onload = function()
+	{
+		listTable.query = "discuss_reply_query";
+	}
+
+	function searchComment()
+	{
+		var keyword = Utils.trim(document.forms['searchForm'].elements['keyword'].value);
+		if(keyword.length > 0)
+		{
+			listTable.filter['keywords'] = keyword;
+			listTable.filter.page = 1;
+			listTable.loadList();
+		}
+		else
+		{
+			document.forms['searchForm'].elements['keyword'].focus();
+		}
+	}
+	{/literal}
+
+	function confirm_bath()
+	{
+		var action = document.forms['listForm'].elements['sel_action'].value;
+
+		return confirm(cfm[action]);
+	}
+
+    $.divselect("#drop_select","#drop_val",function(obj){
+        changeAction();
+    });
+
+    function changeAction()
+    {
+        var type = $("input[name='type']").val();
+        var review_status = $("#review_status");
+        // 切换商品审核列表的显示
+        review_status.css("display",type == 'review_to' ? '' : 'none');
+        if(type != 'review_to') {
+            review_status.css("display", 'none');
+        }
+    }
+
+</script>
+</body>
+</html>
+{/if}

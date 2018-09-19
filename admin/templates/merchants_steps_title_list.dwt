@@ -1,0 +1,118 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+		<div class="title"><a href="merchants_steps.php?act=list" class="s-back">{$lang.back}</a>{$lang.seller} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.title_list.0}</li>
+                    <li>{$lang.operation_prompt_content.title_list.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<div class="common-head">
+                	<div class="fl">
+                        <a href="{$action_link.href}"><div class="fbutton"><div class="add" title="{$action_link.text}"><span><i class="icon icon-plus"></i>{$action_link.text}</span></div></div></a>
+                    </div>
+                   	<div class="refresh">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+                    <div class="search">
+                    	<form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+                    	<div class="input">
+                        	<input type="text" name="keywords" class="text nofocus" placeholder="{$lang.fields_titles}" autocomplete="off" />
+                            <input type="submit" class="btn" name="secrch_btn" ectype="secrch_btn" value="" />
+                        </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="common-content">
+                	<div class="list-div" id="listDiv">
+						{/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                	<th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars"></label></div></th>
+                                    <th width="5%"><div class="tDiv">{$lang.record_id}</div></th>
+                                    <th width="15%"><div class="tDiv">{$lang.fields_titles}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.fields_steps}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.steps_style}</div></th>
+                                    <th width="32%"><div class="tDiv">{$lang.fields_special_instructions}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.fields_special_type}</div></th>
+                                    <th width="15%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+							{foreach from=$title_list item=title}
+                            	<tr>
+                                	<td class="sign"><div class="tDiv"><input type="checkbox" name="checkbox" class="checkbox" id="checkbox_{$title.tid}" /><label for="checkbox_{$title.tid}" class="checkbox_stars"></label></div></td>
+                                    <td><div class="tDiv">{$title.tid}</div></td>
+                                	<td><div class="tDiv">{$title.fields_titles}</div></td>
+                                    <td><div class="tDiv">{$title.fields_steps}</div></td>
+                                    <td>
+                                    	<div class="tDiv">
+                                        	{if $title.steps_style eq 1}
+                                            	{$lang.steps_shop_type}
+                                            {elseif $title.steps_style eq 2}
+                                            	{$lang.directory_info}
+                                            {elseif $title.steps_style eq 3}
+                                            	{$lang.content_name}
+                                            {elseif $title.steps_style eq 4}
+                                            	{$lang.store_info}    
+                                            {else}
+                                            	{$lang.basic_info}
+                                            {/if}
+                                        </div>
+                                    </td>
+                                    <td><div class="tDiv">{$title.fields_special}</div></td>
+                                    <td><div class="tDiv">{if $title.special_type eq 1}{$lang.merchants_top}{elseif $title.special_type eq 2}{$lang.merchants_bottom}{else}{$lang.merchants_not}{/if}</div></td>
+                                    <td class="handle">
+                                        <div class="tDiv a2">
+										  <a href="merchants_steps.php?act=title_edit&id={$title.tid}"  class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>
+										  <a href="javascript:confirm_redirect('{$lang.remove_confirm_process}', 'merchants_steps.php?act=titleList_remove&id={$title.tid}')"  class="btn_trash" title="{$lang.remove}"><i class="icon icon-trash"></i>{$lang.drop}</a>
+										</div>
+                                    </td>
+                                </tr>
+						    {foreachelse}
+								<tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+						    {/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="12">
+                                    	<div class="list-page">
+                                            {include file="library/page.lbi"}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+						{if $full_page}						
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+    //列表导航栏设置下路选项
+    $(".ps-container").perfectScrollbar();
+    
+    //分页传值
+    listTable.recordCount = {$record_count|default:0};
+    listTable.pageCount = {$page_count|default:1};
+    listTable.query = 'query_title';
+    
+    {foreach from=$filter item=item key=key}
+    listTable.filter.{$key} = '{$item}';
+    {/foreach}
+    </script>
+</body>
+</html>
+{/if}

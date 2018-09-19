@@ -1,0 +1,174 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/suggest.css" />
+{insert_scripts files='suggest.js'}
+{* DSC 提醒您：动态载入position_get_adv.lbi，显示首页分类小广告 *}{insert name='get_adv' logo_name=$top_banner}
+
+<div id="site-nav">
+    <div class="w1390 dorpdown">
+        {* DSC 提醒您：根据用户id来调用header_region_style.lbi显示不同的界面  *}{insert name='header_region'}
+        <div class="ecsc-login" id="ECS_MEMBERZONE">
+        	{* DSC 提醒您：根据用户id来调用member_info.lbi显示不同的界面  *}{insert name='member_info'}
+        </div>
+        <ul class="quick-menu fr">
+        	<!--{if $navigator_list.top}-->
+            <!-- {foreach name=nav_top_list from=$navigator_list.top item=nav key=key} -->
+            <!--{if $smarty.foreach.nav_top_list.index < 4}-->
+            <li>
+            	<div class="dt"><a href="{$nav.url}" {if $nav.opennew}target="_blank"{/if}>{$nav.name}</a></div>
+            </li>
+            <li class="spacer"></li>
+            <!--{/if}-->
+            <!-- {/foreach} -->
+            <!-- {/if} -->
+            <!--{if $navigator_list.top}-->
+            <li class="li_dorpdown">
+            	<div class="dt"><a href="javascript:;" >{$lang.Site_navigation}</a><i class="ci-right"><s>◇</s></i></div>
+                <div class="dd dorpdown-layer">
+                	<div class="dd-spacer"></div>
+                    <!-- {foreach name=nav_top_list from=$navigator_list.top item=nav key=key} -->
+            			<!--{if $smarty.foreach.nav_top_list.index >= 4}-->
+                    		<div class="item"><a href="{$nav.url}" {if $nav.opennew}target="_blank"{/if}>{$nav.name}</a></div>
+                    	<!--{/if}-->
+            		<!-- {/foreach} -->
+                </div>
+            </li>
+            <!-- {/if} -->
+        </ul>
+        <div class="shopcart-2015" id="ECS_CARTINFO" data-carteveval="0">
+        	{insert name='cart_info'}
+        </div>
+    </div>
+</div>
+<div class="header w1390">
+    <div class="ecsc-logo"><a href="{$url_index}" class="logo"><img src="images/logo.gif" /></a></div>
+    <div class="ecsc-join"><a href="{$url_merchants}" target="_blank"><img src="images/ecsc-join.gif" /></a></div>
+    <div class="ecsc-search">
+        <form id="searchForm" name="searchForm" method="get" action="search.php" onSubmit="return checkSearchForm(this)" class="ecsc-search-form">
+            <div class="ecsc-search-tabs">
+                <i class="sc-icon-right"></i>
+                <ul class="shop_search" id="shop_search">
+                {if $search_type eq 1}
+                    <li rev="1"><span>{$lang.seller_store}</span></li>
+                    <li rev="0" class="curr"><span>{$lang.goods}</span></li>
+                {else}
+                    <li rev="0"><span>{$lang.goods}</span></li>
+                    <li rev="1" class="curr"><span>{$lang.seller_store}</span></li>
+                {/if}   
+                </ul>
+            </div>
+            <input autocomplete="off" onKeyUp="lookup(this.value);" name="keywords" type="text" id="keyword" value="{if $search_keywords}{$search_keywords}{else}{insert name='rand_keyword'}{/if}" class="ecsc-search-input"/>
+            <input type="hidden" name="store_search_cmt" value="{$search_type|default:0}">
+            <button type="submit" class="ecsc-search-button"><i></i></button>
+        </form>
+        <div class="keyword">
+        {if $searchkeywords}
+            <ul>
+                {foreach from=$searchkeywords item=val} <li><a href="search.php?keywords={$val|escape:url}" target="_blank">{$val}</a></li> {/foreach}
+            </ul>
+            {/if}
+        </div>
+        <!-- @Author guan 搜索栏提示 start -->
+            <div class="suggestions_box" id="suggestions" style="display:none;">
+                <div class="suggestions_list" id="auto_suggestions_list">
+                &nbsp;
+                </div>
+            </div>
+        <!-- @Author guan 搜索栏提示 end -->
+    </div>
+    <div class="site-commitment">
+        <div class="site-commitment-front"><a style="background:url({$site_commitment}) -6px 0px no-repeat;" href="#" target="_blank"></a></div>
+        <div class="site-commitment-back"><a style="background:url({$site_commitment}) -6px 0px no-repeat;" href="#" target="_blank"></a></div>
+    </div>
+</div>
+<div class="nav ecsc-zoom">
+    <div class="w1390">
+        <div class="categorys site-mast">
+            <div class="dt"><a href="{$url_categoryall}" target="_blank">{$lang.all_goods_cat}</a><i class="sc-icon-right"></i></div>
+            <div class="dd" style="display:none">
+                <div class="cata-nav" id="cata-nav">
+					<!--{foreach from=$categories_pro item=cat name=categories_pro}-->
+                    <div class="item fore{$smarty.foreach.categories_pro.iteration}">
+                        <div class="item-left">
+                            <div class="cata-nav-name" data-id="{$cat.id}" eveval="0">
+                                <h3>
+                                    {if $cat.category_link eq 1}
+                                    {$cat.name}
+                                    {else}
+                                    <a href="{$cat.url}" title="{$cat.name|escape:html}">{$cat.name|escape:html}</a>
+                                    {/if}
+                                </h3>
+                            </div>
+                            <b>></b>
+                        </div>
+                        <div class="cata-nav-layer">
+                            <div class="cata-nav-left">
+                                <div class="item-channels">
+                                    <div class="channels" id="channels_{$cat.id}">
+                                    </div>
+                                </div>
+                                <div class="subitems" id="subitems_{$cat.id}">
+                                </div>
+                            </div> 
+                            <div class="cata-nav-rigth" id="item_brands{$cat.id}">   
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <!-- {/foreach} -->
+                </div>
+            </div>
+        </div>
+        <div class="navitems" id="nav">
+            <ul>
+                <li><a href="../index.php" {if $navigator_list.config.index eq 1}class="selected"{/if}>{$lang.home}</a></li>
+                <!-- {foreach name=nav_middle_list from=$navigator_list.middle item=nav} -->
+                <li><a href="{$nav.url}" {if $nav.active eq 1}class="selected"{/if} {if $nav.opennew}target="_blank"{/if}>{$nav.name}</a></li>
+                <!-- {/foreach} -->
+            </ul>
+        </div>
+    </div>
+</div>
+{insert_scripts files='suggest.js'}
+
+<script type="text/javascript">
+/*首页分类树*/
+$(function(){
+	$('#cata-nav .item').unbind('mouseenter').bind('mouseenter',function(){
+		var T = $(this);
+		var cat_id = T.children('.item-left').children('.cata-nav-name').data('id');
+		var eveval = T.children('.item-left').children('.cata-nav-name').attr('eveval');
+		
+		if(eveval != 1){
+			T.children('.item-left').children('.cata-nav-name').attr('eveval', '1');
+			/*加载中by wu*/
+			$('#subitems_' + cat_id).html('<img src="themes/ecmoban_dsc/images/loadGoods.gif" width="200" height="200" class="lazy" style="margin:100px 281px">');
+			$.ajax({
+			   type: "GET",
+			   url: "ajax_dialog.php",
+			   data: "act=getCategoryCallback&cat_id=" + cat_id,
+			   dataType:'json',
+			   success: function(data){
+				   	var strLength = Number(data.topic_content.length)
+				   	if(strLength == 2 || strLength == 0){
+						$('#channels_' + data.cat_id).parent('.item-channels').hide();
+					}
+				 	$('#channels_' + data.cat_id).html(data.topic_content);
+				 	$('#subitems_' + data.cat_id).html(data.cat_content);
+				 	$('#item_brands' + data.cat_id).html(data.brands_ad_content);
+			   }
+			});
+		}
+		
+		T.addClass("selected");
+		T.children('.cata-nav-layer').show();
+	});
+	
+	$('#cata-nav .item').unbind('mouseleave').bind('mouseleave',function(){
+		$(this).removeClass("selected");
+        $(this).children(".cata-nav-layer").hide();
+	});
+});
+</script>
+
+
+

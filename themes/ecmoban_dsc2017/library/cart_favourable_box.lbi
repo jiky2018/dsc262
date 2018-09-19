@@ -1,0 +1,210 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<div class="item-full">
+    <div class="item-header" ectype="prpmoHeader">
+        <!-- {if $activity.act_type eq 0} 如果是满赠 -->
+        <div class="f-txt">
+            <span class="full-icon">{$activity.act_type_txt}<i class="i-arrow"></i></span>
+            <!-- {if $activity.act_type_ext eq 0} -->
+            <!-- {if $activity.available} 满足最低消费-->
+            <a href="coudan.php?id={$activity.act_id|default:0}" class="ftx-03" target="_blank">{$lang.activity_notes_one}{$activity.min_amount}{$lang.activity}， {$lang.receive_gifts}{if $activity.cart_favourable_gift_num gt 0}，{$lang.Already_receive}{$activity.cart_favourable_gift_num}{$lang.jian}{/if}&gt;</a>
+            <a href="javascript:void(0);" class="f-btn" data-actid="{$activity.act_id|default:0}" data-ruid="{$ru_id}" id="select-gift-{$activity.act_id|default:0}" class="f-btn" ectype="tradeBtn">{$lang.receive_gift}</a>
+            
+            <!-- {else} -->
+            <a href="coudan.php?id={$activity.act_id|default:0}" class="ftx-03" target="_blank">{$lang.activity_notes_one}{$activity.min_amount}{$lang.yuan}，{$lang.receive_gifts} &gt; </a>
+            <a href="javascript:void(0);" data-actid="{$activity.act_id|default:0}" data-ruid="{$ru_id}" id="select-gift-{$activity.act_id|default:0}" class="f-btn" ectype="tradeBtn">{$lang.see_gift}</a>
+			<a href="coudan.php?id={$activity.act_id|default:0}" class="ftx-05" target="_blank">&nbsp;{$lang.gather_together}&nbsp;></a>
+            <!-- {/if} -->
+            <!-- {else} -->
+            <!-- {if $activity.available} 满足最低消费-->
+            <a href="coudan.php?id={$activity.act_id|default:0}" class="ftx-03" target="_blank">{$lang.activity_notes_one}{$activity.min_amount}{$lang.yuan} ，{$lang.receive_gifts}{$activity.act_type_ext}{$lang.jian} ，{$lang.receive_gifts_again}{$activity.left_gift_num}{$lang.jian} &gt; </a>
+            <a href="javascript:void(0);" data-actid="{$activity.act_id|default:0}" data-ruid="{$ru_id}" id="select-gift-{$activity.act_id|default:0}" class="f-btn" ectype="tradeBtn">{$lang.receive_gift}</a>
+            <!-- {else} -->
+            <a href="coudan.php?id={$activity.act_id|default:0}" class="ftx-03" target="_blank">{$lang.activity_notes_one}{$activity.min_amount}{$lang.yuan}，{$lang.receive_gifts}{$activity.act_type_ext}{$lang.jian} &gt; </a>
+            <a href="javascript:void(0);" data-actid="{$activity.act_id|default:0}" data-ruid="{$ru_id}" id="select-gift-{$activity.act_id|default:0}" class="f-btn" ectype="tradeBtn">{$lang.see_gift}</a>
+			<a href="coudan.php?id={$activity.act_id|default:0}" class="ftx-05" target="_blank">&nbsp;{$lang.gather_together}&nbsp;></a>
+            <!-- {/if} -->
+            <!-- {/if} -->
+            <span class="full-txt">{$goods.act_name}</span>
+            <span class="f-price">{$activity.cart_fav_amount}</span>
+        </div>
+        <!-- {elseif $activity.act_type eq 1} 满减 -->
+        <div class="f-txt">
+            <span class="full-icon"><i class="i-left"></i>{$activity.act_type_txt}<i class="i-right"></i></span>
+            <!-- {if $activity.available} 满足最低消费-->
+            {$lang.activity_notes_one}{$activity.min_amount}{$lang.yuan}（<span class="ftx-01">{$lang.been_reduced}{$activity.act_type_ext_format}{$lang.yuan}</span>）
+            <!-- {else} -->
+            <span>{$lang.activity_notes_three}{$activity.min_amount}{$lang.activity_notes_two}</span>
+            <!-- {/if} -->
+            <a href="coudan.php?id={$activity.act_id|default:0}" target="_blank" class="ftx-05">&nbsp;>{$lang.gather_together}&nbsp;</a>
+            <span class="full-txt">{$goods.act_name}</span>
+            <span class="f-price">{$activity.cart_fav_amount}</span>
+        </div>
+        <!-- {elseif $activity.act_type eq 2} 折扣 -->
+        <div class="f-txt">
+            <span class="full-icon"><i class="i-left"></i>{$activity.act_type_txt}<i class="i-right"></i></span>
+            <!-- {if $activity.available} 满足最低消费-->
+            {$lang.activity_notes_one}{$activity.min_amount}{$lang.yuan} （{$lang.Already_enjoy}{$activity.act_type_ext_format}{$lang.percent_off_Discount}）
+            <!-- {else} -->
+            {$lang.activity_notes_three}{$activity.min_amount}{$lang.zhekouxianzhi}
+            <!-- {/if} -->
+            <a href="coudan.php?id={$activity.act_id|default:0}" target="_blank" class="ftx-05"> &gt;{$lang.gather_together}</a>
+            <span class="full-txt">{$goods.act_name}</span>
+            <span class="f-price">{$activity.cart_fav_amount}</span>
+        </div>
+        <!-- {/if} -->
+    </div>
+                                    
+    <!-- {foreach from=$activity.act_goods_list item=goods name=act_goods_list} 优惠活动商品 -->
+    <div class="item-item{if $goods.sel_checked eq 1} selected{/if}" ectype="item" data-recid="{$goods.rec_id}">
+        <div class="item-form">
+            <div class="cell s-checkbox">
+                <div class="cart-checkbox" ectype="ckList">
+                    <input type="checkbox" id="checkItem_{$goods.rec_id}" value="{$goods.rec_id}" name="checkItem"{if $goods.sel_checked eq 1} checked="checked"{/if} class="ui-checkbox" ectype="ckGoods" />
+                    <label for="checkItem_{$goods.rec_id}" class="ui-label-14">&nbsp;</label>
+                </div>
+            </div>
+            <div class="cell s-goods">
+                <div class="goods-item">
+                    <div class="p-img"><a href="{$goods.url}" target="_blank"><img src="{$goods.goods_thumb}" width="70" height="70"></a></div>
+                    <div class="item-msg">
+                        <div class="p-name"><a href="{$goods.url}" target="_blank" title="{$goods.goods_name|escape:html}">{$goods.goods_name}</a></div>
+                        <div class="gds-types">
+                            <!--{if $goods.stages_qishu neq -1}-->
+                            <em class="gds-type gds-type-stages">{$lang.by_stages}</em>
+                            <!--{/if}-->
+                            {if $goods.is_invalid}<span class="red">（已失效）</span>{/if}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="cell s-props">
+                {if $goods.goods_attr}{$goods.goods_attr|nl2br}{else}&nbsp;{/if}
+            </div>
+            <div class="cell s-price relative">
+                <strong id="goods_price_{$goods.rec_id}">{$goods.goods_price}</strong>
+            </div>
+            <div class="cell s-quantity">
+                <div class="amount-warp">
+                    <!-- {if $goods.goods_id gt 0 && $goods.is_gift eq 0 && $goods.parent_id eq 0 && $goods.extension_code neq 'package_buy'} 普通商品可修改数量 -->
+                    <input type="text" value="{$goods.goods_number}" name="goods_number[{$goods.rec_id}]" id="goods_number_{$goods.rec_id}" onchange="change_goods_number({$goods.rec_id},this.value, {$goods.warehouse_id}, {$goods.area_id}, '', {$activity.act_id|default:0})" class="text buy-num" ectype="number" defaultnumber="{$goods.goods_number}">
+                    <div class="a-btn">
+                        <a href="javascript:void(0);" onclick="changenum({$goods.rec_id}, 1, {$goods.warehouse_id}, {$goods.area_id}, {$activity.act_id|default:0})"  class="btn-add"><i class="iconfont icon-up"></i></a>
+                        <a href="javascript:void(0);" onclick="changenum({$goods.rec_id}, -1, {$goods.warehouse_id}, {$goods.area_id}, {$activity.act_id|default:0})" class="btn-reduce {if $goods.goods_number eq 1}btn-disabled{/if}"><i class="iconfont icon-down"></i></a>
+                    </div>
+                    <!-- {else} - -->
+                    <font style="color:#666; font-size:12px;" id="{$goods.group_id}_{$goods.rec_id}">{$goods.goods_number}</font>
+                    <!-- {/if} -->
+                </div>
+                <!-- {if $goods.attr_number} -->
+                <div class="tc ftx-03">{$lang.Have_goods}</div>
+                <!-- {else} -->
+                <div class="tc ftx-01">{$lang.No_goods}</font>
+                <!-- {/if} -->
+            </div>
+            <div class="cell s-sum">
+                <strong id="goods_subtotal_{$goods.rec_id}"><font id="{$goods.group_id}_{$goods.rec_id}_subtotal">{$goods.formated_subtotal}</font></strong>
+                <div class="cuttip {if $goods.dis_amount eq 0}hide{/if}">
+                	<span class="tit">{$lang.youhui}</span>
+                    <span class="price" id="discount_amount_{$goods.rec_id}">{$goods.discount_amount}</span>
+                </div>
+            </div>
+            <div class="cell s-action">
+                <a href="javascript:void(0);" id="remove_{$goods.rec_id}" ectype="cartOperation" data-value='{"divId":"cart_remove","url":"flow.php?step=drop_goods&amp;id={$goods.rec_id}","cancelUrl":"flow.php?step=drop_to_collect&amp;id={$goods.rec_id}","recid":{$goods.rec_id},"title":"{$lang.drop}"}' class="cart-remove">{$lang.drop}</a>
+                <a href="javascript:void(0);" id="store_{$goods.rec_id}" ectype="cartOperation" data-value='{"divId":"cart_collect","url":"flow.php?step=drop_to_collect&amp;id={$goods.rec_id}","recid":{$goods.rec_id},"title":"{$lang.follow}"}' class="cart-store">{$lang.collect}</a>
+            </div>
+        </div>
+        <!--{if $smarty.foreach.act_goods_list.iteration > 1} 每个优惠活动只有大于一个商品-->
+        <div class="item-line"></div>
+        <!--{/if}-->
+    </div>
+    <!-- {/foreach} 优惠活动商品-->
+    
+    <!-- {foreach from=$activity.act_cart_gift item=goods} 赠品开始 -->
+    <div class="item-item zp selected" ectype="item" data-recid="{$goods.rec_id}">
+        <div class="item-form">
+            <div class="cell s-checkbox hide">
+                <div class="cart-checkbox" ectype="ckList">
+                    <input type="checkbox" id="checkItem_{$goods.rec_id}" value="{$goods.rec_id}" checked="checked" name="checkItem" class="ui-checkbox" ectype="ckGoods" />
+                    <label for="checkItem_{$goods.rec_id}" class="ui-label-14">&nbsp;</label>
+                </div>
+            </div>
+            <div class="cell s-goods">
+                <div class="goods-item">
+                    <div class="p-img">
+                        <!-- {if $goods.goods_id gt 0 && $goods.extension_code neq 'package_buy'} -->
+                        <a href="{$goods.url}" target="_blank"><img src="{$goods.goods_thumb}" width="70" height="70" /></a>
+                        <!-- {else} -->
+                        <a href="javascript:void(0);" target="_blank"><img src="{$goods.goods_thumb}" width="70" height="70" /></a>
+                        <!-- {/if} -->
+                    </div>
+                    <div class="item-msg">
+                        <!-- {if $goods.goods_id gt 0 && $goods.extension_code eq 'package_buy'} -->
+                        <div class="p-name package-name">{$goods.goods_name}<span class="red">（{$lang.remark_package}）</span></div>
+                        <div class="package_goods" id="suit_{$goods.goods_id}">
+                            <div class="title">包含内容：</div>
+                            <ul>
+                                <!-- {foreach from=$goods.package_goods_list item=package_goods_list name=nopackage} -->
+                                <li>
+                                    <div class="goodsName"><a href="goods.php?id={$package_goods_list.goods_id}" target="_blank">{$package_goods_list.goods_name}</a></div>
+                                    <div class="goodsNumber">x{$package_goods_list.goods_number}</div>
+                                </li>
+                                <!-- {/foreach} -->
+                            </ul>
+                        </div>
+                        <!-- {else} -->
+                        <a href="{$goods.url}" target="_blank">{$goods.goods_name}</a>
+                        <!-- {/if} -->
+                        
+                        <div class="gds-types">
+                            <em class="gds-type gds-type-stages">{$lang.largess}</em>
+                            {if $goods.is_invalid}<span class="red">（已失效）</span>{/if}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="cell s-props">
+                {if $goods.goods_attr}{$goods.goods_attr|nl2br}{else}&nbsp;{/if}
+            </div>
+            <div class="cell s-price">
+                <strong id="goods_price_{$goods.rec_id}">{$goods.goods_price}</strong>
+            </div>
+            <div class="cell s-quantity">
+                <div class="amount-warp">
+                    <!-- {if $goods.goods_id gt 0 && $goods.is_gift eq 0 && $goods.parent_id eq 0 && $goods.extension_code neq 'package_buy'} 普通商品可修改数量 -->
+                    <input type="text" value="{$goods.goods_number}" name="goods_number[{$goods.rec_id}]" id="goods_number_{$goods.rec_id}" onchange="change_goods_number({$goods.rec_id},this.value, {$goods.warehouse_id}, {$goods.area_id}, '', {$activity.act_id|default:0})" class="text buy-num" ectype="number" defaultnumber="{$goods.goods_number}">
+                    <div class="a-btn">
+                        <a href="javascript:void(0);" onclick="changenum({$goods.rec_id}, 1, {$goods.warehouse_id}, {$goods.area_id}, {$activity.act_id|default:0})"  class="btn-add"><i class="iconfont icon-up"></i></a>
+                        <a href="javascript:void(0);" onclick="changenum({$goods.rec_id}, -1, {$goods.warehouse_id}, {$goods.area_id}, {$activity.act_id|default:0})" class="btn-reduce {if $goods.goods_number eq 1}btn-disabled{/if}"><i class="iconfont icon-down"></i></a>
+                    </div>
+                    <!-- {else} - -->
+                    <input type="text" value="{$goods.goods_number}" class="noeidx" ectype="number" readonly id="{$goods.group_id}_{$goods.rec_id}" />
+                    <!-- {/if} -->
+                </div>
+                <!-- {if $goods.attr_number} -->
+                <div class="tc ftx-03">{$lang.Have_goods}</div>
+                <!-- {else} -->
+                <div class="tc ftx-01">{$lang.No_goods}</font>
+                <!-- {/if} -->
+            </div>
+            <div class="cell s-sum">
+                <strong id="goods_subtotal_{$goods.rec_id}"><font id="{$goods.group_id}_{$goods.rec_id}_subtotal">{$goods.formated_subtotal}</font></strong>
+                <div class="cuttip {if $goods.dis_amount eq 0}hide{/if}">
+                	<span class="tit">{$lang.youhui}</span>
+                    <span class="price" id="discount_amount_{$goods.rec_id}">{$goods.discount_amount}</span>
+                </div>
+            </div>
+            <div class="cell s-action">
+                <a href="javascript:void(0);" id="remove_{$goods.rec_id}" ectype="cartOperation" data-value='{"divId":"cart_remove","url":"flow.php?step=drop_goods&amp;id={$goods.rec_id}","cancelUrl":"flow.php?step=drop_to_collect&amp;id={$goods.rec_id}","recid":{$goods.rec_id},"title":"{$lang.drop}"}' class="cart-remove">{$lang.drop}</a>
+                <a href="javascript:void(0);" id="store_{$goods.rec_id}" ectype="cartOperation" data-value='{"divId":"cart_collect","url":"flow.php?step=drop_to_collect&amp;id={$goods.rec_id}","recid":{$goods.rec_id},"title":"{$lang.follow}"}' class="cart-store">{$lang.collect}</a>
+            </div>
+        </div>
+    </div>
+    <!-- {/foreach} 赠品结束-->
+    
+    <!-- {if $activity.act_gift_list} 如果活动存在赠品 -->
+    <div class="gift-box" ectype="giftBox" id="gift_box_list_{$activity.act_id|default:0}_{$goods.ru_id}" style="display:none;">
+        {include file="/library/cart_gift_box.lbi"}
+    </div>
+    <!-- {/if} -->
+</div>

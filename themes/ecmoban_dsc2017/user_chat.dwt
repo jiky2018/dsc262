@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>{$shop_name}</title>
+	<link rel="stylesheet" href="themes/ecmoban_dsc/base.css">
+	<link rel="stylesheet" href="themes/ecmoban_dsc/user.css">
+	<link href="kefu/public/assets/layui/css/layui.css" rel="stylesheet">
+	<link href="kefu/public/assets/css/chat_list.css" rel="stylesheet">
+    <style>
+    </style>
+</head>
+<body>
+	<div class="main w1200 user_home user_tran">
+		<div class="user-right dis-box" id="c-tab-box3">
+			<div  id='chat_list'>
+                <div class="warp-con">
+                    <div class="warp-chat" id='tank'>
+                        <ul>
+                            <li v-for="( list , k) in evenNumbers">
+                                <div :class="list.warp_chat" v-if="list.warp_chat === 'success'">
+                                    {{ list.message }}
+                                </div>
+                                <div :class="list.warp_chat" v-else>
+                                    <img :src="list.user_picture" alt="">
+                                    <div class="warp-chat-con">
+                                        <h5 class="name">
+                                            {{ list.user_name }}
+                                            <span>{{ list.add_time }}</span>
+                                        </h5>
+                                        <div class="text" v-html='list.message'>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- 聊天窗口end -->
+                <div class="warp-editor">
+                    <a class="history-list">
+                        <i class="iconfont icon-shijian"></i>
+                    </a>
+                    <textarea class="layui-textarea" id="LAY_demo1" style="display: none" v-model="cont"></textarea>
+                    <button class="confirm j-send-msg">发送</button>
+                </div>
+			</div>
+		</div>
+    <script src="kefu/public/assets/js/jquery.min.js"></script>
+    <script src="kefu/public/assets/layui/layui.js"></script>
+    <script src="kefu/public/assets/js/vue.js"></script>
+    <script src="kefu/public/assets/js/index.js"></script>
+	<script>
+
+	    workmanKefu.user.user_id = {$user_id};
+        workmanKefu.user.user_name = "{$user_info.username}";
+        workmanKefu.user.avatar = "{$user_info.user_picture|default:1}";
+        workmanKefu.user.user_type = "customer";
+        workmanKefu.listen_route = "{$listen_route}";
+        workmanKefu.prot = "{$prot}";
+        workmanKefu.user.goods_id = {$goods_id};
+        workmanKefu.user.store_id = {$ru_id};
+
+
+        layui.use('layedit', function () {
+            var layedit = layui.layedit
+                , $ = layui.jquery;
+
+            //构建一个默认的编辑器
+            var index = layedit.build('LAY_demo1',{
+                height:120,
+                tool:['face']
+            });
+            $(".get_value").click(function(){
+                var val=$(".quick_reply").text()
+                $("index").text(val)
+            })
+            //编辑器外部操作
+            var active = {
+                content: function () {
+                    alert(layedit.getContent(index)); //获取编辑器内容
+                }
+                , text: function () {
+                    alert(layedit.getText(index)); //获取编辑器纯文本内容
+                }
+                , selection: function () {
+                    alert(layedit.getSelection(index));
+                }
+            };
+
+            $('.site-demo-layedit').on('click', function () {
+                var type = $(this).data('type');
+                active[type] ? active[type].call(this) : '';
+            });
+
+            //
+            $('.j-send-msg').click(function(){
+                var content = layedit.getContent(index);
+                workmanKefu.message.msg = content;
+                workmanEvent.sendEnterMsg();
+            });
+            $( '#LAY_layedit_1' ).contents().keydown(function(event){
+                switch(event.keyCode) {
+                    case 13 :
+                        event.preventDefault();
+                        workmanKefu.message.msg = layedit.getContent(index);
+                        workmanEvent.sendEnterMsg();
+                        break;
+                }
+            });
+        });
+
+        var workmanEvent = {
+            vueobj : {},
+            target_service : {uid:{$service_id|default:0}, uname:null},
+            init : function(){
+                this.vueapp();
+            },
+            add_message : function(data, warp_chat){
+                var d = {
+                    warp_chat : (warp_chat == 1) ? 'warp-chat-right' : 'warp-chat-left',
+                    user_picture : workmanKefu.user.avatar,
+                    user_name : data.name,
+                    add_time : data.time,
+                    message : data.message,
+                };
+                this.vueobj.message_list.push(d);
+            },
+            sendEnterMsg : function(){
+                workmanKefu.message.type = 'sendmsg';
+                workmanKefu.message.to_id = workmanEvent.target_service.uid;
+                workmanKefu.message.avatar = workmanKefu.user.avatar;
+                workmanKefu.message.store_id = workmanKefu.user.store_id;
+                workmanKefu.message.goods_id = workmanKefu.user.goods_id;
+                workmanKefu.message.origin = workmanKefu.come_form;
+                workmanKefu.sendmsg();
+                $( '#LAY_layedit_1' ).contents().find('body').html("");
+                $( '#LAY_layedit_1' ).contents().find('body').focus();
+            },
+            vueapp : function(){
+                /** 客服聊天 */
+                this.vueobj = new Vue({
+                  el: '#chat_list',
+                  data: {
+                    current_target : 0,
+                    cont:"",
+                    message_list : [{
+                          warp_chat : 'success',
+                          user_picture : '',
+                          user_name : '',
+                          add_time : '',
+                          message : '欢迎您',
+                      }]
+                  },
+                  methods: {
+                      get_chat : function(e){
+                          this.current_target = e.currentTarget.getAttribute("data-index");
+                          var service_id = e.currentTarget.getAttribute("data-service-id");
+                          var url = 'user_chat.php?act=chat_list_data';
+                          this.$ajax({
+                              method: 'post',
+                              url: url,
+                              data: {
+                                  service_id : service_id
+                              }
+                          }).then(function(res){
+                              app.message_list = res.data;
+                              console.log(res.data);
+                          })
+                          .catch(function(err){
+                              console.log(err);
+                          })
+                      },
+                      sendmsg : function(e){
+                          console.log(layedit.getContent(index));
+                      }
+                  },
+                  watch:{
+                  },
+                  computed :{
+                    evenNumbers: function () {
+                        return this.message_list.filter(function (list) {
+                            return list.message.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+                        })
+                    }
+                  },
+                  watch:{
+                    evenNumbers:{
+                        deep:true,
+                        handler(val,oldVal){
+                            this.$nextTick(()=>{
+                                let oTank = $('#tank')
+                                oTank.scrollTop($('#tank ul').outerHeight()-$(".tank-con").height());
+                            })
+                        }
+                    }
+                  }
+                });
+                //  vue end
+            },
+            come_message : function(data){
+                 workmanEvent.add_message(data, 2);
+                 workmanEvent.target_service = {
+                     uid:data.from_id
+                 };
+             },
+             get_service : function(data){
+                 workmanEvent.target_service = {
+                     uid:data.service_id
+                 };
+                 data.message = data.msg;
+                 data.time = workmanEvent.SystemDate;
+                 if(data.msg != ''){
+                     workmanEvent.add_message(data, 2);
+                 }
+             },
+             close_link : function (data){
+                 //客服断开
+                 $('#jw-come-msg').append('<li><div class="success">'+data.msg+'</div></li>');
+                 workmanEvent.target_service = {};
+                 $("#tank").scrollTop(($('.tank-con').outerHeight()+$("#jw-get-more").outerHeight())-$("#tank").height());
+             },
+              others_login : function (data){
+                  //其他人登录
+                  workmanKefu.user = {};
+                  var d = {
+                      warp_chat : 'success',
+                      user_picture : '',
+                        user_name : '',
+                        add_time : '',
+                        message : '您的账号异地登录',
+                  };
+
+                  this.vueobj.message_list.push(d);
+                  $("#tank").scrollTop(($('.tank-con').outerHeight()+$("#jw-get-more").outerHeight())-$("#tank").height());
+              }
+        }
+
+        //layui   end
+
+
+	</script>
+</body>
+</html>

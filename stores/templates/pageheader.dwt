@@ -1,0 +1,85 @@
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>{if $page_title}{$page_title}{else}{$lang.store_page}{/if}</title>
+    
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <link href="css/purebox.css" rel="stylesheet" type="text/css">
+    <link href="css/feijiao.css" rel="stylesheet" type="text/css">
+    <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="../js/perfect-scrollbar/perfect-scrollbar.min.css" />
+    {insert_scripts files="../js/jquery-1.9.1.min.js,../js/jquery.json.js,../js/transport_jquery.js,../js/utils.js,listtable.js,common.js,jquery.validation.min.js,../js/jquery.form.js,../js/perfect-scrollbar/perfect-scrollbar.min.js,../js/lib_ecmobanFunc.js"}
+	<!--[if lt IE 9]>
+		<script src="js/css3-mediaqueries.js"></script>
+	<![endif]-->
+</head>
+<body>
+<div class="header">
+    <div class="header_warpper">
+        <div class="logo_info">
+            <div class="logo">
+            	<a href="goods.php?act=list">
+                    <div class="img">
+                    {if $stores_logo}
+                    <img src="{$stores_logo}" />
+                    {else}
+                    <img src="images/store_logo.png" />
+                    {/if}
+                    </div>
+                    <div class="wz">门店管理</div>
+                </a>
+            </div>
+            <div class="english">BUSINESS MANAGMENT CENTER</div>
+        </div>
+        <div class="nav">
+            <ul>
+                <li {if $app eq "goods"}class="curr"{/if}><a href="goods.php?act=list">{$lang.store_goods}</a></li>
+                <li {if $app eq "order"}class="curr"{/if}><a href="order.php?act=list">{$lang.store_order}<span class="order"></span></a></li>
+                <li {if $app eq "assistant"}class="curr"{/if}><a href="store_assistant.php?act=list">{$lang.store_user}</a></li>
+            </ul>
+        </div>
+        <div class="manager">
+            <div class="avatar">
+				<form  action="index.php" id="fileForm" method="post"  enctype="multipart/form-data"  runat="server" >
+					<input type="hidden" name="act" value="upload_store_img">
+					<input type="file" name="img">
+				</form>
+				<a href="#"><img src="{if $store_user_info.store_user_img}../{$store_user_info.store_user_img}{else}images/tx.png{/if}" /></a>
+			</div>
+            <dl>
+                <dt>{$store_user_info.stores_user}</dt>
+                <dd>
+                    <span><i class="sc_icon sc_icon_store"></i><a class="navbar-brand" href="index.php">{$lang.store_page}</a></span>
+                    <span><i class="sc_icon sc_icon_tc"></i><a class="navbar-brand navbar-right" href="privilege.php?act=logout">{$lang.logout}</a></span>
+                    <span><i class="sc_icon sc_icon_store"></i><a class="navbar-brand navbar-right" href="index.php?act=clear_cache">清除缓存</a></span>
+                </dd>
+            </dl>
+        </div>
+    </div>
+</div>
+
+<script>
+onload = function()
+{
+    // 开始检查订单
+    startCheckOrder();
+}
+//上传门店图片
+$(".avatar input").change(function(){
+	var actionUrl = "index.php?act=upload_store_img";
+	$("#fileForm").ajaxSubmit({
+		type: "POST",
+		dataType: "json",
+		url: actionUrl,
+		data: { "action": "TemporaryImage" },
+		success: function (data) {
+			if (data.error == "0") {
+			   alert(data.massege);
+			} else if (data.error == "1") {
+			   $(".avatar img").attr("src", data.content);
+			}
+		},
+		async: true  
+	 });
+})
+</script>

@@ -1,0 +1,207 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+		{include file ='library/seller_menu_left.lbi'}
+		<div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+				{include file ='library/url_here.lbi'}
+                <div class="tabmenu">
+                    <ul class="tab pngFix">
+                        {foreach from=$tab_menu item=menu}
+                        <li {if $menu.curr}class="active"{/if}><a href="{$menu.href}">{$menu.text}</a></li>
+                        {foreachelse}
+                        <li class="active"><a href="javascript:;">{$ur_here}</a></li>
+                        {/foreach}
+                    </ul>
+                </div>
+                {if $action_link}
+                <div class="btn-info">
+                    <a class="sc-btn sc-blue-btn"  href="javascript:void(0)" {$action_link.spec} date-id="{$album_id}"><i class="icon-plus-sign"></i>{$action_link.text}</a>
+                </div>
+                {/if}
+                <div class="clear"></div>
+                <div class="list-div" id="listDiv">
+                {/if}
+                <form method="post" action="gallery_album.php?act=both" name="listForm">
+                    <div class="pic-container">
+                        <div class="pic-items">
+                            {foreach from=$pic_album item=agency}
+                            <div class="item" id="pic_{$agency.pic_id}">
+                                <div class="image">
+                                    <div class="base-msg">
+                                        <div class="img-container"><img src="{$agency.pic_file}" /></div>
+                                        <div class="checkbox_item" style="position:absolute; top:5px; left:5px;">
+                                            <input type="checkbox" class="ui-checkbox" value="{$agency.pic_id}" id="checkbox_{$agency.pic_id}" name="checkboxes[]">
+                                                <label for="checkbox_{$agency.pic_id}" class="ui-label"></label>
+                                        </div>
+                                        <div class="img-width">{$agency.pic_spec}({$agency.pic_size})</div>
+                                        <div class="img-handle">
+                                            <a href="JavaScript:void(0);" class="btn_see" onclick="album_move('{$agency.pic_id}')"><i class="sc_icon icon-move"></i>转移相册</a>
+                                            <a href="JavaScript:void(0);" class="btn_see" onclick="remove_pic('{$agency.pic_id}')"><i class="sc_icon icon-trash"></i>移除</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <i class="icon icon-remove" onclick="remove_pic('{$agency.pic_id}')"></i>
+                                {if $agency.verific_pic eq 1}
+                                <i class="i-img"><img src="images/yin.png"></i>
+                                {/if}
+                            </div>
+                            {/foreach}
+                        </div>
+                    </div>
+                    <div class="shenhe">
+
+                        <div class="checkbox_item fl lh mr10">
+                            <input type="checkbox" id="all" class="ui-checkbox" name="checkboxes[]" onclick="listTable.selectAll(this, 'checkboxes')">
+                                <label for="all" class="ui-label">全选</label>
+                        </div>
+                        <div id="remove_type" class="imitate_select select_w120">
+                            <div class="cite">{$lang.drop}</div>
+                            <ul>
+                                <li><a href="javascript:;" data-value="remove" class="ftx-01">{$lang.drop}</a></li>
+                                <li><a href="javascript:;" data-value="transfer" class="ftx-01">转移相册</a></li>
+                            </ul>
+                            <input name="type" type="hidden" value="remove" id="type_value">
+                        </div>
+                        <div id="album_id" class="imitate_select select_w320" style="display:none">
+                            <div class="cite">{$lang.select_please}</div>
+                            <ul>
+                                <li><a href="javascript:;" data-value="-1" class="ftx-01">{$lang.select_please}</a></li>
+                                {foreach from=$cat_select item=list}
+                                <li><a href="javascript:;" data-value="{$list.album_id}" class="ftx-01">{$list.name}</a></li>
+                                {/foreach}
+                            </ul>
+                            <input name="album_id" type="hidden" value="-1">
+                        </div>
+                        <input type="submit" class="sc-btn sc-blueBg-btn btn30" value="确定">
+                            <input type="hidden" name="act" value="batch" />
+                            <input type="hidden" name="old_album_id" value="{$album_id}" />
+
+                    </div> 
+                </form>
+                <div class="clear"></div>
+
+                {include file="page.dwt"}
+                {if $full_page}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{insert_scripts files="../js/plupload.full.min.js,../js/spectrum-master/spectrum.js,jquery.purebox.js"}
+{include file="library/seller_footer.lbi"}
+{if $full_page}
+<script type="text/javascript">
+listTable.recordCount = {$record_count};
+listTable.pageCount = {$page_count};
+listTable.query = 'pic_query';
+
+{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+{/foreach}
+{literal}
+onload = function()
+{
+	startCheckOrder();
+}
+  
+
+$.divselect("#remove_type","#type_value",function(obj){
+	var val = obj.attr("data-value");
+	if(val == 'transfer'){
+		$("#album_id").show()
+	}else{
+		$("#album_id").hide();
+	}
+});
+	
+/*添加图片*/
+$(document).on("click","a[ectype='addpic_album']",function(){
+	var album_id ="{$album_id}";
+	$.jqueryAjax('dialog.php', 'is_ajax=1&act=pic_album' + '&id=' + album_id + '&temp=pic_album', function(data){
+		var content = data.content;
+		pb({
+			id:"categroy_dialog",
+			title:"上传图片",
+			width:788,
+			content:content,
+			ok_title:"确定",
+			drag:false,
+			foot:false,
+			cl_cBtn:false,
+		});
+		
+	});
+});
+
+function remove_pic(id){
+	if(confirm("确定删除吗？")){
+		Ajax.call('gallery_album.php', "act=pic_remove&id=" + id, remove_picResponse, 'POST', 'JSON');
+	}
+}  
+      
+function remove_picResponse(data){
+	if(data.error == 0){
+		$("#pic_"+data.id).remove();
+	}else{
+		alert(data.content);
+	}
+}
+
+//鼠标停留出发显示
+$(document).on("mouseover",".image",function(){
+	$(this).find(".img-width").hide();
+	$(this).find(".img-handle").show();
+});
+
+$(document).on("mouseout",".image",function(){
+        $(this).find(".img-width").show();
+    $(this).find(".img-handle").hide();
+});
+
+function album_move(pic_id){
+	if(pic_id > 0){
+		Ajax.call('dialog.php', 'act=album_move' + '&pic_id=' + pic_id, album_moveResponse, 'POST', 'JSON');
+	}else{
+		alert("请选择转移图片！");
+	}
+}
+
+function album_moveResponse(result){
+	var content = result.content;
+	pb({
+		id: "album_move",
+		title: "转移相册",
+		width: 680,
+		content: content,
+		ok_title: "确定",
+		drag: true,
+		foot: true,
+		cl_cBtn: false,
+		onOk: function () {
+			var album_id = $("#remove_album_id").val();
+			if(album_id != result.old_album_id && album_id != 0){
+				Ajax.call('get_ajax_content.php', 'act=album_move_back' + '&pic_id=' + result.pic_id + "&album_id=" + album_id, album_move_backResponse, 'POST', 'JSON');
+			}else{
+				alert("请选择转移相册!");
+			}
+		}
+	});
+}
+
+function album_move_backResponse(result){
+	if(result.pic_id > 0){
+		$("#pic_"+result.pic_id).remove();
+	}
+}
+</script>
+{/if}
+</body>
+</html>
+{/if}

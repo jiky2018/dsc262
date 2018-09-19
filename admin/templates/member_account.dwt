@@ -1,0 +1,162 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body"> 
+    <div class="warpper">
+        <div class="title">{$lang.31_fund} - {$lang.02_member_account}</div>
+        <div class="content">
+            <div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.member_account.0}</li>
+                </ul>
+            </div>
+            <div class="flexilist mt30">
+            	<div class="query_result">
+                    <div class="common-content">
+                        <div class="switch_info">
+                            <div class="stat_order_search stat_order_search2">
+                                <form action="" method="post" id="" name="selectForm">
+                                    <div class="search_item">
+                                        <strong class="label_txt">关键词：</strong>
+                                        <input type="text" name="keywords" class="text w250" autocomplete="off" placeholder="会员名称/昵称/手机号/邮箱">
+                                    </div>
+                                    <div class="search_item">
+                                        <strong class="label_txt">资金变动时间：</strong>
+                                        <div class="text_time" id="text_time_start">
+                                            <input type="text" class="text" name="start_date" value="" id="start_date" value="" autocomplete="off" readonly>
+                                        </div>
+                                        <span class="bolang">&nbsp;&nbsp;~&nbsp;&nbsp;</span>
+                                        <div class="text_time" id="text_time_end">
+                                            <input type="text" class="text" name="end_date" value="" id="end_date" value="" autocomplete="off" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="search_item">
+                                        <strong class="label_txt">&nbsp</strong>
+                                        <a href="javascript:void(0);" class="btn btn30 blue_btn ml0" ectype="searchButton"><i class="icon icon-search"></i>查询</a>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="query_result mt30">
+                                <div class="common-head">
+                                    <div class="fl">
+                                        <div class="fbutton m0" id="fbutton_1"><a href="javascript:void(0);"><div class="csv" title="{$lang.export_list}"><span><i class="icon icon-download-alt"></i>{$lang.export_list}</span></div></a></div>
+                                    </div>
+                                    <div class="refresh">
+                                        <div class="refresh_tit" onclick="getList(this)" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                                        <div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                                    </div>
+                                </div>
+                                <div class="list-div" id="listDiv">
+                                    {/if}
+                                    <table cellpadding="0" cellspacing="0" border="0">
+                                        <thead>
+                                        <tr>
+                                            <th width="20%"><div class="tDiv">{$lang.record_id}</div></th>
+                                            <th width="20%"><div class="tDiv">{$lang.user_desc}</div></th>
+                                            <th width="20%"><div class="tDiv">{$lang.user_rank}</div></th>
+                                            <th width="20%"><div class="tDiv">{$lang.user_account}</div></th>
+                                            <th width="20%" class="handle">{$lang.handler}</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {foreach from=$order_list item=vo}
+                                        <tr>
+                                            <td><div class="tDiv">{$vo.user_id}</div></td>
+                                            <td><div class="tDiv">
+                                                会员名称：{$vo.user_name}<br/>
+                                                会员昵称：{$vo.nick_name|default:<span class="blue">尚未设置</span>}
+                                            </div></td>
+                                            <td><div class="tDiv">{$vo.rank_name|default:<span class="blue">无等级</span>}</div></td>
+                                            <td><div class="tDiv">
+                                                可用资金：{$vo.user_money|default:0}元<br/>
+                                                冻结资金：{$vo.frozen_money|default:0}元
+                                            </div></td>
+                                            <td class="handle">
+                                                <div class="tDiv">
+                                                    <a href="account_log.php?act=list&user_id={$vo.user_id}&start_date={$filter.source_start_date}&end_date={$filter.source_end_date}" class="btn_see"><i class="sc_icon sc_icon_see"></i>账目明细</a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {foreachelse}
+                                        <tr>
+                                            <td colspan="12" class="no_record"><div class="tDiv">{$lang.no_records}</div></td>
+                                        </tr>
+                                        {/foreach}
+                                        </tbody>
+                                        <tfoot>
+                                        <tr>
+                                            <td colspan="12">
+                                                <div class="list-page">
+                                                    {include file="library/page.lbi"}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        </tfoot>
+                                    </table>
+                                    {if $full_page}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+	</div>
+    {include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+        //分页传值
+        listTable.recordCount = {$record_count|default:0};
+        listTable.pageCount = {$page_count|default:1};
+        listTable.url = "fund_stats.php?is_ajax=1";
+        listTable.query = "member_account_query";
+    
+        {foreach from=$filter item=item key=key}
+        listTable.filter.{$key} = '{$item}';
+        {/foreach}
+    
+        //导出报表(销售明细)
+        $('#fbutton_1').click(function(){
+            location.href='fund_stats.php?act=download';
+        })
+
+        //日期选择插件调用start sunle
+        var opts1 = {
+            'targetId':'start_date',//时间写入对象的id
+            'triggerId':['start_date'],//触发事件的对象id
+            'alignId':'start_date',//日历对齐对象
+            'format':'-',//时间格式 默认'YYYY-MM-DD HH:MM:SS'
+            'min':'' //最小时间
+        },opts2 = {
+            'targetId':'end_date',
+            'triggerId':['end_date'],
+            'alignId':'end_date',
+            'format':'-',
+            'min':''
+        }
+        xvDate(opts1);
+        xvDate(opts2);
+        //日期选择插件调用end sunle
+
+        //统计
+        $(function(){
+            $(document).on('click', "[ectype='searchButton']", function(){
+                searchData();
+            })
+        })
+
+        function searchData()
+        {       
+            listTable.filter['start_date'] = Utils.trim(document.forms['selectForm'].elements['start_date'].value);
+            listTable.filter['end_date'] = Utils.trim(document.forms['selectForm'].elements['end_date'].value);
+            listTable.filter['keywords'] = Utils.trim(document.forms['selectForm'].elements['keywords'].value);
+    
+            listTable.filter['page'] = 1;
+            listTable.loadList();
+        }
+    </script>
+</body>
+</html>
+{/if}

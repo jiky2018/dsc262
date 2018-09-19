@@ -1,0 +1,125 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+<script type="text/javascript" src="../js/calendar.php?lang={$cfg_lang}"></script>
+<link href="../js/calendar/calendar.min.css" rel="stylesheet" type="text/css" />
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.mail} - {$ur_here}</div>
+        <div class="content">		
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.0}</li>
+                    <li>{$lang.operation_prompt_content.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-head">
+					<div class="fl">
+						<form action="attention_list.php" method="post">
+							<label class="fl lh28">{$lang.batch_note}</label>
+							<input type="hidden" name="act" value="batch_addtolist" />
+							<div class="text_time" id="text_time1">
+							<input name="date" type="text" class="text text_2" id="date" size="10" value='' readonly />
+							</div>
+							<div class="imitate_select select_w120">
+								<div class="cite">{$lang.please_select}</div>
+								<ul>
+									<li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.pri.0}</a></li>
+									<li><a href="javascript:;" data-value="1" class="ftx-01">{$lang.pri.1}</a></li>
+								</ul>
+								<input name="pri" type="hidden" value="0">
+							</div>
+							<input type="submit" value="{$lang.attention_addtolist}" class="btn btn30 red_btn" />
+						</form>
+					</div>				
+                    <div class="refresh" style="margin-top:3px;">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+					<div class="search">
+                    	<form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+                    	<div class="input">
+                        	<input type="text" name="goods_name" class="text nofocus" placeholder="{$lang.goods_name}" autocomplete="off">
+							<input type="submit" class="btn" name="secrch_btn" ectype="secrch_btn" value="" />
+                        </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="common-content">
+                	<div class="list-div" id="listDiv">
+						{/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                	<th width="70%"><div class="tDiv">{$lang.goods_name}</div></th>
+                                    <th width="15%"><div class="tDiv">{$lang.goods_last_update}</div></th>
+                                    <th width="15%"><div class="tDiv">{$lang.attention_addtolist}</div></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+								{foreach from=$goodsdb item=val}
+                            	<tr>
+                                    <td><div class="tDiv"><a href="../goods.php?id={$val.goods_id}" target="_blank">{$val.goods_name}</a></div></td>
+									<td><div class="tDiv">{$val.last_update}</div></td>                             
+                                    <td>
+                                        <div class="tDiv">
+                                            <form action="attention_list.php" method="post" name="form">
+                                                <input type="hidden" name="id" value="{$val.goods_id}" />
+                                                <input type="hidden" name="act" value="addtolist" />
+                                                <div id="pri_div" class="imitate_select select_w75">
+                                                    <div class="cite">{$lang.please_select}</div>
+                                                    <ul>
+                                                        <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.pri.0}</a></li>
+                                                        <li><a href="javascript:;" data-value="1" class="ftx-01">{$lang.pri.1}</a></li>
+                                                    </ul>
+                                                    <input name="pri" id="pri" type="hidden" value="0">
+                                                </div>
+                                                <input type="submit" value="{$lang.button_submit}" class="btn btn30 red_btn" />
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {foreachelse}
+                                    <tr><td class="no-records" colspan="20">{$lang.no_records}</td></tr>								
+								{/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="12">
+                                    	<div class="list-page">
+                                           {include file="library/page.lbi"}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+						{if $full_page}
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+ 	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+	<!-- {foreach from=$filter item=item key=key} -->
+	listTable.filter.{$key} = '{$item}';
+	<!-- {/foreach} -->
+	//日期选择插件调用start sunle
+	var opts1 = {
+		'targetId':'date',//时间写入对象的id
+		'triggerId':['date'],//触发事件的对象id
+		'alignId':'text_time1',//日历对齐对象
+		'format':'-'//时间格式 默认'YYYY-MM-DD HH:MM:SS'
+	}
+	xvDate(opts1);
+	//日期选择插件调用end sunle
+	</script>
+</body>
+</html>
+{/if}

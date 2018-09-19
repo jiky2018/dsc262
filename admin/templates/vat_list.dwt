@@ -1,0 +1,107 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.08_members} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit">
+					<i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span>
+				</div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.list.0}</li>
+                    <li>{$lang.operation_prompt_content.list.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<div class="common-head">
+                    <div class="refresh">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+                    <div class="search">
+                    	<form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+                            <div class="imitate_select select_w140">
+                                <div class="cite">{$lang.select_please}</div>
+                                <ul>
+                                    <li><a href="javascript:;" data-value="" class="ftx-01">{$lang.select_please}</a></li>
+                                    <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.not_audited}</a></li>
+                                    <li><a href="javascript:;" data-value="1" class="ftx-01">{$lang.have_audited}</a></li>
+                                    <li><a href="javascript:;" data-value="2" class="ftx-01">{$lang.audited_not_adopt}</a></li>
+                                </ul>
+                                <input name="audit_status" type="hidden" value="">
+                            </div>
+                            <div class="input">
+                                <input type="text" name="keyword" class="text nofocus" placeholder="{$lang.company_name}" autocomplete="off" />
+                                <input type="submit" class="btn" name="secrch_btn" ectype="secrch_btn" value="" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="common-content">
+				<form method="post" action="" name="listForm">
+                	<div class="list-div" id="listDiv" >
+						{/if}
+                    	<table cellpadding="1" cellspacing="1" >
+                        	<thead>
+                            	<tr>
+                                    <th width="10%"><div class="tDiv">{$lang.record_id}</div></th>
+                                	<th width="15%"><div class="tDiv">{$lang.company_name}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.company_telephone}</div></th>
+									<th width="10%"><div class="tDiv">{$lang.audit_status}</div></th>
+									<th width="15%"><div class="tDiv">{$lang.add_time}</div></th>
+                                    <th width="10%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+						    {foreach from=$vat_list item=list}
+                            	<tr>
+                                    <td><div class="tDiv">{$list.id}</div></td>
+                                	<td><div class="tDiv">{$list.company_name}</div></td>
+                                	<td><div class="tDiv">{$list.company_telephone}</div></td>	
+									<td><div class="tDiv">{$list.audit_status}</div></td>										
+									<td><div class="tDiv">{$list.add_time}</div></td>										
+                                    <td class="handle">
+										<div class="tDiv a3">
+											<a href="user_vat.php?act=view&id={$list.id}" title="{$lang.vat_view}" class="btn_region"><i class="icon icon-screenshot"></i>{$lang.view}</a>
+											<a href="javascript:;" onclick="listTable.remove({$list.id}, '{$lang.drop_confirm}')" title="{$lang.remove}" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a></span>
+										</div>
+									</td>
+                                </tr>
+							{foreachelse}
+							<tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+							{/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="12">
+                                    	<div class="list-page">
+											{include file="library/page.lbi"}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+						{if $full_page}
+                    </div>
+				</form>
+                </div>
+            </div>
+        </div>
+    </div>
+ 	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+    //分页传值
+    listTable.recordCount = {$record_count|default:0};
+    listTable.pageCount = {$page_count|default:1};
+
+    {foreach from=$filter item=item key=key}
+    listTable.filter.{$key} = '{$item}';
+    {/foreach}
+    </script>
+</body>
+</html>
+{/if}

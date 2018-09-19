@@ -1,0 +1,115 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$lang.08_members} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.baitiao_log_list.0}</li>
+                    <li>{$lang.operation_prompt_content.baitiao_log_list.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<div class="common-head">
+                    <div class="total_items ml0">
+                    	<ul>
+                        	<li>{$lang.total_amount}：<b>{$bt_info.format_amount}</b></li>
+                            <li>{$lang.residual_amount}：<b>{$format_remain_amount}</b></li>
+                            <li>{$lang.Credit_payment_days}：<b>{$bt_info.repay_term|default:0}天</b></li>
+                            <li>{$lang.Suspended_term}：<b>{$bt_info.over_repay_trem|default:0}天</b></li>
+                            <li>{$lang.repayments_amount}：<b>{$repay_bt.format_already_amount}</b></li>
+                            <li>{$lang.pending_repayment_amount}：<b>{$repay_bt.format_total_amount}</b></li>
+                            <li>{$lang.baitiao_number}：<b>{$repay_bt.numbers|default:0}</b></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="common-content">
+                	<div class="list-div" id="listDiv">
+                        {/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                    <th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars"></label></div></th>
+                                    <th width="5%"><div class="tDiv">{$lang.record_id}</div></th>
+                                    <th width="18%"><div class="tDiv">{$lang.order_id}</div></th>
+                                    <th width="8%"><div class="tDiv">{$lang.consumption_money}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.billing_day}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.repayment_data}</div></th>
+                                    <th width="14%"><div class="tDiv">{$lang.repayment_cycle}</div></th>
+                                    <th width="12%"><div class="tDiv">{$lang.order_amount}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.conf_pay}</div></th>
+                                    <th width="10%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {foreach from=$bt_logs item=bt_log}
+                            	<tr>
+                                    <td class="sign"><div class="tDiv"><input type="checkbox" name="checkbox[]" class="checkbox" id="checkbox_{$bt_log.log_id}" /><label for="checkbox_{$bt_log.log_id}" class="checkbox_stars"></label></div></td>
+                                    <td><div class="tDiv">{$bt_log.log_id}</div></td>
+                                    <td><div class="tDiv"><a href="order.php?act=info&order_id={$bt_log.order_id}">{$bt_log.order_sn}</a>{if $bt_log.is_stages eq 1}<i class="red">【{$lang.baitiao_by_stage}】</i>{/if}{if $bt_log.is_refund eq 1}<span class="red">【{$lang.order_refund}】</span>{/if}</div></td>
+                                    <td><div class="tDiv">{if $bt_log.order_amount}{$bt_log.order_amount}{$lang.yuan}{/if}</div></td>
+                                    <td><div class="tDiv">{$bt_log.use_date}</div></td>
+                                    <td><div class="tDiv">{if $bt_log.repayed_date}{$bt_log.repayed_date}{/if}</div></td>
+                                    {if $bt_log.is_stages eq 1}
+                                    <td>
+                                        <div class="tDiv">
+                                        {foreach from="$bt_log.repay_date" item="vo" name=vo}
+                                        	{if $smarty.foreach.vo.first}{$vo} ~ {/if}{if $smarty.foreach.vo.last}{$vo}{/if}
+                                        {/foreach}
+                                        </div>
+                                    </td>
+                                    {else}
+                                    <td><div class="tDiv">{$bt_log.repay_date}</div></td>
+                                    {/if}
+                                    
+                                    {if $bt_log.is_stages eq 1}
+                                    <td><div class="tDiv">{$bt_log.stages_one_price}{$lang.yuan_stage}</div></td>
+                                    <td><div class="tDiv">{$bt_log.yes_num}{$lang.stage}/{$bt_log.stages_total}{$lang.stage}</div></td>
+                                    {else}
+                                    <td><div class="tDiv">{if $bt_log.order_amount}{$bt_log.order_amount}{$lang.yuan}{/if}</div></td>
+                                    <td><div class="tDiv">{if $bt_log.is_repay}{$lang.is_pay}{else}{$lang.dai_pay}{/if}</div></td>
+                                    {/if}
+                                    <td class="handle">
+                                        <div class="tDiv a1">
+                                            <a href="javascript:confirm_redirect('{$lang.yes_delete_record}', 'user_baitiao_log.php?act=remove_log&log_id={$bt_log.log_id}')" title="{$lang.remove}" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {foreachelse}
+                                <tr><td class="no-records" colspan="12">{$lang.no_records}</td></tr>
+                                {/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="12">
+                                    	<div class="list-page">
+                                            {include file="library/page.lbi"}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        {if $full_page}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+	listTable.query = "log_list_query";
+	
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+    </script>
+</body>
+</html>
+{/if}

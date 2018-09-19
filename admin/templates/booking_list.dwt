@@ -1,0 +1,96 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.order_word} - {$ur_here}</div>
+        <div class="content">
+            {include file="library/common_tabs_info.lbi"}
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.0}</li>
+                    <li>{$lang.operation_prompt_content.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<div class="common-head">
+                    <div class="search">
+                        <form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+                        <div class="input">
+                            <input type="text" name="keyword" class="text nofocus" placeholder="{$lang.goods_name}" autocomplete="off" />
+                            <input type="submit" class="btn" name="secrch_btn" ectype="secrch_btn" value="" />
+                        </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="common-content">
+				<form method="post" action="" name="listForm">
+                	<div class="list-div" id="listDiv">
+						{/if}
+                    	<table cellpadding="1" cellspacing="1" >
+                        	<thead>
+                            	<tr>
+                                    <th width="5%"><div class="tDiv">{$lang.record_id}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.goods_steps_name}</div></th>
+                                    <th width="8%"><div class="tDiv">{$lang.link_man}</div></th>
+                                    <th width="40%"><div class="tDiv">{$lang.goods_name}</div></th>
+                                    <th width="5%"><div class="tDiv">{$lang.number}</div></th>
+                                    <th width="15%"><div class="tDiv">{$lang.booking_time}</div></th>
+                                    <th width="6%"><div class="tDiv">{$lang.is_dispose}</div></th>
+                                    <th width="10%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+							{foreach from=$booking_list item=booking}
+                            	<tr>
+                                    <td><div class="tDiv">{$booking.rec_id}</div></td>
+                                	<td><div class="tDiv">{if $booking.user_name}<font class="red">{$booking.user_name}</font>{else}<font class="blue">自营</font>{/if}</div></td>
+                                    <td><div class="tDiv">{$booking.link_man|escape}</div></td>
+                                    <td><div class="tDiv">{$booking.goods_name}</div></td>
+                                    <td><div class="tDiv">{$booking.goods_number}</div></td>
+                                    <td><div class="tDiv">{$booking.booking_time}</div></td>
+                                    <td><div class="tDiv">{if $booking.is_dispose}<img src="images/yes.png">{else}<img src="images/no.png">{/if}</div></td>    
+                                    <td class="handle">
+										<div class="tDiv a2">
+											<a href="goods_booking.php?act=detail&amp;id={$booking.rec_id}" title="{$lang.detail}" class="btn_see"><i class="sc_icon sc_icon_see"></i>{$lang.view}</a>
+											<a href="javascript:;" onclick="listTable.remove({$booking.rec_id},'{$lang.drop_confirm}')" title="{$lang.remove}" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>
+										</div>
+									</td>
+                                </tr>
+							{foreachelse}
+							<tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+							{/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="12">
+                                    	<div class="list-page">
+											{include file="library/page.lbi"}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+						{if $full_page}
+                    </div>
+				</form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+	//分页传值
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+    </script>
+</body>
+</html>
+{/if}

@@ -1,0 +1,146 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.08_members} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.list.0}</li>
+                    <li>{$lang.operation_prompt_content.list.1}</li>
+                    <li>{$lang.operation_prompt_content.list.2}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<div class="common-head">
+                   	<div class="refresh ml0">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+                    <div class="search">
+                    	<form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+                        <div class="select_w120 imitate_select">
+                            <div class="cite">{$lang.msg_type}</div>
+                            <ul>
+                               <li><a href="javascript:;" data-value="-1">{$lang.select_please}</a></li>
+                               <li><a href="javascript:;" data-value="0">{$lang.type[0]}</a></li>
+                               <li><a href="javascript:;" data-value="1">{$lang.type[1]}</a></li>
+                               <li><a href="javascript:;" data-value="2">{$lang.type[2]}</a></li>
+                               <li><a href="javascript:;" data-value="3">{$lang.type[3]}</a></li>
+                               <li><a href="javascript:;" data-value="4">{$lang.type[4]}</a></li>
+                               <li><a href="javascript:;" data-value="5">{$lang.type[5]}</a></li>
+                            </ul>
+                            <input name="msg_type" type="hidden" value="0">
+                        </div>
+                        <div class="input">
+                            <input type="text" name="keyword" class="text nofocus" placeholder="{$lang.msg_title}" autocomplete="off" />
+                            <input type="submit" class="btn" name="secrch_btn" ectype="secrch_btn" value="" />
+                        </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="common-content">
+                    <form method="POST" action="user_msg.php?act=batch_drop" name="listForm" onsubmit="return confirm_bath()">
+                	<div class="list-div"  id="listDiv">
+                        {/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                    <th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars"></label></div></th>
+                                    <th width="5%"><div class="tDiv">{$lang.msg_id}</div></th>
+                                    <th width="10%"><div class="tDiv"><a href="javascript:listTable.sort('user_name'); ">{$lang.user_name}</a>{$sort_user_name}</div></th>
+                                    <th width="26%"><div class="tDiv"><a href="javascript:listTable.sort('msg_title'); ">{$lang.msg_title}</a>{$sort_msg_title}</div></th>
+                                    <th width="10%"><div class="tDiv"><a href="javascript:listTable.sort('msg_type'); ">{$lang.msg_type}</a>{$sort_msg_type}</div></th>
+                                    <th width="15%"><div class="tDiv"><a href="javascript:listTable.sort('msg_time'); ">{$lang.msg_time}</a>{$sort_msg_time}</div></th>
+                                    <th width="10%"><div class="tDiv"><a href="javascript:listTable.sort('msg_status'); ">{$lang.msg_status}</a>{$sort_msg_status}</div></th>
+                                    <th width="10%"><div class="tDiv"><a href="javascript:listTable.sort('reply'); ">{$lang.reply}</a>{$sort_reply}</div></th>
+                                    <th width="12%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {foreach from =$msg_list item=msg}
+                            	<tr>
+                                    <td class="sign">
+                                        <div class="tDiv">
+                                            <input type="checkbox" name="checkboxes[]" value="{$msg.msg_id}" class="checkbox" id="checkbox_{$msg.msg_id}" />
+                                            <label for="checkbox_{$msg.msg_id}" class="checkbox_stars"></label>
+                                        </div>
+                                    </td>
+                                    <td><div class="tDiv">{$msg.msg_id}</div></td>
+                                    <td><div class="tDiv">{$msg.user_name}</div></td>
+                                    <td><div class="tDiv">{$msg.msg_title|truncate:40|escape:html}</div></td>
+                                    <td><div class="tDiv">{$msg.msg_type}{if $msg.order_id}<br><a href="order.php?act=info&order_id={$msg.order_id}">{$msg.order_sn}{/if}</a></div></td>
+                                    <td><div class="tDiv">{$msg.msg_time}</div></td>
+                                    {if $msg.msg_area eq 0}
+                                    <td><div class="tDiv"><span class="blue">{$lang.display}</span></div></td>
+                                    {else}
+                                    <td ><div class="tDiv">{if $msg.msg_status eq 0}<span class="red">{$lang.hidden}</span>{else}<span class="blue">{$lang.display}</span>{/if}</div></td>
+                                    {/if}
+                                    <td><div class="tDiv">{if $msg.reply eq 0}<span class="red">{$lang.unreplyed}</span>{else}<span class="blue">{$lang.replyed}</span>{/if}</div></td>
+                                    <td class="handle">
+                                        <div class="tDiv a2">
+                                            <a href="user_msg.php?act=view&id={$msg.msg_id}" title="{$lang.view}" class="btn_see"><i class="sc_icon sc_icon_see"></i>{$lang.view}</a>
+                                            <a href="javascript:;" onclick="listTable.remove({$msg.msg_id}, '{$lang.drop_confirm}')"  title="{$lang.remove}" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {foreachelse}
+								<tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+								{/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="12">
+                                        <div class="tDiv">
+                                            <div class="tfoot_btninfo">
+                                                <div class="item">
+                                                    <div class="label_value">
+                                                        <div  class="imitate_select select_w120">
+                                                          <div class="cite">{$lang.select_please}</div>
+                                                          <ul>
+                                                             <li><a href="javascript:;" data-value="" class="ftx-01">{$lang.select_please}</a></li>
+                                                             <li><a href="javascript:;" data-value="remove" class="ftx-01">{$lang.delete}</a></li>
+                                                             <li><a href="javascript:;" data-value="allow" class="ftx-01">{$lang.allow}</a></li>
+                                                             <li><a href="javascript:;" data-value="deny" class="ftx-01">{$lang.forbid}</a></li>
+                                                          </ul>
+                                                          <input name="sel_action" type="hidden" value="" >
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <input type="hidden" name="act" value="batch" />
+                                                <input type="submit" value="{$lang.button_submit_alt}" name="remove" ectype="btnSubmit" class="btn btn_disabled" disabled="">
+                                            </div>
+                                            <div class="list-page">
+                                                {include file="library/page.lbi"}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        {if $full_page}
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+	cfm = new Object();
+	cfm['allow'] = '{$lang.cfm_allow}';
+	cfm['remove'] = '{$lang.cfm_remove}';
+	cfm['deny'] = '{$lang.cfm_deny}';
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}		
+    </script>
+</body>
+</html>
+{/if}

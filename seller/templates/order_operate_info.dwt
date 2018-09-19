@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="clear"></div>
+                <ul>
+                	<li class="start_li">{$order_info}</li>
+                </ul>
+                <!-- 订单列表 -->
+                <form method="post" action="order.php?act=operate" name="listForm" onsubmit="return check()">
+                <div class="list-div mt10" id="listDiv">
+                	<table class="ecsc-default-table ecsc-table-seller order">
+                        <thead>
+                            <tr>
+                                <th class="tc">{$lang.order_sn}</th>
+                                <th class="tc">{$lang.all_status}</th>
+                                <th class="tc">{$lang.op_you_can}</th>
+                                <th class="tc">{$lang.handler}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {foreach from=$order_list key=key item=order}
+                            <tr>
+                                <td class="bdl tc"><label><input type="checkbox" name="checkboxes" value="{$order.order_sn}" class="checkbox" />{$order.order_sn}</label></td>
+                                <td class="bdl tc">{$lang.os[$order.order_status]},{$lang.ps[$order.pay_status]},{$lang.ss[$order.shipping_status]}</td>
+                                <td class="bdl tc">{$order.operable}</td>
+                                <td class="bdl bdr tc">
+                                    <a href="order.php?act=info&order_id={$order.order_id}" class="blue">{$lang.detail}</a>
+                                </td>
+                            </tr>
+                        {foreachelse}
+                        	<tr><td class="no-records" colspan="5">{$lang.no_records}</td></tr>
+                        {/foreach}
+                        </tbody>
+                    </table>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+{insert_scripts files="../js/jquery.picTip.js"}
+<script type="text/javascript">
+function check()
+    {
+      var snArray = new Array();
+      var eles = document.forms['listForm'].elements;
+      for (var i=0; i<eles.length; i++)
+      {
+        if (eles[i].tagName == 'INPUT' && eles[i].type == 'checkbox' && eles[i].checked && eles[i].value != 'on')
+        {
+          snArray.push(eles[i].value);
+        }
+      }
+      if (snArray.length == 0)
+      {
+        return false;
+      }
+      else
+      {
+        eles['order_id'].value = snArray.toString();
+        return true;
+      }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>{$page_title}</title>
+    <link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/base.css" />
+    <link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/user.css" />
+    <link rel="stylesheet" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/purebox.css">
+    {* 包含脚本文件 *}
+    {insert_scripts files='jquery-1.9.1.min.js,jquery.json.js,transport_jquery.js,common.js,utils.js'}
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/sc_memake.js"></script>
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/sc_common.js"></script>
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.SuperSlide.2.1.1.js"></script>
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.tabso_yeso.js"></script>
+    
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.yomi.js"></script>
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/rotate3di.js"></script>
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/ecsc-nav.js"></script>
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/checkAll.js"></script>
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/scroll_city.js"></script>
+    <!-- #BeginLibraryItem "/library/js_languages.lbi" --><!-- #EndLibraryItem -->
+</head>
+
+<body id="user">
+<!-- #BeginLibraryItem "/library/page_header_user.lbi" --><!-- #EndLibraryItem -->
+<div class="main w1200 user_home user_tran">
+    <div class="user-left">
+        <!-- #BeginLibraryItem "/library/user_menu.lbi" --><!-- #EndLibraryItem -->
+    </div>
+
+    <!--@author-bylu 我的白条 start-->
+    <!--{if $action eq 'baitiao' || $action eq 'baitiao_pay_log'} -->
+    <div class="user-right">
+        <div class="user-item-temp user-item-temp1">
+            <div class="user-item-title">
+                <h3>{$lang.baitiao}</h3>
+            </div>
+            <div class="baitiao_info">
+                <ul style="margin-top:30px;">
+                    <li>{$lang.bt_Total_amount}：<span>{$bt_info.amount}</span></li>
+                    <li>{$lang.Surplus_baitiao}：<span>{$repay_bt.balance|default:0}</li>
+                    <li>{$lang.also_day}{if $bt_info.over_repay_trem}（{$lang.also_delay}）{/if}：<span>{$bt_info.repay_term}&nbsp;{$lang.day}{if $bt_info.over_repay_trem}（{$bt_info.over_repay_trem}&nbsp;{$lang.day}）{/if}</span></li>
+                    <li>{$lang.already_amount}：<span>{$repay_bt.format_already_amount|default:0}</span></li>
+                    <li>{$lang.stay_pay}：<span>{$repay_bt.stay_pay|default:0}</span></li>
+                </ul>
+            </div>
+        </div>
+        <div class="user-item-temp user-item-temp1 user-fund-management">
+            <ul class="user-fund-tabs">
+                <li class="apply-item {if $action eq 'baitiao'}on{/if}" onClick="window.location='user.php?act=baitiao'"><i class="icon"></i>交易明细</li>
+                <li class="account-item {if $action eq 'baitiao_pay_log'}on{/if}" onClick="window.location='user.php?act=baitiao_pay_log'"><i class="icon"></i>还款记录</li>
+            </ul>
+            <!-- {if $action eq 'baitiao'} -->
+            <div class="user-order-list user-order-baitiao">
+                <div class="thead">
+                    <div class="th b_info">{$lang.baitiao_order}</div>
+                    <div class="th">{$lang.Consumer_account_day}</div>
+                    <div class="th">{$lang.label_bt_one}</div>
+                    <div class="th">{$lang.label_bt_two}</div>
+                    <div class="th">{$lang.also_amount}</div>
+                    <div class="th">{$lang.operation}</div>
+                </div>
+                <div class="tbody">
+                     {foreach from=$bt_logs item=bt_log}
+                    <div class="tr">
+                        <div class="td b_info">
+                            <p class="line-item">
+                            <span>{$lang.order_number}：</span>
+                            <a href="user.php?act=order_detail&order_id={$bt_log.order_id}" target="_blank" class="ftx-05">{$bt_log.order_sn}</a>
+                            {if $bt_log.is_stages}<span class="ftx-01 ml5">({$lang.by_stages})</span>{/if}
+                            </p>
+                            <p class="line-item last"><a href="user.php?act=baitiao_pay_log&log_id={$bt_log.log_id}" target="_blank" class="ftx-05">【查看还款记录】</a></p>
+                        </div>
+                        <div class="td"><span class="ftx-02">{$bt_log.use_date}</span></div>
+                        <div class="td{if $bt_log.is_stages} b_log{/if}">
+                            <p class="line-item ftx-01">{$bt_log.repay_date}</p>
+                            {if $bt_log.is_stages}
+                            	<p class="line-item ftx-10 last">{$bt_log.yes_num}{$lang.stage}/{$bt_log.stages_total}{$lang.stage}</p>
+                            {/if}
+                        </div>
+                        <div class="td"><span class="ftx-06">{if $bt_log.repayed_date}{$bt_log.repayed_date}{/if}</span></div>
+                        <div class="td">
+                            <span>
+                                {if $bt_log.order_amount}
+                                  {if $bt_log.is_stages}
+                                    {$bt_log.stages_one_price}{$lang.element}/{$lang.stage}
+                                  {else}
+                                    {$bt_log.order_amount}
+                                  {/if}
+                                {/if}
+                        	</span>
+                        </div>
+                        <div class="td">
+                            {if $bt_log.is_refund eq 1}<span class="ftx-03">{$lang.refound}</span>{elseif $bt_log.is_repay eq 1}<span class="ftx-01">{$lang.Has_paid_off}</span>{else}<a href="user.php?act=repay_bt&order_id={$bt_log.order_id}&pay_id={$bt_log.pay_id}&stages_num={$bt_log.stages_num|default:0}" class="fk_ztai" target="_blank"><span class="repay_btn">{$lang.repayment}</span></a>{/if}
+                        </div>
+                    </div>
+                    {/foreach}
+                </div>
+            </div>
+            <div class="tbody pager_tech pages26" style="padding-bottom:30px;">
+				<!-- #BeginLibraryItem "/library/pages.lbi" --> <!-- #EndLibraryItem -->
+            </div>
+            <!-- {/if} -->
+            
+            <!-- {if $action eq 'baitiao_pay_log'} -->
+            <div class="user-order-list user-order-baitiao">
+                <div class="thead">
+                    <div class="th">{$lang.record_id}</div>
+                    <div class="th b_info">{$lang.order_number}</div>
+                    <div class="th">{$lang.dijiqi}</div>
+                    <div class="th">{$lang.also_amount}</div>
+                    <div class="th">{$lang.also_state}</div>
+                    <div class="th">{$lang.also_time}</div>
+                </div>
+                <div class="tbody">
+                     {foreach from=$pay_list item=list}
+                    <div class="tr">
+                        <div class="td">
+                            {$list.id}
+                        </div>
+                        <div class="td b_info" style="line-height:80px;">{$list.order_sn}</div>
+                        <div class="td{if $bt_log.is_stages} b_log{/if}">
+                            {$list.stages_num}/{$lang.qi}
+                        </div>
+                        <div class="td"><span class="ftx-06">{$list.stages_price}</span></div>
+                        <div class="td">
+                            {if $list.is_pay}
+                                {$lang.also_pay.is_pay}
+                            {else}
+                                {$lang.also_pay.not_pay}
+                            {/if}
+                        </div>
+                        <div class="td">
+                           	{if $list.pay_time}
+                            {$list.pay_time}
+                            {else}
+                            <a href="user.php?act=repay_bt&order_id={$list.order_id}&pay_id={$list.pay_id}&stages_num={$list.stages_num|default:0}" class="sc-btn" target="_blank"><span class="repay_btn">{$lang.repayment}</span></a> 
+                            {/if}
+                        </div>
+                    </div>
+                    {/foreach}
+                </div>
+            </div>
+            <div class="tbody pager_tech pages26" style="padding-bottom:30px;">
+				<!-- #BeginLibraryItem "/library/pages.lbi" --> <!-- #EndLibraryItem -->
+            </div>
+            <!-- {/if} -->
+        </div>
+    </div>
+    <!--{/if} -->
+    <!--@author-bylu 我的白条 end-->
+
+    <!--@author-bylu 白条还款页 start-->
+    {if $action eq 'repay_bt'}
+    <div class="user-right">
+        <div class="user-item-temp">
+            <div class="user-item-title user-item-title30 borderNone">
+                <h3>{$lang.fee_total}</h3>
+            </div>
+            <table class="complete-order-list total-order-list">
+                <tbody class="tbody">
+                <tr class="tr">
+                    <td class="td tore1 first">
+                        <div class="item">
+                            <span class="ftx-09">{$lang.formated_order_amount}：</span>
+                            <span class="ftx-01">{$order.formated_order_amount}</span>
+                        </div>
+                    </td>
+                    <td class="td tore3">
+                        <div class="item">
+                            {if $stages_info.is_stages eq 1}
+                            <span class="ftx-09">{$lang.rate}：</span>
+                            <span class="ftx-01">
+                                {if $stages_info.stages_total eq 1}
+                                0%
+                                {else}
+                                {$stages_rate}%
+                                {/if}
+                            </span>
+                            {/if}
+                        </div>
+                    </td>
+                    <td class="td tore3">
+                        <div class="item">
+                            {if $stages_info.is_stages eq 1}
+                            <span class="ftx-09">{$lang.Number_periods}：</span>
+                            <span class="ftx-01">
+                                {$stages_info.yes_num}{$lang.stage}/{$stages_info.stages_total}{$lang.stage}
+                            </span>
+                            {/if}
+                        </div>
+                    </td>
+                    <td class="td tore4">
+                        <div class="item">
+                            <span class="ftx-08">{$lang.Repayment_amount_now}：</span>
+                            {if $stages_info.is_stages eq 1}
+                            <span class="ftx-01 ftx-h1">{$stages_info.stages_one_price}元</span>
+                            {else}
+                            <span class="ftx-01 ftx-h1">{$order.order_amount}元</span>
+                            {/if}
+                        </div>
+                    </td>
+                </tr>
+                <!--{if $payment_list}-->
+                <tr class="tr">
+                    <td class="td colspan5 first" colspan="5">
+                        <form name="payment" method="post" action="user.php" style="padding-left: 555px;">
+                            {$lang.change_payment}：
+                            <select name="pay_id">
+                                <!--{foreach from=$payment_list item=payment}-->
+                                <option value="{$payment.pay_id}">
+                                    {$payment.pay_name}({$lang.pay_fee}:{$payment.format_pay_fee})
+                                </option>
+                                <!--{/foreach}-->
+                            </select>
+                            <input type="hidden" name="act" value="repay_bt" />
+                            <input type="hidden" name="order_id" value="{$order.order_id}" />
+                            <input type="hidden" name="stages_num" value="{$stages_num|default:0}" />
+                            <input type="submit" name="Submit" class="submit" value="{$lang.button_submit}" />
+                        </form>
+                        <!--生成的支付按钮-->
+                        <span id="pay_btn" style="width: 60px;float: right;margin:0px 22px 10px 0px;">{$order.pay_online}</span>
+                    </td>
+                </tr>
+                <!--{/if}-->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <script type="text/javascript">
+	$(function(){
+		checkOrder();
+	});
+	
+	var timer;
+	function checkOrder(){
+		var baitiao_id = '{$stages_info.baitiao_id|default:0}';
+		var log_id = '{$stages_info.log_id|default:0}';
+		var stages_num = '{$stages_num|default:0}';
+		var pay_code = '{$payment_info.pay_code|default:0}';
+		
+		if(pay_code == 'wxpay'){
+			var url = "user.php?act=checkorder&baitiao_id=" +baitiao_id+ "&log_id=" + log_id+ "&stages_num=" + stages_num + "&pay_code=" + pay_code;
+			$.get(url, {}, function(data){
+				//已付款
+				if(data.code == 1){
+					clearTimeout(timer);
+					location.href = "user.php?act=baitiao";
+				}
+			},'json');
+			timer = setTimeout("checkOrder()", 5000);
+		}
+		
+	}
+	</script>
+    {/if}
+    <!--@author-bylu 白条还款页 end-->
+</div>
+<!-- #BeginLibraryItem "/library/page_footer_flow.lbi" --><!-- #EndLibraryItem -->
+<!-- #BeginLibraryItem "/library/common_html.lbi" --><!-- #EndLibraryItem -->
+</body>
+</html>

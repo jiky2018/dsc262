@@ -1,0 +1,172 @@
+<div class="item {$var.code}"  data-val="{$var.id}">
+    <div class="label">{$var.name}：</div>
+    {if $var.type eq "text"}
+    <div class="label_value">
+    	<input type="text" name="value[{$var.id}]" class="text {$var.code}" value="{$var.value}" autocomplete="off" />
+        <div class="form_prompt"></div>
+    	{if $var.desc}<div class="notic">{$var.desc|nl2br}</div>{/if}
+    </div>
+    
+    {elseif $var.type eq "password"}
+    <div class="label_value">
+        <input type="password"  style="display:none"/> 
+        <input type="password" name="value[{$var.id}]" class="text" value="{$var.value}" autocomplete="off" />
+        <div class="form_prompt"></div>
+        {if $var.desc}<div class="notic">{$var.desc|nl2br}</div>{/if}
+    </div>
+    {elseif $var.type eq "textarea"}
+    <div class="label_value">
+        <textarea class="textarea" name="value[{$var.id}]" id="role_describe">{$var.value}</textarea>
+        <div class="form_prompt"></div>
+        {if $var.desc}<div class="notic">{$var.desc|nl2br}</div>{/if}
+    </div>
+    {elseif $var.type eq "select"}
+    <div class="label_value">
+        <div class="checkbox_items">
+            {foreach from=$var.store_options key=k item=opt}
+                <div class="checkbox_item">
+                    <input type="radio" name="value[{$var.id}]" class="ui-radio evnet_{$var.code}" id="value_{$var.id}_{$k}" value="{$opt}"
+                    {if $var.value eq $opt}checked="true"{/if}
+                    {if $var.code eq 'rewrite'}
+                    onclick="return ReWriterConfirm(this);"
+                    {/if}
+                    {if $var.code eq 'smtp_ssl' and $opt eq 1}
+                    onclick="return confirm('{$lang.smtp_ssl_confirm}');"
+                    {/if}
+                    {if $var.code eq 'enable_gzip' and $opt eq 1}
+                    onclick="return confirm('{$lang.gzip_confirm}');"
+                    {/if}
+                    {if $var.code eq 'retain_original_img' and $opt eq 0}
+                    onclick="return confirm('{$lang.retain_original_confirm}');"
+                    {/if} />
+                    <label for="value_{$var.id}_{$k}" class="ui-radio-label">{$var.display_options[$k]}</label>
+                </div>
+            {/foreach}
+        </div>
+        <div class="form_prompt"></div>
+        {if $var.desc}<div class="notic">{$var.desc|nl2br}</div>{/if}
+    </div>
+    {elseif $var.type eq "options"}
+    <div class="label_value">
+        <div id="select{$var.id}_{$k}" class="imitate_select select_w320">
+          <div class="cite">{$lang.please_select}</div>
+          <ul>
+             {foreach from=$lang.cfg_range[$var.code] item=options key=k}
+             <li><a href="javascript:;" data-value="{$k}" class="ftx-01">{$options}</a></li>
+             {/foreach}
+          </ul>
+          <input name="value[{$var.id}]" type="hidden" value="{$var.value}" id="{$var.id}_{$k}_val">
+        </div>
+        <div class="form_prompt"></div>
+        {if $var.desc}<div class="notic">{$var.desc|nl2br}</div>{/if}
+    </div>
+    {elseif $var.type eq "file"}
+    <div class="label_value">
+        <div class="type-file-box">
+            <input type="button" name="button" id="button" class="type-file-button" value="" />
+            <input type="file" class="type-file-file"  name="{$var.code}" size="30" data-state="imgfile" hidefocus="true" value="" />
+            {if $var.value}
+            <span class="show">
+                <a href="{$var.value}" target="_blank" class="nyroModal"><i class="icon icon-picture" data-tooltipimg="{$var.value}" ectype="tooltip" title="tooltip"></i></a>
+            </span>
+            {/if}
+            <input type="text" name="textfile" class="type-file-text" id="textfield" readonly />
+        </div>
+        {if $var.del_img}
+            <a href="shop_config.php?act=del&code={$var.code}" class="btn red_btn h30 mr10 fl" style="line-height:30px;">{$lang.drop}</a>
+        {else}
+            {if $var.value neq ""}
+            <img src="images/yes.gif" alt="yes" class="fl mt10" />
+            {else}
+            <img src="images/no.gif" alt="no" class="fl mt10" />
+            {/if}
+        {/if}
+        <div class="form_prompt"></div>
+        {if $var.desc}<div class="notic">{$var.desc|nl2br}</div>{/if}
+    </div>
+    {elseif $var.type eq "manual"}
+        {if $var.code eq "shop_country"}
+            <div class="ui-dropdown smartdropdown alien">
+                <input type="hidden" value="{$cfg.shop_country}" name="value[{$var.id}]" id="selProvinces">
+                <div class="txt">国家</div>
+                <i class="down u-dropdown-icon"></i>
+                <div class="options clearfix" style="max-height:300px;">
+                    {foreach from=$countries item=list}
+                    <span class="liv" data-text="{$list.region_name}" data-type="1" data-value="{$list.region_id}">{$list.region_name}</span>
+                    {/foreach}
+                </div>
+            </div>
+        {elseif $var.code eq "shop_province"}
+        <div class="ui-dropdown smartdropdown alien">
+            <input type="hidden" value="{$cfg.shop_province}" name="value[{$var.id}]" id="selProvinces">
+            <div class="txt">省/直辖市</div>
+            <i class="down u-dropdown-icon"></i>
+            <div class="options clearfix" style="max-height:300px;">
+                {foreach from=$provinces item=list}
+                <span class="liv" data-text="{$list.region_name}" data-type="2" data-value="{$list.region_id}">{$list.region_name}</span>
+                {/foreach}
+            </div>
+        </div>
+        {elseif $var.code eq "shop_city"}
+        <div id="dlCity" class="ui-dropdown smartdropdown alien">
+            <input type="hidden" value="{$cfg.shop_city}" name="value[{$var.id}]" id="selCities">
+            <div class="txt">市</div>
+            <i class="down u-dropdown-icon"></i>
+            <div class="options clearfix" style="max-height:300px;">
+                <span class="liv hide" data-text="市" data-value="0">市</span>
+                {foreach from=$cities item=list}
+                 <span class="liv" data-text="{$list.region_name}" data-type="3" data-value="{$list.region_id}">{$list.region_name}</span>
+                {/foreach}
+            </div>
+        </div>
+        {elseif $var.code eq "lang"}
+        <div class="label_value">
+            <div id="select{$var.id}_{$k}" class="imitate_select select_w320" >
+              <div class="cite">{$lang.please_select}</div>
+              <ul>
+                 {foreach from=$lang_list item=options key=k}
+                 <li><a href="javascript:;" data-value="{$options}" class="ftx-01">{$options}</a></li>
+                 {/foreach}
+              </ul>
+              <input name="value[{$var.id}]" type="hidden" value="{$var.value}" id="{$var.id}_{$k}_val">
+            </div>
+            <div class="form_prompt"></div>
+            {if $var.desc}<div class="notic">{$var.desc|nl2br}</div>{/if}
+        </div>
+        {elseif $var.code eq "invoice_type"}
+        <div class="label_value">
+            <table>
+                <tr>
+                    <td colspan="2">
+                         <div id="consumtable">
+                            <p>
+                                <label class="fl mr10">{$lang.invoice_type}</label>
+                                <input type="text" class="text w120" name="invoice_type[]" size="10" autocomplete="off"/>
+                                <label class="fl mr10">{$lang.invoice_rate}</label>
+                                <input type="text" class="text w120" name="invoice_rate[]" size="10" />
+                                <input type="button" onclick="addCon_amount(this)" class="button fl" value="{$lang.add}" autocomplete="off"/>
+                                <span class="form_prompt ml10 fl"></span>
+                            </p>
+                            {if $invoice_list}
+                            {foreach from=$invoice_list item=invoice}
+                                {if $invoice.type}
+                                <p class="mt10">
+                                    <label class="fl mr10">{$lang.invoice_type}</label>
+                                    <input type="text" name="invoice_type[]" value="{$invoice.type}" class="text w120" size="10" autocomplete="off"/>
+                                    <label class="fl mr10">{$lang.invoice_rate}</label>
+                                    <input type="text" name="invoice_rate[]" value="{$invoice.rate}" size="10" class="text w120" autocomplete="off"/>
+                                	<a href='javascript:;' class='removeV' onclick='removeCon_amount(this)'><img src='images/no.gif' title='删除'></a>
+                                </p>  
+                                {/if}
+                            {/foreach}
+                            {/if}
+                        </div>
+                	</td>
+                </tr>
+            </table>
+            <div class="form_prompt"></div>
+            {if $var.desc}<div class="notic" style="padding:0px;">{$var.desc|nl2br}</div>{/if}
+        </div>
+        {/if}
+    {/if}
+</div>

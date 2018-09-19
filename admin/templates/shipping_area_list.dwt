@@ -1,0 +1,92 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+<div class="warpper">
+    <div class="title"><a href="{$action_link1.href}" class="s-back">{$lang.back}</a>{$lang.11_system} - {$ur_here}</div>
+    <div class="content">
+        <div class="explanation" id="explanation">
+            <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+            <ul>
+                <li>{$lang.operation_prompt_content.list.0}</li>
+                <li>{$lang.operation_prompt_content.list.1}</li>
+            </ul>
+        </div>
+        <div class="flexilist">
+            <div class="common-head">
+                <div class="fl">
+                    <a href="{$action_link.href}"><div class="fbutton"><div class="add_region" title="{$action_link.text}"><span><i class="icon icon-plus"></i>{$action_link.text}</span></div></div></a>
+                    <a href="{$action_link1.href}"><div class="fbutton"><div class="reply" title="{$action_link1.text}"><span><i class="icon icon-reply"></i>{$action_link1.text}</span></div></div></a>
+                </div>
+            </div>
+            <div class="common-content">
+                <form method="post" action="shipping_area.php" name="listForm" onsubmit="return confirm('{$lang.remove_confirm}')">
+                <div class="list-div" id="listDiv">
+                    {/if}
+                    <table cellpadding="0" cellspacing="0" border="0" id='listTable'>
+                        <thead>
+                            <tr>
+                                <th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars"></label></div></th>
+                                <th width="5%"><div class="tDiv">{$lang.record_id}</div></th>
+                                <th width="20%"><div class="tDiv">{$lang.shipping_area_name}</div></th>
+                                <th width="20%"><div class="tDiv">{$lang.shipping_area_regions}</div></th>
+                                {if $shipping_code == "cac"}
+                                <th width="30%"><div class="tDiv">{$lang.shipping_area_point}</div></th>
+                                {/if}
+                                <th {if $shipping_code neq "cac"}width="15%"{/if} class="handle">{$lang.handle}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {foreach from=$areas item=area}
+                            <tr>
+                                <td class="sign"><div class="tDiv"><input type="checkbox" name="checkboxes[]" value="{$area.shipping_area_id}"  class="checkbox" id="checkbox_{$area.shipping_area_id}" /><label for="checkbox_{$area.shipping_area_id}" class="checkbox_stars"></label></div></td>
+                                <td><div class="tDiv">{$area.shipping_area_id}</div></td>
+                                <td><div class="tDiv">{$area.shipping_area_name|escape:"html"}</div></td>
+                                <td><div class="tDiv">{$area.shipping_area_regions}</div></td>
+                                {if $shipping_code == "cac"}
+                                <td>
+                                    <div class="tDiv">
+                                        {foreach from=$area.name item=list}
+                                            <span>{$list.name}&nbsp;&nbsp;</span>
+                                        {/foreach}
+                                    </div>
+                                </td>
+                                {/if}
+                                <td class="handle">
+                                    <div class="tDiv a2">
+                                        <a href="shipping_area.php?act=edit&id={$area.shipping_area_id}" class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>
+                                        <a href="javascript:;" onclick="listTable.remove({$area.shipping_area_id}, '{$lang.remove_confirm}', 'remove_area')" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {foreachelse}
+                            <tr><td class="no-records" colspan="12">{$lang.no_records}</td></tr>
+                            {/foreach}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="12">
+                                    <div class="tDiv">
+                                        <div class="tfoot_btninfo">
+                                            <input type="hidden" name="act" value="multi_remove" />
+                                            <input type="hidden" name="shipping" value="{$smarty.get.shipping}" />
+                                            <input name="remove" type="submit" ectype="btnSubmit" value="{$lang.delete_selected}" class="btn btn_disabled" disabled />
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    {if $full_page}
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/pagefooter.lbi'}
+</body>
+</html>
+{/if}

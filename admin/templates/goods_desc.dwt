@@ -1,0 +1,187 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$lang.goods_alt} - {$ur_here}</div>
+        <div class="content">
+            {include file ='library/goods_desc_tab.lbi'}	
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.goods_desc.0}</li>
+                    <li>{$lang.operation_prompt_content.goods_desc.1}</li>
+                    <li>{$lang.operation_prompt_content.goods_desc.2}</li>
+                </ul>
+            </div>
+            <div class="flexilist" id="linkgoods-table" data-table="linkgoods">
+                <div class="common-content">
+					<form enctype="multipart/form-data" action="goods.php" method="post" name="theForm" id="goods_desc_form">
+                    <div class="step" ectype="filter" data-filter="goods">
+                        <div class="step_content">
+							<div class="goods_search_div">
+								<div class="goods_search_div">
+									<div class="search_select">
+										<div class="categorySelect">
+											<div class="selection">
+												<input type="text" name="category_name" id="category_name" class="text w250 valid" value="{$lang.select_cat}" autocomplete="off" readonly data-filter="cat_name" />
+												<input type="hidden" name="category_id" id="category_id" value="0" data-filter="cat_id" />
+											</div>
+											<div class="select-container" style="display:none;">
+												{include file="library/filter_category.lbi"}
+											</div>
+										</div>
+									</div>
+									<div class="search_select">
+										<div class="brandSelect">
+											<div class="selection">
+												<input type="text" name="brand_name" id="brand_name" class="text w120 valid" {$lang.select_barnd} autocomplete="off" readonly data-filter="brand_name" />
+												<input type="hidden" name="brand_id" id="brand_id" value="0" data-filter="brand_id" />
+											</div>
+											<div class="brand-select-container" style="display:none;">
+												{include file="library/filter_brand.lbi"}
+											</div>
+										</div>                            
+									</div>
+									<input type="text" name="keyword" class="text w150" value="" placeholder={$lang.input_keywords} data-filter="keyword" autocomplete="off" />
+									<a href="javascript:void(0);" class="btn btn30" ectype="search"><i class="icon icon-search"></i>{$lang.search_word}</a>
+                                    <input type="hidden"  data-filter="ru_id" value="{$goods.ru_id|default:0}" autocomplete="off" />
+								</div>
+							</div>
+							<div class="move_div">
+								<div class="move_left">
+									<h4>{$lang.src_list}</h4>
+									<div class="move_info">
+										<div class="move_list">
+											{include file="library/move_left.lbi"}
+										</div>
+									</div>
+									<div class="move_handle">
+										<a href="javascript:void(0);" class="btn btn25 moveAll" ectype="moveAll">{$lang.check_all}</a>
+										<a href="javascript:void(0);" class="btn btn25 red_btn" ectype="sub" data-operation="add_link_desc">{$lang.button_submit_alt}</a>
+									</div>
+								</div>
+								<div class="move_middle">
+									<div class="move_point" data-operation="add_link_desc"></div>
+								</div>
+								<div class="move_right">
+									<h4>{$lang.dest_list}</h4>
+									<div class="move_info">
+										<div class="move_list">
+											<ul>
+												{foreach from=$link_goods_list item=link_goods}
+												<li data-value="{$link_goods.goods_id}" data-text="{$link_goods.goods_name}"><i class="sc_icon sc_icon_no"></i><a href="javascript:void(0);">{$link_goods.goods_name}</a></li>
+												{/foreach}
+											</ul>
+										</div>
+									</div>
+									<div class="move_handle">
+										<a href="javascript:void(0);" class="btn btn25 moveAll" ectype="moveAll">{$lang.check_all}</a>
+										<a href="javascript:void(0);" class="btn btn25 btn_red" ectype="sub" data-operation="drop_link_desc">{$lang.remove}</a>
+									</div>
+								</div>
+							</div>
+							<div class="mian-info">
+								<div class="switch_info">
+									<div class="item">
+										<div class="label" style="width:auto;">{$lang.require_field}&nbsp;{$lang.goods_desc_name}：</div>
+										<div class="label_value">
+											<input name="desc_name" type="text" class="text" value="{$goods.desc_name}" size="80" />
+                                            <div class="form_prompt"></div>
+										</div>
+									</div>
+									<div class="item">
+										<div class="label">&nbsp;</div>
+										<div class="label_value">
+											
+										</div>
+										{$goods_desc}
+									</div>	
+                                    {if $goods.ru_id neq 0}
+                                    <div class="item">
+                                        <div class="label">{$lang.adopt_status}：</div>
+                                        <div class="label_value">
+											<div class="checkbox_items" ectype="general_audit_status">
+												<div class="checkbox_item"> 
+													<input name="review_status" type="radio" class="ui-radio" value="1" id="review_status_1" {if $goods.review_status eq 1}checked="checked"{/if} />
+													<label for="review_status_1" class="ui-radio-label">{$lang.not_audited}</label>
+												</div>
+												<div class="checkbox_item"> 
+													<input name="review_status" type="radio" class="ui-radio" value="2" id="review_status_2" {if $goods.review_status eq 2}checked="checked"{/if} />
+													<label for="review_status_2" class="ui-radio-label">{$lang.audited_not_adopt}</label>
+												</div>
+                                                <div class="checkbox_item"> 
+													<input name="review_status" type="radio" class="ui-radio" value="3" id="review_status_3" {if $goods.review_status eq 3}checked="checked"{/if} />
+													<label for="review_status_3" class="ui-radio-label">{$lang.audited_yes_adopt}</label>
+												</div>
+											</div>
+                                        </div>
+                                    </div>	
+                                    
+                                    <div class="item {if $goods.review_status neq 2}hide{/if}" id="review_content">
+										<div class="label">{$lang.adopt_reply}：</div>
+										<div class="value">
+											<textarea name="review_content" class="textarea h100">{$goods.review_content}</textarea>
+										</div>
+									</div>	
+                                    {/if}						
+								</div>
+							</div>
+                            <div class="move_buttom_div pt30 tc info_btn">
+								<input type="hidden" name="MAX_FILE_SIZE" value="2097152" />
+								<input type="hidden" name="act" value="{$form_act}" />
+								<input type="hidden" name="id" value="{$goods.id|default:0}" />
+								<input type="hidden" name="goods_id" value="0" />
+                                <input type="hidden" name="ru_id" value="{$goods.ru_id|default:0}" />
+								<input type="button" value="{$lang.button_submit}" class="button fn" id="submitBtn" />
+								<input type="reset" value="{$lang.button_reset}" class="button button_reset fn" />								
+                            </div>
+                        </div>
+                    </div>
+					</form>
+                </div>
+            </div>
+		</div>
+	</div>
+    {include file ='library/pagefooter.lbi'}	
+	<script type="text/javascript">
+	$(function(){
+		//表单验证
+		$("#submitBtn").click(function(){
+			if($("#goods_desc_form").valid()){
+				$("#goods_desc_form").submit();
+			}
+		});
+	
+		$('#goods_desc_form').validate({
+			errorPlacement:function(error, element){
+				var error_div = element.parents('div.label_value').find('div.form_prompt');
+				element.parents('div.label_value').find(".notic").hide();
+				error_div.append(error);
+			},
+			rules:{
+				desc_name:{
+					required : true
+				}
+			},
+			messages:{
+				desc_name:{
+					required : '<i class="icon icon-exclamation-sign"></i>' + lab_goods_desc_null
+				}
+			}			
+		});
+		
+		//切换标签
+		$(".tabs_info li").click(function(){
+			var this_tab = $(this).data('tab');
+			$(".flexilist[data-table="+this_tab+"]").show();
+			$(".flexilist[data-table="+this_tab+"]").siblings(".flexilist").hide();
+		});
+		
+		$(".move_list").perfectScrollbar('destroy');
+		$(".move_list").perfectScrollbar();
+	});
+	</script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+
+<div class="wrapper-right of">
+	<div class="tabmenu">
+        <ul class="tab">
+            <li><a href="{url('market_list', array('type' => $config['keywords']))}" class="s-back">返回</a></li>
+            <li><a href="#home" >{$config.name} 参与会员消息记录</a></li>
+        </ul>
+    </div>
+
+    <div class="tabmenu">
+        <ul class="tab">
+            <li><a href="{url('data_list', array('type' => $config['keywords'], 'function' => 'messages', 'id' => $config['market_id'], 'status' => 0))}">未审核消息</a></li>
+            <li><a href="{url('data_list', array('type' => $config['keywords'], 'function' => 'messages', 'id' => $config['market_id'], 'status' => 'all'))}">全部消息</a></li>
+            <li class="active"><a href="{url('data_list', array('type' => $config['keywords'], 'function' => 'users', 'id' => $config['market_id']))}">参与会员</a></li>
+            <li><a href="{url('data_list', array('type' => $config['keywords'], 'function' => 'prizes', 'id' => $config['market_id']))}">获奖名单</a>/li>
+        </ul>
+    </div>
+    <div class="explanation" id="explanation">
+        <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4></div>
+        <ul>
+            <li>微信墙参与会员消息</li>
+        </ul>
+    </div>
+
+	<div class="wrapper-list mt20" >
+
+        <div class="list-div" id="listDiv">
+            <table id="list-table" class="ecsc-default-table" style="">
+                <thead>
+                <tr class="text-center">
+                    <th class="text-center">内容</th>
+                    <th class="text-center">留言时间</th>
+                    <th class="text-center">审核时间</th>
+                    <th class="text-center">状态</th>
+                    <th class="text-center">操作</th>
+                </tr>
+                </thead>
+                {if $info}
+                {foreach $info as $val}
+                <tr class="text-center wall-list">
+                    <td>{$val['content']}</td>
+                    <td>{$val['addtime']}</td>
+                    <td>{if $val['checktime']}{$val['checktime']}{/if}</td>
+                    <td>{$val['status']}</td>
+                    <td class="info_btn">
+                        <a class="button btn-danger bg-red data_delete" data-href="{url('market_action', array('type' => $config['keywords'], 'handler' => 'data_delete', 'market_id' => $config['market_id'], 'msg_id' => $val['id']))}" href="javascript:;">删除</a>
+                    </td>
+                </tr>
+                {/foreach}
+                {else}
+                <tr class="no-records" ><td colspan="5">没有找到任何记录</td></tr>
+                {/if}
+            </table>
+        </div>
+
+        {include file="seller_pageview"}
+
+    </div>
+
+
+</div>
+<script type="text/javascript">
+$(function(){
+    // 审核会员
+    $(".check").click(function(){
+        var url = $(this).attr("data-href");
+        $.get(url, '', function(data){
+            layer.msg(data.msg);
+            if(data.error == 0 ){
+                if(data.url != ''){
+                    // layer.msg(data.url);
+                    window.location.href = data.url;
+                }else{
+                    window.location.reload();
+                }
+            }
+            return false;
+        }, 'json');
+    });
+
+    // 删除会员的消息
+    $(".data_delete").click(function(){
+        var url = $(this).attr("data-href");
+
+        //询问框
+        layer.confirm('您确定要删除此会员的消息吗？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            $.get(url, '', function(data){
+                layer.msg(data.msg);
+                if(data.error == 0 ){
+                    if(data.url != ''){
+                        // layer.msg(data.url);
+                        window.location.href = data.url;
+                    }else{
+                        window.location.reload();
+                    }
+                }
+                return false;
+            }, 'json');
+        });
+
+    });
+
+});
+</script>

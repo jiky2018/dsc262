@@ -1,0 +1,389 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>{include file ='library/seller_html_head.lbi'}</head>
+
+    <body>
+        {include file ='library/seller_header.lbi'}
+        <div class="ecsc-layout">
+            <div class="site wrapper">
+                {include file ='library/seller_menu_left.lbi'}
+                <div class="ecsc-layout-right">
+                    <div class="main-content" id="mainContent">
+                        {include file ='library/url_here.lbi'}
+                        <div class="ecsc-order-show">
+                            <form name="theForm" action="complaint.php" method="post" id="user_form">
+                            	<div class="order-step" id="order-step">
+                                    <dl class="step-first current">
+                                        <dt><i class="iconOk"></i><span>新投诉</span><i class="jt"></i></dt>
+                                    </dl>
+                                    <dl {if $complaint_info.complaint_state gt 0}class="current"{/if}>
+                                        <dt><i class="iconOk"></i><span>待申诉</span><i class="jt"></i></dt>
+                                    </dl>
+                                    <dl {if $complaint_info.complaint_state gt 1}class="current"{/if}>
+                                        <dt><i class="iconOk"></i><span>对话中</span><i class="jt"></i></dt>
+                                    </dl>
+                                    <dl {if $complaint_info.complaint_state gt 2}class="current"{/if}>
+                                        <dt><i class="iconOk"></i><span>待仲裁</span><i class="jt"></i></dt>
+                                    </dl>
+                                    <dl {if $complaint_info.complaint_state gt 3}class="current"{/if}>
+                                        <dt><i class="iconOk"></i><span>已完成</span></dt>
+                                    </dl>
+                                </div>
+                                <div class="order-step-info">
+                                	<div class="step-title"><i class="dian"></i><h3>{$lang.order_info}</h3></div>
+                                    <ul class="order-info-list">
+                                    	<li>
+                                        	<dl>
+                                            	<dt>{$lang.goods_steps_name}：</dt>
+                                                <dd>{$complaint_info.shop_name}</dd>
+                                            </dl>
+                                            <dl>
+                                            	<dt></dt>
+                                                <dd></dd>
+                                            </dl>
+                                        </li>
+                                        <li>
+                                        	<dl>
+                                            	<dt>{$lang.order_status}：</dt>
+                                                <dd>{$order_info.status}</dd>
+                                            </dl>
+                                            <dl>
+                                            	<dt>{$lang.order_sn}：</dt>
+                                                <dd><a href="order.php?act=info&order_id={$complaint_info.order_id}"> {$complaint_info.order_sn}</a></dd>
+                                            </dl>
+                                        </li>
+                                        <li>
+                                        	<dl>
+                                            	<dt>{$lang.add_time_order}：</dt>
+                                                <dd>{$order_info.formated_add_time}</dd>
+                                            </dl>
+                                            <dl>
+                                            	<dt>{$lang.total_order}：</dt>
+                                                <dd>{$order_info.formated_total_fee}</dd>
+                                            </dl>
+                                        </li>	
+                                    </ul>
+                                </div>
+                                <div class="order-step-info">
+                                	<div class="step-title"><i class="dian"></i><h3>{$lang.complaint_goods}</h3></div>
+                                    <div class="ecsc-order-content">
+                                    	<table class="ecsc-default-table order">
+                                            <thead>
+                                                <tr>
+                                                	<th class="w10">&nbsp;</th>
+                                                    <th colspan="2">{$lang.goods_name}</th>
+                                                    <th>{$lang.goods_count}</th>
+                                                    <th>{$lang.goods_price}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {foreach from=$order_info.order_goods item=goods}
+                                                <tr class="bd-line">
+                                                	<td class="bdl">&nbsp;</td>
+                                                    <td class="w50"><div class="pic-thumb"><a href="../{$goods.url}" target="_blank"><img src="{$goods.goods_thumb}"></a></div></td>
+                                                    <td class="tl">
+                                                    	<a href="../{$goods.url}" target="_blank">{$goods.goods_name}</a>{if $goods.trade_id > 0}--<a target="_blank" href="../user.php?act=trade&tradeId={$goods.trade_id}&snapshot=true">交易快照</a>{/if}
+                                                    </td>
+                                                    <td>{$goods.goods_number}</td>
+                                                    <td class="bdr">{$goods.goods_price}</td>
+                                                </tr>
+                                                {/foreach}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="order-step-info ecsc-form-goods">
+                                    <!--投诉详情-->
+                                    <div class="step-title"><i class="dian"></i><h3>{$lang.complaint_info}</h3></div>
+                                    <div class="wrapper-list border1">
+                                        <dl>
+                                            <dt>{$lang.complaint_state_title}：</dt>
+                                            <dd class="lh">{$lang.complaint_state.$complaint_info.complaint_state}</dd>
+                                        </dl>
+                                        <dl>
+                                            <dt>{$lang.complain_title}：</dt>
+                                            <dd class="lh">{$complaint_info.title_name}</dd>
+                                        </dl>
+                                        <dl>
+                                            <dt>{$lang.complain_user}：</dt>
+                                            <dd class="lh">{$complaint_info.user_name}</dd>
+                                        </dl>
+                                        <dl>
+                                            <dt>{$lang.complaint_content}：</dt>
+                                            <dd class="lh">{$complaint_info.complaint_content}</dd>
+                                        </dl>
+                                        <dl>
+                                            <dt>{$lang.complain_img}：</dt>
+                                            <dd>
+                                                {foreach from=$complaint_info.img_list item=img}
+                                                <div class="show mt10">
+                                                    <a target="_blank" href="{$img.img_file}" class="nyroModal"><i class="icon icon-picture" onmouseover="toolTip('<img src={$img.img_file}>')" onmouseout="toolTip()"></i></a>
+                                                </div>
+                                                {/foreach}
+                                            </dd>
+                                        </dl>
+                                        <dl>
+                                            <dt>{$lang.add_time}：</dt>
+                                            <dd class="lh">{$complaint_info.add_time}</dd>
+                                        </dl>
+                                        {if $complaint_info.complaint_state gt 0}
+                                        <dl>
+                                            <dt>{$lang.complaint_handle_time}：</dt>
+                                            <dd class="lh">{$complaint_info.complaint_handle_time}</dd>
+                                        </dl>
+                                        <dl>
+                                            <dt>{$lang.handle_user}：</dt>
+                                            <dd class="lh">{$complaint_info.handle_user}</dd>
+                                        </dl>
+                                        {/if}
+                                    </div>
+                                    
+                                	<div class="lie mt20">
+                                        <!--申诉开始-->
+                                        <div class="step-title"><i class="dian"></i><h3>{$lang.appeal_info}</h3></div>
+                                        <dl>
+                                            <dt>{$lang.complain_img}：</dt>
+                                            <dd>
+                                                <div class="type-file-box">
+                                                    <div class="input">
+                                                        <input type="button" name="button" id="uploadbutton" class="type-file-button type-file-button-radius" value="上传...">
+                                                    </div>
+                                                    
+                                                </div>
+                                                <div class="goods_album mt20">
+                                                    <ul ectype="ul_pics">
+                                                        {foreach from=$complaint_info.appeal_img item=img}
+                                                        <li class="mr10">
+                                                            <div class="img"><a href="{$img.img_file}" target="_blank"><img src="{$img.img_file}" width="160" height="160"></a></div>
+                                                            {if $complaint_info.complaint_state lt 2}
+                                                            <div class="info fr">
+                                                                <a href="javascript:void(0);" ectype="del_img" data-id="{$img.img_id}"><i class="icon icon-trash"></i></a>
+                                                            </div>
+                                                            {/if}
+                                                        </li>
+                                                        {/foreach}
+                                                    </ul>                                    
+                                                </div>
+                                                <div class="form_prompt"></div>
+                                                <div class="notic m20">按住ctrl可以多张上传，最多上传5张。秉承公平公正，为了更好地了解纠纷详情，请上传相关证据，方便平台判断！</div>
+                                            </dd>
+                                        </dl>
+                                        
+                                        <dl>
+                                            <dt>{$lang.require_field}&nbsp;{$lang.appeal_content}：</dt>
+                                            <dd>
+                                                <textarea class="textarea" name="appeal_messg" {if $complaint_info.complaint_state gt 1}disabled{/if}>{$complaint_info.appeal_messg}</textarea>
+                                                <div class="form_prompt"></div>
+                                                <div class="notic m20">秉承公平公正，为了更好地了解纠纷详情，请提交详细说明，方便平台判断</div>
+                                            </dd>
+                                        </dl>
+                                    </div>
+                                    <div class="lie mt20">
+                                        {if $complaint_info.complaint_state gt 1}
+                                            <!--对话开始-->
+                                            <div class="step-title"><i class="dian"></i><h3>{$lang.talk_info}</h3></div>
+                                            <dl>
+                                                <dt>{$lang.talk_record}：</dt>
+                                                <dd>
+                                                    <div class="talk_list" ectype="talk_list">
+                                                        <div class="talk_list_info">
+                                                        {include file="library/talk_list.lbi"}
+                                                        </div>
+                                                    </div>
+                                                </dd>
+                                            </dl>
+                                            {if $complaint_info.complaint_state neq 4}
+                                            <dl>
+                                                <dt>{$lang.talk_release}：</dt>
+                                                <dd>
+                                                   <textarea class="textarea" name="talk_content" id="type_desc"></textarea>
+                                                   <a href="javascript:;" class="sc-btn sc-blueBg-btn btn35" ectype="talk_release" data-type="0">{$lang.talk_release}</a>
+                                                    <a href="javascript:;" class="sc-btn sc-blueBg-btn btn35" ectype="talk_release" data-type="1">{$lang.talk_refresh}</a>
+                                                </dd>
+                                            </dl>
+                                            {/if}
+                                        {/if}
+                                        {if $complaint_info.complaint_state eq 4}
+                                        <dl>
+                                            <dt>{$lang.end_handle_messg}：</dt>
+                                            <dd class="lh">{$complaint_info.end_handle_messg}</dd>
+                                        </dl>
+                                        <dl>
+                                            <dt>{$lang.end_handle_time}：</dt>
+                                            <dd class="lh">{$complaint_info.end_handle_time}</dd>
+                                        </dl>
+                                        <dl>
+                                            <dt>{$lang.handle_user}：</dt>
+                                            <dd class="lh">{$complaint_info.end_handle_user}</dd>
+                                        </dl>
+                                        {/if}
+                                    </div>
+                                    <dl class="button_info">
+                                        <dt>&nbsp;</dt>
+                                        <dd>
+                                            <!--{if $complaint_info.complaint_state neq 4}-->
+                                             <input type="hidden" name="complaint_id" class="button" value="{$complaint_info.complaint_id}"/>
+                                             <input type="hidden" name="complaint_state" class="button" value="{$complaint_info.complaint_state}"/>
+                                             <input type="hidden" name="act"value="appeal_submit"/>
+                                            <!--{if $complaint_info.complaint_state eq 1}-->
+                                            <input type="hidden" name="state_type" class="button" value="0"/>
+                                            <input type="submit" name="appeal_start" id="submitBtn" class="sc-btn sc-blueBg-btn btn35" value="申诉" />
+                                            <!--{/if}-->
+                                            <!--{if $complaint_info.complaint_state eq 2}-->
+                                            <input type="hidden" name="state_type" class="button" value="1"/>
+                                            <input type="submit" name="appeal_start" id="submitBtn" class="sc-btn sc-blueBg-btn btn35" value="申请仲裁" />
+                                            <!--{/if}-->
+                                            <!--{/if}-->
+                                            <a href="{$action_link.href}" class="sc-btn btn35 sc-blue-btn"> 返回 </a>
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript" src="../js/jquery.picTip.js"></script>
+        <script type="text/javascript" src="../js/plupload.full.min.js"></script>
+        {include file ='library/seller_footer.lbi'}
+        <script type="text/javascript">
+		$(function(){
+         	$(".nyroModal").nyroModal();
+		});
+		var uploader_gallery = new plupload.Uploader({//创建实例的构造方法
+                runtimes: 'html5,flash,silverlight,html4', //上传插件初始化选用那种方式的优先级顺序
+                browse_button: 'uploadbutton', // 上传按钮
+                url: "complaint.php?act=upload_img&complaint_id={$complaint_info.complaint_id}&order_id={$complaint_info.order_id}", //远程上传地址
+                filters: {
+                        max_file_size: '2mb', //最大上传文件大小（格式100b, 10kb, 10mb, 1gb）
+                        mime_types: [//允许文件上传类型
+                                {title: "files", extensions: "bmp,gif,jpg,png,jpeg"}
+                        ]
+                },
+                multi_selection: true, //true:ctrl多文件上传, false 单文件上传
+                init: {
+                   FilesAdded: function(up, files) { //文件上传前
+                           var len = $("*[ectype='ul_pics'] li").length;
+                                plupload.each(files, function(file){
+                                        //遍历文件
+                                        len ++;
+                                });
+                                if(len > 5){
+                                        pbDialog("最多只能上传5张图片","",0);
+                                }else{
+                                        submitBtn();
+                                }
+                        },
+                        FileUploaded: function(up, file, info) { //文件上传成功的时候触发
+                                var data = eval("(" + info.response + ")");
+                                if(data.error > 0){
+                                        alert(data.message);
+                                        return;
+                                }else{
+                                        var html = '<li class="mr10"><div class="img"><div class="img"><a href="' + data.img_file + '" target="_blank"><img src="' + data.img_file + '" width="160" height="160"></a></div><div class="info"><a href="javascript:void(0);" ectype="del_img" data-id="' + data.img_id + '"><i class="icon icon-trash"></i></a></div></li>';
+                                        $("*[ectype='ul_pics']").append(html)
+                                }
+                        },
+                        UploadComplete:function(up,file){
+                                //所有文件上传成功时触发	
+                        },
+                        Error: function(up, err){
+                                //上传出错的时候触发
+                                pbDialog(err.message,"",0);
+                        }
+                }
+        });
+	
+        uploader_gallery.init();
+	
+        function submitBtn(){
+                //设置传参
+                uploader_gallery.setOption("multipart_params");
+                //开始控件
+                uploader_gallery.start();
+        };
+        $(document).on('click','*[ectype="del_img"]',function(){
+               var _this = $(this);
+               var img_id = _this.data("id");
+               var complaint_id = $("input[name='complaint_id']").val();
+                Ajax.call('complaint.php', "act=del_img&img_id=" +  img_id + "&complaint_id=" + complaint_id, function(data){
+                    if(data.error > 0){
+                        alert(data.message);
+                    }else{
+                        _this.parents('li').remove();
+                    }
+		}, 'POST', 'JSON');
+        })
+        $(function(){
+		//表单验证
+		$("#submitBtn").click(function(){
+			if($("#user_form").valid()){
+				$("#user_form").submit();
+			}
+		});
+	
+		$('#user_form').validate({
+			errorPlacement:function(error, element){
+				var error_div = element.parents('dl').find('div.form_prompt');
+				//element.parents('dl').find(".notic").hide();
+				error_div.append(error);
+			},
+			rules:{
+				appeal_messg :{
+					required : true
+				}
+			},
+			messages:{
+				appeal_messg :{
+					required : '<i class="icon icon-exclamation-sign"></i>申诉内容不能为空'
+				}
+			}			
+		});
+	});
+        //发布谈话
+         $(document).on('click','*[ectype="talk_release"]',function(){
+               var _this = $(this);
+               var type = _this.data('type');
+               var talk_content = $("textarea[name='talk_content']").val();
+               var complaint_id = $("input[name='complaint_id']").val();
+               var back = true;
+                if(type == 0 && talk_content == ''){
+                    back = false;
+                }
+                if(back){
+                    Ajax.call('complaint.php', "act=talk_release&talk_content=" +  talk_content + "&complaint_id=" + complaint_id + "&type=" + type, function(data){
+                        $("[ectype='talk_list'] .talk_list_info").html(data.content);
+                        var height = $("*[ectype='talk_list'] .talk_list_info").height();
+                        $("[ectype='talk_list']").scrollTop(height);
+                        $("textarea[name='talk_content']").val('');
+                    }, 'POST', 'JSON');
+                }else{
+                    alert('谈话内容不能为空！');
+                }
+        })
+       {if $complaint_info.complaint_state eq 2  || $complaint_info.complaint_state eq 3}
+        startCheckStalk();
+        {/if}
+        //检查谈话
+        function startCheckStalk()
+        {
+          window.setInterval("Checktalk()", 3000);
+        }
+        function Checktalk(){
+
+            var complaint_id = $("input[name='complaint_id']").val();
+
+            Ajax.call('complaint.php', "act=talk_release&complaint_id=" +  complaint_id + "&type=1", function(data){
+                $("[ectype='talk_list'] .talk_list_info").html(data.content);
+                var height = $("*[ectype='talk_list'] .talk_list_info").height();
+                $("[ectype='talk_list']").scrollTop(height);
+            }, 'POST', 'JSON');
+        }
+		var height = $("*[ectype='talk_list'] .talk_list_info").height();
+                $("[ectype='talk_list']").scrollTop(height);
+		$("[ectype='talk_list']").perfectScrollbar("destroy");
+		$("[ectype='talk_list']").perfectScrollbar();
+        </script>
+    </body>
+</html>

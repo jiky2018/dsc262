@@ -1,0 +1,164 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+{if $goods_list}
+<!--{foreach from=$goods_list item=goods}-->
+<!--{if $goods.goods_id}-->
+{if !$model}
+<li class="gl-item">
+    <div class="gl-i-wrap network-wrap">
+        <div class="p-img">
+            <a href="{$goods.url}" target="_blank"><img src="{$goods.goods_thumb}" width="216" height="216"/></a>
+            <div class="{if $goods.is_new == 1}new_picon pi1{elseif $goods.is_hot == 1}new_picon pi2{elseif $goods.is_best == 1}new_picon pi3{/if}"></div>
+        </div>
+        <!--{if $goods.pictures}-->
+        <div class="sider">
+            <ul>
+                <!-- {foreach from=$goods.pictures name=picture item=picture}-->           
+                <li <!--{if $smarty.foreach.picture.index eq 0}--> class="curr"<!--{/if}-->><img src="{if $picture.thumb_url}{$picture.thumb_url}{else}{$picture.img_url}{/if}" width="26" height="26" /></li>
+                <!--{/foreach}-->
+            </ul>
+            <!--<a href="javascript:void(0);" class="goods_prev"></a>
+            <a href="javascript:void(0);" class="goods_next"></a>-->
+        </div>
+        <!--{/if}-->
+        <div class="p-price">
+            <strong>
+                {if $goods.promote_price neq ''}
+                    {$goods.promote_price}
+                {else}
+                    {$goods.shop_price}
+                {/if}
+            </strong>
+        </div>
+        <div class="p-num">{$lang.sales_volume}：{$goods.sales_volume}</div>
+        <div class="p-name"><a href="{$goods.url}" title="{$goods.name|escape:html}">{$goods.goods_name}</a></div>
+        <div class="p-commit">
+            <div class="p-commit-left">
+                <div class="p-eva">{$lang.existing}<em>{$goods.review_count} +</em>{$lang.comments_rank}</div>
+                <div class="p-store"><a href="{$goods.store_url}" target="_blank" class="p-brand"><i class="icon"></i>{$goods.rz_shopName}</a></div>
+            </div>
+            <div class="p-commit-right">
+                {if $goods.prod eq 1}
+                    {if $goods.goods_number > 0}
+                        <a onClick="javascript:addToCart({$goods.goods_id},0,event,this,'flyItem');" class="addcart" rev="{$goods.goods_thumb}" data-dialog="addCart_dialog" data-id="" data-divid="addCartLog" data-url="" data-title="{$lang.select_attr}">
+                           <i></i>
+                           {$lang.btn_buy}
+                        </a>
+                    {else}
+                        <a href="javascript:;" class="addcartWu">
+                            <i></i>
+                            {$lang.No_goods}
+                        </a>
+                    {/if}
+                {else}
+                <a onClick="javascript:addToCart({$goods.goods_id},0,event,this,'flyItem');" class="addcart" rev="{$goods.goods_thumb}">
+                    <i></i>
+                    {$lang.btn_buy}
+                </a>
+                {/if}
+            </div>
+        </div>
+        {if $goods.prod eq 1}
+            {if !$goods.goods_number > 0}
+                <div class="p-focus"><span>{$lang.No_goods}</span></div>
+            {/if}
+        {/if}
+        <div class="p-operation">
+            <a href="javascript:;" id="compareLink"><input id="{$goods.goods_id}" type="checkbox" onClick="Compare.add(this, {$goods.goods_id},'{$goods.goods_name|escape:"html"}','{$goods.type}', '{$goods.goods_thumb}', '{$goods.shop_price}', '{$goods.market_price}')"/><label for="{$goods.goods_id}">{$lang.compare}</label></a>
+            <a href="javascript:collect({$goods.goods_id});" class="choose-btn-coll {if $goods.is_collect}selected{/if}"><b></b>{$lang.btn_collect}</a>
+            <!--start 在线客服 bylu-->
+            {if $goods.is_IM eq 1 || $goods.is_dsc}
+            <a id="IM" onclick="openWin(this)" href="javascript:;" goods_id="{$goods.goods_id}"  class="seller-btn custom"><i class="icon"></i>{$lang.Customer_service_p}</a>
+            {else}
+            {if $goods.kf_type eq 1}
+            <a href="http://www.taobao.com/webww/ww.php?ver=3&touid={$basic_info.kf_ww}&siteid=cntaobao&status=1&charset=utf-8" class="seller-btn custom" target="_blank"><i class="icon"></i>{$lang.Customer_service_p}</a>
+            {else}
+            <a href="http://wpa.qq.com/msgrd?v=3&uin={$basic_info.kf_qq}&site=qq&menu=yes" class="seller-btn custom" target="_blank"><i class="icon"></i>{$lang.Customer_service_p}</a>
+            {/if}
+            {/if}
+            <!--end 在线客服 bylu-->
+        </div>
+        <!--{if $dwt_filename eq 'history_list'}--> 
+        <div class="history_close">
+            <a href="javascript:delHistory({$goods.goods_id})"><img src="../images/p-del.png"></a>
+        </div>
+        <!--{/if}--> 
+    </div>
+</li>
+{else}
+<div class="item clearfix">
+    <div class="col col-1">
+        <div class="pic-img"><a href="{$goods.url}" target="_blank"><img src="{$goods.goods_thumb}" width="98" height="98" /></a></div>
+    </div>
+    <div class="col col-2">
+        <div class="title"><a href="{$goods.url}" title="{$goods.name|escape:html}">{$goods.goods_name}</a></div>
+        <div class="desc">
+            <div class="lie">
+                <span class="p-eva">{$lang.comments_rank}：{$goods.review_count}</span>
+                <span class="p-num">{$lang.sales_volume}：{$goods.sales_volume}</span>
+                <span class="p-collect"><a href="javascript:collect({$goods.goods_id});" class="choose-btn-coll {if $goods.is_collect}selected{/if}"><b></b>{$lang.btn_collect}</a></span>
+            </div>
+            <div class="lie">
+                <div class="p-store"><a href="{$goods.store_url}" target="_blank" class="p-brand"><i class="icon"></i>{$goods.rz_shopName}</a></div>
+                <div class="p-customer">
+                    {if $goods.kf_type eq 1}
+                    <a href="http://www.taobao.com/webww/ww.php?ver=3&touid={$goods.kf_ww}&siteid=cntaobao&status=2&charset=utf-8" target="_blank" class="custom"><i class="icon"></i></a>
+                    {else}
+                    <a href="http://wpa.qq.com/msgrd?v=3&uin={$goods.kf_qq}&site=qq&menu=yes" target="_blank" class="custom"><i class="icon"></i></a>
+                    {/if}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col col-3">
+        <div class="p-price">
+            {if $goods.promote_price neq ''}
+                {$goods.promote_price}
+            {else}
+                {$goods.shop_price}
+            {/if}
+        </div>
+        <div class="p-ship">{$lang.freight_p}：{$goods.shipping_fee_formated}</div>
+    </div>
+    <div class="col col-4">
+        <div class="p-number">
+            <span class="tit">{$lang.number_to}：</span>
+            <div class="query">
+                <a class="btn-reduce" href="javascript:;" onclick="setAmount('reduce','{$goods.goods_id}')">-</a>
+                <input class="buy-num" id="product_num_{$goods.goods_id}" onchange="setAmount('edit','{$goods.goods_id}')" value="1" name="number" defaultnumber="1" autocomplete="off">
+                <a class="btn-adds" href="javascript:;" onclick="setAmount('add','{$goods.goods_id}')">+</a>
+            </div>
+        </div>
+        <div class="p-stock">
+            <span class="tit">{$lang.goods_inventory}：</span>
+            <div class="goods_num" id="goods_num">{$goods.goods_number} {$lang.jian}</div>
+        </div>
+    </div>
+    <div class="col col-5">
+        <div class="buttons">
+            <a onClick="javascript:addToCart({$goods.goods_id},0,event,this,'');" data-confirm_type="3" class="btn-buynow">{$lang.button_buy}</a>
+            {if $goods.prod eq 1}
+                {if $goods.goods_number > 0}
+                    <a onClick="javascript:addToCart({$goods.goods_id},0,event,this,'flyItem2');" class="btn" rev="{$goods.goods_thumb}" data-dialog="addCart_dialog" data-id="" data-divid="addCartLog" data-url="" data-title="{$lang.select_attr}">
+                        <i class="icon-shopping-cart"></i>
+                        {$lang.btn_add_to_cart}
+                    </a>
+                {else}
+                    <a href="javascript:;" class="btn end_btn">
+                        <i class="icon-shopping-cart"></i>
+                        {$lang.have_no_goods}
+                    </a>
+                {/if}
+            {else}
+            <a onClick="javascript:addToCart({$goods.goods_id},0,event,this);" class="btn" rev="{$goods.goods_thumb}">
+                <i class="icon-shopping-cart"></i>
+                {$lang.add_to_cart}
+            </a>
+            {/if}
+            <div class="red_bg"></div>
+        </div>
+    </div>
+</div>
+{/if}
+<!--{/if}--> 
+<!--{/foreach}--> 
+{/if}

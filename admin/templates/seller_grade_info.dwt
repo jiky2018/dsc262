@@ -1,0 +1,404 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="seller_grade.php?act=list" class="s-back">{$lang.back}</a> {$lang.seller} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.list.0}</li>
+                    <li>{$lang.operation_prompt_content.list.1}</li>
+                    <li>{$lang.operation_prompt_content_common}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+						<form method="post" action="seller_grade.php" name="theForm" enctype="multipart/form-data" id="seller_grade_form">
+                            <div class="switch_info">
+                                <div class="items">
+                                    <div class="item">
+                                        <div class="label">{$lang.require_field}{$lang.grade_name}：</div>
+                                        <div class="label_value">
+                                        	<input type="text" name="grade_name" id="grade_name" class="text" value="{$seller_grade.grade_name|escape}" autocomplete="off" />
+                                            <div class="form_prompt"></div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.goods_sun}：</div>
+                                        <div class="label_value">
+                                        	<input type="text" name="goods_sun" id="goods_sun" class="text" value="{if $seller_grade.goods_sun > 0}{$seller_grade.goods_sun}{else}-1{/if}" autocomplete="off" />
+                                            <label class="blue_label">{$lang.goods_sun_notic}</label>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.seller_temp}：</div>
+                                        <div class="label_value">
+                                        	<input type="text" name="seller_temp" id="seller_temp" class="text" value="{if $seller_grade.seller_temp > 0}{$seller_grade.seller_temp}{else}-1{/if}" autocomplete="off" />
+                                            <label class="blue_label">{$lang.seller_temp_notice}</label>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.give_integral}：</div>
+                                        <div class="label_value">
+                                        	<input type="text" name="give_integral" id="give_integral" class="text" value="{$seller_grade.give_integral|default:0}" autocomplete="off" />
+                                            &nbsp;%&nbsp;<label class="blue_label">{$lang.give_integral_notic}</label>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.rank_integral}：</div>
+                                        <div class="label_value">
+                                        	<input type="text" name="rank_integral" id="rank_integral" class="text" value="{$seller_grade.rank_integral|default:0}" autocomplete="off" />
+                                            &nbsp;%&nbsp;<label class="blue_label">{$lang.give_integral_notic}</label>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">{$lang.pay_integral}：</div>
+                                        <div class="label_value">
+                                        	<input type="text" name="pay_integral" id="pay_integral" class="text" value="{$seller_grade.pay_integral|default:0}" autocomplete="off" />
+                                            &nbsp;%&nbsp;<label class="blue_label">{$lang.give_integral_notic}</label>
+                                        </div>
+                                    </div>
+									<div class="item">
+                                        <div class="label">{$lang.white_bar}：</div>
+                                        <div class="label_value">
+											<div class="checkbox_items">
+												<div class="checkbox_item"> 
+													<input name="white_bar" type="radio" class="ui-radio" value="0" id="white_bar_0"{if $seller_grade.white_bar eq 0||$seller_grade.white_bar eq ''}checked="checked"{/if} />
+													<label for="white_bar_0" class="ui-radio-label">{$lang.no}</label>
+												</div>
+												<div class="checkbox_item"> 
+													<input name="white_bar" type="radio" class="ui-radio" value="1" id="white_bar_1" {if $seller_grade.white_bar}checked="checked"{/if} />
+													<label for="white_bar_1" class="ui-radio-label">{$lang.yes}</label>
+												</div>	
+												<label class="blue_label" style="padding-left:235px;">{$lang.pay_integral_notic}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+									<div class="item" >
+										<div class="label">{$lang.require_field}{$lang.grade_img}：</div>
+										<div class="label_value">
+											<div class="type-file-box">
+                                                <input type="button" name="button" id="button" class="type-file-button" value="">
+                                                <input type="file" class="type-file-file" id="file" name="file" data-state="imgfile" size="30" hidefocus="true" value="">
+                                                {if $seller_grade.grade_img}
+												<span class="show">
+                                                    <a href="../{$seller_grade.grade_img}" target="_blank" class="nyroModal"><i class="icon icon-picture" data-tooltipimg="../{$seller_grade.grade_img}" ectype="tooltip" title="tooltip"></i></a>
+                                                </span>
+												{/if}
+                                                <input type="text" name="textfile" class="type-file-text" {if $seller_grade.grade_img}value="../{$seller_grade.grade_img}"{/if} id="textfield" autocomplete="off" readonly>
+												<br/>
+												<label class="blue_label">{$lang.file_url}</label>
+												<input type="text" name="file_url" class="text" style="width:300px" value="{$seller_grade.grade_img|escape}">
+                                            </div>
+										</div>
+									</div>
+									<div class="item" >
+										<div class="label">{$lang.grade_introduce}：</div>
+										<div class="label_value">
+											<textarea name="grade_introduce" id="grade_introduce" class="textarea h100" cols="50" rows="7" >{$seller_grade.grade_introduce|escape}</textarea>
+										</div>
+									</div>
+                                    <div class="item">
+                                        <div class="label">{$lang.entry_criteria}：</div>
+                                        <div class="label_value">
+                                            <div class="checkbox_items">
+                                            {foreach from=$criteria item=criteria}
+                                            	<div class="checkbox_item">
+                                                    <input type='checkbox' name="entry_criteria[{$criteria.id}]" class="ui-checkbox"  value="{$criteria.id}" id="checkbox_{$criteria.id}" {if $criteria.in_check eq 1} checked='checked'{/if}>
+                                                    <label class="ui-label" for="checkbox_{$criteria.id}">{$criteria.criteria_name}</label>
+                                                </div>
+                                            {/foreach}
+                                            </div>
+											<div class="form_prompt"></div>
+										</div>
+                                    </div>
+									<div class="item">
+                                        <div class="label">{$lang.is_open}：</div>
+                                        <div class="label_value">
+											<div class="checkbox_items">
+												<div class="checkbox_item"> 
+													<input name="is_open" type="radio" class="ui-radio" value="0" id="is_open_0"{if $seller_grade.is_open eq 0||$seller_grade.is_open eq ''}checked="checked"{/if} />
+													<label for="is_open_0" class="ui-radio-label">{$lang.no}</label>
+												</div>
+												<div class="checkbox_item"> 
+													<input name="is_open" type="radio" class="ui-radio" value="1" id="is_open_1" {if $seller_grade.is_open}checked="checked"{/if} />
+													<label for="is_open_1" class="ui-radio-label">{$lang.yes}</label>
+												</div>
+											</div>
+                                        </div>
+                                    </div>
+									<div class="item">
+                                        <div class="label">{$lang.is_default}：</div>
+                                        <div class="label_value">
+											<div class="checkbox_items">
+												<div class="checkbox_item"> 
+													<input name="is_default" type="radio" class="ui-radio" value="0" id="is_default_0"{if $seller_grade.is_default eq 0||$seller_grade.is_default eq ''}checked="checked"{/if} />
+													<label for="is_default_0" class="ui-radio-label">{$lang.no}</label>
+												</div>
+												<div class="checkbox_item"> 
+													<input name="is_default" type="radio" class="ui-radio" value="1" id="is_default_1" {if $seller_grade.is_default}checked="checked"{/if} />
+													<label for="is_default_1" class="ui-radio-label">{$lang.yes}</label>
+												</div>
+											</div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">&nbsp;</div>
+                                        <div class="label_value info_btn">
+										    <input type="submit" class="button" name="sub" value="{$lang.button_submit}" id="submitBtn" />
+										    <input type="reset" class="button button_reset" value="{$lang.button_reset}" />
+										    <input type="hidden" name="id" value="{$seller_grade.id}"/>
+										    <input type="hidden" name="act" value="{$act}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+ 	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+        var myTopic = Object();
+    
+        {if $isadd eq 'isadd'}
+        document.getElementById('edit_img').style.display = 'none';
+        document.getElementById('edit_title_img').style.display = 'none';
+        {/if}	
+        
+        //商品搜索下拉
+        $.divselect("#brand_select","#brand_select_val");
+        $.divselect("#topic_list","#topic_list_val",function showTargetList(){
+              $("#target_select").find('li').remove();
+              var index = $("#topic_list").find('.cite').text();
+              // if (index == defaultClass)
+              // {
+                // index = "default";
+              // }
+              var li = myTopic[index];
+              
+              for ( var i = 0; i < li.length; i++)
+              {
+                var newOpt    = document.createElement("OPTION");
+                var arr = options[i].split('|');
+                newOpt.value  = arr[1];
+                newOpt.text   = arr[0];
+                document.getElementById("target_select").options.add(newOpt);
+              }
+            });
+  
+        //活动商品下拉
+        $.divselect("#topic_type","#topic_type_val",function initialize_form(){
+              var status_code = document.getElementById("topic_type_val").value;
+              var nt = navigator_type();
+              var display_yes = (nt == 'IE') ? 'block' : '';
+              status_code = parseInt(status_code);
+              status_code = status_code ? status_code : 0;
+              //document.getElementById('topic_type').options[status_code].selected = true;
+              switch (status_code)
+              {
+                case 0 :
+                  document.getElementById('content_01').style.display = display_yes;
+                  document.getElementById('content_23').style.display = 'none';
+                        document.getElementById('title_upload').innerHTML = '{$width_height}';
+                        document.getElementById('edit_img').style.display = display_yes;
+                break;
+                    
+                case 1 :
+                  document.getElementById('content_01').style.display = display_yes;
+                  document.getElementById('content_23').style.display = 'none';
+                        document.getElementById('title_upload').innerHTML = '{$lang.tips_upload_notice}';
+                        document.getElementById('edit_img').style.display = display_yes;
+                break;
+                    
+                case 2 :
+                  document.getElementById('content_01').style.display = 'none';
+                  document.getElementById('content_23').style.display = display_yes;
+                        document.getElementById('edit_img').style.display = 'none';
+                break;
+              }
+    
+                {if $isadd eq 'isadd'}
+                document.getElementById('edit_img').style.display = 'none';
+                document.getElementById('edit_title_img').style.display = 'none';
+                {/if}	
+                
+              return true;
+            });
+        
+        function searchGoods(){
+            
+            var elements  = document.forms['theForm'].elements;
+            var filters   = new Object;
+            filters.cat_id = elements['category_id'].value;
+            filters.brand_id = elements['brand_id'].value;
+            filters.keyword = Utils.trim(elements['keyword'].value);
+            
+            Ajax.call('topic.php?is_ajax=1&act=get_goods_list', filters, searchGoodsResponse, 'GET', 'JSON');
+        }
+        function searchGoodsResponse(result)
+        {
+        $("#source_select").find("li").remove();
+        
+        var goods = result.content;
+            if (goods)
+            {
+              for (i = 0; i < goods.length; i++)
+              {
+                $("#source_select").children("ul").append("<li><i class='sc_icon sc_icon_no'></i><a href='javascript:;' data-value='"+goods[i].value+"' class='ftx-01'>"+goods[i].text+"</a><input type='hidden' name='user_search[]' value='"+goods[i].value+"'></li>");
+              }
+            }
+        }
+    
+        /**
+         * 判断当前浏览器类型
+         */
+        function navigator_type()
+        {
+          var type_name = '';
+    
+          if (navigator.userAgent.indexOf('MSIE') != -1)
+          {
+            type_name = 'IE'; // IE
+          }
+          else if(navigator.userAgent.indexOf('Firefox') != -1)
+          {
+            type_name = 'FF'; // FF
+          }
+          else if(navigator.userAgent.indexOf('Opera') != -1)
+          {
+            type_name = 'Opera'; // Opera
+          }
+          else if(navigator.userAgent.indexOf('Safari') != -1)
+          {
+            type_name = 'Safari'; // Safari
+          }
+          else if(navigator.userAgent.indexOf('Chrome') != -1)
+          {
+            type_name = 'Chrome'; // Chrome
+          }
+    
+          return type_name;
+        }	
+        
+        function addClass()
+        {
+          var obj = document.getElementById("topic_list");
+          var newClassName = document.getElementById("new_cat_name");
+          //var regExp = /^[a-zA-Z0-9]+$/;
+          if (newClassName.value == ""){
+            alert(sort_name_empty);
+            return;
+          }
+          $("#topic_list").children("ul").find("li").each(function(){
+              
+                if($(this).text() == newClassName.value){
+                    alert(sort_name_exist);
+                    document.getElementById("new_cat_name").value = "";
+                    newClassName.focus();
+                    return;
+                }
+          });
+          
+           var className = document.getElementById("new_cat_name").value;
+           if(className){
+               document.getElementById("new_cat_name").value = "";
+               $("#topic_list").children("ul").append("<li><a href='javascript:;' class='ftx-01'>"+ className +"</a ></li>");
+           }
+          // var newOpt    = document.createElement("OPTION");
+          // newOpt.value  = obj.options.length;
+          // newOpt.text   = className;
+          // obj.options.add(newOpt);
+          // newOpt.selected = true;
+          // if ( obj.options[0].value == "-1")
+          // {
+            // if (myTopic["default"].length > 0)
+              // alert(move_item_confirm.replace("className",className));
+            // myTopic[className] = myTopic["default"];
+            // delete myTopic["default"];
+            // obj.remove(0);
+          // }
+          // else
+          // {
+            // myTopic[className] = new Array();
+            // clearOptions("target_select");
+          // }
+        }
+    
+        function deleteClass()
+        {
+          var classList = document.getElementById("topic_list");
+          if (classList.value != "-1")
+          {
+            delete myTopic[classList.options[classList.selectedIndex].text];
+            classList.remove(classList.selectedIndex);
+            clearOptions("target_select");
+          }
+          if (classList.options.length < 1)
+          {
+            var newOpt    = document.createElement("OPTION");
+            newOpt.value  = "-1";
+            newOpt.text   = defaultClass;
+            classList.options.add(newOpt);
+            myTopic["default"] = new Array();
+          }
+        }
+        
+        function addGoods(){
+            $("#source_select").find("li").each(function(){
+                if($(this).attr("class") == 'current'){
+              var text = $(this).text();
+              var value = $(this).find('a').attr("data-value");
+              $("#target_select").children("ul").append("<li><i class='sc_icon sc_icon_no'></i><a href='javascript:void(0);'  >"+text+"</a><input type='hidden' name='target_select' value='"+value+"'></li>")
+                }
+            });		
+        }
+        
+        function delGoods()
+        {
+          $("#target_select").find("li").each(function(){
+              if($(this).attr("class") == 'current'){
+                  $(this).remove();
+                }
+            })
+        }
+        //表单验证
+         $(function(){
+             $("#submitBtn").click(function(){
+                 if($("#seller_grade_form").valid()){
+                     $("#seller_grade_form").submit();
+                 }
+             });
+            
+             $('#seller_grade_form').validate({
+                 errorPlacement: function(error, element){
+                    var error_div = element.parents('div.label_value').find('div.form_prompt');
+					element.parents('div.label_value').find(".notic").hide();
+					error_div.append(error);
+                 },
+                 rules : {
+                     grade_name : {
+                         required : true
+                     },
+					 textfile : {
+                         required : true
+                     }
+                 },
+                 messages : {
+                     grade_name : {
+                         required : '<i class="icon icon-exclamation-sign"></i>'+please_enter_grade_name
+                     },
+					 textfile : {
+                         required : '<i class="icon icon-exclamation-sign"></i>'+file_grade_img
+                     }
+                 }
+             });
+         });
+    </script>
+</body>
+</html>

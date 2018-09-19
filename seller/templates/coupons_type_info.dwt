@@ -1,0 +1,918 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+<script type="text/javascript" src="../js/jquery.validation.min.js"></script>
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="explanation clear" id="explanation">
+                    <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4></div>
+                    <ul>
+                    	<li>温馨提示：提交操作将会重新审核，请慎重提交确定。</li>
+                    </ul>
+                </div>
+                <div class="ecsc-form-goods">
+					<form action="coupons.php?act={$form_act}" id="myForm" method="post" name="theForm" enctype="multipart/form-data">
+						<div class="wrapper-list">
+                        	<dl>
+                            	<dt>{$lang.coupons_type}：</dt>
+                                <dd>
+                                	<div id="coupons_type" class="imitate_select select_w320">
+                                        <div class="cite">{$lang.coupons_type_01}</div>
+                                        <ul>
+                                            <li><a href='javascript:;' data-value='1' class='ftx-01'>{$lang.coupons_type_01}</a></li>
+                                            <li><a href='javascript:;' data-value='2' class='ftx-01'>{$lang.coupons_type_02}</a></li>
+                                            <li><a href='javascript:;' data-value='3' class='ftx-01'>{$lang.coupons_type_03}</a></li>
+                                            <li><a href='javascript:;' data-value='4' class='ftx-01'>{$lang.coupons_type_04}</a></li>
+                                            <li><a href='javascript:;' data-value='5' class='ftx-01'>{$lang.coupons_type_05}</a></li>
+                                        </ul>
+                                        <input name="cou_type" type="hidden" value="{$cou_type|default:1}" id="coupons_type_val">
+                                    </div>
+                                </dd>
+                            </dl>
+                            <dl>
+                            	<dt>{$lang.require_field}{$lang.coupons_name}：</dt>
+                                <dd>
+                                	<input type="text" name="cou_name" id="cou_name" class="text" value="{$cou.cou_name}" autocomplete="off" />
+                                    <div class="form_prompt"></div>
+                                </dd>
+                            </dl>
+                            <dl>
+                            	<dt>{$lang.require_field}{$lang.coupons_title}：</dt>
+                                <dd>
+                                	<input type="text" name="cou_title" id="cou_title" class="text" value="{$cou.cou_title}" autocomplete="off" />
+                                    <div class="notic">{$lang.title_notice}</div>
+                                    <div class="form_prompt"></div>
+                                </dd>
+                            </dl>
+                            <dl>
+                            	<dt>{$lang.require_field}{$lang.coupons_number}：</dt>
+                                <dd>
+                                	<input type="text" name="cou_total" id="cou_total" class="text w50" value="{$cou.cou_total}" autocomplete="off" />
+                                    <div class="notic">{$lang.total_notice}</div>
+                                    <div class="form_prompt"></div>
+                                </dd>
+                            </dl>
+                            <dl ectype='cou_money'>
+                            	<dt>{$lang.require_field}{$lang.coupons_money}：</dt>
+                                <dd>
+                                	<input type="text" name="cou_money" id="cou_money" class="text w50" value="{$cou.cou_money}" autocomplete="off" />
+                                    <div class="notic">{$lang.money_notice}</div>
+                                    <div class="form_prompt"></div>
+                                </dd>
+                            </dl>
+                            <dl>
+                            	<dt>{$lang.require_field}{$lang.coupons_man}：</dt>
+                                <dd>
+                                	<span class="fl lh mr10">{$lang.full_shopping}</span>
+                                    <input type="text" name="cou_man" id="cou_man" class="text w50 mr10" value="{$cou.cou_man}" autocomplete="off" />
+                                    <div class="fl lh">{$lang.yuan}{$lang.cou_man_desc}</div>
+                                    <div class="form_prompt"></div>
+                                </dd>
+                            </dl>
+                            <dl>
+                            	<dt>{$lang.each_purchase}：</dt>
+                                <dd>
+                                	<div class="fl lh"{if $cou_type gt 2} style="display:none;"{/if} id="not_comm">{$lang.one}</div>
+									<div id="comm"{if $cou_type lt 3} style="display:none;"{/if}>
+                                    	<input type="text" class="text w50 mr10" name="cou_user_num" value="{$cou.cou_user_num}">
+                                        <div class="fl lh">张</div>
+                                    </div>
+                                </dd>
+                            </dl>
+                            <dl>
+                            	<dt>{$lang.use_goods}：</dt>
+                                <dd>
+                                	<div class="checkbox_items">
+                                        <div class="checkbox_item">
+                                            <input type="radio" class="ui-radio" name="usableCouponGoods" value="1" id="usableCouponGoods_1" {if !$cou.cou_goods && !$cou.spec_cat}checked="checked"{/if} />
+                                            <label class="ui-radio-label" for="usableCouponGoods_1">{$lang.goods_all}</label>
+                                        </div>
+                                        <div class="checkbox_item">
+                                            <input type="radio" class="ui-radio" name="usableCouponGoods" value="2" id="usableCouponGoods_2" {if $cou.cou_goods && !$cou.spec_cat}checked="checked"{/if}/>
+                                            <label class="ui-radio-label" for="usableCouponGoods_2">{$lang.goods_appoint}</label>
+                                        </div>
+                                        
+                                        <div class="checkbox_item">
+                                            <input type="radio" class="ui-radio" name="usableCouponGoods" value="3" id="usableCouponGoods_3" {if !$cou.cou_goods && $cou.spec_cat}checked="checked"{/if}/>
+                                            <label class="ui-radio-label" for="usableCouponGoods_3">{$lang.spec_cat}</label>
+                                        </div>
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                    <div class="notic bf100">{$lang.buy_goods_deduction}</div>
+                                    <div class="rank_list" id="range-div" data-goodsIds="{$cou.cou_goods}">
+                                        {if $cou.goods}
+                                        {foreach from=$cou.goods item=goods key=key}
+                                        <div class="checkbox_item">
+                                            <input name="cou_goods[]" type="checkbox" class="ui-checkbox" value="{$goods.goods_id}" id="cou_goods[{$key}]" checked="checked" />
+                                            <label for="cou_goods[{$key}]" class="ui-label">{$goods.goods_name}</label>
+                                        </div>
+                                        {/foreach}
+                                        {/if}
+                                    </div>
+                                    <input type="hidden" name="setgoodsid" value="{$cou.cou_goods}" class="ignore" />
+                                    <div class="rank_list" id="cat_range_div">
+                                        {if $cou.cats}
+                                        {foreach from=$cou.cats item=cat key=key}
+                                        <div class="checkbox_item">
+                                            <input name="vc_cat[]" type="checkbox" class="ui-checkbox" value="{$cat.cat_id}" id="vc_cat[{$key}]" checked="checked" />
+                                            <label for="vc_cat[{$key}]" class="ui-label">{$cat.cat_name}</label>
+                                        </div>
+                                        {/foreach}
+                                        {/if}
+                                    </div>
+                                </dd>
+                            </dl>
+                            <dl class="hide" id="range_search">
+                            	<dt>{$lang.add_goods}：</dt>
+                                <dd>
+                                    <input type="button" class="sc-btn btn30 sc-blueBg-btn" value="设置商品" ectype="setupGroupGoods" data-diffeseller="1" data-pbmode="setgoods_content" data-pbtype="coupons"/>
+                                	<!--<input name="keyword1" type="text" id="keyword1" class="text text_2 mr10 mb10" autocomplete="off" />
+                                    <input name="search1" type="button" id="search1" value="{$lang.button_search}" class="sc-btn btn30 sc-blueBg-btn" onclick="searchItem1()" />
+                                    <div id="result1" class="imitate_select select_w320">
+                                        <div class="cite">请选择</div>
+                                        <ul>
+                                            <li class="li_not">请先搜索商品</li>
+                                        </ul>
+                                        <input name="result1" type="hidden" value="0" id="result1_val">
+                                    </div>
+                                    <input name="add_gift" type="button" class="sc-btn btn30 sc-blueBg-btn" id="add_gift" onclick="addGift()" value="+" />-->
+                                        
+                                </dd>
+                            </dl>
+                            
+                            <dl class="hide" id="range_search_cat">
+                                <dt>{$lang.add_cat}：</dt>
+                                <dd>
+                                    <div class="goods_search_div bor_bt_das">
+                                        <div class="search_select">
+                                            <div class="categorySelect">
+                                                <div class="selection">
+                                                    <input type="text" name="category_name" id="category_name" class="text w250 valid" value="请选择分类" autocomplete="off" readonly data-filter="cat_name" />
+                                                    <input type="hidden" name="category_id" id="category_id" value="0" data-filter="cat_id" />
+                                                </div>
+                                                <div class="select-container" style="display:none;">
+                                                    {include file="library/filter_category.lbi"}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <input name="spec_cat" type="button" class="sc-btn btn30 sc-blueBg-btn" id="add_gift" onclick="addCat()" value="+" />
+                                    </div>								
+                                </dd>
+                            </dl>
+                                    
+                            <dl>
+                            	<dt>{$lang.use_start_enddate}：</dt>
+                                <dd>
+                                    <div class="text_time" id="text_time1">
+                                    	<input type="text" name="cou_start_time" value="{$cou.cou_start_time}" id="cou_start_time" class="text mr0" autocomplete="off" readonly />
+                                    </div>
+                                    <span class="bolang">&nbsp;&nbsp;~&nbsp;&nbsp;</span>
+                                    <div class="text_time" id="text_time2">
+                                    	<input type="text" name="cou_end_time" value="{$cou.cou_end_time}" id="cou_end_time" class="text" autocomplete="off" readonly />
+                                    </div>
+                                    <div class="form_prompt"></div>
+                                </dd>
+                            </dl>
+                            <dl>
+                            	<dt>{$lang.activity_rule}：</dt>
+                                <dd><div class="fl lh red" id="cou_type">{if $cou_type eq 1}{$lang.coupons_type_01}{elseif $cou_type eq 2}{$lang.coupons_type_02}{elseif $cou_type eq 3}{$lang.coupons_type_03}{elseif $cou_type eq 4}{$lang.coupons_type_04}{elseif $cou_type eq 5}{$lang.coupons_type_05}{else}{$lang.coupons_type_01}{/if}</div></dd>
+                            </dl>
+                            <dl class="item{if $cou_type neq 5} hide{/if}" id="not_free_shipping">
+                            	<dt>{$lang.not_free_shipping}：</dt>
+                                <dd>
+                                    <input type="button" class="sc-btn btn30 sc-blueBg-btn" value="{$lang.set_free_shipping}" ectype="set_free_shipping"/>
+                                    <span class="bf100 fl mt10" ectype="not_free_value">{$cou.free_value_name}</span>
+                                    <input type='hidden' name='free_value' value='{$cou.free_value}'>
+                                </dd>
+                            </dl>
+                            <div id="buy"{if $cou_type neq 2} style="display:none;"{/if}>
+                                <dl>
+                                    <dt>{$lang.require_field}{$lang.cou_get_man}：</dt>
+                                    <dd>
+                                        <span class="fl lh mr10">{$lang.full_shopping}</span>
+                                        <input type="text" name="cou_get_man" id="cou_get_man" class="text w50 mr10" value="{$cou.cou_get_man}" autocomplete="off" />
+                                        <div class="fl lh">{$lang.desc_yuan}</div>
+                                        <div class="form_prompt"></div>
+                                    </dd>
+                                </dl>
+                                <dl>
+                                    <dt>{$lang.give_quan_goods}：</dt>
+                                    <dd>
+                                    	<div class="checkbox_items">
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="buyableCouponGoods" id="buyableCouponGoods1" value="1" {if !$cou.cou_ok_goods && !$cou.cou_ok_cat}checked="checked"{/if} />
+                                                <label for="buyableCouponGoods1" class="ui-radio-label">{$lang.goods_all}</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="buyableCouponGoods" id="buyableCouponGoods2" value="2" {if $cou.cou_ok_goods && !$cou.cou_ok_cat}checked="checked"{/if} />
+                                                <label for="buyableCouponGoods2" class="ui-radio-label">{$lang.goods_appoint}</label>
+                                            </div>
+                                            
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="buyableCouponGoods" value="3" id="buyableCouponGoods3" {if !$cou.cou_ok_goods && $cou.cou_ok_cat}checked="checked"{/if}/>
+                                                <label class="ui-radio-label" for="buyableCouponGoods3">{$lang.spec_cat}</label>
+                                            </div>
+                                            <div class="form_prompt"></div>
+                                        </div>
+										<div class="notic">{$lang.buy_has_coupon}</div>
+										<div id="range-div2" class="rank_list" ata-goodsIds="{$cou.cou_ok_goods}">
+                                            {if $cou.ok_goods}
+                                            {foreach from=$cou.ok_goods item=goods key=key}
+                                                <div class="checkbox_item">
+                                                    <input type="checkbox" class="ui-checkbox" name="cou_ok_goods[]" id="gift_id2[{$key}]" value="{$goods.goods_id}" checked="checked" />
+                                                    <label for="gift_id2[{$key}]" class="ui-label">{$goods.goods_name}</label>
+                                                </div>
+                                            {/foreach}
+                                            {/if}
+                                        </div>
+                                        <input type="hidden" name="setcougoodsid" value="{$cou.cou_ok_goods}" class="ignore" />
+                                        <div class="rank_list" id="cat_range_div2">
+                                            {if $cou.ok_cat}
+                                            {foreach from=$cou.ok_cat item=cat key=key}
+                                            <div class="checkbox_item">
+                                                <input name="vc_ok_cat[]" type="checkbox" class="ui-checkbox" value="{$cat.cat_id}" id="vc_ok_cat[{$key}]" checked="checked" />
+                                                <label for="vc_ok_cat[{$key}]" class="ui-label">{$cat.cat_name}</label>
+                                            </div>
+                                            {/foreach}
+                                            {/if}
+                                        </div>
+                                    </dd>
+                                </dl>
+                                <dl class="hide" id="range_search2">
+                                    <dt>{$lang.add_goods}：</dt>
+                                    <dd>
+                                        <input type="button" class="sc-btn btn30 sc-blueBg-btn" value="设置商品" ectype="setupGroupGoods" data-diffeseller="1" data-pbmode="setgoods_appoint" data-pbtype="coupons_appoint"/>
+<!--                                    	<input name="keyword2" type="text" id="keyword2" class="text text_2 mr10 mb10" autocomplete="off" />
+										<input name="search2" type="button" id="search2" value="{$lang.button_search}" class="sc-btn btn30 sc-blueBg-btn" onclick="searchItem2()" />
+										<div id="result2" class="imitate_select select_w320">
+											<div class="cite">请选择</div>
+											<ul>
+											</ul>
+											<input name="result2" type="hidden" value="0" id="result2_val">
+										</div>											
+										<input name="add_gift2" type="button" class="sc-btn btn30 sc-blueBg-btn" id="add_gift2" onclick="addGift2()" value="+" />-->
+                                    </dd>
+                                </dl>
+                                
+                                <dl class="hide" id="range_search_cat2">
+                                    <dt>{$lang.add_cat}：</dt>
+                                    <dd>
+                                        <div class="goods_search_div bor_bt_das">
+                                            <div class="search_select">
+                                                <div class="categorySelect">
+                                                    <div class="selection">
+                                                        <input type="text" name="category_name" id="category_name" class="text w250 valid" value="请选择分类" autocomplete="off" readonly data-filter="cat_name" />
+                                                        <input type="hidden" name="category_id" id="category_id" value="0" data-filter="cat_id" />
+                                                    </div>
+                                                    <div class="select-container" style="display:none;">
+                                                        {include file="library/filter_category.lbi"}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <input name="spec_cat" type="button" class="sc-btn btn30 sc-blueBg-btn" id="add_gift" onclick="addCat2()" value="+" />
+                                        </div>								
+                                    </dd>
+                                </dl>
+                                
+                                <dl>
+                                    <dt>{$lang.come_user}：</dt>
+                                    <dd>
+                                    	<div class="checkbox_items relative">
+											<div class="checkbox_item">
+												<input type="checkbox" class="ui-checkbox" id="select_all" value="0" />
+												<label for="select_all" class="ui-label">{$lang.all_checkbox}</label>
+											</div>
+											{foreach from =$rank_list item=vo key=k}
+											<div class="checkbox_item">
+												<input type="checkbox" class="ui-checkbox" name="cou_ok_user[]" id="cou_{$k}" value="{$vo.rank_id}" {if $vo.is_checked}checked="checked"{/if} />
+												<label for="cou_{$k}" class="ui-label">{$vo.rank_name}</label>
+											</div>
+											{/foreach}
+										</div>
+										<div class="notic">允许参与的会员等级,一个不选表示没有任何会员能参与</div>
+										<div class="form_prompt"></div>
+                                    </dd>
+                                </dl>
+                            </div>
+                            <dl id="member" {if $cou_type neq 4}style="display:none;"{/if}>
+                            	<dt>{$lang.come_user}：</dt>
+                                <dd>
+                                	<div class="checkbox_items relative">
+                                        <div class="checkbox_item">
+                                            <input type="checkbox" class="ui-checkbox" id="select_all" value="0" />
+                                            <label for="select_all" class="ui-label">{$lang.all_checkbox}</label>
+                                        </div>
+                                        {foreach from=$rank_list item=vo key=k}
+                                        <div class="checkbox_item">
+                                            <input type="checkbox" class="ui-checkbox" name="cou_user_four[]" id="cou_user_{$k}" value="{$vo.rank_id}" {if $vo.is_checked}checked="checked"{/if} />
+                                            <label for="cou_user_{$k}" class="ui-label">{$vo.rank_name}</label>
+                                        </div>
+                                        {/foreach}
+                                    </div>
+                                    <div class="notic">允许参与的会员等级,一个不选表示没有任何会员能参与</div>
+                                    <div class="form_prompt"></div>
+                                </dd>
+                            </dl>
+                            <dl>
+                            	<dt>{$lang.coupons_intro}：</dt>
+                                <dd><textarea name="cou_intro" rows="3" class="textarea" placeholder="备注信息"></textarea></dd>
+                            </dl>
+                            {if $cou.cou_id}
+                            <dl>
+                                <dt>{$lang.adopt_status}：</dt>
+                                <dd>
+                                	<div class="checkbox_items">
+                                        <div class="checkbox_item">
+    										{if $cou.review_status eq 1}
+                                            	{$lang.not_audited}
+                                            {elseif $cou.review_status eq 2}
+                                            	{$lang.audited_not_adopt}
+                                            {elseif $cou.review_status eq 3}
+                                            	{$lang.audited_yes_adopt}
+                                            {/if}
+                                        </div>
+                                    </div>
+                                </dd>
+                            </dl>
+                                {if $cou.review_status eq 2}
+                                <dl>
+                                    <dt>{$lang.adopt_reply}：</dt>
+                                    <dd>
+                                        <textarea name="review_content" cols="40" rows="3" class="textarea red" disabled="disabled" style="background:#FFF;">{$cou.review_content}</textarea>
+                                    </dd>
+                                </dl>
+                                {/if}
+                            {/if}
+                            <dl class="button_info">
+                            	<dt>&nbsp;</dt>
+                                <dd>
+                                	<input type="submit" value="{$lang.button_submit}" class="sc-btn sc-blueBg-btn btn35" id="submitBtn" />
+                                    <input type="hidden" name="act" value="{$form_act}" />
+                                    <input type="hidden" name="cou_id" value="{$cou.cou_id}" />
+                                    <input type="hidden" name="ru_id" value="{$cou.ru_id}" />
+                                </dd>
+                            </dl>
+						</div>
+					</form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+{insert_scripts files="jquery.purebox.js"}
+<script type="text/javascript">
+$(function(){
+	$(window).load(function(){
+		var cou_type = $("input[name='cou_type']").val();
+		$("*[data-value='"+cou_type+"']").click();
+	});
+	
+	//初始显示可使用商品筛选
+	$(":input[name='usableCouponGoods']").each(function(index, element) {
+		
+		var val = $(this).val();
+		var is_true = $(this).is(":checked");
+		
+		if(val == 1 && is_true == true){
+			$("#range_search").hide();
+			$("#range_search_cat").hide();
+		}else if(val == 2 && is_true == true){
+			$("#range_search").show();
+			$("#range_search_cat").hide();
+		}else if(val == 3 && is_true == true){
+			$("#range_search").hide();
+			$("#range_search_cat").show();
+		}
+	});
+	
+	//初始显示可使用商品筛选
+	$(":input[name='buyableCouponGoods']").each(function(index, element) {
+		
+		var val = $(this).val();
+		var is_true = $(this).is(":checked");
+		
+		if(val == 1 && is_true == true){
+			$("#range_search2").hide();
+			$("#range_search_cat2").hide();
+		}else if(val == 2 && is_true == true){
+			$("#range_search2").show();
+			$("#range_search_cat2").hide();
+		}else if(val == 3 && is_true == true){
+			$("#range_search2").hide();
+			$("#range_search_cat2").show();
+		}
+	});
+	
+	$.divselect("#coupons_type","#coupons_type_val",function(){
+		$("#buy").hide();
+		$("#member").hide();
+		$("input[name='cou_ok_user[]']").addClass("ignore");
+		$("input[name='cou_user_four[]']").addClass("ignore");
+		$("#cou_type").html($("#coupons_type .cite").text());
+		var value = $("#coupons_type_val").val();
+		if(value == 2 || value == 5){
+			$("#buy").show();
+			$("input[name='cou_ok_user[]']").removeClass("ignore");
+			if(value == 5){
+				$("#buy").find('input[name="buyableCouponGoods"]').parents('dl').hide();
+				$("#buy").find('input[name="cou_get_man"]').parents('dl').hide();
+			}else{
+				$("#buy").find('input[name="buyableCouponGoods"]').parents('dl').show();
+				$("#buy").find('input[name="cou_get_man"]').parents('dl').show();
+			}
+			if(value == 2){
+				$("#member").hide();
+				
+				$("input[name='cou_user_four[]']").addClass("ignore");
+			}
+		}
+		if(value == 4){
+			$("#buy").hide();
+			$("#member").show();
+			
+			$("input[name='cou_ok_user[]']").addClass("ignore");
+					$("input[name='cou_user_four[]']").removeClass("ignore");
+		}
+		
+		if(value == 1 || value == 2){
+			$("#comm").hide();
+			$("#not_comm").show();
+		}else{
+			$("#comm").show();
+			$("#not_comm").hide();
+		}
+		if(value == 5){
+			$("#not_free_shipping").show();
+			$('[ectype="cou_money"]').hide();
+			$("input[name='cou_money']").addClass("ignore");
+		}else{
+			$("#not_free_shipping").hide();
+			$('[ectype="cou_money"]').show();
+			$("input[name='cou_money']").removeClass("ignore");
+		}
+	});
+	
+	$("*[ectype='set_free_shipping']").click(function(){
+		var region_ids = $("input[name='free_value']").val();
+		Ajax.call('dialog.php', "act=set_free_shipping&region_ids=" + region_ids, function(result){
+			goods_visual_desc("地区选择",915,result.content,function(){
+				var region_list = '';
+				var region_name = '';
+				$("input[name='region_id[]']:checked").each(function(){
+					var region_id = $(this).val();
+					var name = $(this).parent('.checkbox_item').find('label').html();
+					if(region_id > 0){
+						if(region_list){
+							region_list = region_list + "," + region_id;
+						}else{
+							region_list = region_id;
+						}
+					}
+					if(name){
+						if(region_name){
+							region_name = region_name + "," + name;
+						}else{
+							region_name = name;
+						}
+					}
+				});
+				$('[ectype="not_free_value"]').html(region_name);
+				$("input[name='free_value']").val(region_list);
+			});
+			$(".free_shipping_info").perfectScrollbar("destroy");
+			$(".free_shipping_info").perfectScrollbar();
+		}, 'POST', 'JSON');
+	});
+	
+	//表单验证
+	$("#submitBtn").click(function(){
+		if($("#myForm").valid()){
+			$("#myForm").submit();
+		}
+	});
+
+	$('#myForm').validate({
+		errorPlacement:function(error, element){
+			var error_div = element.parents('dl').find('div.form_prompt');
+			element.parents('dl').find(".notic").hide();
+			error_div.append(error);
+		},
+        ignore:".ignore",
+		rules:{
+			cou_name :{
+				required : true
+			},
+			cou_title:{
+				required : true
+			},
+			cou_total:{
+				required : true,
+				digits:true
+			},
+			cou_money:{
+				required : true,
+				number:true
+			},
+			cou_man:{
+				required : true,
+				number:true
+			},
+			cou_start_time : {
+				required : true
+			},
+			cou_end_time : {
+				required : true,
+				compareDate:"#cou_start_time",
+			},
+			setgoodsid :{
+				required : true
+			},
+			setcougoodsid :{
+				required : true
+			},
+			'cou_ok_user[]' :{
+				required : true
+			},
+			'cou_user_four[]' :{
+				required : true
+			}
+		},
+		messages:{
+			cou_name:{
+				 required : '<i class="icon icon-exclamation-sign"></i>'+type_name_empty
+			},
+			cou_title:{
+				required : '<i class="icon icon-exclamation-sign"></i>'+coupons_title_empty
+			},
+			cou_total:{
+				required : '<i class="icon icon-exclamation-sign"></i>'+coupons_zhang_empty,
+				digits : '<i class="icon icon-exclamation-sign"></i>'+coupons_sum_number
+			},
+			cou_money:{
+				required : '<i class="icon icon-exclamation-sign"></i>'+coupons_face_empty,
+				number : '<i class="icon icon-exclamation-sign"></i>'+coupons_total_isnumber
+			},
+			cou_man:{
+				required : '<i class="icon icon-exclamation-sign"></i>'+coupons_threshold_empty,
+				number : '<i class="icon icon-exclamation-sign"></i>'+coupons_total_isnumber
+			},
+			cou_start_time : {
+				required : '<i class="icon icon-exclamation-sign"></i>'+coupons_data_empty,
+			},
+			cou_end_time : {
+				required :'<i class="icon icon-exclamation-sign"></i>'+coupons_data_empty,
+				compareDate:'<i class="icon icon-exclamation-sign"></i>'+coupons_data_invalid_gt
+			},
+			setgoodsid :{
+				required : '<i class="icon icon-exclamation-sign"></i>'+coupons_set_goods,
+			},
+			setcougoodsid:{
+				required : '<i class="icon icon-exclamation-sign"></i>'+coupons_set_goods,
+			},
+			'cou_ok_user[]' :{
+				required : '<i class="icon icon-exclamation-sign"></i>'+user_rank_empty,
+			},
+			'cou_user_four[]' :{
+				required : '<i class="icon icon-exclamation-sign"></i>'+user_rank_empty,
+			}
+		},
+		onfocusout:function(element,event){
+			//实时去除结束时间是否大于开始时间验证
+			var name = $(element).attr("name");
+			
+			if(name == "cou_end_time"){
+				var endDate = $(element).val();
+				var startDate = $(element).parents("dd").find("input[name='cou_start_time']").val();
+				
+				var date1 = new Date(Date.parse(startDate.replace(/-/g, "/")));
+				var date2 = new Date(Date.parse(endDate.replace(/-/g, "/")));
+				
+				if(date1 > date2){
+					$(element).removeClass("error");
+					$(element).parents("dd").find(".form_prompt").html("");
+				}
+			}
+		}
+	});
+});
+
+	//时间选择
+	var opts1 = {
+		'targetId':'cou_start_time',
+		'triggerId':['cou_start_time'],
+		'alignId':'text_time1',
+		'format':'-'
+	},opts2 = {
+		'targetId':'cou_end_time',
+		'triggerId':['cou_end_time'],
+		'alignId':'text_time2',
+		'format':'-'
+	}
+	xvDate(opts1);
+	xvDate(opts2);
+
+	function searchGoods()
+	{
+	  var filter = new Object;
+	  filter.keyword = document.forms['theForm'].elements['keywords'].value;
+	  filter.ru_id = document.forms['theForm'].elements['ru_id'].value;
+
+	  Ajax.call('snatch.php?is_ajax=1&act=search_goods', filter, searchGoodsResponse, 'GET', 'JSON');
+	}
+
+	function searchGoodsResponse(result)
+	{
+		$("#activity_goods").children("ul").find("li").remove();
+		var goods = result.content.goods;
+		if (goods)
+		{
+		  for (i = 0; i < goods.length; i++)
+		  {
+			  $("#activity_goods").children("ul").append("<li><a href='javascript:;' data-value='"+goods[i].goods_id+"' class='ftx-01'>"+goods[i].goods_name+"</li>");
+				  
+		  }
+                  $("#activity_goods").children("ul").show();
+		}		
+	}
+
+	/**
+	 * 搜索赠品
+	 */
+	function searchItem1()
+	{
+	  var filter = new Object;
+	  filter.keyword  = document.forms['theForm'].elements['keyword1'].value;
+	  filter.act_range = 3;
+	  filter.ru_id  = "{$ru_id}";
+	  Ajax.call('coupons.php?is_ajax=1&act=search', filter, searchResponse1, 'GET', 'JSON');
+	}
+
+	function searchResponse1(result)
+	{
+	  if (result.error == '1' && result.message != '')
+	  {
+		alert(result.message);
+		return;
+	  }
+
+		/* 删除原有li内容 */
+		$("#result1").find('li').remove();
+		
+	  var goods = result.content;
+	  if (goods)
+	  {
+		for (i = 0; i < goods.length; i++)
+		{
+			$("#result1 ul").append("<li><a href='javascript:;' data-value='"+goods[i].id+"' class='ftx-01'>"+goods[i].name+"</a></li>")
+		}
+                $("#result1 ul").show();
+	  }
+
+	  return;
+	}	
+	
+	function searchItem2()
+	{
+	  var filter = new Object;
+	  filter.keyword  = document.forms['theForm'].elements['keyword2'].value;
+	  filter.act_range = 3;
+	  filter.ru_id  = "{$ru_id}";
+	  Ajax.call('coupons.php?is_ajax=1&act=search', filter, searchResponse2, 'GET', 'JSON');
+	}
+
+	function searchResponse2(result)
+	{
+	  if (result.error == '1' && result.message != '')
+	  {
+		alert(result.message);
+		return;
+	  }
+
+		/* 删除原有li内容 */
+		$("#result2").find('li').remove();
+		
+	  var goods = result.content;
+	  
+	  if (goods)
+	  {
+		for (i = 0; i < goods.length; i++)
+		{
+			$("#result2 ul").append("<li><a href='javascript:;' data-value='"+goods[i].id+"' class='ftx-01'>"+goods[i].name+"</a></li>")
+		}
+	  }
+
+	  return;
+	}
+	
+	function addGift()
+	{
+	  var selResult = document.getElementById('result1_val');
+	  
+	  if (selResult.value == 0)
+	  {
+		alert(pls_search);
+		return;
+	  }
+	  var id = $("#result1_val").val();
+	  var name = $("#result1").find('.cite').text();
+	  
+	  // 检查是否已经存在
+	  var exists = false;
+	  var eles = document.forms['theForm'].elements;
+	  
+	  for (var i = 0; i < eles.length; i++)
+	  {
+		if (eles[i].type=="checkbox" && eles[i].name.substr(0, 9) == 'cou_goods')
+		{
+		  if (eles[i].value == id)
+		  {
+			exists = true;
+			alert(range_exists);
+			break;
+		  }
+		}
+	  }
+
+	  // 创建checkbox
+	  if (!exists)
+	  {
+		var html = '<div class="checkbox_item"><input name="cou_goods[]" id="goods_id" type="checkbox" class="ui-checkbox" value="' + id + '" checked="checked" /><label for="goods_id" class="ui-label">' + name+'</label></div>';
+		document.getElementById('range-div').innerHTML += html;
+		}
+	}
+
+	function addGift2()
+	{
+	  var selResult = document.getElementById('result2_val');
+	  
+	  if (selResult.value == 0)
+	  {
+		alert(pls_search);
+		return;
+	  }
+	  var id = $("#result2_val").val();
+	  var name = $("#result2").find('.cite').text();
+	  
+	  // 检查是否已经存在
+	  var exists = false;
+	  var eles = document.forms['theForm'].elements;
+	  
+	  for (var i = 0; i < eles.length; i++)
+	  {
+		if (eles[i].type=="checkbox" && eles[i].name.substr(0, 12) == 'cou_ok_goods')
+		{
+		  if (eles[i].value == id)
+		  {
+			exists = true;
+			alert(range_exists);
+			break;
+		  }
+		}
+	  }
+
+	  // 创建checkbox
+	  if (!exists)
+	  {
+		var html = '<div class="checkbox_item"><input name="cou_ok_goods[]" id="goods_id" type="checkbox" class="ui-checkbox" value="' + id + '" checked="checked" /><label for="goods_id" class="ui-label">' + name+'</label></div>';
+		document.getElementById('range-div2').innerHTML += html;
+		}
+	}	
+	
+	function addCat()
+	{
+		  var cat = $("#range_search_cat .selection :input[name='category_id']");
+		  var name = $("#range_search_cat .selection :input[name='category_name']");
+		  var id = cat.val();
+		  var name = name.val();
+	
+		  var exists = 0;
+		  var id_index = 0;
+		  $(":input[name='vc_cat[]']").each(function(index, element) {
+			  
+			  if(id == $(this).val()){
+				  alert("分类已经存在了");
+				  exists = 1;
+			  }
+			  
+			  id_index = index;
+		  });
+		  id_index += 1;
+		  
+		  // 创建checkbox
+		  if (!exists)
+		  {
+			var html = '<div class="checkbox_item"><input name="vc_cat[]" id="vc_cat[' + id_index + ']" type="checkbox" class="ui-checkbox" value="' + id + '" checked="checked" /><label for="vc_cat[' + id_index + ']" class="ui-label">' + name+'</label></div>';
+			document.getElementById('cat_range_div').innerHTML += html;
+		  }
+	}	
+	
+	function addCat2()
+	{
+		  var cat = $("#range_search_cat2 .selection :input[name='category_id']");
+		  var name = $("#range_search_cat2 .selection :input[name='category_name']");
+		  var id = cat.val();
+		  var name = name.val();
+	
+		  var exists = 0;
+		  var id_index = 0;
+		  $(":input[name='vc_ok_cat[]']").each(function(index, element) {
+			  
+			  if(id == $(this).val()){
+				  alert("分类已经存在了");
+				  exists = 1;
+			  }
+			  
+			  id_index = index;
+		  });
+		  id_index += 1;
+		  
+		  // 创建checkbox
+		  if (!exists)
+		  {
+			var html = '<div class="checkbox_item"><input name="vc_ok_cat[]" id="vc_ok_cat[' + id_index + ']" type="checkbox" class="ui-checkbox" value="' + id + '" checked="checked" /><label for="vc_ok_cat[' + id_index + ']" class="ui-label">' + name+'</label></div>';
+			document.getElementById('cat_range_div2').innerHTML += html;
+		  }
+	}
+	
+	if($("input[name='usableCouponGoods']:checked,input[name='buyableCouponGoods']:checked,input[name='obtainCouponGoods']:checked").val() == 2)
+	  $("#range-div").show();
+	if($("input[name='buyableCouponGoods2']:checked").val() == 2)
+	  $("#range-div2").show();
+
+	$("input[name='usableCouponGoods']").click(function(){
+		var val = $(this).val();
+		if(val == 1){
+			$("#range_search").hide();
+			$("#range-div").hide();
+			
+			$("#range_search_cat").hide();
+			$("#cat_range_div").hide();
+			
+			$("#range-div").siblings("input[name='setgoodsid']").addClass("ignore");
+		}else if(val == 2){
+			$("#range_search").show();
+			$("#range-div").show();
+			
+			$("#range_search_cat").hide();
+			$("#cat_range_div").hide();
+			
+			$("#range-div").siblings("input[name='setgoodsid']").removeClass("ignore");
+		}else if(val == 3){
+			$("#range_search").hide();
+			$("#range-div").hide();
+			
+			$("#range_search_cat").show();
+			$("#cat_range_div").show();
+			
+			$("#range-div").siblings("input[name='setgoodsid']").addClass("ignore");
+		}
+	});	
+
+	$("input[name='buyableCouponGoods']").click(function(){
+	  var val = $(this).val();
+	  if(val == 1){
+		  $("#range_search2").hide();
+		  $("#range-div2").hide();
+		  
+		  $("#range_search_cat2").hide();
+	      $("#cat_range_div2").hide();
+		  
+		  $("#range-div2").siblings("input[name='setcougoodsid']").addClass("ignore");
+	  }else if(val == 2){
+		  $("#range_search2").show();
+		  $("#range-div2").show();
+		  
+		  $("#range_search_cat2").hide();
+	      $("#cat_range_div2").hide();
+		  
+		  $("#range-div2").siblings("input[name='setcougoodsid']").removeClass("ignore");
+	  }else if(val == 3){  
+		  $("#range_search2").hide();
+		  $("#range-div2").hide();
+		  
+		  $("#range_search_cat2").show();
+	      $("#cat_range_div2").show();
+		  
+		  $("#range-div2").siblings("input[name='setcougoodsid']").addClass("ignore");
+	  }
+	});
+
+	$('#select_all').click(function(){
+	  if($('#select_all').is(':checked')) {
+		$('.checkbox_items input[type=checkbox]').prop('checked',true);
+	  }else{
+		$('.checkbox_items input[type=checkbox]').prop('checked',false);
+	  }
+	});
+</script>
+{/literal}	
+</body>
+</html>

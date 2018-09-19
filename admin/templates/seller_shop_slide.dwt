@@ -1,0 +1,90 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.seller} - {$ur_here}</div>
+        <div class="content">		
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>店铺轮播图设置信息管理。</li>
+                    <li>幻灯片展示了店铺的门面，请高度重视。</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<!--商品列表-->
+                <div class="common-head">
+                    <div class="fl">
+                    	<a href="{$action_link.href}"><div class="fbutton"><div class="add" title="{$action_link.text}"><span><i class="icon icon-plus"></i>{$action_link.text}</span></div></div></a>
+                    </div>
+                </div>
+                <div class="common-content">
+                	<div class="list-div" id="listDiv">
+						{/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                	<th width="15%"><div class="tDiv">{$lang.carousel_image}</div></th>
+                                    <th width="20%"><div class="tDiv">{$lang.image_href}</div></th>
+                                    <th width="20%"><div class="tDiv">{$lang.image_explain}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.sort_order}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.transform_style}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.display}</div></th>
+                                    <th width="15%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+								{foreach from=$seller_slide_list item=slide_list}
+                            	<tr>
+                                    <td>
+                                        <div class="tDiv">
+                                            <span class="show">
+                                                <a href="{$slide_list.img_url}" class="nyroModal"><i class="icon icon-picture" data-tooltipimg="{$slide_list.img_url}" ectype="tooltip" title="tooltip"></i></a>
+                                            </span>
+                                        </div>
+                                    </td>
+									<td><div class="tDiv"><a href="{$slide_list.img_link}" target="_blank">{$slide_list.img_link}</a></div></td>
+									<td><div class="tDiv">{$slide_list.img_desc}</div></td>
+									<td><div class="tDiv"><input type="text" name="sort_order" class="text w40" value="{$slide_list.img_order}" autocomplete="off" onkeyup="listTable.editInput(this, 'edit_sort_order', {$slide_list.id})"/></div></td>
+									<td><div class="tDiv">{$slide_list.slide_type}</div></td>
+									<td>
+                                        <div class="tDiv">
+                                            <div class="switch {if $slide_list.is_show}active{/if}" title="{if $slide_list.is_show}是{else}否{/if}" onclick="listTable.switchBt(this, 'toggle_show', {$slide_list.id})">
+                                                <div class="circle"></div>
+                                            </div>
+                                            <input type="hidden" value="0" name="">
+                                        </div>
+                                    </td>                            
+                                    <td class="handle">
+                                        <div class="tDiv a2">
+                                            <a href="seller_shop_slide.php?act=edit&id={$slide_list.id}" class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>
+                                            <a href="javascript:;" onclick="listTable.remove({$slide_list.id}, '{$lang.drop_confirm}')" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>
+                                        </div>
+                                    </td>
+                                </tr>
+								{foreachelse}
+								<tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+								{/foreach}
+                            </tbody>
+                        </table>
+						{if $full_page}
+                    </div>
+                </div>
+                <!--商品列表end-->
+            </div>
+		</div>
+	</div>
+ {include file ='library/pagefooter.lbi'}
+    
+    <script type="text/javascript">
+	$(function(){
+    	//点击查看图片
+		$('.nyroModal').nyroModal();
+	});	
+    </script>
+</body>
+</html>
+{/if}

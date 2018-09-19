@@ -1,0 +1,273 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="explanation clear" id="explanation">
+                    <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4></div>
+                    <ul>
+                    	<li>温馨提示：提交操作将会重新审核，请慎重提交确定。</li>
+                    </ul>
+                </div>
+                <div class="ecsc-form-goods">
+                    <form method="post" action="package.php" enctype="multipart/form-data" name="theForm" id="package_form">
+                    <div class="wrapper-list border1">
+                    	<dl>
+                        	<dt>{$lang.require_field}&nbsp;{$lang.package_name}：</dt>
+                            <dd>
+							<input type="text" class="text" name="package_name" maxlength="60" size="40" value="{$package.package_name}" />
+							<div class="form_prompt"></div>
+							</dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.require_field}&nbsp;{$lang.start_end_time}：</dt>
+                            <dd>
+                            	<div class="text_time" id="text_time1">
+                                <input type="text" name="start_time" class="text" size="40" value="{$package.start_time}" readonly="readonly" id="start_time_id" />
+                                </div>
+                                <span class="bolang">&nbsp;&nbsp;~&nbsp;&nbsp;</span>
+                                <div class="text_time" id="text_time2">
+                                <input type="text" name="end_time" class="text" size="40" value="{$package.end_time}" readonly="readonly" id ="end_time_id" />
+                                </div>
+                                <div class="form_prompt"></div>
+                            </dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.upload_image}：</dt>
+                            <dd>
+                                <div class="type-file-box">
+                                	<div class="input">
+                                	<input type="text" name="textfile" {if $package.activity_thumb neq ''}value="../{$package.activity_thumb}"{/if} class="type-file-text" id="textfield" autocomplete="off" readonly />
+                                    <input type="button" name="button" id="button" class="type-file-button" value="上传..." />
+                                    <input type="file" class="type-file-file" id="activity_thumb" name="activity_thumb" data-state="imgfile" size="30" hidefocus="true" value="" />
+                                    </div>
+                                    {if $package.activity_thumb neq ""}
+                                    <span class="show">
+                                        <a href="../{$package.activity_thumb}" target="_blank" class="nyroModal"><i class="icon icon-picture" onmouseover="toolTip('<img src=../{$package.activity_thumb}>')" onmouseout="toolTip()"></i></a>
+                                    </span>
+                                    {/if}
+                                </div>
+                                <div class="form_prompt"></div>
+                                <div class="notic">尺寸：580*270</div>
+                            </dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.require_field}&nbsp;{$lang.package_price}：</dt>
+                            <dd>
+                            	<input type="text" class="text" name="package_price" maxlength="60" size="20" value="{$package.package_price}" />
+								<div class="form_prompt"></div>
+                            	<div class="notic">{$lang.notice_package_price}</div>
+                            </dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.require_field}&nbsp;{$lang.desc}：</dt>
+                            <dd>
+							<textarea name="desc" cols="60" rows="4" class="textarea">{$package.act_desc}</textarea>
+							<div class="form_prompt"></div>
+							</dd>
+                        </dl>
+                        {if $package.id}
+                        <dl>
+                            <dt>{$lang.adopt_status}：</dt>
+                            <dd>
+                                <div class="checkbox_items">
+                                    <div class="checkbox_item">
+                                        {if $package.review_status eq 1}
+                                            {$lang.not_audited}
+                                        {elseif $package.review_status eq 2}
+                                            {$lang.audited_not_adopt}
+                                        {elseif $package.review_status eq 3}
+                                            {$lang.audited_yes_adopt}
+                                        {/if}
+                                    </div>
+                                </div>
+                            </dd>
+                        </dl>
+                            {if $package.review_status eq 2}
+                            <dl>
+                                <dt>{$lang.adopt_reply}：</dt>
+                                <dd>
+                                    <textarea name="review_content" cols="40" rows="3" class="textarea red" disabled="disabled" style="background:#FFF;">{$package.review_content}</textarea>
+                                </dd>
+                            </dl>
+                            {/if}
+                        {/if}
+                       <dl>
+                            <dt>礼包商品：</dt>
+                            <dd>
+                                <input type="button" class="sc-btn btn30 sc-blueBg-btn valid" value="设置商品" ectype="setupGroupGoods" data-diffeseller="1" data-pbmode="setpackagegoods" data-pbtype="package" aria-invalid="false">
+                            </dd>
+                        </dl>
+                        <div class="list-div mt20">
+                            <table class="ecsc-default-table">
+                                <thead>
+                                    <tr>
+                                        <th width="30%">商品名称</th>
+                                        <th width="15%">商品价格</th>
+                                        <th width="10%">数量</th>
+                                        <th width="15%">属性</th>
+                                        <th width="10%">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody ectype="group_list">
+                                    {foreach from=$package_goods_list item=package_goods}
+                                    <tr data-goods="{$package_goods.goods_id}">
+                                        <td class="tl">{$package_goods.goods_name_pack}</td>
+                                        <td>{$package_goods.shop_price}</td>
+                                        <td><input class="text w50 tc fn mr0" onblur="edit_package_nuber(this)" name="goods_number[]" autocomplete="off" value="{$package_goods.goods_number}" type="text"></td>
+                                        <td>
+                                            {if $package_goods.products}
+                                            <div class="imitate_select select_w120">
+                                                <div class="cite">请选择...</div>
+                                                <ul style="display: none;" class="ps-container">
+                                                    <li><a href="javascript:;" data-value="" class="ftx-01">请选择...</a></li>
+                                                    {foreach from=$package_goods.products item=products}
+
+                                                    <li><a href="javascript:;" data-value="{$products.product_id}" class="ftx-01" ectype="package_checked">{$products.goods_attr_str}</a></li>
+
+                                                    {/foreach}
+                                                </ul>
+                                                <input type="hidden" name="product_id[]" value="{$package_goods.product_id}" data-oldproduct="{$package_goods.product_id}" >
+                                            </div>
+                                            {/if}
+                                        </td>
+                                        <td class="ecsc-table-handle">
+                                            {if $package_goods.products}
+                                            <span><a href="javascript:;" ectype="add_package_goods" title="增加" class="btn-blue"><i class="icon icon-plus"></i><p>增加</p></a></span>
+                                            {/if}
+                                            <span><a href="javascript:;" ectype="remove_group" title="{$lang.remove}" data-operation="package" data-msg="确定删除该礼包商品吗？" class="btn-red"><i class="icon icon-trash"></i><p>{$lang.remove}</p></a></span>
+                                        </td>
+                                    </tr>
+                                    {foreachelse}
+                                    <tr><td class="no-records" colspan="12">{$lang.no_records}</td></tr>
+                                    {/foreach}
+                                </tbody>
+                            </table>							
+                        </div>
+                      <div class="bottom tc">
+                        <div class="button_info">
+                            <input type="submit" value="{$lang.button_submit}" class="sc-btn sc-blueBg-btn btn35" id="submitBtn" />
+                            <input type="reset" value="{$lang.button_reset}" class="sc-btn btn35 sc-blue-btn" />
+                            <input type="hidden" name="act" value="{$form_action}" />
+                            <input type="hidden" name="id" value="{$package.id}" />
+                            <input type="hidden" name="ru_id" value="{$package.ru_id}" />
+                        </div>
+                      </div>
+                    </div>  
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+{insert_scripts files="jquery.purebox.js"}
+<script type="text/javascript" src="../js/jquery.picTip.js"></script>
+<script type="text/javascript">
+//滚动轴
+$(".move_list").perfectScrollbar();
+$(".brand-list").perfectScrollbar();
+
+var elements = document.forms['theForm'].elements;
+
+//表单验证
+$(function(){
+	$("#submitBtn").click(function(){
+		if($("#package_form").valid()){
+			$("#package_form").submit();
+		}
+	});
+
+	$('#package_form').validate({
+		errorPlacement: function(error, element){
+			var error_div = element.parents('dl').find('div.form_prompt');
+			//element.parents('dl').find(".notic").hide();
+			error_div.append(error);
+		},
+		rules : {
+			package_name : {
+				required : true
+			},
+			package_price : {
+				required : true,
+				number:true
+			},
+			desc : {
+				required : true
+			},
+			start_time :{
+				required : true
+			},
+			end_time :{
+				required : true,
+				compareDate:"#start_time_id",
+			}
+		},
+		messages : {
+			package_name : {
+				required : '<i class="icon icon-exclamation-sign"></i>' + no_name
+			},
+			package_price : {
+				required : '<i class="icon icon-exclamation-sign"></i>' + invalid_package_price,
+				number : '<i class="icon icon-exclamation-sign"></i>' + invalid_package_price
+			},
+			desc : {
+				required : '<i class="icon icon-exclamation-sign"></i>' + no_desc
+			},
+			start_time :{
+				required : '<i class="icon icon-exclamation-sign"></i>'+start_data_notnull
+			},
+			end_time :{
+				required : '<i class="icon icon-exclamation-sign"></i>'+end_data_notnull,
+				compareDate:'<i class="icon icon-exclamation-sign"></i>'+data_invalid_gt
+			}
+		},
+		onfocusout:function(element,event){
+			//实时去除结束时间是否大于开始时间验证
+			var name = $(element).attr("name");
+			
+			if(name == "end_time"){
+				var endDate = $(element).val();
+				var startDate = $(element).parents("dd").find("input[name='start_time']").val();
+				
+				var date1 = new Date(Date.parse(startDate.replace(/-/g, "/")));
+				var date2 = new Date(Date.parse(endDate.replace(/-/g, "/")));
+				
+				if(date1 > date2){
+					$(element).removeClass("error");
+					$(element).parents("dd").find(".form_prompt").html("");
+				}
+			}
+		}
+	});
+	
+	$('.nyroModal').nyroModal();
+});
+
+//日期选择插件调用start sunle
+var opts1 = {
+  'targetId':'start_time_id',//时间写入对象的id
+  'triggerId':['start_time_id'],//触发事件的对象id
+  'alignId':'text_time1',//日历对齐对象
+  'format':'-'//时间格式 默认'YYYY-MM-DD HH:MM:SS'
+},opts2 = {
+  'targetId':'end_time_id',
+  'triggerId':['end_time_id'],
+  'alignId':'text_time2',
+  'format':'-'
+}
+
+xvDate(opts1);
+xvDate(opts2);
+//日期选择插件调用end sunle
+</script>
+</body>
+</html>

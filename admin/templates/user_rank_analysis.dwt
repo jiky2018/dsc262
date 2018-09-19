@@ -1,0 +1,119 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body"> 
+    <div class="warpper">
+        <div class="title">{$lang.report_form} - {$ur_here}</div>
+        <div class="content">
+            <div class="tabs_info">
+                <ul>
+                    <li><a href="user_stats.php?act=new">{$lang.newadd_user}</a></li>
+                    <li><a href="user_stats.php?act=user_analysis">{$lang.user_analysis}</a></li>
+                    <li><a href="user_stats.php?act=user_area_analysis">{$lang.user_area_analysis}</a></li>
+                    <li class="curr"><a href="user_stats.php?act=user_rank_analysis">{$lang.user_rank_analysis}</a></li>
+                    <li><a href="user_stats.php?act=user_consumption_rank">{$lang.user_consumption_rank}</a></li>
+                </ul>
+            </div>
+            <div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.rank_analysis.0}</li>
+                </ul>
+            </div>
+            <div class="flexilist mt30">
+                <div class="query_result">
+                    <div class="common-content">
+                        <div class="query_result">
+                            <div class="list-div" id="listDiv">
+                                <table cellpadding="0" cellspacing="0" border="0">
+                                    <thead>
+                                    <tr>
+                                        <th width="55%" class="tc"><div class="tDiv">{$lang.user_order_gk}</div></th>
+                                        <th width="15%"><div class="tDiv">{$lang.05_user_rank_list}</div></th>
+                                        <th width="15%"><div class="tDiv">{$lang.number}</div></th>
+                                        <th width="15%"><div class="tDiv">{$lang.proportion}</div></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="tDiv">
+                                                <div id="chart-panel" style="height: 380px;">
+                                                    
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <style>
+                                        .user-rank-table td{border-bottom-width: 0px; font-size:1.2em;}
+                                        </style>
+                                        <td colspan="3"><div class="tDiv">
+                                            {foreach from=$user_rank item=vo name=vo}
+                                            <table cellpadding="0" cellspacing="0" border="0" class="user-rank-table">
+                                                <tr>
+                                                    <td width="33%">{$vo.rank_name}</td>
+                                                    <td width="33%">{$vo.user_num}</td>
+                                                    <td width="33%">{$vo.percent|default:0}%</td>
+                                                </tr>
+                                            </table>
+                                            {/foreach}
+                                        </div></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript" src="../js/echarts-all.js"></script>
+	<script type="text/javascript">
+    var json_data = {if $json_data}{$json_data}{else}{}{/if};
+    var chartPanel = echarts.init(document.getElementById("chart-panel"));
+
+    var option = {
+        tooltip: {
+            trigger: 'item',
+            formatter: "{a} <br/>{b}: {c} ({d}%)"
+        },
+        legend: {
+            orient: 'vertical',
+            x: 'left',
+            data:json_data.text
+        },
+        series: [
+            {
+                name:'会员数量',
+                type:'pie',
+                radius: ['50%', '70%'],
+                avoidLabelOverlap: false,
+                label: {
+                    normal: {
+                        show: false,
+                        position: 'center'
+                    },
+                    emphasis: {
+                        show: true,
+                        textStyle: {
+                            fontSize: '30',
+                            fontWeight: 'bold'
+                        }
+                    }
+                },
+                labelLine: {
+                    normal: {
+                        show: false
+                    }
+                },
+                data:json_data.list
+            }
+        ]
+    };
+
+    chartPanel.setOption(option);
+    </script>
+</body>
+</html>

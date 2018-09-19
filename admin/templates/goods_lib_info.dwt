@@ -1,0 +1,1247 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+<body class="iframe_body">
+	<div class="warpper" style="display:none;">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$lang.goods_alt} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content_common}</li>
+                    <li>{$lang.operation_prompt_content.info.0}</li>
+                    <li>{$lang.operation_prompt_content.info.1}</li>
+                    <li>{$lang.operation_prompt_content.info.2}</li>
+                </ul>
+            </div>
+			<form id="goods_form" name="theForm" method="post" action="goods_lib.php">
+                {if $code neq ''}<input type="hidden" name="extension_code" value="{$code}" />{/if}			
+                <input type="hidden" name="goods_id" id="goods_id" value="{$goods.goods_id|default:0}" />
+				<input type="hidden" name="is_lib" value="1" />
+                <input name="numAdd_area" value="1" id="numAdd_area" type="hidden" /> 
+                <input name="other_catids" value="{$other_catids}" id="other_catids" type="hidden" /> 
+                <input name="numAdd" value="1" id="numAdd" type="hidden" />  
+                <input type="hidden" name="act" value="{$form_act}" />			
+                <div class="flexilist">
+                    <div class="stepflex">
+                        <dl  class="first cur" data-step="1">
+                            <dt class="pointer"{if $goods.goods_id} data-step="1" ectype="stepSubmit"{/if}>1</dt>
+                            <dd class="s-text">{$lang.select_goods_cat}</dd>
+                        </dl>					
+                        <dl data-step="2">
+                            <dt class="pointer"{if $goods.goods_id} data-step="2" ectype="stepSubmit"{/if}>2</dt>
+                            <dd class="s-text">{$lang.fill_in_goods_info}</dd>
+                        </dl>
+                        <dl class="last" data-step="3">
+                            <dt class="pointer"{if $goods.goods_id} data-step="3" ectype="stepSubmit"{/if}>3</dt>
+                            <dd class="s-text">{$lang.tab_gallery}</dd>
+                        </dl>
+                    </div>
+					<input type="hidden" name="model_attr" value="0"/>
+                    <div class="common-content goods_info">
+                        <!--第一步 选择商品分类-->
+                        <div class="step step_two" style="display:none;" ectype="step" data-step="1">
+                        	<div class="step_title"><i class="ui-step"></i><h3>{$lang.select_goods_cat}</h3></div>
+                            <div class="sort_info">
+                                <div class="sort_list sort_list_one">
+                                    <div class="sort_list_warp">
+                                        <div class="category_list">
+                                            <ul ectype="category" data-cat_level="1">
+                                                {$category_level.1}
+                                            </ul>
+                                        </div>
+                                        <div class="sort_point"></div>
+                                    </div>
+                                </div>
+                                <div class="sort_list sort_list_one">
+                                    <div class="sort_list_warp">
+                                        <div class="category_list">
+                                            <ul ectype="category" data-cat_level="2">
+                                                {$category_level.2}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="sort_point"></div>
+                                </div>
+                                <div class="sort_list">
+                                    <div class="sort_list_warp">
+                                        <div class="category_list">
+                                            <ul ectype="category" data-cat_level="3">
+                                                {$category_level.3}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="cat_id" id="cat_id" value="{$goods.cat_id|default:0}" ectype="cat_id"/>
+                                <div class="choiceClass" id="choiceClass">{$lang.current_cat}：<strong class="red"></strong></div>
+                            </div>
+                            <div class="goods_btn">
+                                <a href="javascript:void(0);" class="btn btn35 blue_btn" data-step="2" data-type="step" data-down="true" ectype="stepSubmit">{$lang.step_btn_three}</a>
+                            	{if $goods.goods_id}<a href="javascript:void(0);" class="btn btn35 blue_btn" data-down="true" data-type="submit" ectype="stepSubmit"><i class="sc_icon goods_complete_icon"></i>{$lang.step_btn_last}</a>{/if}
+                            </div>
+                        </div>
+
+                        <!--第二步 通用信息-->
+                        <div class="step_three" style="display:none;" ectype="step" data-step="2">
+                            <div class="step">
+                                <div class="step_title"><i class="ui-step"></i><h3>{$lang.tab_general}</h3></div>
+                                <div class="step_content">
+                                    <div class="item item_wenzi">
+                                        <div class="step_label">{$lang.03_category_manage}：</div>
+                                        <div class="step_value"><span class="fl"></span><a href="javascript:;" class="edit_category" ectype="edit_category"><i class="icon icon-edit"></i></a><a href="javascript:void(0);" class="category_dialog">{$lang.add_extend_cat}</a></div>
+                                    </div>		
+                                    <div class="item">
+                                        <div class="step_label">{$lang.lab_bar_code}</div>
+                                        <div class="step_value">
+                                        	<div class="fl">
+                                                <input type="text" name="bar_code" class="text w150" autocomplete="off"  value="{$goods.bar_code|escape}"/>
+                                                {if $form_act eq 'insert'}<input type="button" class="button mr10" value="{$lang.scan_code_storage}" data-role="scan_code">{/if}
+                                                <input type="button" class="button fl mr10" value="{$lang.scan_code_storage_info}" data-role="edit_scan_code"{if $form_act eq 'insert'} style="display:none;"{/if}>
+                                            </div>
+                                            <div class="notic">{$lang.lab_bar_code_notic}</div>
+										</div>
+                                    </div>								
+                                    <div class="item">
+                                        <div class="step_label"><em class="require-field">*</em>{$lang.goods_name}：</div>
+                                        <div class="step_value">
+											<input type="text" name="goods_name" class="text" autocomplete="off" value="{$goods.goods_name|escape}" ectype="require" style="color:{$goods_name_color};"/>
+                                            <div id="font_color" class="font_color mr10">
+                                            	<input type='text' id="full" value="{$goods_name_color}" style="display:none"/>
+                                            </div>
+                                            <input type="hidden" id="goods_name_color" name="goods_name_color" value="{$goods_name_color}">
+                                            <div class="form_prompt"></div>
+										</div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="step_label">{$lang.lab_bar_simple_desc}：</div>
+                                        <div class="step_value">
+                                            <textarea class="textarea" name="goods_brief">{$goods.goods_brief|escape}</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="step_label"><em class="require-field">*</em>{$lang.lab_bar_shop_price}：</div>
+                                        <div class="step_value"><input type="text" name="shop_price" onBlur="priceSetted()" class="text w150" ectype="require" autocomplete="off"  value="{$goods.shop_price}"/><a href="javascript:void(0);" class="mr10" onclick="marketPriceSetted()">{$lang.marketPriceSetted}</a><div class="form_prompt"></div></div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="step_label">{$lang.lab_bar_market_price}：</div>
+                                        <div class="step_value"><input type="text" name="market_price" class="text w150" autocomplete="off" value="{$goods.market_price}"/><a href="javascript:void(0);" onclick="integral_market_price()">{$lang.integral_market_price}</a></div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="step_label">{$lang.lab_bar_cost_price}：</div>
+                                        <div class="step_value"><input type="text" name="cost_price" class="text w150" autocomplete="off" value="{$goods.cost_price}"/></div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="step_label">{$lang.lab_bar_goods_brand}：</div>
+                                        <div class="step_value">
+                                            <div class="selection">
+                                                <input type="text" name="brand_name" id="brand_name" class="text w140 valid" data-filter="brand_name" ectype="require" autocomplete="off" value="{if $brand_name}{$brand_name}{else}{$lang.please_select}{/if}" readonly />
+                                                <input type="hidden" name="brand_id" id="brand_id" value="{$goods.brand_id}" data-filter="brand_id" />
+                                                <div class="form_prompt"></div>
+                                            </div>    
+                                            <div class="brand-select-container" style="display:none;">
+                                                <div class="brand-top">
+                                                    <div class="letter">
+                                                        <ul>
+                                                            <li><a href="javascript:void(0);" data-letter="">{$lang.all_brand}</a></li>
+                                                            {foreach from=$letter item=letter}
+                                                            <li><a href="javascript:void(0);" data-letter="{$letter}">{$letter}</a></li>
+                                                            {/foreach}
+                                                            <li><a href="javascript:void(0);" data-letter="QT">{$lang.other}</a></li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="b_search">
+                                                        <input name="search_brand_keyword" id="search_brand_keyword" ectype="require" type="text" class="b_text" autocomplete="off" placeholder="{$lang.brand_key}">
+                                                        <a href="javascript:void(0);" class="btn-mini"><i class="icon icon-search"></i></a>
+                                                    </div>
+                                                </div>
+                                                <div class="brand-list">
+                                                    {include file='library/search_brand_list.lbi'}
+                                                </div>
+                                                <div class="brand-not" style="display:none;">{$lang.lab_other_brand_notic}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="item item_wenzi">
+                                        <div class="step_label"><em class="require-field">*</em>{$lang.goods_img}：</div>
+                                        <div class="step_value">
+                                            <div id="goods_figure" class="update_images mr10"><div class="img"><img src="{if $goods.goods_thumb}{$goods.goods_thumb}{else}images/update_images.jpg{/if}" /></div></div><div class="form_prompt"></div>
+											<div class="notic ml70">{$lang.lab_goods_img_notic}</div>
+                                            <input type="hidden" name="original_img" value="">
+											<input type="hidden" name="goods_img" value="">
+											<input type="hidden" name="goods_thumb" value="">
+                                        </div>
+                                    </div>
+                                    <div class="item gallery_album" data-inid="gallery_album" data-act="gallery_album_list" ectype="gallery_album_list">
+                                        <div class="step_label">&nbsp;</div>
+                                        <div class="step_value">
+                                            <input type="button" class="button mr10" value="{$lang.gallery_album_select}" ectype="gallery_album" >
+                                            <div class="mt10" id="gallery_album"></div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="step_label">
+                                        	<div class="checkbox_items">
+                                            	{$lang.img_external_links}：
+                                                <div class="checkbox_item fr mr0">
+                                                    <input name="is_img_url" class="ui-checkbox" value="0" id="is_img_url" type="checkbox">
+                                                    <label class="ui-label" for="is_img_url">&nbsp;</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="step_value">
+                                        	<div class="checkbox_items">
+                                                <input name="goods_img_url" class="text" id="goods_img_url" value="" placeholder="{$lang.img_external_links}" onfocus="if (this.value == ''){this.value='';this.style.color='#666';}" disabled type="text">
+                                                <div class="notic">{$lang.lab_img_external_links_notic}</div>
+                                                <div class="form_prompt"></div>
+                                            </div>
+                                        </div>
+                                    </div>																
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step_title"><i class="ui-step"></i><h3>{$lang.tab_detail}</h3></div>
+                                <div class="step_content">
+                                	<div class="tabs_desc">
+                                    	<ul class="ui-tabs-nav">
+                                        	<li class="current"><a href="javascript:void(0);"><i class="icon icon-desktop"></i>{$lang.pc_terminal}</a></li>
+                                            <li><a href="javascript:void(0);"><i class="icon icon-mobile-phone"></i>{$lang.phone_terminal}</a></li>
+                                        </ul>
+                                        <div class="panel-main gallery_album" data-inid="gallery_album_dsc" data-act="gallery_album_list">
+                                            <div class="panel panel-pc">
+                                                <div id="FCKeditor">
+                                                {$FCKeditor}
+                                                </div>
+                                                <input type="button" class="button mr10" value="{$lang.gallery_album_select}" ectype="gallery_album" > <br />
+                                                <div id="gallery_album_dsc"></div>
+                                            </div>
+                                            <div class="panel panel-phone" style="display:none;">
+                                                <div class="panel_warp">
+                                                	{$lang.phone_terminal_notic}
+                                                    <div class="pannel">
+                                                    	<div class="pannel-content" ectype="mobile_pannel"><div class="section_warp">{$goods.desc_mobile}</div></div>
+                                                        <div class="step_top_btn">
+                                                        	<a href="javascript:void(0);" class="btn red_btn" ectype="mb_add_img"><i class="sc_icon sc_icon_images"></i>{$lang.add_img}</a>
+                                                            <a href="javascript:void(0);" class="btn red_btn" ectype="mb_add_txt"><i class="sc_icon sc_icon_font"></i>{$lang.add_text}</a>
+                                                        </div>
+                                                        <input type="hidden" name="desc_mobile" value='{$goods.desc_mobile}' />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step_title"><i class="ui-step"></i><h3>{$lang.special_info}</h3></div>
+                                <div class="step_content">
+                                    <div class="item">
+                                        <div class="step_label">{$lang.goods_weight}：</div>
+                                        <div class="step_value">
+                                            <input type="text" name="goods_weight" class="text" autocomplete="off" value="{$goods.goods_weight_by_unit}"/>
+                                            <div class="value_select">
+                                                <div id="commodity_weight" class="imitate_select select_w60">
+                                                    <div class="cite">{$lang.unit_kg}</div>
+                                                    <ul style="display: none;">
+														{foreach from=$unit_list item=item key=key}
+                                                        <li><a href="javascript:;" data-value="{$key}" class="ftx-01">{$item}</a></li>
+														{/foreach}
+                                                    </ul>
+                                                    <input name="weight_unit" type="hidden" value="{$weight_unit}" id="company_val">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="step_label">{$lang.goods_keywords}：</div>
+                                        <div class="step_value"><input type="text" name="keywords" class="text" autocomplete="off" value="{$goods.keywords|escape}"/><div class="notic">商品关键词请用空格分隔；有两个功能，一是可以作为站内关键词查询，在前台搜索框输入关键词后，能够搜索到该商品；二是作为搜索引擎收录使用</div></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step_title"><i class="ui-step"></i><h3>{$lang.goods_lib_info}</h3></div>
+                                <div class="step_content">
+                                    <div class="item">
+                                        <div class="step_label">{$lang.goods_lib_cat}：</div>
+                                        <div class="step_value">
+											<div id="usebonus_type" class="imitate_select select_w320">
+											  <div class="cite">{$lang.please_select}</div>
+											  <ul>
+												  {foreach from=$goods_lib_cat item=cat}
+													 <li><a href="javascript:;" data-value="{$cat.cat_id}" class="ftx-01">{$cat.name}</a></li>
+												  {/foreach}												 
+											  </ul>
+											  <input name="lib_cat_id" type="hidden" value="{$goods.lib_cat_id|default:0}" id="goods_lib_cat_val">
+											</div>										
+										</div>
+                                    </div>									
+									<div class="item">
+                                        <div class="step_label">{$lang.goods_state}：</div>
+                                        <div class="step_value">
+											<div class="checkbox_items">
+												<div class="checkbox_item">
+												  <input type="radio" name="is_on_sale" class="ui-radio" id="goods_status_1" value="1" {if $goods.is_on_sale eq 1}checked="checked"{/if}/>
+												  <label for="goods_status_1" class="ui-radio-label">{$lang.immediately_release}</label> 
+												</div>											
+												<div class="checkbox_item">
+												  <input type="radio" name="is_on_sale" class="ui-radio" id="goods_status_0" value="0" {if $goods.is_on_sale eq 0}checked="checked"{/if}/>
+												  <label for="goods_status_0" class="ui-radio-label">{$lang.putin_warehouse}</label> 
+												</div>
+											</div>
+										</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="scanCodeDialog" style="display:none;">
+                                {include file="library/scan_code.lbi"}
+                            </div>									
+                            <div class="goods_footer">
+                                <div class="goods_btn goods_btn_fixed">
+                                    <a href="javascript:void(0);" class="btn btn35 btn_blue" data-step="1" data-type="step" ectype="stepSubmit">{$lang.step_btn_two}</a>
+                                    <a href="javascript:void(0);" class="btn btn35 blue_btn" data-step="3" data-type="step" data-down="true" ectype="stepSubmit">{$lang.step_btn_five_alt}</a>
+                                	{if $goods.goods_id}<a href="javascript:void(0);" class="btn btn35 blue_btn" data-down="true" data-type="submit" ectype="stepSubmit"><i class="sc_icon goods_complete_icon"></i>{$lang.step_btn_last}</a>{/if}
+                                </div>
+                            </div>
+                        </div>					
+
+                        <!--第三步 商品相册-->
+                        <div class="step_four" style="display:none;" ectype="step" data-step="3">
+                            <div class="step">
+                                <div class="step_title"><i class="ui-step"></i><h3>{$lang.tab_gallery}</h3></div>
+                                <div class="step_content">
+                                    <div class="goods_album" id="gallery_img_list">
+                                        {include file="library/gallery_img.lbi"}
+                                    </div>
+                                    <div class="clear"></div>
+                                    <div class="step_top_btn gallery_album" ectype="gallery_album_list" data-inid="addAlbumimg" data-act="gallery_album_list">
+                                    	<a href="javascript:void(0);" class="btn red_btn" id="addExternalUrl"><i class="sc_icon sc_icon_images"></i>{$lang.add_href_img}</a>
+                                        <a href="javascript:void(0);" class="btn red_btn" id="addImages"><i class="sc_icon sc_icon_images"></i>{$lang.add_img}</a>
+                                        <a href="javascript:void(0);" class="btn red_btn" ectype="gallery_album" data-value="{$lang.gallery_album_select}"><i class="sc_icon sc_icon_images"></i>{$lang.gallery_album_select}</a>
+                                        <span class="red">{$lang.checkbox_select_img_notic}</span>
+                                        <div id="addAlbumimg"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="goods_footer">
+                                <div class="goods_btn goods_btn_fixed">
+                                    <a href="javascript:void(0);" class="btn btn35 btn_blue" data-step="2" data-type="step" ectype="stepSubmit">{$lang.step_btn_six}</a>
+									<a href="javascript:void(0);" class="btn btn35 blue_btn" data-step="3" data-down="true" data-type="submit" ectype="stepSubmit"><i class="sc_icon goods_complete_icon"></i>{$lang.step_btn_last}</a>
+                                </div>
+                            </div>
+                        </div>									
+                    </div>
+                    <!--添加新商品end-->
+                </div>
+			</form>
+		</div>
+	</div>
+    <div class="loadWarpper">
+        <div class="loadSpin">
+            <i class="icon-spinner icon-spin"></i>
+        </div>
+    </div>
+    
+ 	{*include file ='library/pagefooter.lbi'*}
+    {insert_scripts files="../js/plupload.full.min.js,jquery.purebox.js,../js/spectrum-master/spectrum.js"}
+	<script type="text/javascript">	
+    /**********************************{手机商品描述选相册 gallery_album} start*****************************/
+	$.divselect("#album_id","#album_id_val",function(obj){
+        var val = obj.attr("data-value");
+        changedpic(val,obj,1);
+    });
+	
+    $.divselect("#sort_name","#sort_name_val",function(obj){
+		var sort = obj.attr("data-value");
+        changedpic(0,obj,1,sort);
+    });
+	
+	$.divselect("#album_file","#album_file_val",function(obj){
+		var val = obj.attr("data-value"),
+			inid = obj.parents("[ectype='album-warp']").data("inid"),
+			is_vis = 0;
+			
+		if(inid == "gallery_album"){
+			is_vis = 2;
+		}else{
+			is_vis = 1;
+		}
+			
+		changedpic(val,obj,is_vis,"",inid);
+	});
+    /**********************************{手机商品描述选相册 gallery_album} end*****************************/
+
+	/**********************************{common} start*****************************/
+	
+	var goods_id = $("input[name='goods_id']").val();
+	var user_id = '{$goods.user_id|default:0}';
+	
+	$(function(){
+		var steflex = $(".stepflex");
+		var goodsInfo = $(".goods_info");
+		var model_inventory = $("form[name='theForm'] :input[name='model_inventory']").val();
+		
+		$(window).load(function(){
+			//默认进入加载步骤
+			auto_step();
+			
+			//设置分类导航
+			set_cat_nav();
+			
+			reset_step_number($("input[name='goods_model']").val());
+			
+			/**
+			*隐藏属性模块
+			*/
+			var goods_attr_list = $("#goods_attr_gallery").html();
+			if(goods_attr_list == ''){
+				$("#goods_attr_gallery").hide();
+			}
+			
+			//会员价格
+			{literal}
+				{foreach from= $user_rank_list item=item}
+					set_price_note('{$item.rank_id}');
+				{/foreach}
+			{/literal}
+			
+			if(model_inventory != 0){
+				$("#goods_number").hide();
+			}
+			
+			$(".loadWarpper").hide();
+			$(".warpper").show();
+			
+			$(".step[ectype=filter]").find(".move_right .move_list").perfectScrollbar('destroy');
+			$(".step[ectype=filter]").find(".move_right .move_list").perfectScrollbar();
+		});
+		
+		//设置步骤
+		var auto_step = function(num){
+			if(goods_id > 0){			
+				var auto_step = 'auto_step_' + goods_id;
+				if(num){
+					$.cookie(auto_step, num, {expires:1,path:'/'});
+				}else{
+					//编辑商品默认到第三步
+					//var num = $.cookie(auto_step)? $.cookie(auto_step):1;
+					show_step('step', 2);
+				}
+			}else{
+				if(num == null){
+					//添加商品默认到第一步
+					show_step('step', 1);
+				}
+			}
+		}
+		
+		//页面跳转
+		var show_step = function(type,num,valid,obj){
+			//点击下一步骤验证
+			if(obj != null){
+				var obj = $(obj);
+				var step = obj.parents("div[ectype='step']").data("step");
+				
+				if(validfunc(step) == false && valid == true){
+					return;
+				}
+			}
+
+			//当前步骤导航
+			steflex.find("dl:lt("+num+")").addClass("cur");
+			steflex.find("dl:gt("+(num-1)+")").removeClass("cur");
+
+			//当前步骤内容页显示
+			goodsInfo.find("*[ectype='step'][data-step="+num+"]").show().siblings().hide();
+			
+			if(type == "submit"){
+				$("#goods_form").submit();
+			}
+			
+			if(num == 2 || num == 3 || num == 4){
+				scroll();
+			}
+		}
+		
+		//选择商品模式
+		$("*[data-step='1']").find(".mos .mos_item").on("click",function(){
+			var obj = $(this);
+			var model = obj.data("model");
+			var stepModel = obj.data("stepmodel");
+			
+			obj.addClass("active");
+			obj.siblings().removeClass("active");
+			
+			$("input[name='goods_model']").val(model);
+			$("input[name='model_price']").val(model);
+			$("input[name='model_inventory']").val(model);
+			$("input[name='model_attr']").val(model);
+		
+			//选择商品模式进去下一步骤
+			show_step('model',stepModel);
+			reset_step_number(model);
+			
+			set_attribute_table(goods_id); //重置表格
+			getAttrList(goods_id);
+		});
+		
+		/* 重置步骤数字 */
+		reset_step_number = function(model){
+			if(model == 0){
+				modelFormat(model);
+			}else{
+				modelFormat(model);
+				goods_model_list("#goods_model_list", goods_id, model, user_id); //加载商品模式列表
+			}
+		}
+		
+		//选择不同的商品模式展示不同的模式属性
+		modelFormat = function(model){
+			var dlModel = steflex.find("dl[ectype='model']");
+			if(model == 0){
+				dlModel.hide();
+				$("dd[ectype='model'],h3[ectype='model']").text("{$lang.default_model}");
+				$("#attribute_model").hide(); //属性模式
+			}else if(model == 1){
+				dlModel.show();
+				$("dd[ectype='model'],h3[ectype='model']").text("{$lang.tab_warehouse_model}");
+				$("#attribute_model").show(); //属性模式
+				$("#attribute_region").hide();
+			}else if(model == 2){
+				dlModel.show();
+				$("dd[ectype='model'], h3[ectype='model']").text("{$lang.warehouse_region_model}");
+				$("#attribute_model").show(); //属性模式
+				$("#attribute_region").show();
+			}
+			
+			steflex.find("dl").each(function(index, element){
+				var step_text = $(this).data("step");
+				if(model == 0){
+					step_text -= 1;
+				}
+				if(index>1){
+					$(element).find("dt").text(step_text);
+				}
+			});
+		}
+		
+		//添加或者编辑商品点击下一步事件
+		$("*[ectype='stepSubmit']").on("click",function(){
+			var _this = $(this);
+			var step = _this.data("step");
+			var type = _this.data("type");
+			var down = _this.data("down");
+			if(down == true){
+				show_step(type,step,true,_this);
+			}else{
+				show_step(type,step,false,_this);
+			}
+		});
+		
+		//步骤验证通过下一步
+		validfunc = function (num){
+			var model_inventory = $("form[name='theForm'] :input[name='model_inventory']").val();
+			var stepDiv = $("div[data-step='"+num+"']");
+			stepDiv.find("input[ectype='require']").removeClass("error");
+			stepDiv.find(".form_prompt .error").remove();
+			if(num == 1){
+				//验证是否选择了分类
+				if($("input[name='cat_id']").val() == 0){
+					$("#choiceClass").find("strong").html("{$lang.select_cat}");
+					return false;
+				}
+			}else if(num == 2){
+				//验证商品基本信息必填信息
+				if($("input[name='goods_name']").val() == ""){
+					error_div("input[name='goods_name']",goods_name_not_null);
+					return false;
+				}
+
+				if(!(/^[0-9]+.?[0-9]*$/.test($("input[name='shop_price']").val()))){
+					error_div("input[name='shop_price']",shop_price_not_number);
+					return false;
+				}
+				if($("#is_img_url").val() == 0){
+					if($(".update_images").find("img").attr("src") == "images/update_images.jpg"){
+						
+						error_div(".moxie-shim input","{$lang.file_img_default}");
+						return false;
+					}
+				}else{
+					if($("#goods_img_url").val() == ''){
+						error_div("input[name='goods_img_url']","{$lang.file_img_http}");
+						return false;
+					}
+				}
+				
+				if(document.getElementById('dis_commission')){
+					
+					var dis_true = 0;
+					var is_dis = 0;
+					var dis = $("#dis_commission").val();
+					
+					$("input[name='is_distribution']").each(function(index, element) {
+					
+					  if($(element).is(":checked") == true){
+						if(dis == ''){
+							is_dis = 1;
+							
+						}else if(dis < 0 || dis > 100){
+							is_dis = 2;
+						}
+						
+						dis_true = 1;
+					  }else{
+						dis_true = 0;
+					  }
+				  	});
+					
+					if(dis_true == 1){
+						if(is_dis == 1){
+							error_div("input[name='dis_commission']","{$lang.volume_not_null}");
+							return false;
+						}else if(is_dis == 2){
+							error_div("input[name='dis_commission']","{$lang.volume_lin_dybai}");
+							return false;
+						}
+					}
+				}
+				
+				if(document.getElementById('stages_rate')){
+					
+					var stages_true = 0;
+					var stagesnum = 0;
+					var is_stages = 0;
+					var stages_rate = $("input[name='stages_rate']").val();
+					
+					$("input[name='is_stages']").each(function(index, element) {
+					
+					  if($(element).is(":checked") == true){
+						if(stages_rate == ''){
+							is_stages = 1;
+							
+						}else if(stages_rate <= 0 || stages_rate > 100){
+							is_stages = 2;
+						}
+						
+						for(var i = 0; i <= 5; i++){
+							if($("input[name='stages_num[" + i + "]']").is(":checked") == true){
+								stagesnum = 0;
+								break;
+							}else{
+								stagesnum += 1;
+							}
+						}
+						
+						stages_true = 1;
+					  }else{
+					  	stages_true = 0;
+					  }
+				  	});
+
+						
+					if(stages_true == 1){
+						if(stagesnum > 0){
+							error_div("input[name='stages_rate']","{$lang.by_stage_num}");
+							return false;
+						}else{
+							if(is_stages == 1){
+								error_div("input[name='stages_rate']","{$lang.volume_not_null}");
+								return false;
+							}else if(is_stages == 2){
+								error_div("input[name='stages_rate']","{$lang.volume_lin_dybai}");
+								return false;
+							}
+						}
+					}	
+				}
+				
+			}else{
+				return true;
+			}
+		}
+		
+		//验证调用的报错提示
+		error_div = function(obj,error, is_error){
+			var error_div = $(obj).parents('div.step_value').find('div.form_prompt');
+			$(obj).parents('div.step_value').find(".notic").hide();
+			
+			if(is_error != 1){
+				$(obj).addClass("error");
+			}
+			
+			$(obj).focus();
+			error_div.find("div").remove();
+			error_div.append("<label class='error'><i class='icon icon-exclamation-sign'></i>"+error+"</label>");
+		}
+		
+		//列出商品模式
+		goods_model_list = function(obj, goods_id, model, user_id){
+			var obj = $(obj);
+			$.jqueryAjax('goods.php', 'act=goods_model_list&goods_id='+goods_id+'&model='+model+'&user_id='+user_id, function(data){
+				obj.html(data.content);
+			});
+		}
+		
+		//悬浮显示上下步骤按钮
+		scroll = function(){
+			$(window).scroll(function(){
+				var scrollTop = $(document).scrollTop();
+				var height = $(".warpper").height();
+				var bodyHeight = $(".iframe_body").height();
+				if(scrollTop>(height-bodyHeight)){
+					$(".goods_footer .goods_btn").removeClass("goods_btn_fixed");
+				}else{
+					$(".goods_footer .goods_btn").addClass("goods_btn_fixed");
+				}
+			});
+		}
+		
+		//返回修改分类
+		$("a[ectype='edit_category']").on("click",function(){
+			show_step('step', 1);
+		});	
+	});
+	/**********************************{common} end*****************************/
+	
+	/**********************************{商品分类选中} start*****************************/
+	//分类滚动轴
+	$(".category_list").perfectScrollbar();
+
+	//常用分类
+	$.divselect("#sortcommList","#sortcommValue",function(obj){
+		var cat_id = $(obj).data('value');
+		$.jqueryAjax('goods.php', 'act=set_common_category_pro&cat_id='+cat_id, function(data){
+			for(var i=1; i<=3; i++){
+				if(data.content[i]){
+					$("ul[ectype=category][data-cat_level="+i+"]").html(data.content[i]);
+				}
+			}
+			//设置商品分类
+			set_cat_nav();
+			$("input[name=cat_id]").val(cat_id);
+		})
+	});	
+	
+	$(document).on("click","ul[ectype='category'] li",function(){
+		var _this = $(this);
+		var cat_id = _this.data("cat_id");
+		var cat_level = _this.data("cat_level");
+		var goods_id = _this.data("goodsid");
+
+		get_select_category_pro(_this, cat_id, cat_level, goods_id);
+	});
+	/**********************************{商品分类选中} end*****************************/
+	
+	/**********************************{商品基本信息} start*****************************/
+	//商品货号
+	function checkGoodsSn(goods_sn, goods_id)
+	{
+		$("input[name='goods_sn']").parents('div.step_value').find('div.form_prompt').html('');
+		
+		var callback = function(res)
+		{
+			if (res.error > 0)
+			{
+				error_div("input[name='goods_sn']",res.message, 1);
+			}
+		}
+		
+		Ajax.call('goods.php?is_ajax=1&act=check_goods_sn', "goods_sn=" + goods_sn + "&goods_id=" + goods_id, callback, "GET", "JSON");
+	}
+	
+	//商品价格
+	function priceSetted()
+	{
+		var shop_price = 0;  
+		if(document.forms['theForm'].elements['shop_price']){
+			
+			shop_price = Number(parseFloat(document.forms['theForm'].elements['shop_price'].value));
+		}
+		
+		computePrice('market_price', marketPriceRate);
+		{/literal}
+		{foreach from=$user_rank_list item=item}
+		set_price_note({$item.rank_id});
+		{/foreach}
+		{literal}
+	}
+	
+	/*价格计算相关js start*/		
+	var marketPriceRate = {$cfg.market_price_rate|default:1};
+	var integralPercent = {$cfg.integral_percent|default:0};
+  
+	//取整数
+	function integral_market_price()
+	{
+		document.forms['theForm'].elements['market_price'].value = parseInt(document.forms['theForm'].elements['market_price'].value);
+	} 
+	
+	//按市场价
+	function marketPriceSetted()
+	{
+		computePrice('shop_price', 1/marketPriceRate, 'market_price');
+		computePrice('integral', integralPercent / 100);
+		{/literal}
+		{foreach from=$user_rank_list item=item}
+		set_price_note({$item.rank_id});
+		{/foreach}
+		{literal}
+	}
+
+	//计算价格
+	function computePrice(inputName, rate, priceName)
+	{
+		var shopPrice = priceName == undefined ? document.forms['theForm'].elements['shop_price'].value : document.forms['theForm'].elements[priceName].value;
+		shopPrice = Utils.trim(shopPrice) != '' ? parseFloat(shopPrice)* rate : 0;
+		if(inputName == 'integral')
+		{
+		  shopPrice = parseInt(shopPrice);
+		}
+		shopPrice += "";
+		
+		n = shopPrice.lastIndexOf(".");
+		if (n > -1)
+		{
+		  shopPrice = shopPrice.substr(0, n + 3);
+		}
+		
+		if (document.forms['theForm'].elements[inputName] != undefined)
+		{
+		  document.forms['theForm'].elements[inputName].value = shopPrice;
+		}
+		else
+		{
+		  document.getElementById(inputName).value = shopPrice;
+		}
+	}
+
+	function set_price_note(rank_id)
+	{
+		var shop_price = $("input[name='shop_price']");
+		var rank = new Array();
+		
+		if(shop_price.length > 0){
+			var shop_price = parseFloat(shop_price.value);
+		}else{
+			var shop_price = 0;
+		}
+		
+		{/literal}
+			{foreach from=$user_rank_list item=item}
+				rank[{$item.rank_id}] = {$item.discount|default:100};
+			{/foreach}
+		{literal}
+		
+		if (shop_price >0 && rank[rank_id] && document.getElementById('rank_' + rank_id) && parseInt(document.getElementById('rank_' + rank_id).value) == -1)
+		{
+			var price = parseInt(shop_price * rank[rank_id] + 0.5) / 100;
+			if (document.getElementById('nrank_' + rank_id)){
+				document.getElementById('nrank_' + rank_id).innerHTML = '(' + price + ')';
+			}
+		}else{
+			if (document.getElementById('nrank_' + rank_id)){
+				document.getElementById('nrank_' + rank_id).innerHTML = '';
+			}
+		}
+	} 
+	/*价格计算相关js end*/
+	
+	//添加扩展分类
+	$(".category_dialog").on("click",function(){
+		var goods_id = $("input[name='goods_id']").val();
+        var other_catids = $("input[name='other_catids']").val();
+		$.jqueryAjax("dialog.php", "is_ajax=1&act=extension_category&goods_id="+goods_id+"&other_catids="+other_catids, function(data){
+			var content = data.content;
+			pb({
+				id:"categroy_dialog",
+				title:"{$lang.extended_class}",
+				width:788,
+				content:content,
+				ok_title:"{$lang.button_submit_alt}",
+				cl_title:"{$lang.cancel}",
+				drag:false,
+				foot:true,
+				onOk:function(){}
+			});
+			$(".category_list").perfectScrollbar();
+		});
+	});
+	
+	/* 处理扩展分类 by wu start */
+	$(document).on("click","a[ectype=addExdCategory]",function(){
+		var thisObj = $(this).parent();
+		var cat_id = thisObj.find("input[ectype=cat_id]").val();
+		if(cat_id == 0){
+			$(".red_notic").remove();
+			$(".sort_info").after("<div class='red_notic'>{$lang.select_cat}</div>");
+			setTimeout('$(".red_notic").remove()',1500);
+		}else if(thisObj.find(".filter_item input[value="+cat_id+"]").length > 0){
+			$(".red_notic").remove();
+			$(".sort_info").after("<div class='red_notic'>{$lang.not_cf_class}</div>");
+			setTimeout('$(".red_notic").remove()',1500);
+		}else{
+			var str = "";
+			thisObj.find("ul li.current").each(function(){
+				str += $(this).text() + '>';
+			});
+			str = str.substr(0,str.length - 1);
+			var div = "<span class='filter_item'><span>"+str+"</span><a herf='javascript:void(0);' class='delete'></a>";
+			div += "<input type='hidden' name='other_cat[]' value='"+cat_id+"'></span>";
+			thisObj.find(".filter").append(div);
+			deal_extension_category(this, goods_id, cat_id, 'add'); //ajax添加扩展分类
+		}
+	});
+	
+	$(document).on("click","#extension_category .delete",function(){
+		var cat_id = $(this).siblings("input").val();
+		deal_extension_category(this, goods_id, cat_id, 'delete'); //ajax删除扩展分类
+		$(this).parent().remove();
+	});
+	/* 处理扩展分类 by wu end */
+	
+	//商品基本信息 - 上传商品图片
+	var goods_id = $("input[name='goods_id']").val();
+	var uploader = new plupload.Uploader({//创建实例的构造方法
+		runtimes: 'html5,flash,silverlight,html4', //上传插件初始化选用那种方式的优先级顺序
+		browse_button: 'goods_figure', // 上传按钮
+		url: "get_ajax_content.php?is_ajax=1&act=lib_upload_img&type=goods_img&id="+goods_id, //远程上传地址
+		filters: {
+			max_file_size: '2mb', //最大上传文件大小（格式100b, 10kb, 10mb, 1gb）
+			mime_types: [//允许文件上传类型
+				{title: "files", extensions: "jpg,png,gif"}
+			]
+		},
+		multi_selection: false, //true:ctrl多文件上传, false 单文件上传
+		init: {
+			FilesAdded: function(up, files) { //文件上传前
+				var li = '';
+				plupload.each(files, function(file) { //遍历文件
+					li += "<div class='img'><img src='images/loading.gif' /></div>";
+				});
+				$("#goods_figure").append(li);
+				uploader.start();
+			},
+			FileUploaded: function(up, file, info) { //文件上传成功的时候触发
+				var data = eval("(" + info.response + ")");
+				$("#goods_figure").html("<div class='img'><img src='" + data.pic + "'/><div class='edit_images'>{$lang.replace_img}</div></div>");
+				//处理商品图片 by wu start
+				$("input[name=original_img]").val(data.data['original_img']);
+				$("input[name=goods_img]").val(data.data['goods_img']);
+				$("input[name=goods_thumb]").val(data.data['goods_thumb']);
+				//处理商品图片 by wu end
+				
+			},
+			Error: function(up, err) { //上传出错的时候触发
+				alert(err.message);
+			}
+		}
+	});
+	uploader.init();
+
+	//商品名称颜色设置
+	$("#font_color input").spectrum({
+		showInitial: true,
+		showPalette: true,
+		showSelectionPalette: true,
+		showInput: true,
+		showSelectionPalette: true,
+		maxPaletteSize: 10,
+		preferredFormat: "hex",
+		palette: [
+			["rgb(0, 0, 0)", "rgb(67, 67, 67)", "rgb(102, 102, 102)",
+			"rgb(204, 204, 204)", "rgb(217, 217, 217)","rgb(255, 255, 255)"],
+			["rgb(152, 0, 0)", "rgb(255, 0, 0)", "rgb(255, 153, 0)", "rgb(255, 255, 0)", "rgb(0, 255, 0)",
+			"rgb(0, 255, 255)", "rgb(74, 134, 232)", "rgb(0, 0, 255)", "rgb(153, 0, 255)", "rgb(255, 0, 255)"], 
+			["rgb(230, 184, 175)", "rgb(244, 204, 204)", "rgb(252, 229, 205)", "rgb(255, 242, 204)", "rgb(217, 234, 211)", 
+			"rgb(208, 224, 227)", "rgb(201, 218, 248)", "rgb(207, 226, 243)", "rgb(217, 210, 233)", "rgb(234, 209, 220)", 
+			"rgb(221, 126, 107)", "rgb(234, 153, 153)", "rgb(249, 203, 156)", "rgb(255, 229, 153)", "rgb(182, 215, 168)", 
+			"rgb(162, 196, 201)", "rgb(164, 194, 244)", "rgb(159, 197, 232)", "rgb(180, 167, 214)", "rgb(213, 166, 189)", 
+			"rgb(204, 65, 37)", "rgb(224, 102, 102)", "rgb(246, 178, 107)", "rgb(255, 217, 102)", "rgb(147, 196, 125)", 
+			"rgb(118, 165, 175)", "rgb(109, 158, 235)", "rgb(111, 168, 220)", "rgb(142, 124, 195)", "rgb(194, 123, 160)",
+			"rgb(166, 28, 0)", "rgb(204, 0, 0)", "rgb(230, 145, 56)", "rgb(241, 194, 50)", "rgb(106, 168, 79)",
+			"rgb(69, 129, 142)", "rgb(60, 120, 216)", "rgb(61, 133, 198)", "rgb(103, 78, 167)", "rgb(166, 77, 121)",
+			"rgb(91, 15, 0)", "rgb(102, 0, 0)", "rgb(120, 63, 4)", "rgb(127, 96, 0)", "rgb(39, 78, 19)", 
+			"rgb(12, 52, 61)", "rgb(28, 69, 135)", "rgb(7, 55, 99)", "rgb(32, 18, 77)", "rgb(76, 17, 48)"]
+		]
+	});
+	$('.sp-choose').click(function(){
+		var sp_color = $('.sp-input').val();
+		$('input[name="goods_name"]').css("color",sp_color);
+		$('input[name="goods_name_color"]').val(sp_color);
+	});
+
+	//展开收起
+	$.upDown("[ectype='outerInfo']",".step_title",".step",117);
+	$.upDown("[ectype='scanCode']",".step_title",".step",117);
+	
+	/*
+	** 编辑商品相册图片外链地址
+	*/
+	$(document).on("change","input[ectype='external_url']",function(){
+		var img_id = $(this).data('imgid');
+		var goods_id = $("input[name='goods_id']").val();
+		var external_url = $(this).val();
+		
+		$.jqueryAjax('dialog.php', 'act=insert_gallery_url' + '&external_url=' + external_url + '&img_id=' + img_id + '&goods_id=' + goods_id, function(data){
+			if(data.error){
+				alert("{$lang.img_address_cz}");
+				$(".external_url_" + data.img_id).val('');
+			}else{
+				$("#external_img_url" + data.img_id).attr("src", data.external_url);
+			}
+		});
+	});
+	
+	/*
+	** 添加商品相册图片外链地址
+	*/
+	$("#addExternalUrl").click(function(){
+		var goods_id = $("input[name='goods_id']").val();
+		
+		$.jqueryAjax('dialog.php', 'is_ajax=1&act=add_external_url' + '&goods_id=' + goods_id, function(data){
+			var content = data.content;
+			pb({
+				id:"attr_input_type",
+				title:"{$lang.add_href_img}",
+				width:820,
+				content:content,
+				ok_title:"{$lang.button_submit_alt}",
+				cl_title:"{$lang.cancel}",
+				drag:false,
+				foot:true,
+				cl_cBtn:true,
+				onOk:function(){
+					insert_external_url();
+				}
+			});
+		});
+	});
+	
+	function insert_external_url(){
+		var actionUrl = "dialog.php?act=insert_external_url&is_lib=1";  
+		$("#externalUrlList").ajaxSubmit({
+			type: "POST",
+			dataType: "JSON",
+			url: actionUrl,
+			data: { "action": "TemporaryImage" },
+			success: function (data) {
+				$("#gallery_img_list").html(data.content);
+			},
+			async: true  
+		 });
+	}
+	
+	$("input[name='is_img_url']").click(function(){
+		if($(this).is(":checked") == true){
+			$("input[name='is_img_url']").val(1);
+			$("input[name='goods_img_url']").attr("disabled",false);
+			
+		}else{
+			$("input[name='is_img_url']").val(0);
+			$("input[name='goods_img_url']").attr("disabled",true);
+			$("input[name='goods_img_url']").val('');
+		}
+	});
+	
+	//商品详情手机端/pc端切换
+	$(".ui-tabs-nav li").click(function(){
+		var index = $(this).index();
+		var ul = $(this).parents("ul");
+		$(this).addClass("current").siblings().removeClass("current");
+		ul.siblings(".panel-main").find(".panel").eq(index).show().siblings().hide();
+	});
+	
+	$(".pannel-content").hover(function(){
+		$(".pannel-content").perfectScrollbar("destroy");
+		$(".pannel-content").perfectScrollbar();
+	});
+	
+	//扫码入库 by wu start
+	var scan_status = false;
+	$("[data-role='scan_code']").click(function(){
+		$("input[name='bar_code']").focus();
+		$("input[name='bar_code']").val('');
+		scan_status = true;
+	})
+	$("input[name='bar_code']").change(function(){
+		if(scan_status){
+			var bar_code = $(this).val();
+			$.jqueryAjax('goods.php', 'act=scan_code&bar_code='+bar_code, function(data){
+				if(data['error'] == 1){
+					alert(data['message']);
+				}else{
+					$("[data-role='edit_scan_code']").show();
+					var content = $("#scanCodeDialog").html();
+					$("#scanCodeDialog .step_content").remove();
+					
+					pb({
+						id:"scanCode",
+						title:"{$lang.scan_code_kz_info}",
+						width:550,
+						height:470,
+						content:content,
+						ok_title:"{$lang.button_submit_alt}",
+						drag:false,
+						foot:true,
+						cl_cBtn:false,
+						onOk:function(){
+							scanCodeDialog("#scanCode");
+						},
+						onClose:function(){
+							scanCodeDialog("#scanCode");
+						}
+					});
+					$(".pb-ct").perfectScrollbar("destroy");
+					$(".pb-ct").perfectScrollbar();
+					
+					//基本信息
+					$("input[name='goods_name']").val(data['goods_info']['goods_name']);
+					$("input[name='shop_price']").val(data['goods_info']['shop_price']);
+					$("input[name='goods_weight']").val(data['goods_info']['goods_weight']);
+					$("input[name='keywords']").val(data['goods_info']['keywords']);
+					//图片外链
+					if(data['goods_info']['goods_img_url'] && !$("input[name='is_img_url']").prop('checked')){
+						$("input[name='is_img_url']").trigger("click");
+						$("input[name='goods_img_url']").val(data['goods_info']['goods_img_url']);
+					}
+					//商品描述
+					if(data['goods_info']['goods_desc']){
+						$("#FCKeditor").html(data['goods_info']['goods_desc']);
+					}
+					
+					inputVal(data['goods_info']);
+				}
+			})
+		}
+	});
+	
+	$("[data-role='edit_scan_code']").on("click",function(){
+		var obj = $("#scanCodeDialog .step_content");
+		var cp = obj.clone();
+		$("#scanCodeDialog .step_content").remove();
+		pb({
+			id:"scanCode",
+			title:"{$lang.scan_code_kz_info}",
+			width:550,
+			height:470,
+			content:cp,
+			ok_title:"{$lang.button_submit_alt}",
+			drag:false,
+			foot:true,
+			cl_cBtn:false,
+			onOk:function(){
+				scanCodeDialog("#scanCode");
+			},
+			onClose:function(){
+				scanCodeDialog("#scanCode");
+			}
+		});
+		$(".pb-ct").perfectScrollbar("destroy");
+		$(".pb-ct").perfectScrollbar();
+	});
+	
+	function scanCodeDialog(obj){
+		var obj = $(obj).find(".step_content");
+		var cp = obj.clone();
+		$("#scanCodeDialog").append(cp);
+	}
+	
+	function inputVal(arr){
+		$("input[name='width']").val(arr['width']);
+		$("input[name='height']").val(arr['height']);
+		$("input[name='depth']").val(arr['depth']);
+		$("input[name='origincountry']").val(arr['origincountry']);
+		$("input[name='originplace']").val(arr['originplace']);
+		$("input[name='assemblycountry']").val(arr['assemblycountry']);
+		$("input[name='barcodetype']").val(arr['barcodetype']);
+		$("input[name='catena']").val(arr['catena']);
+		$("input[name='isbasicunit'][value='"+arr['isbasicunit']+"']").prop('checked', true);
+		$("input[name='packagetype']").val(arr['packagetype']);
+		$("input[name='grossweight']").val(arr['grossweight']);
+		$("input[name='netweight']").val(arr['netweight']);
+		$("input[name='netcontent']").val(arr['netcontent']);
+		$("input[name='licensenum']").val(arr['licensenum']);
+		$("input[name='healthpermitnum']").val(arr['healthpermitnum']);
+	}
+	//扫码入库 by wu end
+
+	/**********************************{商品基本信息} end*****************************/
+	
+	//商品相册--上传图片
+	var uploader_gallery = new plupload.Uploader({//创建实例的构造方法
+		runtimes: 'html5,flash,silverlight,html4', //上传插件初始化选用那种方式的优先级顺序
+		browse_button: 'addImages', // 上传按钮
+		url: "get_ajax_content.php?is_ajax=1&act=upload_img&type=gallery_img&is_lib=1&id="+goods_id, //远程上传地址
+		filters: {
+			max_file_size: '2mb', //最大上传文件大小（格式100b, 10kb, 10mb, 1gb）
+			mime_types: [//允许文件上传类型
+				{title: "files", extensions: "jpg,png,gif,jpeg"}
+			]
+		},
+		multi_selection: true, //true:ctrl多文件上传, false 单文件上传
+		init: {
+			FilesAdded: function(up, files) { //文件上传前
+				if ($("#ul_pics").children("li").length > 30) {
+					alert("{$lang.file_img_too_much}");
+					uploader_gallery.destroy();
+				} else {
+					var li = '';
+					plupload.each(files, function(file) { //遍历文件
+						li += "<li id='" + file['id'] + "'><div class='img'><img src='images/loading.gif' /></li>";
+					});
+					$("#ul_pics").append(li);
+					uploader_gallery.start();
+				}
+			},
+			FileUploaded: function(up, file, info) { //文件上传成功的时候触发
+				var data = eval("(" + info.response + ")");
+				var html = "&nbsp;";
+				if(data.img_id == data.min_img_id){
+					html = "{$lang.master_map}";
+					$("#ul_pics").find(".zt").each(function(){
+						$(this).html("&nbsp;");
+					});
+				}
+				$("#gallery_"+data.min_img_id).find(".zt").html("{$lang.master_map}");
+				$("#" + file.id).html("<div class='img' onclick='img_default("+data.img_id+")'><img src='" + data.pic + "'/></div><div class='info'><span class='zt red'>"+html+"</span><div class='sort'><span>{$lang.region_sort}：</span><input type='text' name='sort' value='" + data.img_desc + "' class='stext' /></div><a href='javascript:void(0);' class='delete_img' data-imgid='"+data.img_id+"'><i class='icon icon-trash'></i></a></div><div class='info'><input name='external_url' type='text' class='text w130' ectype='external_url' value='" + data.external_url + "' title='" + data.external_url + "' data-imgid='" + data.img_id + "' placeholder='{$lang.img_external_links}' onfocus='if (this.value == '{$lang.img_external_links}'){this.value='http://';this.style.color='#000';}></div>");
+            },
+			Error: function(up, err) { //上传出错的时候触发
+				alert(err.message);
+			}
+		}
+	});
+	uploader_gallery.init();
+	
+	function img_default(img_id){
+		Ajax.call('goods_lib.php?act=img_default', "img_id=" + img_id , img_defaultResult, "POST", "JSON");
+	}
+	function img_defaultResult(result){
+		if(result.error == 1){
+			$(".goods_album").html(result.content);
+		}else{
+			alert(result.massege);
+		}
+	}
+	
+	//删除相册图片
+	function dropImg(imgId)
+	{
+		Ajax.call('goods_lib.php?is_ajax=1&act=drop_image', "img_id="+imgId, dropImgResponse, "GET", "JSON");
+	}
+	
+	function dropImgResponse(result)
+	{
+		if (result.error == 0)
+		{
+			$("*[data-imgid="+result.content+"]").parents("li").remove();
+		}
+	}
+	
+	$(document).on("click",".delete_img",function(){
+		var id = $(this).data("imgid");
+		if (confirm('{$lang.drop_img_confirm}')){
+			dropImg(id);
+		}
+	});
+	</script>
+    </body>
+</html>

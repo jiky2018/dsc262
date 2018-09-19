@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-
+<html xmlns="http:
+<head>{include file ='library/seller_html_head.lbi'}</head>
+<style type="text/css">
+.list-div table {
+    width: 100%;
+}
+
+.list-div td {
+    background: #fff none repeat scroll 0 0;
+    border-bottom: 1px solid #eaeaea;
+    height: 38px;
+    line-height: 20px;
+    word-break: keep-all;
+}
+</style>
+ 
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        <div class="site wrapper">
+			{include file ='library/seller_menu_left.lbi'}
+            <div class="ecsc-layout-right">
+                <div class="main-content" id="mainContent">
+					{include file ='library/url_here.lbi'}
+					{include file ='library/seller_menu_tab.lbi'}
+                    <div class="ecsc-form-goods">
+                        <div class="explanation" id="explanation">
+                            <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4></div>
+                           	<ul>
+                            	<li>整在批量处理数量，请耐心等待.</li>
+                            </ul>
+                        </div>
+                        <div id="listDiv">
+                        <table class="ecsc-default-table goods-default-table mt20" id="listTable">
+                            <thead>
+                                <tr ectype="table_header">
+                                	{foreach from=$attr_names item=vo}
+                                    <th>{$vo}</th>
+                                    {/foreach}
+                                    <th>商品ID</th>
+                                    <!--<th>本店价格</th>-->
+                                    <th>库存</th>
+                                    <!--<th>预警值</th>-->
+                                    <th>货号</th>
+                                    <!--<th>条形码</th>-->
+                                    <th>状态</th>
+                                </tr>
+                            </thead>
+                        </table>   
+					</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+{insert_scripts files="jquery.purebox.js"}
+<script type="text/javascript">
+    
+    $(function(){
+        start({$page});
+        ajax_title();
+    });
+    function start(page)
+    {
+        {if $smarty.get.act != 'add'}
+        Ajax.call('wholesale_goods_produts_batch.php?act=ajax_insert', 'page=' + page, start_response, 'POST', 'JSON');
+        {/if}
+    }
+    
+    
+    function start_response(result)
+    {
+        if(result.list){
+            var tbl = document.getElementById("listTable"); 
+            var row = tbl.insertRow(-1);
+            var attr_arr = result.list.goods_attr_name.split('|');
+            var attr_num=attr_arr.length;
+            var num = 0;
+            
+            for(var i=0;i<attr_num;i++){
+                cell = row.insertCell(i);
+				cell.align = "center";
+                cell.innerHTML = "<div class='tDiv'>"+attr_arr[i]+"</div>";
+            }
+            
+            
+			
+            cell = row.insertCell(attr_num);
+			cell.align = "center";
+            cell.innerHTML = "<div class='tDiv'>"+result.list.goods_id+"</div>";
+            cell = row.insertCell(attr_num+1);
+			cell.align = "center";
+            
+            cell.innerHTML = "<div class='tDiv'>"+result.list.product_number+"</div>";
+            cell = row.insertCell(attr_num+2);
+			cell.align = "center";
+            
+            cell.innerHTML = "<div class='tDiv'>"+result.list.product_sn+"</div>";
+            cell = row.insertCell(attr_num+3);
+			cell.align = "center";
+            
+            cell.innerHTML = "<div class='tDiv'>"+result.status_lang+"</div>";			
+            
+            if(result.is_stop == 1){
+                start(result.page);
+            }	
+        }
+        
+        if(result.is_stop == 0){
+            $("#title_name").addClass("red");
+            $("#title_name").html("已完成更新，请关闭该窗口！");
+        }else{
+            $("#title_name").html("正在更新数据中，请勿关闭该窗口！");
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>众筹 - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content_common}</li>
+                    <li>注意上传方案图片的尺寸，以免出错。</li>
+                    <li>请合理填写方案信息。</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+                        <form action="zc_project.php?act={$state}" method="post" name="theForm" enctype="multipart/form-data" id="zc_project_form">
+                            <div class="switch_info">
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}{$lang.zc_goods_num}：</div>
+                                    <div class="label_value">
+									    <input type='text' name='limit' value='{if $product.limit eq -1}0{else}{$product.limit}{/if}' class="text" id='limit' {if $product.limit eq -1}disabled{/if}/>
+										<input type='checkbox' name='infinite' class="checkbox" value='1' onclick='assignment()' {if $product.limit eq -1}checked='checked'{/if}>不限
+									    <!--<div class="notic">{$lang.zc_num_note}</div>-->
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}{$lang.zc_goods_price}：</div>
+                                    <div class="label_value">
+										<input type='text' name='price' value='{$product.price}' class="text text_2" />
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}{$lang.zc_shipping_fee}：</div>
+                                    <div class="label_value">
+										<input type='text' name='shipping_fee' value='{$product.shipping_fee}' class="text text_2" />
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}{$lang.zc_goods_img}：</div>
+                                    <div class="label_value">
+                                    	<div class="type-file-box">
+                                            <input type="button" name="button" id="button" class="type-file-button" value="" />
+                                            <input type="file" class="type-file-file" id="product_img" name="product_img" data-state="imgfile" size="30" hidefocus="true" value="" />
+                                            {if $product.img}
+                                            <span class="show">
+                                                <a href="../{$product.img}" target="_blank" class="nyroModal"><i class="icon icon-picture" data-tooltipimg="../{$product.img}" ectype="tooltip" title="tooltip"></i></a>
+                                            </span>
+                                            {/if}
+                                            <input type="text" name="textfile" class="type-file-text" value="{if $product.img}../{$product.img}{/if}" id="textfield" autocomplete="off" readonly />
+                                        </div>
+										<label class="bf100 fl">{$lang.zc_goods_note}</label>
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}{$lang.zc_return_time}：</div>
+                                    <div class="label_value">
+										<input type='text' name='return_time' value='{$product.return_time}' class="text text_2" placeholder="天"/>
+                                    </div>
+                                </div>								
+                                <div class="item">
+                                    <div class="label">{$lang.zc_return_content}：</div>
+                                    <div class="label_value">
+										<textarea name="content" class="textarea h120">{$product.content}</textarea>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="label_value info_btn">
+										<input type="submit" class='button' value="{$lang.button_submit}" id="submitBtn" />
+                                        <input type="reset" class='button button_reset' value="{$lang.button_reset}" />
+										<input type='hidden' name='item_id' value='{$item_id}' />
+										<input type='hidden' name='id' value='{$id}' />
+                                    </div>
+                                </div>								
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+    </div>
+ {include file ='library/pagefooter.lbi'}
+	
+	<script type="text/javascript">
+	$(function(){
+		//表单验证
+		$("#submitBtn").click(function(){
+			if($("#zc_project_form").valid()){
+				$("#zc_project_form").submit();
+			}
+		});
+	
+		$('#zc_project_form').validate({
+			errorPlacement:function(error, element){
+				var error_div = element.parents('div.label_value').find('div.form_prompt');
+				element.parents('div.label_value').find(".notic").hide();
+				error_div.append(error);
+			},
+			rules:{
+				limit :{
+					required : true,
+					digits:true
+				},
+				price :{
+					required : true,
+					number:true
+				},
+				shipping_fee :{
+					required : true,
+					number:true
+				},
+				textfile:{
+					required : true
+				}
+			},
+			messages:{
+				limit:{
+					 required : '<i class="icon icon-exclamation-sign"></i>{$lang.zc_goods_num}{$lang.empty}',
+					 digits : '<i class="icon icon-exclamation-sign"></i>数量必须为整数'
+				},
+				price :{
+					required : '<i class="icon icon-exclamation-sign"></i>{$lang.zc_goods_price}{$lang.empty}',
+					digits : '<i class="icon icon-exclamation-sign"></i>众筹价格必须为数字'
+				},
+				shipping_fee :{
+					required : '<i class="icon icon-exclamation-sign"></i>{$lang.zc_shipping_fee}{$lang.empty}',
+					digits : '<i class="icon icon-exclamation-sign"></i>配送费用必须为数字'
+				},
+				textfile:{
+					required : '<i class="icon icon-exclamation-sign"></i>方案图片不能为空'
+				}
+			}			
+		});
+	});
+	
+	function assignment(){
+		if($('#limit').val() == ''){
+			$('#limit').val(0);			
+		}
+	}
+
+		$(function(){
+			$('.nyroModal').nyroModal();
+		})	
+
+	$(function(){
+		$(document).on('click', 'input[name=infinite]', function(){
+			var status = $(this).is(':checked');
+			if(status){
+				$("input[name='limit']").prop('disabled', true);
+				$("input[name='limit']").val(0);
+			}else{
+				$("input[name='limit']").prop('disabled', false);
+			}
+		})
+	})
+	</script>
+</body>
+</html>

@@ -1,0 +1,631 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+		<div class="title">{$lang.12_template} - {$lang.03_template_setup}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.setup.0}</li>
+                    <li>{$lang.operation_prompt_content.setup.1}</li>
+                </ul>
+            </div>
+        	<div class="flexilist">
+                <div class="common-content">
+                    <div class="form-div">
+                        <form method="post" action="template.php?act=setup">
+                        <label class="fl">{$lang.select_template}</label>
+                        <div id="selLib" class="imitate_select select_w320" rank="1">
+                            <div class="cite">{$lang.select_temp}</div>
+                            <ul>
+                                {foreach from=$lang.template_files item=vo key=key}
+                                <li><a href="javascript:;" data-value="{$key}" class="ftx-01">{$vo}</a></li>
+                                {/foreach}
+                            </ul>
+                            <input name="template_file" type="hidden" value="{$curr_template}" id="selLib_val">
+                        </div>
+                        <input type="submit" value="{$lang.button_submit}" class="btn btn30 red_btn mr10" />
+                        {if $curr_template eq 'index' && $cate_goods}
+                        <a href="set_floor_brand.php?filename={$curr_template}" class="btn btn30 red_btn">{$lang.floor_brand_setup}</a>
+                        {/if}
+                        </form>
+                    </div>
+                    <div class="list-div mt20">
+                        <form name="theForm" action="template.php" method="post">
+                          <table width="100%" cellpadding="1" cellspacing="1">
+                          <tr>
+                            <th width="15%"><div class="tDiv">{$lang.library_name}</div></th>
+                            <th width="20%"><div class="tDiv">{$lang.region_name}</div></th>
+                            <th width="8%"><div class="tDiv">{$lang.sort_order}</div></th>
+                            <th width="32%"><div class="tDiv">{$lang.contents}</div></th>
+                            <th width="10%"><div class="tDiv">{$lang.number}</div></th>
+                            <th width="15%"><div class="tDiv">{$lang.display}</div></th>
+                          </tr>
+                          {foreach from=$temp_options item=library key=lib_name}
+                          <tr>
+                            <td class="first-cell"><div class="tDiv">{$library.desc}</div></td>
+                            <td>
+                            	<div class="tDiv">
+                                    <div class="imitate_select select_w320" >
+                                      <div class="cite">{if $library.editable eq 1}{$lang.not_editable}{else}{$lang.select_plz}{/if}</div>
+                                      <ul>
+                                          {if $library.editable eq 1}
+                                          <li><a href="javascript:;" data-value="" class="ftx-01">{$lang.not_editable}</a></li>
+                                          {else}
+                                          <li><a href="javascript:;" data-value="" class="ftx-01">{$lang.select_plz}</a></li>
+                                          {foreach from=$temp_regions item=item}
+                                          <li><a href="javascript:;" data-value="{$item}" class="ftx-01">{$item}</a></li>
+                                          {/foreach}
+                                          {/if}
+                                      </ul>
+                                      <input name="regions[{$lib_name}]" type="hidden" value="{$library.region}">
+                                    </div>
+                                </div>
+                            </td>
+                            <td><div class="tDiv"><input type="text" name="sort_order[{$lib_name}]" class="text w40" value="{$library.sort_order}" size="4" {if $library.editable eq 1} disabled {/if}/></div></td>
+                            <td><div class="tDiv"><input type="hidden" name="map[{$lib_name}]" value="{$library.library}" /></div></td>
+                            <td><div class="tDiv">{if $library.number_enabled}<input type="text" name="number[{$lib_name}]" value="{$library.number}" class="text w40" size="4" />{else}&nbsp;{/if}</div></td>
+                            <td>
+                            	<div class="tDiv">
+                                    <div class="checkbox_items">
+                                        <div class="checkbox_item">
+                                            <input type="checkbox" value="1" name="display[{$lib_name}]" class="ui-checkbox" id="display[{$lib_name}]" {if $library.editable eq 1} disabled {/if}{if $library.display eq 1} checked="true" {/if} />
+                                            <label for="display[{$lib_name}]" class="ui-label"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                          	</td>
+                          </tr>
+                          {/foreach}
+                        
+                          <!-- cateogry goods list -->
+                          <tr>
+                            <td colspan="6" class="light_blue"><a href="javascript:;" onclick="addCatGoods(this)">[+]</a>{$lang.template_libs.cat_goods}</div></td>
+                          </tr>
+                          {foreach from=$cate_goods item=library key=lib_name}
+                          <tr>
+                            <td class="first-cell" align="right"><a href="javascript:;" onclick="removeRow(this)">[-]</a></td>
+                            <td>
+                            	<div class="tDiv">
+                                    <div class="imitate_select select_w320" >
+                                        <div class="cite">{$lang.select_plz}</div>
+                                        <ul>
+                                            <li><a href="javascript:;" data-value="" class="ftx-01">{$lang.select_plz}</a></li>
+                                            {foreach from=$temp_regions item=item}
+                                            <li><a href="javascript:;" data-value="{$item}" class="ftx-01">{$item}</a></li>
+                                            {/foreach}
+                                        </ul>
+                                        <input  name="regions[cat_goods][]" type="hidden" value="{$library.region}">
+                                    </div>
+                                </div>
+                            </td>
+                            <td><div class="tDiv"><input type="text" name="sort_order[cat_goods][]" value="{$library.sort_order}" size="4" class="text w40" /></div></td>
+                            <td>
+                            	<div class="tDiv">
+                                <div class="imitate_select select_w320" >
+                                    <div class="cite">
+                                    	{if $library.cats.cat_info.cat_name}
+                                    		{$library.cats.cat_info}
+                                        {else}
+                                        	{$lang.select_plz}  
+                                        {/if}
+                                    </div>
+                                    <ul class="category_level">
+                                        <li><a href="javascript:;" data-value="" class="ftx-01">{$lang.select_plz}</a></li>
+                                        {foreach from=$library.cats.cat_list item=cats}
+                                        <li>
+                                        	<i class="xds_up" data-type="xds"></i>
+                                        	<a href="javascript:;" data-value="{$cats.cat_id}" class="ftx-01">{$cats.select}{$cats.cat_name}</a>
+                                            <dl class="level_two">
+                                        	{if $cats.child_tree}
+                                            	{foreach from=$cats.child_tree item=cats_child}
+                                                	<dd>
+                                                        <i class="xds_up" data-type="xds"></i>
+                                                        <a href="javascript:;" data-value="{$cats_child.id}" class="ftx-01">{$cats_child.name}</a>
+                                                        {if $cats_child.cat_id}
+                                                        <dl class="level_three">
+                                                            {foreach from=$cats_child.cat_id item=cat}
+                                                                <dd><a href="javascript:;" data-value="{$cat.id}" class="ftx-01">{$cat.name}</a></dd>
+                                                            {/foreach}
+                                                        </dl>
+                                                        {/if}
+                                                    </dd>
+                                                {/foreach}
+                                            {/if}
+                                            </dl>
+                                        </li>    
+                                        {/foreach}
+                                    </ul>
+                                    <input name="categories[cat_goods][]" type="hidden" value="{$library.cats.cat_info.cat_id}">
+                                </div>
+								</div>
+                            </td>
+                            <td><div class="tDiv"><input type="text" name="number[cat_goods][]" value="{$library.number}" size="4" class="text w40" /></div></td>
+                            
+                            <td>
+                            	{if $template_type}
+                            	<div class="tDiv tpl-label">
+                                <div class="imitate_select select_w120" ectype="tplSelect">
+                                    <div class="cite">{$lang.default_floor_template}</div>
+                                    <ul class="category_template">
+                                        <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.default_floor_template}</a></li>
+										<li><a href="javascript:;" data-value="1" class="ftx-01">{$lang.floor_template_1}</a></li>
+										<li><a href="javascript:;" data-value="2" class="ftx-01">{$lang.floor_template_2}</a></li>
+										<li><a href="javascript:;" data-value="3" class="ftx-01">{$lang.floor_template_3}</a></li>
+                                    </ul>
+                                    <input name="categories[floor_tpl][]" type="hidden" value="{$library.floor_tpl|default:0}">
+                                </div>
+								<span class="show fl mr10 mt5">
+									<a href="images/floor-tpl-{$library.floor_tpl|default:0}.png" class="nyroModal"><i class="icon icon-picture" onmouseover="toolTip('<img src=images/floor-tpl-{$library.floor_tpl|default:0}.png>')" onmouseout="toolTip()"></i></a>
+								</span>
+								</div>
+                                {else}
+                                &nbsp;
+                                {/if}
+                            </td>
+                          </tr>
+                          {/foreach}
+                        
+                          <tr>
+                            <td colspan="6" class="light_blue" align="left"><a href="javascript:;" onclick="addBrandGoods(this)">[+]</a> {$lang.template_libs.brand_goods} </td>
+                          </tr>
+                          {foreach from=$brand_goods item=library key=lib_name}
+                          <tr>
+                            <td class="first-cell" align="right"><a href="javascript:;" onclick="removeRow(this)">[-]</a></td>
+                            <td>
+                            	<div class="tDiv">
+                                    <div class="imitate_select select_w320" >
+                                    	<div class="cite">{$lang.select_plz}</div>
+                                        <ul>
+                                            <li><a href="javascript:;" data-value="" class="ftx-01">{$lang.select_plz}</a></li>
+                                            {foreach from=$temp_regions item=item}
+                                            <li><a href="javascript:;" data-value="{$item}" class="ftx-01">{$item}</a></li>
+                                            {/foreach}
+                                        </ul>
+                                        <input name="regions[brand_goods][]" type="hidden" value="{$library.region}">
+                                    </div>
+                                </div>
+                            </td>
+                            <td><div class="tDiv"><input type="text" name="sort_order[brand_goods][]" value="{$library.sort_order}" size="4" class="text w40" /></div></td>
+                            <td>
+                            	<div class="tDiv">
+                                <div class="imitate_select select_w320" >
+                                    <div class="cite">{$lang.select_plz}</div>
+                                    <ul>
+                                        <li><a href="javascript:;" data-value="" class="ftx-01">{$lang.select_plz}</a></li>
+                                        {foreach from=$temp_regions item=item key=key}
+                                        <li><a href="javascript:;" data-value="{$key}" class="ftx-01">{$item}</a></li>
+                                        {/foreach}
+                                    </ul>
+                                    <input  name="brands[brand_goods][]" type="hidden" value="{$library.brand}">
+                                </div>
+                                </div>
+                            </td>
+                            <td><div class="tDiv"><input type="text" name="number[brand_goods][]" value="{$library.number}" size="4" class="text w40" /></div></td>
+                            <td></td>
+                          </tr>
+                          {/foreach}
+                        
+                          <tr>
+                            <td colspan="6" class="light_blue" align="left"><a href="javascript:;" onclick="addArticles(this)">[+]</a> {$lang.template_libs.articles} </td>
+                          </tr>
+                          {foreach from=$cat_articles item=library key=lib_name}
+                          <tr>
+                            <td class="first-cell" align="right"><a href="javascript:;" onclick="removeRow(this)">[-]</a></td>
+                            <td>
+                            	<div class="tDiv">
+                                <div class="imitate_select select_w320" >
+                                    <div class="cite">{$lang.select_plz}</div>
+                                    <ul>
+                                        <li><a href="javascript:;" data-value="" class="ftx-01">{$lang.select_plz}</a></li>
+                                        {foreach from=$temp_regions item=item key=key}
+                                        <li><a href="javascript:;" data-value="{$item}" class="ftx-01">{$item}</a></li>
+                                        {/foreach}
+                                    </ul>
+                                    <input  name="regions[cat_articles][]" type="hidden" value="{$library.region}">
+                                </div>
+                                </div>
+                            </td>
+                            <td><div class="tDiv"><input type="text" name="sort_order[cat_articles][]" value="{$library.sort_order}" size="4"  class="text w40" /></div></td>
+                            <td>
+                            	<div class="tDiv">
+                                <div class="imitate_select select_w320" >
+                                    <div class="cite">{$lang.select_plz}</div>
+                                    <ul>
+                                        <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.select_plz}</a></li>
+                                        {$library.cat}
+                                    </ul>
+                                    <input  name="article_cat[cat_articles][]" type="hidden" value="{$library.cat_articles_id}">
+                                </div>
+                                </div>
+                            </td>
+                            <td><div class="tDiv"><input type="text" name="number[cat_articles][]" value="{$library.number}" size="4"  class="text w40" /></div></td>
+                            <td></td>
+                          </tr>
+                          {/foreach}
+                        
+                          <tr>
+                            <td colspan="6" class="light_blue" align="left"><a href="javascript:;" onclick="addAdPosition(this)">[+]</a> {$lang.template_libs.ad_position} </td>
+                          </tr>
+                          {foreach from=$ad_positions item=ad_position key=lib_name}
+                          <tr>
+                            <td class="first-cell" align="right"><a href="javascript:;" onclick="removeRow(this)">[-]</a></td>
+                            <td>
+                            	<div class="tDiv">
+                                <div class="imitate_select select_w320" >
+                                    <div class="cite">{$lang.select_plz}</div>
+                                    <ul>
+                                        <li><a href="javascript:;" data-value="" class="ftx-01">{$lang.select_plz}</a></li>
+                                        {foreach from=$temp_regions item=item key=key}
+                                        <li><a href="javascript:;" data-value="{$item}" class="ftx-01">{$item}</a></li>
+                                        {/foreach}
+                                    </ul>
+                                    <input  name="regions[ad_position][]" type="hidden" value="{$ad_position.region}">
+                                </div>
+                                </div>
+                            </td>
+                            <td><div class="tDiv"><input type="text" name="sort_order[ad_position][]" value="{$ad_position.sort_order}" size="4"  class="text w40" /></div></td>
+                            <td>
+                            	<div class="tDiv">
+                                <div class="imitate_select select_w320" >
+                                    <div class="cite">{$lang.select_plz}</div>
+                                    <ul>
+                                        <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.select_plz}</a></li>
+                                        {foreach from=$arr_ad_positions item=item key=key}
+                                        <li><a href="javascript:;" data-value="{$key}" class="ftx-01">{$item}</a></li>
+                                        {/foreach}
+                                    </ul>
+                                    <input  name="ad_position[]" type="hidden" value="{$ad_position.ad_pos}">
+                                </div>
+                                </div>
+                            </td>
+                            <td><div class="tDiv"><input type="text" name="number[ad_position][]" value="{$ad_position.number}" size="4" class="text w40" /></div></td>
+                            <td></td>
+                          </tr>
+                          {/foreach}
+                          <tr>
+                            <td colspan="6">
+                                <div class="info_btn tc pt20 pb20">
+                                    <input type="submit" value="{$lang.button_submit}" class="button fn" />
+                                    <input type="reset" value="{$lang.button_reset}" class="button button_reset fn" />
+                                    <input type="hidden" name="act" value="setting" />
+                                    <input type="hidden" name="template_file" value="{$curr_template_file}" />
+                                </div>
+                            </td>
+                          </tr>
+                          </table>
+                        </form>
+                    </div>
+                </div>
+        	</div>
+        </div>
+	</div>
+	{include file ='library/pagefooter.lbi'}
+	
+	<script type="text/javascript">
+    <!--
+	$(document).on("click","*[ectype='tplSelect'] li a",function(){
+		var _this = $(this);
+		var val = _this.data('value');
+		var text = _this.html();
+		
+		$('#selLib_val').val(val);
+		_this.parents(".tpl-label").find("span").html('<a href="images/floor-tpl-'+ val +'.png" class="nyroModal"><i class="icon icon-picture" onmouseover="toolTip(' + "'" + '<img src=' + 'images/floor-tpl-'+ val +'.png' + '>' + "'" + ')' + '" onmouseout="toolTip()"></i></a>');
+	
+		$('.nyroModal').nyroModal();
+	});
+
+    var currTemplateFile = '{$curr_template_file}';
+    var selRegions       = new Array();
+    var selBrands        = new Array();
+    var selArticleCats   = new Array();
+    var selAdPositions   = new Array();
+    
+    {foreach from=$temp_regions item=region key=id}
+    selRegions[{$id}] = '{$region|escape:quotes}';
+    {/foreach}
+    
+    {foreach from=$arr_brands item=brand key=id}
+    selBrands[{$brand.brand_id}] = '{$brand.brand_name|escape:quotes}';
+    {/foreach}
+    
+    {foreach from=$arr_article_cats item=cat key=id}
+    selArticleCats[{$id}] = '{$cat}';
+    {/foreach}
+    
+    {foreach from=$arr_ad_positions item=ad_position key=id}
+    selAdPositions[{$id}] = '{$ad_position|escape}';
+    {/foreach}
+    
+    {literal}
+    
+    /**
+     * 创建区域选择的下拉列表
+     */
+    function buildRegionSelect(selName)
+    {
+        var sel = '<div class="tDiv"><div class="imitate_select select_w320" ><div class="cite">' + selectPlease + '</div><ul>';
+        
+        sel += '<li><a href="javascript:;" data-value="" class="ftx-01">' + selectPlease + '</a></li>';
+    
+         for (i=0; i < selRegions.length; i++)
+        {
+              sel += '<li><a href="javascript:;" data-value="' + selRegions[i] + '" class="ftx-01">' + selRegions[i] + '</a></li>';
+        }
+    
+        sel += '</ul><input  name="' + selName + '" type="hidden" value=""></div></div>';
+        return sel;
+    }
+    
+    /**
+     * 创建选择品牌的下拉列表
+     */
+    function buildBrandSelect(selName)
+    {
+        
+        var sel = '<div class="tDiv"><div class="imitate_select select_w320" ><div class="cite">' + selectPlease + '</div><ul>';
+        
+        sel += '<li><a href="javascript:;" data-value="" class="ftx-01">' + selectPlease + '</a></li>';
+    
+        for (brand in selBrands)
+        {
+            if (brand != "______array" && brand != "toJSONString")
+            {
+              sel += '<li><a href="javascript:;" data-value="' + brand + '" class="ftx-01">' + selBrands[brand] + '</a></li>';
+            }
+        }
+    
+        sel += '</ul><input  name="' + selName + '" type="hidden" value=""></div></div>';
+        return sel;
+    }
+    
+    /**
+     * 创建选择文章分类的下拉列表
+     */
+    function buildArticleCatSelect(selName)
+    {
+        var sel = '<div class="tDiv"><div class="imitate_select select_w320" ><div class="cite">' + selectPlease + '</div><ul>';
+        
+        sel += '<li><a href="javascript:;" data-value="" class="ftx-01">' + selectPlease + '</a></li>';
+    
+        for (cat in selArticleCats)
+        {
+            if (cat != "______array" && cat != "toJSONString")
+            {
+               sel += '<li><a href="javascript:;" data-value="' + cat + '" class="ftx-01">' + selArticleCats[cat] + '</a></li>';
+            }
+        }
+        sel += '</ul><input  name="' + selName + '" type="hidden" value=""></div></div>';
+    
+        return sel;
+    }
+    
+    /**
+     * 创建选择广告位置的列表
+     */
+    function buildAdPositionsSelect(selName)
+    {
+        var sel = '<div class="tDiv"><div class="imitate_select select_w320" ><div class="cite">' + selectPlease + '</div><ul>';
+        
+        sel += '<li><a href="javascript:;" data-value="" class="ftx-01">' + selectPlease + '</a></li>';
+    
+        for (ap in selAdPositions)
+        {
+            if (ap != "______array" && ap != "toJSONString")
+            {
+              sel += '<li><a href="javascript:;" data-value="' + ap + '" class="ftx-01">' + selAdPositions[ap] + '</a></li>';
+            }
+        }
+        sel += '</ul><input  name="' + selName + '" type="hidden" value=""></div></div>';
+        return sel;
+    }
+    
+    /**
+     * 增加一个分类的商品
+     */
+    function addCatGoods(obj)
+    {
+        var rowId = rowindex(obj.parentNode.parentNode);
+
+        var table = obj.parentNode.parentNode.parentNode.parentNode;
+    
+        var row  = table.insertRow(rowId + 1);
+        var cell = row.insertCell(-1);
+        cell.innerHTML = '<a href="javascript:;" onclick="removeRow(this)">[-]</a>';
+        cell.className = 'first-cell';
+        cell.align     = 'right';
+    
+        cell           = row.insertCell(-1);
+        cell.innerHTML = buildRegionSelect('regions[cat_goods][]');
+    
+        cell           = row.insertCell(-1);
+		
+        cell.innerHTML = '<div class="tDiv"><input type="text" name="sort_order[cat_goods][]" class="text w40" value="0" size="4" /></div>';
+    
+        cell           = row.insertCell(-1);
+        cell.innerHTML = '<div class="tDiv"><div class="imitate_select select_w320" ><div class="cite">' + 
+		
+						selectPlease + 
+						
+						'</div><ul class="category_level"><li><a href="javascript:;" data-value="" class="ftx-01">' + 
+						
+						selectPlease + 
+						
+						'</a></li>' + 
+						
+						{if $arr_cates}
+							{foreach from=$arr_cates.cat_list item=cats}
+							'<li><i class="xds_up" data-type="xds"></i><a href="javascript:;" data-value="{$cats.cat_id}" class="ftx-01">{$cats.select}{$cats.cat_name}</a>' + 
+								{if $cats.child_tree}
+								'<dl class="level_two">'+
+								{foreach from=$cats.child_tree item=cats_child}
+								'<dd><i class="xds_up" data-type="xds"></i><a href="javascript:;" data-value="{$cats_child.id}" class="ftx-01">{$cats_child.name}</a>' + 
+									{if $cats_child.cat_id}
+									'<dl class="level_three">' +
+									{foreach from=$cats_child.cat_id item=cat}
+									'<dd><a href="javascript:;" data-value="{$cat.id}" class="ftx-01">{$cat.name}</a></dd>' + 
+									{/foreach}
+									'</dl>'+
+									{/if}
+								'</dd>' +	
+								{/foreach}
+								'</dl>' +
+								{/if}
+							{/foreach}
+						{/if}
+						
+						'</li></ul><input  name="categories[cat_goods][]" type="hidden" value=""></div></div>';
+    
+        cell           = row.insertCell(-1);
+        cell.innerHTML = '<div class="tDiv"><input type="text" name="number[cat_goods][]" value="5" class="text w40" size="4" /></div>';
+    
+        cell           = row.insertCell(-1);
+        cell.innerHTML = '<div class="tDiv tpl-label"><div class="imitate_select select_w120" ectype="tplSelect"><div class="cite">{$lang.default_floor_template}</div>' +
+                         '<ul class="category_template"><li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.default_floor_template}</a></li><li><a href="javascript:;" data-value="1" class="ftx-01">{$lang.floor_template_1}</a></li>' +
+						 '<li><a href="javascript:;" data-value="2" class="ftx-01">{$lang.floor_template_2}</a></li><li><a href="javascript:;" data-value="3" class="ftx-01">{$lang.floor_template_3}</a></li></ul>' +
+                         '<input name="categories[floor_tpl][]" type="hidden" value="{$library.floor_tpl|default:0}"></div>' +
+						 '<span class="show fl mr10 mt5">' +
+						 '<a href="images/floor-tpl-{$library.floor_tpl|default:0}.png" class="nyroModal"><i class="icon icon-picture" onmouseover="toolTip(' + "'" + '<img src=images/floor-tpl-{$library.floor_tpl|default:0}.png>' + "'" + ')" onmouseout="toolTip()"></i></a>' +
+						 '</span></div>';							
+        cell           = row.insertCell(-1);
+    }
+    
+    /**
+     * 增加一个品牌的商品
+     */
+    function addBrandGoods(obj)
+    {
+        var rowId = rowindex(obj.parentNode.parentNode);
+    
+        var table = obj.parentNode.parentNode.parentNode.parentNode;
+    
+        var row  = table.insertRow(rowId + 1);
+        var cell = row.insertCell(-1);
+        cell.innerHTML = '<a href="javascript:;" onclick="removeRow(this)">[-]</a>';
+        cell.className = 'first-cell';
+        cell.align     = 'right';
+    
+        cell           = row.insertCell(-1);
+        cell.innerHTML = buildRegionSelect('regions[brand_goods][]');
+    
+        cell           = row.insertCell(-1);
+        cell.innerHTML = '<div class="tDiv"><input type="text" name="sort_order[brand_goods][]" value="0" size="4" class="text w40" /></div>';
+    
+        cell           = row.insertCell(-1);
+        cell.innerHTML = buildBrandSelect('brands[brand_goods][]');
+    
+        cell           = row.insertCell(-1);
+        cell.innerHTML = '<div class="tDiv"><input type="text" name="number[brand_goods][]" value="5" size="4" class="text w40" /></div>';
+    
+        cell           = row.insertCell(-1);
+    }
+    
+    /**
+     * 增加一个文章列表
+     */
+    function addArticles(obj)
+    {
+        var rowId = rowindex(obj.parentNode.parentNode);
+    
+        var table = obj.parentNode.parentNode.parentNode.parentNode;
+    
+        var row  = table.insertRow(rowId + 1);
+        var cell = row.insertCell(-1);
+        cell.innerHTML = '<a href="javascript:;" onclick="removeRow(this)">[-]</a>';
+        cell.className = 'first-cell';
+        cell.align     = 'right';
+    
+        cell           = row.insertCell(-1);
+        cell.innerHTML = buildRegionSelect('regions[cat_articles][]');
+    
+        cell           = row.insertCell(-1);
+        cell.innerHTML = '<div class="tDiv"><input type="text" name="sort_order[cat_articles][]" value="0" size="4" class="text w40" /></div>';
+    
+        cell           = row.insertCell(-1);
+        cell.innerHTML = buildArticleCatSelect('article_cat[cat_articles][]');
+    
+        cell           = row.insertCell(-1);
+        cell.innerHTML = '<div class="tDiv"><input type="text" name="number[cat_articles][]" value="5" size="4" class="text w40" /></div>';
+    
+        cell           = row.insertCell(-1);
+    }
+    
+    /**
+     * 增加一个广告位
+     */
+    function addAdPosition(obj)
+    {
+        var rowId = rowindex(obj.parentNode.parentNode);
+    
+        var table = obj.parentNode.parentNode.parentNode.parentNode;
+    
+        var row  = table.insertRow(rowId + 1);
+        var cell = row.insertCell(-1);
+        cell.innerHTML = '<a href="javascript:;" onclick="removeRow(this)">[-]</a>';
+        cell.className = 'first-cell';
+        cell.align     = 'right';
+    
+        cell           = row.insertCell(-1);
+        cell.innerHTML = buildRegionSelect('regions[ad_position][]');
+    
+        cell           = row.insertCell(-1);
+        cell.innerHTML = '<div class="tDiv"><input type="text" name="sort_order[ad_position][]" value="0" size="4" class="text w40" /></div>';
+    
+        cell           = row.insertCell(-1);
+        cell.innerHTML = buildAdPositionsSelect('ad_position[]');
+    
+        cell           = row.insertCell(-1);
+        cell.innerHTML = '<div class="tDiv"><input type="text" name="number[ad_position][]" value="1" size="4" class="text w40" /></div>';
+    
+        cell           = row.insertCell(-1);
+    }
+    
+    /**
+     * 删除一行
+     */
+    function removeRow(obj)
+    {
+        if (confirm(removeConfirm))
+        {
+            var table = obj.parentNode.parentNode.parentNode;
+            var row   = obj.parentNode.parentNode;
+    
+            for (i = 0; i < table.childNodes.length; i++)
+            {
+                if (table.childNodes[i] == row)
+                {
+                    table.removeChild(table.childNodes[i]);
+                }
+            }
+        }
+    }
+    {/literal}
+    //--> 
+	
+	function setup(){
+		var obj = $(".category_level");
+		$(document).on("click","[data-type='xds']",function(){
+			var _this = $(this);
+			if(_this.hasClass("xds_up")){
+				_this.removeClass("xds_up").addClass("xds_down");
+				_this.siblings("dl").show();
+			}else{
+				_this.removeClass("xds_down").addClass("xds_up");
+				_this.siblings("dl").hide();
+				_this.siblings("dl").find("dl").hide();
+				_this.siblings("dl").find("[data-type='xds']").removeClass("xds_down").addClass("xds_up");
+			}
+		});
+	}
+
+	$(function(){
+		$('.nyroModal').nyroModal();
+	});
+	
+	setup();
+	</script>
+</body>
+</html>

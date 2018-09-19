@@ -1,0 +1,80 @@
+{include file="seller_pageheader"}
+
+{include file="seller_nave_header"}
+
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file="seller_menu_left"}
+
+        <div class="ecsc-layout-right">
+             <div class="main-content" id="mainContent">
+             {include file="seller_nave_header_title"}
+                <div class="wrapper-right of" >
+                    <div class="tabmenu">
+                        <ul class="tab ">
+                            <li><a href="{url('extend_index')}" class="s-back">返回</a></li>
+                            <li role="presentation" class="active"><a href="#home" role="tab" data-toggle="tab">{$postion['ur_here']} 中奖名单</a></li>
+                        </ul>
+                    </div>
+                    <div class="explanation" id="explanation">
+                        <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4></div>
+                        <ul>
+                            <li>中奖名称显示所有中奖的用户信息，未中奖的不显示。</li>
+                            <li>可根据用户填写的联系方式，线下联系用户相关领奖事宜，点击通知用户可以推送一条微信通知消息。（此消息需要用户关注微信公众号，并且48小时内与之有过互动，才能发送成功）</li>
+                            <li>相关奖品发送并与用户确认完成后，点击 立即发放，以标识此用户已经领奖。</li>
+                        </ul>
+                    </div>
+                    <div class="wrapper-list mt20">
+                        <div class="list-div" id="listDiv">
+                            <table class="ecsc-default-table ecsc-table-seller mt20">
+                                <tbody>
+                                    <tr>
+                                        <th width="10%">微信昵称</th>
+                                        <th width="15%">奖品</th>
+                                        <th width="7%">是否发放</th>
+                                        <th >中奖用户信息</th>
+                                        <th width="13%">中奖时间</th>
+                                        <th width="33%">操作</th>
+                                    </tr>
+                                    {foreach $list as $val}
+                                    <tr>
+                                        <td class="tl">{$val['nickname']}</td>
+                                        <td>{$val['prize_name']}</td>
+                                        <td>{if $val['issue_status']}已发放{else}未发放{/if}</td>
+                                        <td>
+                                            {if is_array($val['winner'])}
+                                            <p>姓名：{$val['winner']['name']}</p>
+                                            <p>手机号：{$val['winner']['phone']}</p>
+                                            <p>联系地址：{$val['winner']['address']}</p>
+                                            {/if}
+                                        </td>
+                                        <td>{$val['dateline']}</td>
+                                        <td  class="handle">
+                                        <div class="tDiv a3">
+                                        {if $val['issue_status']}
+                                        <a href="{url('winner_issue', array('id'=>$val['id'], 'cancel'=>1,'ks'=>$activity_type))}" class="btn_region"><i class="fa fa-send"></i>取消发放</a>
+                                        {else}
+                                        <a href="{url('winner_issue', array('id'=>$val['id'], 'cancel'=>0,'ks'=>$activity_type))}" class="btn_region"><i class="fa fa-send-o"></i>立即发放</a>
+                                        {/if}
+                                        <a href="{url('send_custom_message', array('openid'=>$val['openid']))}" class="btn_inst fancybox fancybox.iframe"><i class="fa fa-bullhorn"></i>通知用户</a>
+                                        <a href="javascript:;"  data-href="{url('winner_del', array('id'=>$val['id'], 'ks'=>$activity_type))}" class="btn_trash delete_confirm"><i class="fa fa-trash-o"></i>删除</a>
+                                         </div>
+                                        </td>
+                                    </tr>
+                                    {/foreach}
+                                </tbody>
+                            </table>
+
+                        </div>
+                        {include file="seller_pageview"}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{include file="seller_pagefooter"}
+</body>
+</html>

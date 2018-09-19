@@ -1,0 +1,100 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+		{include file ='library/seller_menu_left.lbi'}
+		<div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+				{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                {/if}
+                <!-- start shipping area list -->
+                <form method="post" action="warehouse.php" name="listForm" onsubmit="return confirm('确定要移除选定的运费模板么？')">
+                <div class="list-div" id="listDiv">
+                
+                <table class="ecsc-default-table mt20"  cellspacing='1' cellpadding='1' id='listTable'>
+                    <thead>
+                    <tr>
+                        <th width="10%"><div class="first_all"><input type="checkbox" onclick="listTable.selectAll(this, 'checkboxes')" id="all" class="ui-checkbox" /><label for="all" class="ui-label">编号</label></div></th>
+                        <th width="16%">运费模板名称</th>
+                        <th width="46%">始发仓库</th>	
+                        <th width="16%">抵达地区</th>
+                        <th width="12%">操作</th>
+                    </tr>
+                	</thead>
+                    <tbody>
+                    {foreach from=$areas item=area}
+                    <tr>
+                        <td class="first_td_checkbox">
+                            <div class="first_all"><input type="checkbox" name="checkboxes[]" value="{$area.id}" id="checkbox_{$area.id}" class="ui-checkbox" /><label for="checkbox_{$area.id}" class="ui-label">{$area.id}</label></div>
+                        </td>
+                        <td class="first-cell">{$area.tpl_name|escape:"html"}</td>
+                        <td>{$area.warehouses}</td>
+                        <td>{$area.regions}</td>
+                        <td class="ecsc-table-handle tr">
+                            <span><a href="warehouse.php?act=ship_tpl&shipping_id={$shipping_id}&id={$area.id}" title="{$lang.edit}" class="btn-green"><i class="icon icon-edit"></i><p>{$lang.edit}</p></a></span>
+                            <span><a href="javascript:;" onclick="remove_info_pro({$area.id}, '确定删除编号为{$area.id}的模板吗？', 'remove_tpl')" title="{$lang.drop}" class="btn-red"><i class="icon icon-trash"></i><p>{$lang.drop}</p></a></span>
+                        </td>
+                    </tr>
+                    {foreachelse}
+                    <tr><td class="no-records" colspan="11">{$lang.no_records}</td></tr>	
+                    {/foreach}
+                	</tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="5" class="td_border">
+                        	<div class="shenhe">
+                            <input type="hidden" name="act" value="multi_remove" />
+                            <input type="hidden" name="shipping_id" value="{$smarty.get.shipping_id}" />
+                            <input type="submit" value="{$lang.remove}" disabled="true" id="btnSubmit" class="sc-btn btn_disabled" style="display:inline-block;" />
+                            </div>
+                        </td>
+                    </tr>
+                    </tfoot>
+                </table>
+                
+                {if $full_page}
+                </div>
+                </form>
+        	</div>
+    	</div>
+	</div>
+</div>
+{include file ='library/seller_footer.lbi'}
+{literal}
+<script type="text/javascript">
+onload = function()
+{
+  // 开始检查订单
+  startCheckOrder();
+}
+
+function remove_info_pro(id,msg,act)
+{
+	if(confirm(msg)==true)
+	{
+		$.ajax({
+			type:"GET",
+			url:"warehouse.php",
+			data:"act="+act+"&id="+id,
+			dataType:"text",
+			success:function(data)
+			{
+				alert(data);
+				window.location.reload();				
+			},
+			/*error: function(){
+				alert(arguments[1]);
+			}*/		
+		});		
+	}
+}
+</script>
+</body>
+</html>
+{/if}

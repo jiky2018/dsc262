@@ -1,0 +1,171 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+                {include file ='library/seller_menu_tab.lbi'}
+                <div class="search-info">
+                    <div class="search-form">
+            <form action="javascript:searchPresale()" name="searchForm">
+						<div id="status" class="imitate_select select_w145">
+							<div class="cite">审核状态</div>
+							<ul class="ps-container" style="display: none;">
+								<li><a href="javascript:;" data-value="0" class="ftx-01">审核状态</a></li>
+								<li><a href="javascript:;" data-value="3" class="ftx-01">未审核</a></li>
+								<li><a href="javascript:;" data-value="1" class="ftx-01">审核未通过</a></li>
+								<li><a href="javascript:;" data-value="2" class="ftx-01">审核已通过</a></li>
+							<div class="ps-scrollbar-x-rail" style="width: 145px; display: none; left: 0px; bottom: 3px;"><div class="ps-scrollbar-x" style="left: 0px; width: 0px;"></div></div><div class="ps-scrollbar-y-rail" style="top: 0px; height: 112px; display: none; right: 3px;"><div class="ps-scrollbar-y" style="top: 0px; height: 0px;"></div></div></ul>
+							<input name="is_audit" type="hidden" value="0">
+						</div>
+            <div class="search-key">
+                <input type="text" name="keyword" size="30" class="text text_2" placeholder="{$lang.goods_name}" />
+                <input type="submit" value="{$lang.button_search}" class="submit" />
+            </div>
+            </form>
+                    </div>
+                </div>
+                <form method="post" action="team.php?act=batch_drop" name="listForm" onsubmit="return confirm(batch_drop_confirm);">
+                <!-- start presale list -->
+                <div class="list-div" id="listDiv">
+                {/if}
+                <table class="ecsc-default-table">
+                    <thead>
+                        <tr>
+                        <th width="3%">编号</th>
+                        <th width="14%">商品名称</th>
+                        <th width="16%">活动时间</th>
+                        <th width="8%">原价/底价</th>
+                        <!-- <th width="10%">热销活动</th> -->
+                        <th width="6%">SKU/库存</th>
+                        <th width="8%">活动状态</th>
+                        <th width="8%">审核状态</th>
+                        <th width="14%">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {foreach from=$bargain_goods_list item=goods}
+                    <tr class="bd-line">
+                      <td class="tl">{$goods.id}</td>
+                      <td class="tl">{$goods.goods_name|escape:html}</td>
+                      <td align="center">
+                          <p>开始：{$goods.start_time}</p>
+                          <p>结束：{$goods.end_time}</p>
+                      </td>
+                      <td align="center">
+                          <p>原价：{$goods.shop_price}</p>
+                          <p>底价：{$goods.target_price}</p>
+                      </td>
+                      <td align="center">{$goods.goods_number}</td>
+                      <td align="center">{$goods.is_status}</td>
+					            <td align="center">
+						               <font class="blue">{$goods.is_audit}</font>
+                      </td>
+                      <td align="center" class="ecsc-table-handle tr">sc_icon_see
+                        <span>
+                            <a href="bargain.php?act=bargain_log&amp;id={$goods.id}" title="查看" class="btn-green"><i class="icon sc_icon_see"></i><p>查看</p></a>
+                        </span>
+                        <span>
+                            <a href="bargain.php?act=edit&amp;id={$goods.id}" title="{$lang.edit}" class="btn-green"><i class="icon icon-edit"></i><p>修改</p></a>
+                        </span>
+                        <span>
+                            {if $goods.status eq 1}
+                            <a href="javascript:;" onclick="listTable.remove({$goods.id},'您确定要移除该砍价活动吗？')" title="删除" class="btn-red"><i class="icon icon-trash"></i><p>删除</p></a>
+                            {else}
+                             <a href="javascript:;" onclick="listTable.remove({$goods.id},'您确定要关闭该砍价活动吗？','remove_down')" title="关闭" class="btn-red"><i class="icon icon-trash"></i><p>关闭</p></a>
+                            {/if}
+                        </span>
+                      </td>
+                    </tr>
+                    {foreachelse}
+                    <tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+                    {/foreach}
+                    </tbody>
+                    <tfoot>
+
+                        <tr>
+                            <td colspan="20">
+                            {include file="page.dwt"}
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+                {if $full_page}
+              </div>
+              <!-- end presale list -->
+              </form>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript">
+
+<!--
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+
+  {literal}
+  onload = function()
+  {
+    startCheckOrder();
+  }
+
+  {if $priv_ru eq 1}
+  function get_store_search(val){
+    if(val == 1){
+      document.forms['searchForm'].elements['merchant_id'].style.display = '';
+      document.forms['searchForm'].elements['store_keyword'].style.display = 'none';
+      document.forms['searchForm'].elements['store_type'].style.display = 'none';
+    }else if(val == 2){
+      document.forms['searchForm'].elements['merchant_id'].style.display = 'none';
+      document.forms['searchForm'].elements['store_keyword'].style.display = '';
+      document.forms['searchForm'].elements['store_type'].style.display = 'none';
+    }else if(val == 3){
+      document.forms['searchForm'].elements['merchant_id'].style.display = 'none';
+      document.forms['searchForm'].elements['store_keyword'].style.display = '';
+      document.forms['searchForm'].elements['store_type'].style.display = '';
+    }else{
+      document.forms['searchForm'].elements['merchant_id'].style.display = 'none';
+      document.forms['searchForm'].elements['store_keyword'].style.display = 'none';
+      document.forms['searchForm'].elements['store_type'].style.display = 'none';
+    }
+  }
+  {/if}
+
+  /**
+   * 搜索拼团商品
+   */
+  function searchPresale()
+  {
+    {if $priv_ru eq 1}
+    listTable.filter['store_search'] = Utils.trim(document.forms['searchForm'].elements['store_search'].value);
+    listTable.filter['merchant_id'] = Utils.trim(document.forms['searchForm'].elements['merchant_id'].value);
+    listTable.filter['store_keyword'] = Utils.trim(document.forms['searchForm'].elements['store_keyword'].value);
+    listTable.filter['store_type'] = Utils.trim(document.forms['searchForm'].elements['store_type'].value);
+    {/if}
+
+  var keyword = Utils.trim(document.forms['searchForm'].elements['keyword'].value);
+	var is_audit = Utils.trim(document.forms['searchForm'].elements['is_audit'].value);
+  listTable.filter['keyword'] = keyword;
+	listTable.filter['is_audit'] = is_audit;
+  listTable.filter['page'] = 1;
+  listTable.loadList("bargain_goods_list");
+  }
+  {/literal}
+//-->
+</script>
+</body>
+</html>
+{/if}

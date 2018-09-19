@@ -1,0 +1,175 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="search-info">
+                <div class="search-form">
+                  <form action="javascript:searchActivity()" name="searchForm">
+                  	<div id="status" class="imitate_select select_w145">
+                        <div class="cite">{$lang.adopt_status}</div>
+                        <ul>
+                            <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.adopt_status}</a></li>
+                            <li><a href="javascript:;" data-value="1" class="ftx-01">{$lang.not_audited}</a></li>
+                            <li><a href="javascript:;" data-value="2" class="ftx-01">{$lang.audited_not_adopt}</a></li>
+                            <li><a href="javascript:;" data-value="3" class="ftx-01">{$lang.audited_yes_adopt}</a></li>
+                        </ul>
+                        <input name="review_status" type="hidden" value="0"/>
+                    </div>
+                    <div class="search-key">
+                    	<input type="text" name="keyword" size="30" class="text text_2" placeholder="{$lang.act_name}" />
+                    	<input type="submit" value="{$lang.button_search}" class="submit" />
+                    </div>
+                    <div class="fl lh ml10"><input name="is_going" type="checkbox" class="ui-checkbox" id="is_going" value="1"  onclick="searchActivity()"/><label for="is_going" class="ui-label">{$lang.act_is_going}</label></div>
+                  </form>
+                </div>
+				</div>
+                <form method="post" action="favourable.php" name="listForm" onsubmit="return confirm(batch_drop_confirm);">
+                <div class="list-div" id="listDiv">
+                {/if}
+                  <table class="ecsc-default-table">
+                  	<thead>
+                      <tr>
+                        <th width="8%">
+                          <div class="first_all">
+                              <input onclick='listTable.selectAll(this, "checkboxes")' type="checkbox" class="ui-checkbox" id="all" />
+                              <label for="all" class="ui-label"><a href="javascript:listTable.sort('act_id'); ">{$lang.record_id}</a></label>
+                              {$sort_act_id}
+                          </div>
+                        </th>
+                        <th width="23%" class="tl"><a href="javascript:listTable.sort('act_name'); ">{$lang.act_name}</a><div class="img">{$sort_act_name}</div></th>
+                        <th width="10%" class="tc"><a href="javascript:listTable.sort('start_time'); ">{$lang.start_time}</a><div class="img">{$sort_start_time}</div></th>
+                        <th width="10%" class="tc"><a href="javascript:listTable.sort('end_time'); ">{$lang.end_time}</a><div class="img">{$sort_end_time}</div></th>
+                        <th width="11%" class="tc">{$lang.min_amount}</th>
+                        <th width="11%" class="tc">{$lang.max_amount}</th>
+                        <th width="7%" class="tc"><a href="javascript:listTable.sort('sort_order'); ">{$lang.sort_order}</a><div class="img">{$sort_sort_order}</div></th>
+                        <th width="10%">{$lang.adopt_status}</th>
+                        <th width="10%" class="tc">{$lang.handler}</th>
+                      </tr>
+  				    </thead>
+                    <tbody>
+                      {foreach from=$favourable_list item=favourable}
+                      <tr class="bd-line">
+                        <td class="first_td_checkbox"><div class="first_all"><input value="{$favourable.act_id}" name="checkboxes[]" type="checkbox" class="ui-checkbox" id="checkbox_{$favourable.act_id}"><label class="ui-label" for="checkbox_{$favourable.act_id}">{$favourable.act_id}</label></div></td>
+                        <td class="tl">{$favourable.act_name|escape:html}{if $favourable.userFav_type && $priv_ru eq 0}<font style="color:#A60000;">({$lang.general_audience})</font>{/if}</td>
+                        <td>{$favourable.start_time}</td>
+                        <td>{$favourable.end_time}</td>
+                        <td>{$favourable.min_amount}</td>
+                        <td>{$favourable.max_amount}</td>
+                        <td>
+                        	<span onclick="listTable.edit(this, 'edit_sort_order', {$favourable.act_id})">{$favourable.sort_order}</span>
+                        </td>
+                        <td class="audit_status">
+                            {if $favourable.review_status eq 1}
+                            <font class="org2">{$lang.not_audited}</font>
+                            {elseif $favourable.review_status eq 2}
+                            <font class="red">{$lang.audited_not_adopt}</font>
+                            <i class="tip yellow" title="{$favourable.review_content}">{$lang.prompt}</i>
+                            {elseif $favourable.review_status eq 3}
+                            <font class="green">{$lang.audited_yes_adopt}</font>
+                            {/if}
+                        </td>
+                        <td class="ecsc-table-handle{if $favourable.userFav_type eq 0 || $priv_ru} tr{/if}">
+                          <span><a href="favourable.php?act=edit&amp;id={$favourable.act_id}&ru_id={$favourable.user_id}" title="{$lang.edit}" class="btn-green"><i class="icon icon-edit"></i><p>{$lang.edit}</p></a></span>
+                          {if $favourable.userFav_type eq 0 || $priv_ru}
+                          <span><a href="javascript:;" onclick="listTable.remove({$favourable.act_id},'{$lang.drop_confirm}')" title="{$lang.drop}" class="btn-red"><i class="icon icon-trash"></i><p>{$lang.drop}</p></a><span>
+                          {/if}      
+                        </td>
+                      </tr>
+                      {foreachelse}
+                      <tr><td class="no-records" colspan="13">{$lang.no_records}</td></tr>
+                      {/foreach}
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                      	<td colspan="13" class="td_border">
+                        	<div class="shenhe">
+                                <input type="submit" name="drop" id="btnSubmit" value="{$lang.drop}" class="sc-btn btn_disabled" disabled="true" />
+                                <input type="hidden" name="act" value="batch" />
+                            </div>
+                        </td>
+                      </tr>
+                      <tr>
+                          <td colspan="20">
+                          {include file="page.dwt"}
+                          </td>
+                      </tr>
+                   </tfoot>
+                  </table>
+                {if $full_page}
+                </div>
+              	</form>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript">
+<!--
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+
+  {literal}
+  onload = function()
+  {
+    startCheckOrder();
+  }
+  
+  {if $priv_ru eq 1}
+    function get_store_search(val){
+        if(val == 1){
+            document.forms['searchForm'].elements['merchant_id'].style.display = '';
+            document.forms['searchForm'].elements['store_keyword'].style.display = 'none';
+            document.forms['searchForm'].elements['store_type'].style.display = 'none';
+        }else if(val == 2){
+            document.forms['searchForm'].elements['merchant_id'].style.display = 'none';
+            document.forms['searchForm'].elements['store_keyword'].style.display = '';
+            document.forms['searchForm'].elements['store_type'].style.display = 'none';
+        }else if(val == 3){
+            document.forms['searchForm'].elements['merchant_id'].style.display = 'none';
+            document.forms['searchForm'].elements['store_keyword'].style.display = '';
+            document.forms['searchForm'].elements['store_type'].style.display = '';
+        }else{
+            document.forms['searchForm'].elements['merchant_id'].style.display = 'none';
+            document.forms['searchForm'].elements['store_keyword'].style.display = 'none';
+            document.forms['searchForm'].elements['store_type'].style.display = 'none';
+        }
+    }
+  {/if}
+
+  /**
+   * 搜索团购活动
+   */
+  function searchActivity()
+  {
+      
+	listTable.filter['keyword'] = Utils.trim(document.forms['searchForm'].elements['keyword'].value);
+	listTable.filter['review_status'] = Utils.trim(document.forms['searchForm'].elements['review_status'].value);
+	
+	if (document.forms['searchForm'].elements['is_going'].checked){
+	  listTable.filter['is_going'] = 1;
+	}else{
+	  listTable.filter['is_going'] = 0;
+	}
+	listTable.filter['page'] = 1;
+	listTable.loadList("favourable_list");
+  }
+  {/literal}
+//-->
+</script>
+</body>
+</html>
+{/if}

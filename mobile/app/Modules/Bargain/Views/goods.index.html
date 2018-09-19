@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html class="goods-body">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="description" content="{$description}"/>
+    <meta name="keywords" content="{$keywords}"/>
+    <title>{$page_title}</title>
+    {global_assets('css')}
+    <script type="text/javascript">var ROOT_URL = '__ROOT__/';</script>
+    {global_assets('js')}
+    {include file="jssdk"}
+</head>
+<body class="goods-body">
+	<p style="text-align:right; display:none;">{C('shop.stats_code')}</p>
+	<div id="loading"><img src="{elixir('img/loading.gif')}" /></div>
+   <div class="swiper-container goods-swiper-container">
+        <div class="swiper-wrapper">
+           <div class="swiper-slide goods_content cur">
+                <div class="goods-swiper-container-cont">
+                    <div class="swiper-wrapper goods_detail">
+                        <div class="swiper-slide goods-swiper-slide">
+                            <div class="con goods" id="checkPage">
+								<form name="ECS_FORMBUY" id="ECS_FORMBUY" method="post" action="javascript:addToCart({$goods.goods_id})">
+									<div class="goods-photo goods-photo-images j-show-goods-img goods-banner" style="margin-top:0">
+									   <span class="goods-num" id="goods-num" style="bottom:4rem"><span id="g-active-num"></span>/<span id="g-all-num"></span></span>
+									   <div class="swiper-wrapper my-gallery-box" data-pswp-uid="10">
+									         {if $pictures}
+                                            {foreach $pictures as $li}
+									            <figure class="swiper-slide tb-lr-center">
+									               <div class="img-box">
+								            			<a href="{$li.img_url}" data-size="640x640">
+										                  <img src="{$li.img_url}" alt="{$li.img_url}" />
+										                </a>
+								                    </div>
+									            </figure>
+									        {/foreach}
+                                               {else}
+                                               <figure class="swiper-slide tb-lr-center">
+                                                   <div class="img-box">
+                                                        <a href="{$goods.goods_img}" data-size="640x640">
+                                                          <img src="{$goods.goods_img}" alt="{$goods.goods_img}" />
+                                                        </a>
+                                                    </div>
+                                                </figure>
+                                        {/if}
+									   </div>
+                                          <!-- <div class="goods-bargain-img">距离活动结束还有<span><em>12</em>天<em>06</em>时<em>56</em>分<em>32</em>秒</span></div> -->
+                                            <div class="goods-bargain-img">距离活动结束还有<span  id="leftTime"></span></div>
+									</div>
+                                    <script type="text/javascript">
+                                        var gmt_end_time = {$goods.end_time};
+                                        var month = '<em class="color-whie day">';
+                                        var day = '</em> 天<em class="color-whie hour">';
+                                        var hour = '</em> 时 <em class="color-whie mini">';
+                                        var minute = '</em> 分 <em class="color-whie sec">';
+                                        var second = '</em>秒' ;
+                                        var end = '';
+                                        onload = function(){
+                                            try {onload_leftTime();}
+                                            catch (e) {}
+                                        }
+                                    </script>
+                                                 <section class="goods-title b-color-f padding-all">
+                                    <h3><em class="em-promotion">砍</em>{$goods.goods_name}</h3>
+                                </section>
+                                <section class="goods-price padding-all b-color-f m-bargain">
+                                    {if $final_price}
+                                        <p class="p-price f-04 col-9">砍后价<label class="color-red f-08">￥{$final_price}</label></p>
+                                    {else}
+                                        <p class="p-price f-04 col-9">原价<label class="color-red f-08 goods_price">￥{$goods.goods_price}</label></p>
+                                    {/if}
+
+                                    <div class="raise-progressBar dis-box p-r" style="margin: 1.2rem 1rem .4rem 1rem;">
+                                        <div class="plan-left plan-common"></div>
+                                        <p class="wrap box-flex" style="border-radius: 0">
+                                            <span class="bar" style="width:{$bargain_bar}%;"><i class="color" style="background:#ec5151"></i></span>
+                                        </p>
+                                        <div class="plan-right plan-common"></div>
+                                    </div>
+                                    <p class=" dis-box f-04 col-9">
+                                        <span class="box-flex text-left">底价<label class="target_price">￥{$goods.target_price}</label></span>
+                                        <span class="box-flex text-right">原价<label class="goods_price">￥{$goods.goods_price}</label></span>
+                                        <!--      -->
+                                    </p>
+                                    {if $goods.total_num > 0}
+                                    <div class="bargain-tip">
+                                        <span class="join">已有<span class="number">{$goods.total_num}</span>人发起砍价</span>
+                                        <span class="triangle"></span>
+                                        <span class="order">
+                                            <marquee direction="left" behavior="scroll" scrollamount="3" scrolldelay="0" loop="-1">
+                                                {foreach $bargain_list as $key=>$list}
+                                                <span class="name">{$list.user_name}</span>给您砍了<span class="price">{$list.subtract_price}</span>
+                                                {/foreach}
+                                            </marquee>
+                                        </span>
+                                    </div>
+                                    {/if}
+                                </section>
+                                {if $bargain_join}
+                                    <div class="dis-box bargain-user padding-all">
+                                        <div class="left">
+                                            <div class="header">
+                                                 <div class="p-r img-commom">
+                                                    <img src="{$bargain_info.headerimg}" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="box-flex right">
+                                            <h4 class="f-05 col-3">{$bargain_info.user_name}<label>当前发起砍价排名：{$rank}</label></h4>
+                                            {if $add_bargain}
+                                                <p class="f-01 col-3 m-top02">您已经帮自己砍下了第一刀，共砍掉了<em class="color-red">{$bargain_info.subtract_price}</em>元</p>
+                                            {else}
+                                                <p class="f-01 col-3 m-top02">您已经帮好友砍下了一刀，共砍掉了<em class="color-red">{$bargain_info.subtract_price}</em>元</p>
+                                            {/if}
+                                        </div>
+                                    </div>
+                                {/if}
+                                <section class="b-color-f">
+                                    <div class="dis-box m-top1px goods-service">
+                                        <div class="show-goods-service j-filter-show-div ts-3 b-color-1">
+                                            <section class="goods-show-title of-hidden padding-all b-color-f">
+                                                <h3 class="fl g-c-title-h3">规则说明</h3>
+                                                <i class="iconfont icon-guanbi2 show-div-guanbi fr"></i>
+                                            </section>
+                                        </div>
+                                        <div class="box  b-color-f padding-all m-top1px ">
+                                            <h3 class="recom-title">活动规则</h3>
+                                        </div>
+                                    </div>
+                                    <div class="dis-box group-detail-cont bargain-detail-cont f-03 text-c col-6 position-rel  ">
+                                        <div class="box-flex position-rel">
+                                            <label class="num-left"><em>1</em><i class="iconfont icon-dianji"></i></label>
+                                            <p class="">点击砍价</p>
+                                            <div class="n-list-xian-first position-abo"></div>
+                                        </div>
+                                        <div class="box-flex position-rel">
+                                            <label class="num-left">    <em>2</em> <i class="iconfont icon-shehuituanti"></i></label>
+                                            <p class="">邀友帮砍</p>
+                                            <div class="n-list-xian position-abo"></div>
+                                        </div>
+                                        <div class="box-flex position-rel">
+                                            <label class="num-left">    <em>3</em> <i class="iconfont icon-daojianfu"></i></label>
+                                            <p class="">砍到底价</p>
+                                            <div class="n-list-xian position-abo"></div>
+                                        </div>
+                                        <div class="box-flex position-rel">
+                                            <label class="num-left">    <em>4</em> <i class="iconfont icon-wancheng1"></i></label>
+                                            <p class="">下单购买</p>
+                                            <div class="n-list-xian-last position-abo"></div>
+                                        </div>
+
+                                    </div>
+                                    <div class="goods-mn-jiantou  position-rel j-show-div j-rule-cont"><i class="iconfont icon-moreunfold ts-5"></i></div>
+
+                                </section>
+                                {if $graph}
+                                <section class="b-color-f chart-cont-box m-top08">
+                                    <div class="box padding-all"><h3 class="recom-title">砍价进度曲线图</h3></div>
+                                        <canvas class="dis-block" id="canvas" width='320' style="margin:0 auto;"></canvas>
+                                    <div class="f-02 col-9 text-center padding-all">（注：x轴:砍价次数，y轴为砍价的价位)</div>
+                                </section>
+                                {/if}
+                                <div class="goods-info of-hidden ect-tab b-color-f j-goods-info j-ect-tab ts-3 m-top08" style="padding-top:0">
+                                    <div class="hd j-tab-title tab-title b-color-f of-hidden">
+                                        <ul class="dis-box">
+                                            <li class="box-flex active">亲友帮</li>
+                                            <li class="box-flex">排行榜</li>
+                                        </ul>
+                                    </div>
+                                    <div id="j-tab-con" class="b-color-f m-top1px tab-con">
+                                        <div class="swiper-wrapper">
+                                            <ul class="swiper-slide bargain-user-list">
+                                                <!--list-->
+                                                {if $bargain_list}
+                                                {foreach $bargain_list as $key=>$list}
+                                                <li class="dis-box bargain-user bargain-user-list-cont">
+                                                    <div class="left">
+                                                        <div class="header">
+                                                            <div class="p-r img-commom">
+                                                                <img src="{$list.headerimg}" />
+                                                             </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="box-flex right">
+                                                        <h4 class="f-05 col-3">{$list.user_name} <em class="fr f-03 col-7">砍掉<em class="color-red ">{$list.subtract_price}</em>元</em></h4>
+                                                        <p class="f-01 col-7 m-top02">{$list.add_time}</p>
+                                                    </div>
+                                                </li>
+                                                {/foreach}
+                                                {else}
+                                                    <div class="no-div-message">
+                                                        <i class="iconfont icon-biaoqingleiben"></i>
+                                                        <p>亲，暂时无人砍价哦～！</p>
+                                                    </div>
+                                                {/if}
+
+                                                <!--list-->
+
+                                            </ul>
+                                            <section class="swiper-slide ">
+                                                <ul class="swiper-slide bargain-user-list">
+                                                    <!--list-->
+                                                    {if $bargain_ranking}
+                                                    {foreach $bargain_ranking as $key=>$list}
+                                                    <li class="dis-box bargain-user bargain-user-list-cont">
+                                                        <div class="first-img">
+                                                            {if $list.key}
+                                                            <label>{$list.key}</label>
+                                                            {else}
+                                                            <img src="{$list.img}" />
+                                                            {/if}
+                                                        </div>
+                                                        <div class="left">
+                                                            <div class="header">
+                                                                <div class="p-r img-commom">
+                                                                     <img src="{$list.headerimg}" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="box-flex right">
+                                                            <h4 class="f-05 col-3 m-top04">{$list.user_name} <em class="fr f-03 col-7">砍掉<em class="color-red ">{$list.subtract_price}</em>元</em></h4>
+                                                        </div>
+                                                    </li>
+                                                    {/foreach}
+                                                    {else}
+                                                    <div class="no-div-message">
+                                                        <i class="iconfont icon-biaoqingleiben"></i>
+                                                        <p>亲，暂时无人砍价哦～！</p>
+                                                    </div>
+                                                    {/if}
+                                                    <!--list-->
+
+                                                </ul>
+                                            </section>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <section class="m-top08  goods-shop b-color-f no-shopping-title">
+                                    <div class="goods-shop-pic of-hidden">
+                                        <h4 class="title-hrbg m-top06"><span>砍价爆款</span><hr> </h4>
+                                        <div class="g-s-p-con product-one-list of-hidden scrollbar-none j-g-s-p-con padding-all">
+                                            <div class="swiper-wrapper ">
+                                                {foreach $bargain_hot as $key=>$list}
+                                                <li class="swiper-slide">
+                                                    <div class="product-div">
+                                                        <a href="{$list.url}"><img class="product-list-img" src="{$list.goods_img}"></a>
+                                                        <div class="product-text m-top06 index-product-text">
+                                                            <a href="/dsc/mobile/index.php?m=goods&amp;id=864&amp;u=60">
+                                                                <h4>{$list.goods_name}</h4></a>
+                                                            <p><span class="p-price t-first ">{$list.shop_price}</span>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                {/foreach}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                    			 <div class="goods_load_more m-top08 b-color-f j-goods-detail-img">
+                    					<i class="iconfont icon-fanhui tf-90"></i><span>上拉查看图文详情</span>
+                    			</div>
+						</form>
+                   </div>
+                </div>
+            </div>
+            <div class="swiper-scrollbar"></div>
+        </div>
+    </div>
+   <div class="swiper-slide" id="j-tab-c">
+        <div class="goods-swiper-container-cont">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide goods-swiper-slide">
+                    <div class="goods-info of-hidden ect-tab  j-goods-info j-ect-tab ts-3" style="padding-top:0">
+                        <div class="hd j-tab-title-detail tab-title b-color-f of-hidden" style="position:static">
+                            <ul class="dis-box">
+                                <li class="box-flex active">商品详情</li>
+                                <li class="box-flex">规格参数</li>
+                            </ul>
+                        </div>
+                        <div id="j-tab-con-detail" class="goods-detail-cont">
+                            <div class="swiper-wrapper">
+                                <section class="swiper-slide">
+                                    {if $goods_desc}
+                                        {$goods_desc}
+                                    {else}
+                                        <div class="no-div-message">
+                                            <i class="iconfont icon-biaoqingleiben"></i>
+                                            <p>亲，此处没有内容～！</p>
+                                        </div>
+                                    {/if}
+                                </section>
+                                <section class="swiper-slide goods-info-attr ">
+                                    {if $properties}
+                                        {foreach $properties as $property_group}
+                                            {foreach $property_group as $property}wq2qwe
+                                            <dd class="column"><span title="{$property.value}">{$property.name}：{$property.value}</span></dd>
+                                            {/foreach}
+                                    {/foreach}
+                                    {else}
+                                    <div class="no-div-message">
+                                        <i class="iconfont icon-biaoqingleiben"></i>
+                                        <p>亲，此处没有内容～！</p>
+                                    </div>
+                                    {/if}
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+               </div>
+            </div>
+            <div class="swiper-scrollbar"></div>
+        </div>
+    </div>
+</div>
+</div>
+    <!--悬浮btn star-->
+
+    <section class="filter-btn dis-box mr-auto" style="z-index:6">
+        <input type="hidden" id = "bargain_id" name="bargain_id" value="{$goods.id}" />
+        <input type="hidden" id = "goods_id" name="goods_id" value="{$goods.goods_id}" />
+        <input type="hidden" id = "bs_id" name="bs_id" value="{$bs_id}" />
+
+        {if $bs_id}<!--已创建活动-->
+            {if $add_bargain}<!--是否是自己创建活动-->
+                {if $bargain_join}<!--已砍价-->
+                    <a class="btn-cart box-flex add-to-cart btnCart j-share-box j-show-div" id="send">找亲友帮我砍</a>
+                    <a class="btn-submit box-flex add-to-cart btnCart" onclick="bargainAddToCart({$goods.goods_id})">立即购买</a>
+                {else}
+                     <a class="btn-submit box-flex add-to-cart btnCart j-k-box" onclick="goBargain({$bs_id})">自己砍一刀</a>
+                {/if}
+            {else}
+                {if $bargain_join}<!--已砍价-->
+                    <a class="btn-cart box-flex add-to-cart btnCart" >已帮TA砍价</a>
+                   <!--  <a class="btn-submit box-flex add-to-cart btnCart" href="{url('bargain/goods/addbargain', array('id'=>$goods.id))}">我要参与</a> -->
+                   <a class="btn-submit box-flex add-to-cart btnCart j-goods-attr j-show-div">我要参与</a>
+                {else}
+                    <a class="btn-cart box-flex add-to-cart btnCart j-k-box" onclick="goBargain({$bs_id})">帮TA砍价</a>
+                    <a class="btn-submit box-flex add-to-cart btnCart j-goods-attr j-show-div">我要参与</a>
+                {/if}
+
+            {/if}
+        {else}
+            <!-- <a class="btn-submit box-flex add-to-cart btnCart" href="{url('bargain/goods/addbargain', array('id'=>$goods.id))}">我要参与</a> -->
+            <a class="btn-submit box-flex add-to-cart btnCart j-goods-attr j-show-div">我要参与</a>
+        {/if}
+
+    </section>
+    <!--悬浮btn end-->
+    <!--选择属性弹出层 start-->
+    <div class="show-goods-attr j-filter-show-div ts-3 b-color-1 team-box">
+        <section class="b-color-t  product-list-small team-s-g-attr-title">
+            <div class="product-div">
+                <img class="product-list-img" src="{$goods.goods_img}">
+                <div class="product-text">
+                    <div class="dis-box position-rel">
+                        <h4 class="box-flex">{$goods.goods_name}</h4>
+                        <i class="iconfont icon-guanbi2 show-div-guanbi"></i>
+                    </div>
+                    <p>原价：<span class="p-price color-red" id="ECS_BARGAIN_AMOUNT">{$goods.goods_price}</span></p>
+                    <p class="dis-box p-t-remark">
+                        <span class="box-flex">库存:<font class="bargain_goods_attr_num">{$goods.goods_number}</font></span>
+                        <span class="box-flex">底价:<font class="" id="ECS_BARGAIN_TERGET">{$goods.goods_number}</font></span>
+
+                    </p>
+                </div>
+            </div>
+        </section>
+        <form class="form-horizontal" action="{url('bargain/goods/addbargain')}" method="post" name="BARGAIN_FORMBUY" id="BARGAIN_FORMBUY" >
+            <section class="s-g-attr-con swiper-scroll b-color-f padding-all m-top1px swiper-container-vertical swiper-container-free-mode">
+                <div class="swiper-wrapper">
+                    <!--属性-->
+                    <div class="swiper-slide swiper-slide-active">
+
+                        {foreach $specification as $spec_key=>$spec}
+                        <h4 class="t-remark">{$spec.name}</h4>
+                        <ul class="select-one j-get-one m-top10 goods-attribute-cont">
+                            {foreach $spec.values as $key=>$val}
+                            <li class="ect-select dis-flex fl">
+                                <input type="radio" name="spec_{$spec_key}" value="{$val.id}" id="spec_value_{$val.id}" {if $key==0 }checked{/if} onclick="bargainPrice()" />
+                                <label class="ts-1 {if $key == 0}active{/if}">{$val.label}</label>
+
+                            </li>
+                            {/foreach}
+                        </ul>
+                        {/foreach}
+
+                        <!-- <input type="hidden" name="spec_list" value="{$spec_key}" /> -->
+                        <div class="dis-box">
+                            <div class="box-flex m-top08 ec-color">
+                                <h4 class="t-remark">数量</h4></div>
+                            <div class="box-flex">
+                                <div class="div-num dis-box m-top08 fr">
+                                    <a class="num-less" onclick="bargainPrice('1')"></a>
+                                    <input class="box-flex" type="number" onblur="bargainPrice('2')" name="number" id="team_number" value="1">
+                                    <a class="num-plus" onclick="bargainPrice('3')"></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <input type="hidden" name="goods_id" value="{$goods_id}" />
+                <input type="hidden" name="id" value="{$goods.id}" /><!--活动id-->
+            </section>
+
+            <section class="dis-box goods-btn-box">
+                <a class="btn-disab box-flex team_quehuo" href="javascript:;" {if $goods.review_status> 2}style="display:none"{/if}>{if $goods.review_status == 1}暂时下架{else}暂时缺货{/if}</a>
+                <input type="submit" class="btn-p btn-submit box-flex team_add-to-cart" value="立即参与" {if $goods.review_status <=2 }style="display:none" {/if}>
+            </section>
+        </form>
+    </div>
+    <!--选择属性弹出层 end-->
+        <!--砍价成功后会弹出-->
+    <div class="t-bargain-box">
+        <header class="text-center color-whie f-06">帮砍一刀</header>
+        <div class="t-bargain-cont">
+            <div class="img b-color-f">
+                <img src="{elixir('img/Screenshot_2017-10-19-11-00-55-29.jpg')}" />
+                <p class="text-center f-04 col-3">您砍掉了<label class="color-red subtract_price">0.00</label>元</p>
+            </div>
+            <div class="btn-cont b-color-f m-top04 j-btn-cont show-div-guanbi">
+                <a class="btn j-btn-bargain">我知道了</a>
+            </div>
+        </div>
+    </div>
+    <!--分享-->
+    <div class="t-share-box">
+        <div class="jiantou"><img src="{elixir('img/k-share.png')}" /></div>
+        <header class="f-04 col-3">
+            <p>点击右上角<label><i class="iconfont icon-13caidan"></i></label></p>
+            <p>通过【发送给朋友】、【分享到朋友圈】推广</p>
+        </header>
+        <div class="t-share-cont b-color-f  m-top08">
+            <div class="f-05 col-3 title">其他方式</div>
+            <div class="cont">
+                <h4 class="f-05 col-3"><strong>二维码图片分享</strong></h4>
+                <div class="img" id="qrcode"></div>
+            </div>
+        </div>
+        <header class="f-04 col-3 m-top08 t-footer-share show-div-guanbi">
+            <a>取消</a>
+        </header>
+    </div>
+        <!--规则详情-->
+            <div class="show-goods-coupon j-filter-show-div ts-3 b-color-1 rule-box" >
+                    <section class="goods-show-title of-hidden padding-all b-color-f">
+                        <h3 class="fl g-c-title-h3">规则详情</h3>
+                        <i class="iconfont icon-guanbi2 show-div-guanbi fr"></i>
+                    </section>
+                    <section class="goods-show-con padding-all swiper-scroll swiper-container-vertical swiper-container-free-mode b-color-f m-top1px" id="goods-show-con">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide swiper-slide-active ">
+                                <p class="g-b-s-con">1.参与活动：点击参与活动，自己砍一刀;</p>
+                                <p class="g-b-s-con m-top06">2.邀请好友：在参与活动之后。可以点击“找亲友帮我砍” 分享给好友帮你砍价;</p>
+                                <p class="g-b-s-con m-top06">3.砍到最低价：邀请好友砍价，砍到最低价时点击购买。</p>
+                            </div>
+                        </div>
+                        <div class="swiper-scrollbar"></div>
+                    </section>
+                </div>
+    <div class="mask-filter-div"></div>
+    <input id="text" type="hidden" value="{$shopurl}" style="width:80%" /><br />
+    {include file="image"}
+     <!--快捷导航-->
+    {include file="no_search_nav"}
+         <li>
+            <a href="{url('bargain/index/index')}">
+                <i class="iconfont icon-40kanjia"></i>
+                <p>砍价首页</p>
+            </a>
+        </li>
+    {include file="float_nav_footer"}
+<script src="__TPL__/js/jquery.cookie.js"></script>
+<script>
+    $(function($) {
+    //详情上拉等
+    goodsDetail();
+        //相册
+        initPhotoSwipeFromDOM('.my-gallery-box');
+           header_img()
+        window.onresize = function(){
+            header_img()
+        }
+        var swiper = new Swiper('.j-g-s-p-con', {
+            scrollbarHide: true,
+            slidesPerView: 'auto',
+            centeredSlides: false,
+            grabCursor: true
+        });
+        $(".j-goods-attr").click(function(){
+            $(".show-goods-attr").addClass("show")
+        })
+        $(".j-btn-cont,.mask-filter-div").click(function(){
+           $(".t-bargain-box").removeClass("active")
+        })
+        $(".j-share-box").click(function(){
+            $(".t-share-box").addClass("active")
+        })
+        $(".t-footer-share,.mask-filter-div").click(function(){
+            $(".t-share-box").removeClass("active")
+        })
+        $(".j-rule-cont").click(function(event) {
+            $(".rule-box").addClass('show')
+        });
+        /*切换*/
+        var tabsSwiper = new Swiper('#j-tab-con', {
+            speed: 100,
+            noSwiping: true,
+            autoHeight: true,
+            onSlideChangeStart: function() {
+                $(".j-tab-title .active").removeClass('active')
+                $(".j-tab-title li").eq(tabsSwiper.activeIndex).addClass('active')
+            }
+        })
+        $(".j-tab-title li").on('touchstart mousedown', function(e) {
+            e.preventDefault()
+            $(".j-tab-title .active").removeClass('active')
+            $(this).addClass('active')
+            tabsSwiper.slideTo($(this).index())
+        })
+        $(".j-tab-title li").click(function(e) {
+            e.preventDefault()
+        })
+        var tabsSwiper = new Swiper('#j-tab-con-detail', {
+            speed: 100,
+            noSwiping: true,
+            autoHeight: true,
+            onSlideChangeStart: function() {
+                $(".j-tab-title-detail .active").removeClass('active')
+                $(".j-tab-title-detail li").eq(tabsSwiper.activeIndex).addClass('active')
+            }
+        })
+        $(".j-tab-title-detail li").on('touchstart mousedown', function(e) {
+            e.preventDefault()
+            $(".j-tab-title-detail .active").removeClass('active')
+            $(this).addClass('active')
+            tabsSwiper.slideTo($(this).index())
+        })
+        $(".j-tab-title-detail li").click(function(e) {
+            e.preventDefault()
+        })
+
+         $(".j-btn-bargain").click(function(){
+            window.location.reload();
+        })
+
+    });
+
+     bargainPrice();
+
+    /**
+    * 点选可选属性或改变数量时修改砍价商品价格的函数
+    */
+    function bargainPrice(type)
+    {
+        var max_number = 1;//砍价每单限购数量1
+
+        var min_number = 1;
+        var qty = $("#team_number").val();
+        if(type == 1){
+            if(qty >= min_number){
+                qty--;
+            }
+        }
+        if(type == 3){
+            qty++;
+        }
+        if(qty <=0 ){ qty=1; }
+        if(!/^[0-9]*$/.test(qty)){ qty = 1 }
+        var attr = getSelectedAttributes(document.forms['BARGAIN_FORMBUY']);
+        //限购
+        if(qty > max_number ){
+            d_messages('砍价商品只限购买一件');
+            $("#team_number").val(max_number);
+            return false;
+        }
+
+        var warehouse = {if $region_id}{$region_id}{else}0{/if};
+        var area = {if $area_id}{$area_id}{else}0{/if};
+
+        var attr_id = '';
+        {if C('add_shop_price') == 0}
+        attr_id = bargainSelectedAttributesGroup(document.forms['BARGAIN_FORMBUY']);
+        {/if}
+
+        $.get('{url("bargainprice")}', {'bargain_id':{$bargain_id}, 'attr':attr, 'goods_attr':attr_id, 'number':qty, 'warehouse_id':warehouse, 'area_id':area}, function(data){
+            bargainPriceResponse(data);
+        }, 'json');
+    }
+     /**
+     * 获得选定的商品属性组
+     */
+    function bargainSelectedAttributesGroup(formBuy)
+    {
+        var spec_arr = new Array();
+        var j = 0;
+
+        $("form[name='BARGAIN_FORMBUY'] :input[name='spec_list']").each(function(index, element) {
+            spec_arr[j] = ($(this).val());
+            j++ ;
+        });
+
+        return spec_arr.join(',');
+    }
+
+    /**
+    * 接收返回的信息
+    */
+    function bargainPriceResponse(res){
+        var bs_id = $("input[name=bs_id]").val();//参与活动id
+        if (res.err_msg.length > 0){
+            d_messages(res.err_msg);
+        } else {
+            //属性图片
+            if(res.attr_img) {
+                $(".team-s-g-attr-title .product-list-img").attr('src',res.attr_img);
+            }
+
+             //总价
+            if ($("#ECS_BARGAIN_AMOUNT").length > 0){
+                {if C('shop.add_shop_price') == 1}
+                    total_res = res.result;
+                {else}
+                    if(res.show_goods == 1){
+                        total_res = res.spec_price;
+                    }else{
+                        total_res = res.result;
+                    }
+                {/if}
+                $("#ECS_BARGAIN_AMOUNT").html(total_res);//原价（弹出层）
+                $("#ECS_BARGAIN_TERGET").html(res.target_price);//底价（弹出层）
+                if(bs_id <= 0){
+                    $(".goods_price").html(total_res);//原价
+                    $(".target_price").html(res.target_price);//底价
+
+                }
+
+            }
+
+            if ($(".bargain_goods_attr_num").length > 0){
+                $(".bargain_goods_attr_num").html(res.attr_number);
+            }
+            if(res.attr_number <= 0){
+                $(".team_add-to-cart").hide();
+                $(".team_quehuo").show();
+            }
+            else{
+                {if $goods.review_status > 2}
+                    $(".team_add-to-cart").show();
+                    $(".team_quehuo").hide();
+                {/if}
+            }
+        }
+
+    }
+
+
+    /* *
+     * 去砍价
+     */
+    function goBargain(bsId) {
+        var goods_id = $("input[name=goods_id]").val(); //商品id
+        var id = $("input[name=bargain_id]").val();     //活动id
+
+        $.get('{url("gobargain")}', {id:id,bs_id:bsId,goods_id:goods_id}, function(data) {
+            goBargainResponse(data);
+        }, 'json');
+    }
+
+    /* *
+     * 处理去砍价的反馈信息
+     */
+    function goBargainResponse(result) {
+
+        if (result.error == 1) {
+            var returnVal = window.confirm("未登录不能去砍价 \n是否登录");
+            if (returnVal) {
+                window.location.href = ROOT_URL + "index.php?m=user&c=login";
+            }
+        }
+        if (result.error == 2) {
+            d_messages(result.message);
+        }
+        if (result.error == 3) {
+            d_messages(result.message);
+        }
+        if (result.error == 4) {
+            $(".t-bargain-box").addClass("active");
+            $(".mask-filter-div").addClass("show");
+            $(".subtract_price").html(result.subtract_price);
+
+        }
+
+    }
+
+    /* *
+     * 加入购物车
+    */
+    function bargainAddToCart(result) {
+
+        var goods_id = $("input[name=goods_id]").val(); //商品id
+        var bargain_id = $("input[name=bargain_id]").val();//活动id
+        var bs_id = $("input[name=bs_id]").val();//参与活动id
+
+        $.get('{url("bargainbuy")}', {
+            goods_id:goods_id,bargain_id:bargain_id,bs_id:bs_id
+        }, function(data) {
+            bargainAddToCartResponse(data);
+        }, 'json');
+
+    }
+
+    /* *
+     * 处理加入购物车反馈信息
+     */
+    function bargainAddToCartResponse(result) {
+
+        if (result.error == 1) {
+            var returnVal = window.confirm("未登录不能去购买 \n是否登录");
+            if (returnVal) {
+                window.location.href = ROOT_URL + "index.php?m=user&c=login";
+            }
+        }
+
+        if (result.error == 3) {
+            d_messages(result.message);
+        }
+
+        if (result.error == 2) {
+            window.location.href = ROOT_URL + "index.php?m=flow";
+
+        }
+    }
+
+    //生成二维码 sty
+    var qrcode = new QRCode(document.getElementById("qrcode"), {
+        width : 100,
+        height : 100
+    });
+
+    function makeCode () {
+        var elText = document.getElementById("text");
+
+        if (!elText.value) {
+            elText.focus();
+            return;
+        }
+
+        qrcode.makeCode(elText.value);
+    }
+
+    makeCode();
+    $("#text").
+        on("blur", function () {
+            makeCode();
+        }).
+        on("keydown", function (e) {
+            if (e.keyCode == 13) {
+                makeCode();
+            }
+        });
+
+    //生成二维码 end
+
+    var lineChartData = {
+            labels : ["1","2","3","4","5","6","7","8","9","10"],
+            datasets : [
+                {
+                    fillColor : "rgba(220,220,220,0.5)",
+                    strokeColor : "rgba(220,220,220,1)",
+                    pointColor : "rgba(220,220,220,1)",
+                    pointStrokeColor : "#fff",
+                    data : [25,20,15,10,5,1]
+                },
+                {
+                    fillColor : "rgba(236,81,81,0.5)",
+                    strokeColor : "rgba(236,81,81,1)",
+                    pointColor : "rgba(236,81,81,1)",
+                    pointStrokeColor : "#fff",
+                    data : [{$graph}]
+                }
+            ]
+
+        }
+
+    var myLine = new Chart(document.getElementById("canvas").getContext("2d")).Line(lineChartData);
+</script>
+</body>
+</html>

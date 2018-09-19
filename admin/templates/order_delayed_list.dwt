@@ -1,0 +1,179 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.order_word} - {$ur_here}</div>
+        <div class="content">
+            <div class="tabs_info">
+            	<ul>
+                    <li><a href="order_delay.php?act=complaint_conf">{$lang.order_delay_conf}</a></li>
+                    <li class="curr"><a href="order_delay.php?act=list">{$lang.order_delay_apply}</a></li>
+                </ul>
+            </div>
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.list.0}</li>
+                    <li>{$lang.operation_prompt_content.list.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-head">
+                    <div class="refresh{if !$action_link} ml0{/if}">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+                    <div class="search">
+                        <form action="javascript:searchUser()" name="searchForm">
+                            <div class="select m0">
+                                <div class="imitate_select select_w170">
+                                    <div class="cite">{$lang.all}</div>
+                                    <ul>
+                                        <li><a href="javascript:;" data-value="-1" class="ftx-01">{$lang.all}</a></li>
+                                        <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.not_audited}</a></li>
+                                        <li><a href="javascript:;" data-value="1" class="ftx-01">{$lang.audited_adopt}</a></li>
+                                        <li><a href="javascript:;" data-value="2" class="ftx-01">{$lang.audited_not_adopt}</a></li>
+                                    </ul>
+                                    <input name="review_status" type="hidden" value="0" id="">
+                                </div>
+                            </div>
+                            <div class="input">
+                                <input type="text" name="keyword" class="text nofocus" placeholder="{$lang.user_name}" autocomplete="off" /><button class="btn" name="secrch_btn"></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="common-content">
+                    <form method="post" action="" name="listForm" onsubmit="return confirmSubmit()">
+                	<div class="list-div" id="listDiv">
+                        {/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                            <thead>
+                                <tr>
+                                    <th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" autocomplete="off" /><label for="all_list" class="checkbox_stars"></label></div></th>
+                                    <th width="30%"><div class="tDiv">{$lang.user_name}</div></th>
+                                    <th width="15%"><div class="tDiv">{$lang.order_id}</div></th>
+                                    <th width="25%"><div class="tDiv">{$lang.delay_time}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.adopt_personnel}</div></th>
+                                    <th width="15%" class="handle">{$lang.adopt_status}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {foreach from=$order_delay_list item=order_delay_list}
+                            	<tr>
+                                    <td class="sign"><div class="tDiv"><input type="checkbox" name="checkboxes[]"  class="checkbox" value="{$order_delay_list.delayed_id}" id="checkbox_{$order_delay_list.delayed_id}"  autocomplete="off" /><label for="checkbox_{$order_delay_list.delayed_id}" class="checkbox_stars"></label></div></td>
+                                    <td><div class="tDiv">{$order_delay_list.user_name|escape}</div></td>
+                                    <td><div class="tDiv">{$order_delay_list.order_sn}</div></td>
+                                    <td>
+                                        <div class="tDiv">
+                                            {if $order_delay_list.review_status}
+                                                {$order_delay_list.apply_day}
+                                            {else}
+                                                <input type="text" name="commission_rate" class="text w40" value="{$order_delay_list.apply_day}" onkeyup="listTable.editInput(this, 'edit_apply_day', '{$order_delay_list.delayed_id}')">
+                                            {/if}
+                                        </div>
+                                    </td>
+                                    <td><div class="tDiv">{$order_delay_list.review_admin_user}</div></td>
+                                    <td><div class="tDiv handle">{$order_delay_list.review_status_info}</div></td>
+                                </tr>
+                                {foreachelse}
+                                <tr><td class="no-records" colspan="12">{$lang.no_records}</td></tr>
+                                {/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="12">
+                                        <div class="tDiv">
+                                            <div class="tfoot_btninfo">
+                                                <div id="type" class="imitate_select select_w170">
+                                                    <div class="cite">{$lang.please_select}</div>
+                                                    <ul>
+                                                        <li><a href="javascript:;" data-value="" class="ftx-01">{$lang.please_select}</a></li>
+                                                        <li><a href="javascript:;" data-value="batch_remove" class="ftx-01">{$lang.drop}</a></li>
+                                                        <li><a href="javascript:;" data-value="review_to" class="ftx-01">{$lang.check}</a></li>
+                                                    </ul>
+                                                    <input name="type" type="hidden" value="" id="type_val" autocomplete="off">
+                                                </div>
+                                                <div id="review_status" class="imitate_select select_w170" style="display:none">
+                                                    <div class="cite">{$lang.please_select}</div>
+                                                    <ul>
+                                                        <li><a href="javascript:;" data-value="" class="ftx-01">{$lang.please_select}</a></li>
+                                                        <li><a href="javascript:;" data-value="1" class="ftx-01">{$lang.audited_adopt}</a></li>
+                                                        <li><a href="javascript:;" data-value="2" class="ftx-01">{$lang.audited_not_adopt}</a></li>
+                                                    </ul>
+                                                    <input name="review_status" type="hidden" value="" id="review_status_val" autocomplete="off">
+                                                </div>
+                                                <input type="hidden" value="batch" name="act">
+                                                <input name="act" type="hidden" value="batch" />
+                                                <input name="remove" type="submit" ectype="btnSubmit" value="{$lang.button_submit_alt}" class="btn btn_disabled" disabled />
+                                            </div>
+                                            <div class="list-page">
+                                                {include file="library/page.lbi"}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        {if $full_page}
+                    </div>
+                    </form>
+                </div>
+            </div>
+		</div>
+	</div>
+	{include file ='library/pagefooter.lbi'}
+<script type="text/javascript">
+listTable.recordCount = '{$record_count}';
+listTable.pageCount = '{$page_count}';
+{foreach from=$filter item=item key=key}
+listTable.filter.{$key} = '{$item}';
+{/foreach}
+   
+$.divselect("#type","#type_val",function(obj){
+    var val = obj.attr("data-value");
+    if(val == 'review_to'){
+        $("#review_status").show();
+    }else{
+        $("#review_status").hide();
+    }
+});
+/**
+ * 搜索用户
+ */
+function searchUser()
+{
+    listTable.filter['keywords'] = Utils.trim(document.forms['searchForm'].elements['keyword'].value);
+    listTable.filter['review_status'] = Utils.trim(document.forms['searchForm'].elements['review_status'].value);
+    listTable.filter['page'] = 1;
+    listTable.loadList();
+}    
+
+function confirmSubmit(frm, ext)
+{
+    if (frm.elements['type'].value == 'trash')
+    {
+        return confirm(remove_confirm);
+    }
+    else if (frm.elements['type'].value == '')
+    {
+        return false;
+    }
+    else
+    {
+        if(frm.elements['review_status'].value == ''){
+            alert(select_operation_cat);
+            return false;
+        }else{
+            return true;
+        }
+    }
+}
+$(".ps-container").perfectScrollbar();
+</script>     
+</body>
+</html>
+{/if}

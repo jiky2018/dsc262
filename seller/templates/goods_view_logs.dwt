@@ -1,0 +1,107 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="search-info">
+                    <div class="search-form">
+					{if $parent_id > 0}
+                    	<a href="category_store.php?act=list&parent_id={$parent_id}&back_level={$level}" class="sc-btn sc-blue-btn"><i class="icon icon-reply"></i>&nbsp;返回上一级</a>
+					{/if}
+                    </div>
+                </div>
+                <div class="list-div" id="listDiv">
+                {/if}
+                <table id="list-table" class="ecsc-default-table">
+					<thead>
+						<tr>
+							<th width="4%"><div class="tDiv">{$lang.record_id}</div></th>
+							<th width="9%"><div class="tDiv">本店价格</div></th>
+							<th width="9%"><div class="tDiv">固定运费</div></th>
+							<th width="9%"><div class="tDiv">促销价格</div></th>
+							<th width="9%"><div class="tDiv">会员价格</div></th>
+							<th width="9%"><div class="tDiv">阶梯价格</div></th>
+							<th width="9%"><div class="tDiv">消费积分</div></th>
+							<th width="9%"><div class="tDiv">等级积分</div></th>
+							<th width="9%"><div class="tDiv">重量</div></th>
+							<th width="9%"><div class="tDiv">上下架</div></th>
+							<th width="12%"><div class="tDiv">操作信息</div></th>
+						</tr>
+					</thead>
+					<tbody>
+						{foreach from=$log_list item=list}
+						<tr>
+							<td><div class="tDiv">{$list.log_id}</div></td>
+							<td><div class="tDiv">{if $list.old_record}原：{else}现：{/if}{$list.shop_price}</div></td>
+							<td><div class="tDiv">{if $list.old_record}原：{else}现：{/if}{$list.shipping_fee}</font></div></td>
+							<td><div class="tDiv">{if $list.old_record}原：{else}现：{/if}{$list.promote_price}</div></td>
+							<td><div class="tDiv">{if $list.old_record}原：{else}现：{/if}<a href="javascript:;" ectype="view_detail" data-logid="{$list.log_id}" data-step="member">查看详情</a></div></td>
+							<td><div class="tDiv">{if $list.old_record}原：{else}现：{/if}<a href="javascript:;" ectype="view_detail" data-logid="{$list.log_id}" data-step="volume">查看详情</a></div></td>
+							<td><div class="tDiv">{if $list.old_record}原：{else}现：{/if}{$list.give_integral}</font></div></td>
+							<td><div class="tDiv">{if $list.old_record}原：{else}现：{/if}{$list.rank_integral}</div></td>
+							<td><div class="tDiv">{if $list.old_record}原：{else}现：{/if}{$list.goods_weight}</div></td>
+							
+							<td><div class="tDiv">{if $list.old_record}原：{else}现：{/if}{if $list.is_on_sale}上架中{else}下架中{/if}</div></td>
+							<td>
+								<div class="tDiv">
+									<p>{$list.admin_name}</p>
+									<p>{$list.handle_time}</p>
+								</div>
+							</td>
+						</tr>
+						{foreachelse}
+						<tr><td class="no-records" colspan="12">{$lang.no_records}</td></tr>
+						{/foreach}
+					</tbody>
+                </table>
+					{include file="page.dwt"}
+                    {if $full_page}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+	{insert_scripts files="jquery.purebox.js"}   
+	<script type="text/javascript">
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+	listTable.query = 'view_query';
+
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+	listTable.filter.goodsId = {$goods_id};
+	
+	$(document).on("click","a[ectype='view_detail']",function(){
+		
+		var log_id = $(this).data('logid');
+		var step = $(this).data('step');
+		
+		$.jqueryAjax('goods.php', 'act=view_detail' + '&log_id=' + log_id + '&step=' + step, function(data){
+			var content = data.content;
+			pb({
+				id:"categroy_dialog",
+				title:"查看详情",
+				width:560,
+				content:content,
+				ok_title:"确定",
+				cl_title:"取消",
+				drag:true,
+				foot:false
+			});
+		});
+	});
+    </script>
+</body>
+</html>
+{/if}

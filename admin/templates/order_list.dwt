@@ -1,0 +1,746 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{if $action_link2}<a href="{$action_link2.href}" class="s-back">{$lang.back}</a>{/if}{$lang.order_word} - {$lang.02_order_list}</div>
+		<div class="content">
+			{if $is_zc neq 1}
+            {if !$from_store}
+        	{include file="library/common_tabs_info.lbi"}
+			{/if}
+            {/if}
+           	{if $user_id gt 0}
+            <div class="tabs_info">
+            	<ul>
+                    <li {if $form_action eq 'update'}class="curr"{/if}><a href="users.php?act=edit&id={$user_id}">{$lang.base_info}</a></li>
+                    <li {if $form_action eq 'address_list'}class="curr"{/if}><a href="users.php?act=address_list&id={$user_id}">{$lang.consignee_address}</a></li>
+                    <li class="curr"><a href="order.php?act=list&user_id={$user_id}">{$lang.view_order}</a></li>
+                    <li {if $form_action eq 'bt_edit'}class="curr"{/if}><a href="user_baitiao_log.php?act=bt_add_tp&user_id={$user_id}">{$lang.set_baitiao}</a></li>
+                    <li {if $form_action eq 'account_log'}class="curr"{/if}><a href="account_log.php?act=list&user_id={$user_id}">{$lang.account_details}</a></li>
+                </ul>
+            </div>
+            {/if}
+            <div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.list.0}</li>
+                	<li>{$lang.operation_prompt_content.list.1}</li>
+                    <li>{$lang.operation_prompt_content.list.2}</li>
+                </ul>
+            </div>
+            <div class="flexilist mt30"  id="listDiv">
+				{/if}
+                <div class="common-head order-coomon-head">
+                	<div class="order_state_tab">
+                        <a href="order.php?act=list{$seller_list}&serch_type=-1{if $user_id}&user_id={$user_id}{/if}" {if $serch_type eq '-1'}class="current"{/if}>{$lang.all_order}<em>({$count_arr.-1|default:0})</em></a>
+                        <a href="order.php?act=list{$seller_list}&serch_type=0{if $user_id}&user_id={$user_id}{/if}" {if $serch_type eq '0'}class="current"{/if}>{$lang.order_status_01}<em>({$count_arr.0|default:0})</em></a>
+                        <a href="order.php?act=list{$seller_list}&serch_type=1{if $user_id}&user_id={$user_id}{/if}" {if $serch_type eq '1'}class="current"{/if}>{$lang.order_status_02}<em>({$count_arr.1|default:0})</em></a>
+                        <a href="order.php?act=list{$seller_list}&serch_type=8{if $user_id}&user_id={$user_id}{/if}" {if $serch_type eq '8'}class="current"{/if}>{$lang.order_status_03}<em>({$count_arr.8|default:0})</em></a>
+                        <a href="order.php?act=list{$seller_list}&serch_type=2{if $user_id}&user_id={$user_id}{/if}" {if $serch_type eq '2'}class="current"{/if}>待收货<em>({$count_arr.2|default:0})</span></a>
+                        <a href="order.php?act=list{$seller_list}&serch_type=3{if $user_id}&user_id={$user_id}{/if}" {if $serch_type eq '3'}class="current"{/if}>{$lang.order_status_04}<em>({$count_arr.3|default:0})</em></a>
+                        <a href="order.php?act=list{$seller_list}&serch_type=4{if $user_id}&user_id={$user_id}{/if}" {if $serch_type eq '4'}class="current"{/if}>付款中<em>({$count_arr.4|default:0})</em></a>
+                        <a href="order.php?act=list{$seller_list}&serch_type=5{if $user_id}&user_id={$user_id}{/if}" {if $serch_type eq '5'}class="current"{/if}>取消<em>({$count_arr.5|default:0})</em></a>
+                        <a href="order.php?act=list{$seller_list}&serch_type=6{if $user_id}&user_id={$user_id}{/if}" {if $serch_type eq '6'}class="current"{/if}>无效<em>({$count_arr.6|default:0})</em></a>
+                        <a href="order.php?act=list{$seller_list}&serch_type=7{if $user_id}&user_id={$user_id}{/if}" {if $serch_type eq '7'}class="current"{/if}>退货<em>({$count_arr.7|default:0})</em></a>
+                    </div>
+                    <div class="refresh">
+                        <div class="refresh_tit" title="{$lang.refresh_data}" onclick="javascript:history.go(0)" ><i class="icon icon-refresh"></i></div>
+                        <div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+                    
+                    <div class="search">
+                    	<form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+                        <div class="input">
+                            <input type="text" name="keywords" value="{$filter.keywords}" class="text nofocus w180" placeholder="{$lang.search_keywords_placeholder}" autocomplete="off">
+                            <input type="submit" class="btn" name="secrch_btn" ectype="secrch_btn" value="" />
+                        </div>
+                        </form>
+                    </div>
+                        
+                    <div class="common-head-right">
+                        <div class="fbutton"><a href="{$action_link.href}{$seller_list}"><div title="{$action_link.text}"><span><i class="icon icon-search"></i>{$action_link.text}</span></div></a></div>
+						<div class="fbutton"><div class="merge" title="{$lang.merge_order}"><span><i class="icon icon-copy"></i>{$lang.merge_order}</span></div></div>
+						<div class="fbutton"><a href="javascript:download_orderlist();"><div class="csv" title="{$lang.11_order_export}"><span><i class="icon icon-download-alt"></i>{$lang.11_order_export}</span></div></a></div>
+                    </div>
+                </div>
+                <div class="common-content">
+                <form method="post" action="order.php?act=operate" name="listForm" onsubmit="return check()">
+                    <div class="list-div list-tb-div" >
+                        <table cellpadding="0" cellspacing="0" border="0">
+                            <thead>
+                                <tr>
+                                    <th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars"></label></div></th>
+                                    <th width="25%"><div class="tDiv">{$lang.order_sn}</div></th>
+                                    <th width="6%"><div class="tDiv">{$lang.goods_price}</div></th>
+                                    <th width="3%"><div class="tDiv">{$lang.goods_number}</div></th>
+                                    <th width="7%"><div class="tDiv">售后</div></th>
+                                    <th width="6%"><div class="tDiv">{$lang.goods_steps_name}</div></th>
+                                    <th width="7%"><div class="tDiv">{$lang.user_name}</div></th>
+                                    <th width="16%"><div class="tDiv">{$lang.consignee}</div></th>
+                                    <th width="12%"><div class="tDiv">{$lang.amount_label}</div></th>
+                                    <th width="6%"><div class="tDiv">{$lang.all_status}</div></th>
+                                    <th width="7%"><div class="tDiv">{$lang.handler}</div></th>
+                                </tr>
+                            </thead>
+                        </table>
+					    {foreach from=$order_list item=order key=okey}
+                        <table cellpadding="0" cellspacing="0" border="0">
+                            <colgroup>
+                                <col width="28%">
+                                <col width="6%">
+                                <col width="3%">
+                                <col width="7%">
+                                <col width="6%">
+                                <col width="7%">
+                                <col width="16%">
+                                <col width="12%">
+                                <col width="6%">
+                                <col width="7%">
+                            </colgroup>
+                            <tbody>
+                                <tr class="tr-order-sn">
+                                    <td colspan="10">
+                                        <div class="tDiv ml10">
+                                            <span class="sign{if $order.chargeoff_status eq 1 || $order.chargeoff_status eq 2} sign_bdl{/if}" {if $order.chargeoff_status eq 1 || $order.chargeoff_status eq 2}rowspan="2"{/if}>
+                                                <input type="checkbox" name="checkboxes[]" value="{$order.order_sn}" class="checkbox" id="checkbox_{$order.order_id}" /><label for="checkbox_{$order.order_id}" class="checkbox_stars"></label>
+                                            </span>
+                                            <span class="words">{$lang.order_sn}：{$order.order_sn}</span>
+                                            <span class="words">{$lang.order_time}：{$order.short_order_time}</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="td-product">
+                                    {foreach from=$order.goods_list item=list name=foo}
+										<div class="tDiv relative tpinfo {if $smarty.foreach.foo.last}last{/if}">
+                                            <div class="img"><img width="80" src="{$list.goods_thumb}" alt="" onmouseover="toolTip('<img src={$list.goods_img}>')" onmouseout="toolTip()"></div>
+                                            <div class="product-info">
+                                                <div class="name mb5">
+                                                    {if $order.oi_extension_code eq "group_buy"}
+                                                    <a href="../group_buy.php?act=view&id={$order.extension_id}" target="_blank">
+                                                    {elseif $order.oi_extension_code eq "snatch"}
+                                                    <a href="../snatch.php?id={$order.extension_id}" target="_blank">
+                                                    {elseif $order.oi_extension_code eq "seckill"}
+                                                    <a href="../seckill.php?id={$order.extension_id}&act=view" target="_blank">
+                                                    {elseif $order.oi_extension_code eq "auction"}
+                                                    <a href="../auction.php?id={$order.extension_id}&act=view" target="_blank"> 
+                                                    {elseif $order.oi_extension_code eq "exchange_goods"}
+                                                    <a href="../exchange.php?id={$order.extension_id}&act=view" target="_blank">
+                                                    {elseif $order.oi_extension_code eq "presale"}
+                                                    <a href="../presale.php?id={$order.extension_id}&act=view" target="_blank">
+                                                    {elseif $order.o_extension_code eq "package_buy"}
+                                                    <a href="../package.php" target="_blank">
+                                                    {else}
+                                                        <a href="../goods.php?id={$list.goods_id}" target="_blank">
+                                                    {/if}
+                                                    {$list.goods_name}
+                                                    {if $list.brand_name}<span class="org">[ {$list.brand_name} ]</span>{/if}
+                                                    {if $list.is_gift}
+                                                    <span class="red">
+                                                        {if $list.goods_price > 0}
+                                                            {$lang.remark_favourable}
+                                                        {else}
+                                                            {$lang.remark_gift}
+                                                        {/if}
+                                                    </span>
+                                                    {/if}
+                                                    {if $list.parent_id > 0}<span class="red">{$lang.remark_fittings}</span>{/if}
+                                                    </a>
+                                                    
+                                                </div>
+                                                {if $list.goods_attr}<div class="attr"><span>{$list.goods_attr}</span></div>{/if}
+                                                <div>商品编号：{if $list.product_sn}{$list.product_sn}{else}{$list.goods_sn}{/if}{if $list.trade_url}<a href="{$list.trade_url}" target="_blank" class="ml5"><span class="org">[{$lang.trade_snapshot}]</span></a>{/if}</div>
+                                                <div class="order_icon_items">
+                                                    {if $order.is_stages eq 1}<div class="order_icon order_icon_bt" title="{$lang.baitiao_order}">{$lang.baitiao_order}</div>{/if}
+                                                    {if $order.is_zc_order eq 1}<div class="order_icon order_icon_zc" title="{$lang.zc_order}">{$lang.zc_order}</div>{/if}
+                                                    {if $order.is_store_order eq 1}<div class="order_icon order_icon_so" title="{$lang.so_order}">{$lang.so_order}</div>{/if}
+        											{if $order.is_drp_order eq 1}<div class="order_icon order_icon_fx" title="{$lang.fx_order}">{$lang.fx_order}</div>{/if}
+                                                    {if $order.o_extension_code eq "group_buy"}
+                                                        <div class="order_icon order_icon_tg" title="{$lang.group_buy}">{$lang.group_buy}</div>
+                                                    {elseif $order.o_extension_code eq "exchange_goods"}
+                                                        <div class="order_icon order_icon_jf" title="{$lang.exchange_goods}">{$lang.exchange_goods}</div>
+                                                    {elseif $order.o_extension_code eq "auction"}
+                                                        <div class="order_icon order_icon_pm" title="{$lang.auction}">{$lang.auction}</div>
+                                                    {elseif $order.o_extension_code eq "snatch"}
+                                                        <div class="order_icon order_icon_db" title="{$lang.snatch}">{$lang.snatch}</div>
+                                                    {elseif $order.o_extension_code eq "presale"}
+                                                        <div class="order_icon order_icon_ys" title="{$lang.presale}">{$lang.presale}</div>  
+                                                    {elseif $order.o_extension_code eq "seckill"}
+                                                        <div class="order_icon order_icon_ms" title="{$lang.seckill}">{$lang.seckill}</div> 
+                                                    {elseif $order.o_extension_code eq "team_buy"}
+                                                        <div class="order_icon order_icon_team" title="{$lang.team_order}">{$lang.team_order}</div>
+                                                    {elseif $order.o_extension_code eq "bargain_buy"}
+                                                        <div class="order_icon order_icon_bargain" title="{$lang.bargain_order}">{$lang.bargain_order}</div>
+                                                    {elseif $order.o_extension_code eq "wholesale"}    
+                                                    	<div class="order_icon order_icon_wholesale" title="{$lang.wholesale_order}">{$lang.bargain_order}</div>
+                                                    {/if}
+        											{if $order.iog_extension_code eq "package_buy"}
+                                                        <div class="order_icon order_icon_package" title="{$lang.package_order}">{$lang.package_order}</div>
+                                                    {elseif $order.iog_extension_code eq 'virtual_card'}
+                                                        <div class="order_icon order_icon_xn" title="{$lang.xn_order}">{$lang.xn_order}</div>
+                                                    {/if}
+                                                    {if $order.is_stages eq 0 && $order.is_zc_order eq 0 && $order.is_store_order eq 0 && $order.o_extension_code eq '' && $order.iog_extension_code eq ''}
+                                                        {if $order.iog_extension_codes}
+                                                        {foreach from=$order.iog_extension_codes item=extension_code}
+                                                            {if $extension_code eq ''}
+                                                            <div class="order_icon order_icon_pt" title="{$lang.pt_order}">{$lang.pt_order}</div>
+                                                            {elseif $extension_code eq 'virtual_card'}
+                                                            <div class="order_icon order_icon_xn" title="{$lang.xn_order}">{$lang.xn_order}</div>
+                                                            {/if}
+                                                        {/foreach}
+                                                        {else}
+                                                        <div class="order_icon order_icon_pt" title="{$lang.pt_order}">{$lang.pt_order}</div>
+                                                        {/if}
+                                                    {/if}
+                                                    {if $order.order_child neq 0}
+                                                        <div class="order_icon" title="{$lang.to_order_sn}">{$lang.to_order_sn}</div>
+                                                    {/if}
+                                                    {if !$order.order_child > 0}											
+                                                        {if $order.main_order_id > 0}
+                                                        <div class="order_icon order_icon_zdd">{$lang.sub_order_sn2}</div>
+                                                        {/if}
+                                                    {/if}
+                                                    {if $list.ret_id}
+                                                    	<div class="order_icon order_icon_return" title="{$lang.return_order}">{$lang.return_order}</div>
+                                                    {/if}
+                                                </div>
+                                            </div>
+										</div>
+                                    {/foreach}
+									</td>
+                                    <td class="td-price" style="vertical-align: top;">
+                                    {foreach from=$order.goods_list item=list name=foo}
+                                        <div class="tDiv tpinfo {if $smarty.foreach.foo.last}last{/if}">{$list.goods_price}</div>
+                                    {/foreach}
+                                    </td>
+                                    <td class="td-number">
+                                    {foreach from=$order.goods_list item=list name=foo}
+                                        <div class="tDiv tpinfo {if $smarty.foreach.foo.last}last{/if}">{$list.goods_number}</div>
+                                    {/foreach}
+                                    </td>
+                                    <td>      
+                                    {foreach from=$order.goods_list item=list name=foo}
+                                    <div class="tDiv tpinfo {if $smarty.foreach.foo.last}last{/if}">
+                                    	{if $list.ret_id}
+                                        	<div class="btn-wrap">
+                                                <a href="order.php?act=return_info&ret_id={$list.ret_id}&rec_id={$list.rec_id}" target="_blank" class="btn-tb btn-tb-blue">
+                                                {$list.back_order.return_status}
+                                                </a>
+                                            </div>
+                                        {else}
+                                        	<div>{if $list.is_reality eq 1}正品保证<br />{/if}{if $list.is_return eq 1}包退服务<br />{/if}{if $list.is_fast eq 1}闪速配送{/if}</div>
+                                        {/if}
+                                    </div>
+                                    {/foreach}
+									</td>
+                                    <td>
+										<div class="tDiv" style="height: 100px;">
+											{if $order.order_child eq 0}
+											{if $order.user_name}
+												<font>{$order.user_name}{if $order.self_run}（{$lang.self_run}）{/if}</font>
+											{else}
+												<font>{$lang.self}</font>
+											{/if}
+											{else}
+                                            <div class="exh">
+                                            	<span class="blue3">{$lang.to_order_sn2}</span>
+                                                <div class="exh_info">
+                                                	<i class="jt_r"></i>
+                                                    {if $order.order_child > 0}
+                                                        <font class="to_order_sn red">
+                                                        	{$lang.to_order_sn3}
+                                                            <div id="div_order_{$order.order_id}" class="div_order_id">
+                                                            {foreach from=$order.child_list item=list}
+                                                            {$lang.sub_order_sn}：{$list.order_sn}
+                                                            <br/> 
+                                                            {/foreach}
+                                                            </div>
+                                                        </font>
+                                                    {/if}
+                                                </div>
+                                            </div>
+											{/if}
+										</div>
+									</td>
+                                    <td>
+                                    <div class="tDiv" style="height: 100px;">
+                                    	<a href="users.php?act=edit&id={$order.user_id}">{$order.buyer|escape}</a>
+                                    </div>
+                                    </td>
+                                    <td><div class="tDiv" style="height: 100px;text-align: left;">{$order.consignee|escape}<br>{if $order.mobile} TEL: {$order.mobile|escape}{/if}<br>{$order.region} {$order.address|escape}</div></td>
+                                    <td>
+                                    	<div class="tDiv" style="height: 100px;">
+                                            <span class="order-price">{$order.formated_total_fee_order}</span>
+                                            <div class="price-shipping">({if $order.shipping_name}{$order.shipping_name}{else}{$lang.wu}{/if}：{$order.shipping_fee})</div>
+                                            <div class="price-shipping">
+                                                <p>{$lang.pay_name}：{if $order.pay_name}{$order.pay_name}{else}{$lang.wu}{/if}</p>
+                                                <p>{$lang.referer}：{if $order.referer eq 'mobile'}APP{elseif $order.referer eq 'touch'}微商城{elseif $order.referer eq 'wxapp'}小程序{elseif $order.referer eq 'ecjia-cashdesk'}收银台{else}PC{/if}</p>
+                                            </div>        
+                                        </div>    
+                                    </td>
+                                    <td>
+                                        <div class="tDiv" style="height: 100px;">
+                                            <div>{$lang.os[$order.order_status]}<br />{$lang.ps[$order.pay_status]}<br />{$lang.ss[$order.shipping_status]}</div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="tDiv" style="height: 100px;">
+                                            <div class="btn-wrap">
+                                                <p><a href="order.php?act=info&order_id={$order.order_id}" class="btn-tb btn-tb-blue">{$lang.detail}</a></p>
+                                                {if $order.can_remove && $order_os_remove}
+                                                <p class="mt10"><a href="javascript:;" onclick="listTable.remove({$order.order_id}, remove_confirm, 'remove_order')" class="btn-tb btn-tb-default">{$lang.drop}</a></p>
+                                                {/if}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        {if $order.chargeoff_status eq 1 || $order.chargeoff_status eq 2}
+                        <table cellpadding="0" cellspacing="0" border="0">
+                            <tbody>
+                                <tr class="tr_thead">
+                                	<td colspan="8" class="tr_thead_con">
+                                    	<div class="order_sku">
+                                        	<div class="item">
+                                                {if $order.chargeoff_status eq 1}
+                                                <em class="red">【{$lang.have_commission_bill}：{$order.bill_sn}】</em>
+                                                {else}
+                                                <em class="red">【{$lang.knot_commission_bill}：{$order.bill_sn}】</em>
+                                                {/if}
+                                                <a href="merchants_commission.php?act=bill_detail&bill_id={$order.bill_id}&seller_id={$order.seller_id}&proportion={$order.proportion}&commission_model={$order.commission_model}" target="_blank">【{$lang.view_commission_bill}】</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        {/if}
+						{foreachelse}
+                        <table cellpadding="0" cellspacing="0" border="0">
+                            <tbody>
+								<tr><td class="no-records" colspan="12">{$lang.no_records}</td></tr>
+                            </tbody>
+                        </table>
+						{/foreach}
+                        <table cellpadding="0" cellspacing="0" border="0">
+                            <tfoot>
+                                <tr>
+                                    <td colspan="10">
+                                        <div class="tDiv">
+                                            <div class="tfoot_btninfo">
+                                                <input type="submit" value="{$lang.op_confirm}" name="confirm" ectype="btnSubmit" class="btn btn_disabled" disabled="" onclick="this.form.target = '_self'">
+                                                <input type="submit" value="{$lang.op_invalid}" name="invalid" ectype="btnSubmit" class="btn btn_disabled" disabled="" onclick="this.form.target = '_self'">
+                                                <input type="submit" value="{$lang.op_cancel}" name="cancel" ectype="btnSubmit" class="btn btn_disabled" disabled="" onclick="this.form.target = '_self'">
+                                                {if $order_os_remove}
+                                                <input type="submit" value="{$lang.remove}" name="remove" ectype="btnSubmit" class="btn btn_disabled" disabled="" onclick="this.form.target = '_self'">
+                                                {/if}
+                                                <input type="submit" value="{$lang.print_order}" name="print" ectype="btnSubmit" class="btn btn_disabled" disabled="" onclick="this.form.target = '_blank'">
+                                                <input type="button" value="{$lang.print_shipping}" ectype="btnSubmit" class="btn btn_disabled" disabled="" print-data="print_shipping">
+                                                <input name="batch" type="hidden" value="1" />
+                                                <input name="order_id" type="hidden" value="" />
+                                            </div>
+                                            <div class="list-page">
+                                                {include file="library/page.lbi"}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>     
+                    </div>
+                    </form>
+                </div>
+            </div>
+			{if $full_page}	
+        </div>
+    </div>
+    <div class="gj_search">
+        <div class="search-gao-list" id="searchBarOpen">
+            <i class="icon icon-zoom-in"></i>{$lang.advanced_search}
+        </div>
+        <div class="search-gao-bar">
+            <div class="handle-btn" id="searchBarClose"><i class="icon icon-zoom-out"></i>{$lang.pack_up}</div>
+            <div class="title"><h3>{$lang.advanced_search}</h3></div>
+            <form action="javascript:searchOrder()" name="searchHighForm">
+                <div class="searchContent">
+                    <div class="layout-box">
+                        <dl>
+                            <dt>{$lang.order_sn}</dt>
+                            <dd><input type="text" value="" name="order_sn" id="order_sn" class="s-input-txt" autocomplete="off" /></dd>
+                        </dl>
+                        <dl>
+                            <dt>{$lang.consignee|escape}</dt>
+                            <dd><input type="text" value="" name="consignee" id="consignee" class="s-input-txt" autocomplete="off" /></dd>
+                        </dl>
+                        <dl>
+                            <dt>{$lang.all_status}</dt>
+                            <dd>
+                                <div id="status" class="imitate_select select_w145">
+                                  <div class="cite">{$lang.select_please}</div>
+                                  <ul>
+                                  	 <li><a href="javascript:;" data-value="-1">{$lang.select_please}</a></li>
+								  {foreach from=$status_list item=i key=k}
+                                     <li><a href="javascript:;" data-value="{$k}">{$i}</a></li>
+								  {/foreach}
+                                  </ul>
+								<input name="status" type="hidden" value="-1" id="status_val">
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt>{$lang.order_category}</dt>
+                            <dd>
+                                <div id="order_cat" class="imitate_select select_w145">
+                                  <div class="cite">{$lang.select_please}</div>
+                                  <ul>
+                                  	 <li><a href="javascript:;" data-value="">{$lang.select_please}</a></li>
+									 <li><a href="javascript:;" data-value="stages">{$lang.baitiao_order}</a></li>
+									 <li><a href="javascript:;" data-value="zc">{$lang.zc_order}</a></li>
+									 <li><a href="javascript:;" data-value="store">{$lang.so_order}</a></li>
+									 <li><a href="javascript:;" data-value="other">{$lang.other_order}</a></li>
+									 <li><a href="javascript:;" data-value="dbdd">{$lang.db_order}</a></li>
+									 <li><a href="javascript:;" data-value="msdd">{$lang.ms_order}</a></li>
+									 <li><a href="javascript:;" data-value="tgdd">{$lang.tg_order}</a></li>
+									 <li><a href="javascript:;" data-value="pmdd">{$lang.pm_order}</a></li>
+									 <li><a href="javascript:;" data-value="jfdd">{$lang.jf_order}</a></li>
+									 <li><a href="javascript:;" data-value="ysdd">{$lang.ys_order}</a></li>
+                                  </ul>
+								<input name="order_cat" type="hidden" value="" id="order_cat_val">
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt>{$lang.from_order}</dt>
+                            <dd>
+                                <div id="order_referer" class="imitate_select select_w145">
+                                  <div class="cite">{$lang.select_please}</div>
+                                  <ul>
+                                  	 <li><a href="javascript:;" data-value="">{$lang.select_please}</a></li>
+									 <li><a href="javascript:;" data-value="pc">PC</a></li>
+									 <li><a href="javascript:;" data-value="touch">WAP</a></li>
+									 <li><a href="javascript:;" data-value="mobile">APP</a></li>
+									 <li><a href="javascript:;" data-value="ecjia-cashdesk">{$lang.cashdesk}</a></li>
+                                  </ul>
+								<input name="order_referer" type="hidden" value="" id="order_referer_val">
+                                </div>
+                            </dd>
+                        </dl>                        
+                        {if $common_tabs.info}
+                        <!--卖场 start-->
+                        {if $rs_enabled and !$rs_id}
+                        <dl>
+                            <dt>{$lang.rs_name}</dt>
+                            <dd>
+                                <div id="" class="imitate_select select_w145">
+                                    <div class="cite">{$lang.please_select}</div>
+                                    <ul>
+                                        <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.please_select}</a></li>
+                                        {foreach from=$region_store_list item=data key=key}
+                                        <li><a href="javascript:;" data-value="{$data.rs_id}" class="ftx-01">{$data.rs_name}</a></li>
+                                        {/foreach}
+                                    </ul>
+                                    <input name="rs_id" type="hidden" value="{$smarty.get.rs_id|default:0}" autocomplete="off">
+                                </div>
+                            </dd>
+                        </dl>
+                        {/if}
+                        <!--卖场 end-->
+                        <dl>
+                            <dt>{$lang.steps_shop_name}</dt>
+                            <dd>
+                                <div id="store_search" class="imitate_select select_w145">
+                                  <div class="cite">{$lang.select_please}</div>
+                                  <ul>
+                                  	 <li><a href="javascript:;" data-value="-1">{$lang.select_please}</a></li>
+                                     <!--<li><a href="javascript:;" data-value="0">{$lang.platform_self}</a></li>-->
+									 <li><a href="javascript:;" data-value="1">{$lang.s_shop_name}</a></li>
+									 <li><a href="javascript:;" data-value="2">{$lang.s_qw_shop_name}</a></li>
+									 <li><a href="javascript:;" data-value="3">{$lang.s_brand_type}</a></li>
+                                  </ul>
+								<input name="store_search" type="hidden" value="-1" id="store_search_val">
+                                </div>
+                            </dd>
+                        </dl>
+                        {/if}
+                        <dl id="merchant_id_dl" style="display:none">
+                            <dd>
+                                <div id="merchant_id" class="imitate_select select_w145">
+                                  <div class="cite">{$lang.select_please}</div>
+                                  <ul>
+								  {foreach from=$store_list item=store}
+									 <li><a href="javascript:;" data-value="{$store.ru_id}">{$store.store_name}</a></li>
+								  {/foreach}
+                                  </ul>
+								<input name="merchant_id" type="hidden" value="" id="merchant_id_val">
+                                </div>
+                            </dd>
+                        </dl>
+						<dl id="store_keyword_dl" style="display:none;">
+							<input name="store_keyword" type="text"  class="text text_2 mr10"/>
+						</dl>
+                        <dl id="store_type_dl" style="display:none">
+                            <dd>
+                                <div id="store_type" class="imitate_select select_w145">
+                                  <div class="cite">{$lang.steps_shop_type}</div>
+                                  <ul>
+									 <li><a href="javascript:;" data-value="{$lang.flagship_store}">{$lang.flagship_store}</a></li>
+									 <li><a href="javascript:;" data-value="{$lang.exclusive_shop}">{$lang.exclusive_shop}</a></li>
+									 <li><a href="javascript:;" data-value="{$lang.franchised_store}">{$lang.franchised_store}</a></li>
+									 <li><a href="javascript:;" data-value="{$lang.flagship_store}">{$lang.flagship_store}</a></li>
+								  </ul>
+								<input name="store_type" type="hidden" value="0" id="store_type_val">
+                                </div>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+                <div class="bot_btn">
+                    <input type="submit" class="btn red_btn" name="tj_search" value="{$lang.button_inquire}" /><input type="reset" class="btn btn_reset" name="reset" value="{$lang.button_reset_alt}" />
+                </div>
+            </form>
+        </div>
+    </div>
+	<!-- 显示订单商品页面 -->
+    <div id="order_goods_layer"></div>
+ 	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+    	//分页传值
+        listTable.recordCount = {$record_count|default:0};
+        listTable.pageCount = {$page_count|default:1};
+    
+        {foreach from=$filter item=item key=key}
+        listTable.filter.{$key} = '{$item}';
+        {/foreach}
+        
+        if($("a").hasClass('order_number')){
+            var hoverTimer, outTimer,hoverTimer2;
+            
+            var left = $('.order_number').position().left + $('.order_number').outerWidth() + 30;
+            var goods_hash_table = new Object;
+            var show_goods_layer = 'order_goods_layer';
+            
+            $(document).on('mouseenter','.order_number',function(){
+                var orderId = $(this).attr('data-orderId');
+                Ajax.call('order.php?is_ajax=1&act=get_goods_info&order_id='+ orderId, '', response_goods_info , 'POST', 'JSON');
+            });
+            
+            $(document).on('mouseleave','.order_number',function(){
+                clearTimeout(hoverTimer);
+                outTimer = setTimeout(function(){
+                    $('.order_goods_layer').remove();
+                },100);	
+            });
+            
+            $(document).on('mouseenter','.order_goods_layer',function(){
+                clearTimeout(outTimer);
+            });
+            
+            $(document).on('mouseleave','.order_goods_layer',function(){
+                $(this).remove();
+            });
+            
+            function response_goods_info(result)
+            {
+                if (result.error > 0)
+                {
+                    alert(result.message);
+                    hide_order_goods(show_goods_layer);
+                    return;
+                }
+                if (typeof(goods_hash_table[result.content[0].order_id]) == 'undefined')
+                {
+                    goods_hash_table[result.content[0].order_id] = result;
+                }
+                //Utils.$(show_goods_layer).innerHTML = result.content[0].str;
+                
+                var content = result.content[0].str;
+                var order_goods_layer = $(document.createElement('div')).addClass('order_goods_layer');
+                var $this = $("#order_"+result.content[0].order_id);
+                clearTimeout(outTimer);
+                hoverTimer = setTimeout(function(){
+                    $(".order_goods_layer").remove();
+                    $this.parent().css("position","relative");
+                    order_goods_layer.html(content);
+                    order_goods_layer.css({"left":left,"top":-top});
+                    $this.after(order_goods_layer);
+                },200);
+            }
+        }
+        //合并订单弹出框
+        $(document).on('click',".fbutton .merge",function(){
+             $.jqueryAjax("order.php", "act=merge_order_list", function(data){
+                pb({
+                    id:"merge_dialog",
+                    title:"{$lang.merge_order}",
+                    width:635,
+                    content:data.content,
+                    ok_title:"{$lang.merge}",
+                    cl_title:"{$lang.button_reset_alt}",
+                    drag:false,
+                    foot:true,
+                    onOk:function(){merge()}
+                });
+                $.divselect("#store_name","#store_name_val",function(){
+                    $("#merge_merchant_id").hide();
+                    var value = $("#store_name_val").val();
+                    if(value == 1){
+                        $("#merge_merchant_id").show();
+                    }
+                });
+             });
+        });
+    
+        $(document).on('click','a[ectype=search]',function(){
+             var store_search = $("#store_name_val").val();
+             var merchant_id = $("input[ name='merge_merchant_id']").val();
+             $.jqueryAjax("order.php", "act=ajax_merge_order_list&store_search="+ store_search +"&merchant_id="+merchant_id, function(data){
+                $("#to_order_merge").html(data.content);
+                $("#from_order_merge").html(data.content);
+             });	
+             $.divselect("#main_order","#main_order_val");
+        });
+        
+        /**
+         * 合并
+         */
+        function merge()
+        {
+            var fromOrderSn = $('#main_order_val').val();
+            var toOrderSn = $('#from_order_val').val();
+            
+            Ajax.call('order.php?is_ajax=1&act=ajax_merge_order','from_order_sn=o' + fromOrderSn + '&to_order_sn=o' + toOrderSn, mergeResponse, 'POST', 'JSON');
+        }
+    
+        function mergeResponse(result)
+        {
+          if (result.message.length > 0)
+          {
+            alert(result.message);
+          }
+          if (result.error == 0)
+          {
+            //成功则清除用户填写信息
+            $("#to_order_merge").find("li").remove();
+            $("#from_order_merge").find("li").remove();
+            location.reload();
+          }
+        }
+    
+        $.gjSearch("-240px"); //高级搜索
+        
+        $.divselect("#store_search","#store_search_val",function(){
+            val = $("#store_search_val").val();
+            $("#merchant_id_dl").hide();
+            $("#store_keyword_dl").hide();
+            $("#store_type_dl").hide();
+            if(val == 1){
+                $("#merchant_id_dl").show();
+            }else if(val == 2){
+                $("#store_keyword_dl").show();
+            }else if(val == 3){
+                $("#store_keyword_dl").show();
+                $("#store_type_dl").show();
+            }
+        })
+        
+    
+        function check()
+        {
+          var snArray = new Array();
+          var eles = document.forms['listForm'].elements;
+          for (var i=0; i<eles.length; i++)
+          {
+            if (eles[i].tagName == 'INPUT' && eles[i].type == 'checkbox' && eles[i].checked && eles[i].value != 'on')
+            {
+              snArray.push(eles[i].value);
+            }
+          }
+          if (snArray.length == 0)
+          {
+            return false;
+          }
+          else
+          {
+            eles['order_id'].value = snArray.toString();
+            return true;
+          }
+        }
+        /**
+         * 搜索订单
+         */
+         
+        /*$(document).on("click",".order_state_tab a",function(){	
+            var val = $(this).data("value");
+            $(this).addClass("current").siblings().removeClass("current");
+            searchOrder(val);
+        })*/	 
+         
+        function searchOrder(val)
+        {		
+            {if $seller_order eq 1}
+            listTable.filter['store_search'] = Utils.trim(document.forms['searchHighForm'].elements['store_search'].value);
+            listTable.filter['merchant_id'] = Utils.trim(document.forms['searchHighForm'].elements['merchant_id'].value);
+            listTable.filter['store_keyword'] = Utils.trim(document.forms['searchHighForm'].elements['store_keyword'].value);
+            listTable.filter['store_type'] = Utils.trim(document.forms['searchHighForm'].elements['store_type'].value);
+            listTable.filter['order_sn'] = Utils.trim(document.forms['searchHighForm'].elements['order_sn'].value);
+            {/if}
+            
+            listTable.filter['consignee'] = Utils.trim(document.forms['searchHighForm'].elements['consignee'].value);
+            listTable.filter['order_cat'] = Utils.trim(document.forms['searchHighForm'].elements['order_cat'].value);
+            listTable.filter['order_referer'] = Utils.trim(document.forms['searchHighForm'].elements['order_referer'].value);
+            if(val>-2){
+                listTable.filter['composite_status'] = val;
+            }else{
+                listTable.filter['composite_status'] = document.forms['searchHighForm'].elements['status'].value;
+            }
+            //卖场 start
+            {if $rs_enabled and !$rs_id}
+            listTable.filter['rs_id'] = Utils.trim(document.forms['searchHighForm'].elements['rs_id'].value);
+            {/if}
+            //卖场 end
+    
+            listTable.filter['page'] = 1;
+            listTable.loadList();
+        }
+        
+        //导出订单列表
+        function download_orderlist()
+        {
+            page_downloadList("{$page_count}",'order','ajax_download','order','order_download','{$lang.order_export_dialog}');
+        }
+        
+        $(document).on('click',"*[print-data='print_shipping']",function(){
+            var frm = $("form[name='listForm']");
+            var checkboxes = [];
+            frm.find("input[name='checkboxes[]']:checkbox:checked").each(function(){
+                var val = $(this).val();
+                if(val){
+                    checkboxes.push(val);
+                }
+            });
+            if(checkboxes){
+                window.open("print_batch.php?act=print_batch&checkboxes="+checkboxes);
+            }
+        });
+		
+		$(document).on('click',"*[id='all_list']",function(){
+            var frm = $("form[name='listForm']");
+            var checkboxes = [];
+            frm.find("input[name='checkboxes[]']").each(function(){
+                var val = $(this).val();
+                if(val){
+                    checkboxes.push(val);
+                }
+            });
+            if(checkboxes){
+                $(":input[name='order_id']").val(checkboxes);
+            }
+        });
+    </script>
+</body>
+</html>
+{/if}

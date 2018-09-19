@@ -1,0 +1,202 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+<div class="warpper">
+    <div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$lang.sms_management} - {$ur_here}</div>
+        <div class="content">
+        <div class="explanation" id="explanation">
+            <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+            <ul>
+                <li>{$lang.operation_prompt_content_common}</li>
+                <li>{$lang.operation_prompt_content.info.0}</li>
+                <li>{$lang.operation_prompt_content.info.1}</li>
+            </ul>
+        </div>
+        <div class="flexilist">
+            <div class="mian-info">
+                <form action="huyi_configure.php" method="post" name="theForm" enctype="multipart/form-data"  id="agency_form">
+                    <div class="switch_info user_basic" style="display:block;">
+                        <div class="item">
+                            <div class="label">{$lang.require_field}&nbsp;{$lang.temp_content}：</div>
+                            <div class="label_value">
+                                <textarea id='temp_content' name='temp_content' placeholder="{$lang.variable_format}：${name}; {$lang.temp_placeholder.0}${code}，{$lang.temp_placeholder.1}${product}{$lang.temp_placeholder.2}" value=''  cols="60" rows="4" class="textarea" >{$note.temp_content|escape:html}</textarea>
+                                <div class="form_prompt"></div>
+                            </div>
+                        </div>
+                        <div class="item str_variable">
+                            <div class="label">{$lang.available_variables}：</div>
+                            <div class="label_value">
+                                <div class="notic m20 aliyu_var">
+                                    <p>1、{$lang.huyi}：<em id="company"></em></p>
+                                    <p>2、{$lang.variable_explain}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="label">{$lang.require_field}&nbsp;{$lang.send_time}：</div>
+                            <div class="label_value">
+                                <div id="send_time_box" class="imitate_select select_w320">
+                                  <div class="cite">{if $cat_name}{$cat_name}{else}{$lang.cat_top}{/if}</div>
+                                  <ul class="upward">
+                                      <li><a href="javascript:;" data-value=""  class="ftx-01">{$lang.select_please}</a></li>
+                                      {foreach from=$send_time key=key item=list}
+                                      <li><a href="javascript:;" data-value="{$list}"  class="ftx-01">{$key}</a></li>
+                                      {/foreach}
+                                  </ul>
+                                  <input name="send_time" type="hidden" value="{$note.send_time}" id="send_time">
+                                </div>
+                                <div class="form_prompt"></div>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="label">&nbsp;</div>
+                            <div class="label_value info_btn mt0">
+                                <input type="hidden" name="id" value="{$note.id|default:0}" />
+                                <input type="hidden" name="act" value="{$form_act}" />
+                                <input type="submit" name="submit" id="submitBtn" class="button" value="{$lang.button_submit}" />
+                                <input class="button button_reset" type="button" value="{$lang.detection_sms_template}" onclick="get_sms_template();" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/pagefooter.lbi'}
+<script type="text/javascript">
+$(function(){
+	{if $note.id}
+	loadTemplate({$note.id});
+	{/if}
+	
+	$(".str_variable").hide();
+	
+	$("input[name='signature']").change(function(){
+		var isval = $(this).val();
+		if(isval == 1){
+			$("#signature").show();
+		}else{
+			$("#signature").hide();
+		}
+	});
+	
+	//表单验证
+	$("#submitBtn").click(function(){
+		if($("#agency_form").valid()){
+			$("#agency_form").submit();
+		}
+	});
+
+	$('#agency_form').validate({
+		errorPlacement:function(error, element){
+			var error_div = element.parents('div.label_value').find('div.form_prompt');
+			element.parents('div.label_value').find(".notic").hide();
+			error_div.append(error);
+		},
+		rules:{
+			temp_content:{
+				required:true
+			},
+			send_time:{
+				required:true
+			}
+		},
+		messages:{
+			temp_content:{
+				required:'<i class="icon icon-exclamation-sign"></i>'+temp_content_notic
+			},
+			send_time:{
+				required:'<i class="icon icon-exclamation-sign"></i>'+send_time_notic
+			}
+		}
+	});
+});
+
+$.divselect("#send_time_box","#send_time",function(obj){
+	loadTemplate();
+});
+	
+function loadTemplate(id)
+{
+	var orgContent = '';
+	var curContent = $('#temp_content').val();
+	
+	if (orgContent != curContent && orgContent != '')
+	{
+		if (!confirm(save_confirm)){
+			return;
+		}
+	}
+	
+	var tpl = $('#send_time').val();
+	
+	if(id){
+		var id = '&id=' + id;
+	}else{
+		var id = "";
+	}
+
+	$.jqueryAjax('huyi_configure.php', 'act=loat_template&tpl=' + tpl + id, loadTemplateResponse, "GET", "JSON");
+}
+
+/**
+ * 将模板的内容载入到文本框中
+ */
+function loadTemplateResponse(result, textResult)
+{
+	var company;
+	
+	if (result.error == 0){
+		$("#temp_content").val(result.content);
+	}
+	
+	if(result.tpl == 'sms_order_placed' || result.tpl == 'sms_order_payed'){
+		company = "shop_name({$lang.steps_shop_name}), order_sn({$lang.order_id}), consignee({$lang.consignee}), order_region({$lang.consignee_region}), address({$lang.consignee_address}), order_mobile({$lang.contact_way})";
+	}else if(result.tpl == 'sms_order_shipped'){
+		company = "shop_name({$lang.steps_shop_name}), user_name({$lang.member_name}), consignee({$lang.consignee}), order_sn({$lang.order_id}),invoice_no({$lang.invoice_no})";
+	}else if(result.tpl == 'sms_signin'){
+		company = "code({$lang.verification_code}), product({$lang.member_name})";
+	}else if(result.tpl == 'sms_find_signin' || result.tpl == 'sms_code'){
+		company = "code({$lang.verification_code})";
+	}else if(result.tpl == 'sms_price_notic'){
+		company = "user_name({$lang.verification_code}), goods_sn({$lang.goods_number})";
+	}else if(result.tpl == 'sms_seller_signin'){
+		company = "seller_name( {$lang.goods_steps_name}), login_name({$lang.login_account}),password({$lang.login_password})";
+	}else if(result.tpl == 'store_order_code'){
+		company = "user_name( {$lang.goods_steps_name}), order_sn({$lang.order_id}),code({$lang.code}),store_address({$lang.store_address})";
+	}else if(result.tpl == 'user_account_code'){
+		company = "user_name({$lang.username}),add_time({$lang.add_time}),fmt_amount({$lang.fmt_amount}),process_type({$lang.process_type}),op_time({$lang.op_time}),examine({$lang.examine}),user_money({$lang.user_money})";
+	}
+	
+	if(result.tpl){
+		$(".str_variable").show();
+	}else{
+		$(".str_variable").hide();
+	}
+	
+	$("#company").html(company);
+}
+
+function get_sms_template(){
+	var temp_content = $(":input[name='temp_content']").val();
+	var send_time = $(":input[name='send_time']").val();
+	var sms_type = 0;
+	
+	$.jqueryAjax('huyi_configure.php', 'act=sms_template' + "&temp_content=" + temp_content + "&send_time=" + send_time + "&sms_type=" + sms_type, smsTemplateResponse, "GET", "JSON");
+}
+
+function smsTemplateResponse(result){
+	if(result.error == 1){
+		alert(set_sms_phone);
+	}else if(result.error == 2){
+		alert(sms_temp_set_notic);
+	}else{
+		alert(send_success);
+	}
+}
+</script>
+</body>
+</html>

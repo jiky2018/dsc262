@@ -1,0 +1,192 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!--申请店铺信息-->
+<div class="panel-body">
+    <div class="panel-tit"><span>{$title.fields_titles}</span></div>
+    <div class="list">
+        {foreach from=$title.cententFields item=fields}
+        	<div class="item">
+                <div class="label">
+                    <em>{if $fields.will_choose eq 1 && $choose_process eq 1}*{/if}</em>
+                    <span>{$fields.fieldsFormName}：</span>
+                </div>
+                <div class="value">
+                    {if $fields.chooseForm eq 'input'}
+                        <input class="text" type="text" value="{$fields.titles_centents}" size="{$fields.inputForm}" name="{$fields.textFields}">
+                        <div class="verify" id="{$fields.textFields}"></div>
+                    {elseif $fields.chooseForm eq 'other'}
+                        {if $fields.otherForm eq 'textArea'}
+                            <select name="{$fields.textFields}[]" class="catselectB" id="selCountries_{$fields.textFields}_{$sn}" onchange="region.changed(this, 1, 'selProvinces_{$fields.textFields}_{$sn}')">
+                              <option value="0">{$lang.please_select}{$lang.country}</option>
+                              <!-- {foreach from=$country_list item=country} -->
+                              <option value="{$country.region_id}" {if $fields.textAreaForm.country eq $country.region_id}selected{/if}>{$country.region_name}</option>
+                              <!-- {/foreach} -->
+                            </select>
+                            <select name="{$fields.textFields}[]" class="catselectB" id="selProvinces_{$fields.textFields}_{$sn}" onchange="region.changed(this, 2, 'selCities_{$fields.textFields}_{$sn}')">
+                              <option value="0">{$lang.please_select}{$lang.province}</option>
+                              {if $fields.province_list}
+                              <!-- {foreach from=$fields.province_list item=province} -->
+                              <option value="{$province.region_id}" {if $fields.textAreaForm.province eq $province.region_id}selected{/if}>{$province.region_name}</option>
+                              <!-- {/foreach} -->
+                              {else}
+                              <!-- {foreach from=$province_list item=province} -->
+                              <option value="{$province.region_id}">{$province.region_name}</option>
+                              <!-- {/foreach} -->
+                              {/if}
+                            </select>
+                            <select name="{$fields.textFields}[]" class="catselectB" id="selCities_{$fields.textFields}_{$sn}" onchange="region.changed(this, 3, 'selDistricts_{$fields.textFields}_{$sn}')">
+                              <option value="0">{$lang.please_select}{$lang.city}</option>
+                              {if $fields.city_list}
+                              <!-- {foreach from=$fields.city_list item=city} -->
+                              <option value="{$city.region_id}" {if $fields.textAreaForm.city eq $city.region_id}selected{/if}>{$city.region_name}</option>
+                              <!-- {/foreach} -->
+                              {else}
+                              <!-- {foreach from=$city_list item=city} -->
+                              <option value="{$city.region_id}">{$city.region_name}</option>
+                              <!-- {/foreach} -->
+                              {/if}
+                            </select>
+                            <select name="{$fields.textFields}[]" class="catselectB" id="selDistricts_{$fields.textFields}_{$sn}" {if $fields.textAreaForm.district eq 0}style="display:none"{/if}>
+                              <option value="0">{$lang.please_select}{$lang.area}</option>
+                              {if $fields.district_list}
+                              <!-- {foreach from=$fields.district_list item=district} -->
+                              <option value="{$district.region_id}" {if $fields.textAreaForm.district eq $district.region_id}selected{/if}>{$district.region_name}</option>
+                              <!-- {/foreach} -->
+                              {else}
+                              <!-- {foreach from=$district_list item=district} -->
+                              <option value="{$district.region_id}">{$district.region_name}</option>
+                              <!-- {/foreach} -->
+                              {/if}
+                            </select>
+                        {elseif $fields.otherForm eq 'dateFile'}
+                            <input name="{$fields.textFields}" type="file" /><input name="text_{$fields.textFields}" type="hidden" value="{$fields.titles_centents}" />{if $fields.titles_centents neq ''}&nbsp;&nbsp;<a href="{$fields.titles_centents}" target="_blank">查看</a>{/if}
+                        {elseif $fields.otherForm eq 'dateTime'} 
+                            {foreach from=$fields.dateTimeForm item=date key=dk}
+                                {if $dk eq 0}  
+                                <input id="{$fields.textFields}_{$dk}" class="input jdate narrow" type="text" size="{$date.dateSize}" readonly value="{$date.dateCentent}" name="{$fields.textFields}[]"> 
+                                {else}
+                                —&nbsp;<input id="{$fields.textFields}_{$dk}" class="input jdate narrow" type="text" size="{$date.dateSize}" readonly value="{$date.dateCentent}" name="{$fields.textFields}[]"> 
+                                {/if}
+                                <script type="text/javascript">
+									var opts = {
+										'targetId':'{$fields.textFields}_{$dk}',
+										'triggerId':['{$fields.textFields}_{$dk}'],
+										'alignId':'{$fields.textFields}_{$dk}',
+										'hms':'off',
+										'format':'-'
+									}
+									xvDate(opts);
+								</script>
+                            {/foreach}
+                        {/if}
+                    {elseif $fields.chooseForm eq 'textarea'}
+                        <textarea name="{$fields.textFields}" cols="{$fields.cols}" rows="{$fields.rows}">{$fields.titles_centents}</textarea>  
+                    {elseif $fields.chooseForm eq 'select'}  
+                        <select name="{$fields.textFields}">
+                            <option value="0" selected="selected">{$lang.Please_select}</option>
+                        {foreach from=$fields.selectList item=selectList}
+                            <option value="{$selectList}" {if $fields.titles_centents eq $selectList}selected="selected"{/if}>{$selectList}</option>
+                        {/foreach}
+                        </select>    
+                    {elseif $fields.chooseForm eq 'radio'}   
+                        {foreach from=$fields.radioCheckboxForm item=radio key=rc_k}
+                        <label><input name="{$fields.textFields}" type="radio" value="{$radio.radioCheckbox}" {if $fields.titles_centents eq $radio.radioCheckbox}checked="checked"{else}{if $rc_k eq 0}checked="checked"{/if}{/if} />&nbsp;{$radio.radioCheckbox}</label>
+                        {/foreach}
+                    {elseif $fields.chooseForm eq 'checkbox'}   
+                        {foreach from=$fields.radioCheckboxForm item=checkbox key=rc_k}
+                        <label><input name="{$fields.textFields}" type="checkbox" value="{$radio.radioCheckbox}"  {if $fields.titles_centents eq $checkbox.radioCheckbox}checked="checked"{else}{if $rc_k eq 0}checked="checked"{/if}{/if} />&nbsp;{$checkbox.radioCheckbox}</label>
+                        {/foreach}    
+                    {/if}
+                    <div class="org">{$fields.formSpecial}</div>
+                    <div class="verify" id="{$fields.textFields}"></div>
+                </div>
+            </div>
+        {/foreach}   
+        <!--以上是自定义基本信息，以下是固定信息-->
+        
+        <div class="item">
+            <div class="label">
+                <em>*</em>
+                <span>{$lang.Expected_store_type}：</span>
+            </div>
+            <div class="value">
+                <strong class="orange">{if $title.parentType.shoprz_type eq 1}{$lang.flagship_store}{elseif $title.parentType.shoprz_type eq 2}{$lang.exclusive_shop}{elseif $title.parentType.shoprz_type eq 3}{$lang.franchised_store}{/if}</strong>
+            </div>
+        </div>
+        <div class="item">
+            <div class="label">
+                <span>{$lang.Flagship_store_name}：</span>
+            </div>
+            <div class="value">
+                <div class="orange">{$lang.Flagship_store_name_one}</div>
+            </div>
+        </div>
+        <div class="item">
+            <div class="label">
+            	<em>*</em>
+                <span>{$title.fields_titles}：</span>
+            </div>
+            <div class="value">
+            	<div class="shopTit">{$title.titles_annotation}</div>
+                <div class="value_warp">
+                	<div class="value_item">
+                        <div class="value_label">
+                            <span>{$lang.select_brand_name}:</span>
+                        </div>
+                        <div class="value_val">
+                            <select name="ec_shoprz_brandName" class="select2" onChange="get_shoprz_brandName(this.value);" id="shoprz_brandName">
+                                <option value="">{$lang.select_brand_name_two}</option>
+                                {foreach from=$title.brand_list item=brand}
+                                <option value="{$brand.brandName}" {if $title.parentType.shoprz_brandName eq $brand.brandName}selected{/if}>{$brand.brandName}</option>
+                                {/foreach}
+                            </select>
+                            <font style="color:#F00" id="shoprz_brandNameHTML"></font> 
+                        </div>
+                    </div>
+                    <div class="value_item">
+                        <div class="value_label">
+                            <span>{$lang.category_desc_key}:</span>
+                        </div>
+                        <div class="value_val">
+                            <input type="text" name="ec_shop_class_keyWords" size="30" value="{$title.parentType.shop_class_keyWords}" class="text" id="shop_class_keyWords">      
+                         &nbsp;&nbsp;<font style="color:#F00" id="shop_class_keyWordsHTML"></font>
+                        </div>
+                    </div>
+                    <div class="value_item">
+                        <div class="value_label">
+                            <span>{$lang.select_shop_suffix}:</span>
+                        </div>
+                        <div class="value_val">
+                            <select name="ec_shopNameSuffix" onChange="get_shopNameSuffix(this.value);" id="shopNameSuffix">
+                                <option {if $title.parentType.shopNameSuffix eq ''}selected{/if} value="">{$lang.Please_select}</option>
+                                <option {if $title.parentType.shopNameSuffix eq '旗舰店'}selected{/if} value="{$lang.flagship_store}">{$lang.flagship_store}</option>
+                                <option {if $title.parentType.shopNameSuffix eq '专卖店'}selected{/if} value="{$lang.exclusive_shop}">{$lang.exclusive_shop}</option>
+                                <option {if $title.parentType.shopNameSuffix eq '专营店'}selected{/if} value="{$lang.franchised_store}">{$lang.franchised_store}</option>
+                            </select>
+                        	&nbsp;&nbsp;<font style="color:#F00" id="shopNameSuffixHTML"></font>
+                        </div>
+                    </div>
+                    <div class="value_item">
+                        <div class="value_label">
+                            <em>*</em>
+                            <span>{$lang.audit_shop_one}:</span>
+                        </div>
+                        <div class="value_val">
+                            <input type="text" name="ec_rz_shopName" id="rz_shopName" size="30" value="{$title.parentType.rz_shopName}" class="text">
+                       		&nbsp;&nbsp;<font style="color:#F00" id="rz_shopNameHTML"></font>
+                        </div>
+                    </div>
+                    <div class="value_item">
+                        <div class="value_label">
+                            <em>*</em>
+                            <span>{$lang.audit_shop_login}:</span>
+                        </div>
+                        <div class="value_val">
+                            <input type="text" name="ec_hopeLoginName" size="30" value="{$title.parentType.hopeLoginName}" class="text" id="hopeLoginName">
+                        	&nbsp;&nbsp;<font style="color:#F00" id="hopeLoginNameHTML"></font>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

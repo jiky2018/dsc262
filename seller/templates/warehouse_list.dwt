@@ -1,0 +1,103 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="list-div" id="listDiv">
+                {/if}
+                  <table class="ecsc-default-table mt20">	
+                    <thead>
+                    <tr>
+                      <th width="10%">编号</th>
+                      <th width="40%">仓库名称</th>
+                      <th width="40%">所在层级</th>
+                      <th width="10%">{$lang.handler}</th>
+                    </tr>
+					</thead>
+				  <tbody>
+				  {foreach from=$region_arr item=list name=area_name}
+				  <tr>
+                      <td>{$smarty.foreach.area_name.iteration}</td>
+                      <td>
+                       {if $priv_ru eq 1 && $region_type eq 0}    
+                       <span onclick="listTable.edit(this, 'edit_area_name', '{$list.region_id}'); return false;">{$list.region_name|escape:"html"}</span>
+                       {else}
+                       {$list.region_name|escape:"html"}
+                       {/if}					  
+					  </td>  
+                      <td>{$area_here}</td>
+                      <td class="ecsc-table-handle{if $list.regionId > 0 && $freight_model eq 1} tr{/if}">
+                        {if $list.region_child}
+                            {if $list.child}		
+                                {if $region_type < 4}
+                                    <span{if $list.regionId lte 0 || $freight_model neq 1} class="mr0"{/if}><a href="warehouse.php?act=list&type={$list.region_type+1}&pid={$list.region_id}&regionId={$list.regionId}" title="{$lang.manage_area}" class="btn-orange"><i class="icon sc_icon_see"></i><p>{$lang.manage_area}</p></a></span>
+                                {/if}
+                            {/if}   
+                        {else}
+                        <span class="mr0"><a href="javascript:;" class="btn-orange"><i class="icon sc_icon_see"></i><p>无</p></a></span>    
+                        {/if}
+					  </td>
+				  </tr>
+				  {/foreach}
+				  </tbody>
+                </table>
+                {if $full_page}
+                </div>
+        	</div>
+    	</div>
+	</div>
+</div>
+{include file ='library/seller_footer.lbi'}
+{literal}
+<script type="text/javascript">
+<!--
+
+onload = function() {
+  
+  // 开始检查订单
+  startCheckOrder();
+}
+
+/**
+ * 新建区域
+ */
+function add_area()
+{
+    var region_name = Utils.trim(document.forms['theForm'].elements['region_name'].value);
+    var region_type = Utils.trim(document.forms['theForm'].elements['region_type'].value);
+    var parent_id   = Utils.trim(document.forms['theForm'].elements['parent_id'].value);
+	if(document.forms['theForm'].elements['regionId']){
+		var regionId   = Utils.trim(document.forms['theForm'].elements['regionId'].value);
+	}else{
+		var regionId = 0;
+	}
+
+    if (region_name.length == 0)
+    {
+        alert(region_name_empty);
+    }
+    else
+    {
+      Ajax.call('warehouse.php?is_ajax=1&act=add_area',
+        'parent_id=' + parent_id + '&region_name=' + region_name + '&region_type=' + region_type + '&regionId=' + regionId,
+        listTable.listCallback, 'POST', 'JSON');
+    }
+
+    return false;
+}
+
+//-->
+</script>
+{/literal}
+</body>
+</html>
+{/if}

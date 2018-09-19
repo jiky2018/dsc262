@@ -1,0 +1,357 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+<style>
+.goods_price{display: none;}
+.goods_price.active{display: block}
+
+.target_price{display: none;}
+.target_price.active{display: block}
+
+</style>
+
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+                {include file ='library/seller_menu_tab.lbi'}
+                <form method="post" action="bargain.php?act=insert_update" name="theForm" id="group_buy_form">
+                    <div class="goods_search_div">
+                        <div class="search_select">
+                            <div class="categorySelect">
+                                <div class="selection">
+                                    <input type="text" name="category_name" id="category_name" class="text w250 valid" value="{$lang.select_cat}" autocomplete="off" readonly data-filter="cat_name" />
+                                    <input type="hidden" name="category_id" id="category_id" value="0" data-filter="cat_id" />
+                                </div>
+                                <div class="select-container" style="display:none;">
+                                    {include file="library/filter_category.lbi"}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="search_select">
+                            <div class="brandSelect">
+                                <div class="selection">
+                                    <input type="text" name="brand_name" id="brand_name" class="text w120 valid" value="{$lang.select_barnd}" autocomplete="off" readonly data-filter="brand_name" />
+                                    <input type="hidden" name="brand_id" id="brand_id" value="0" data-filter="brand_id" />
+                                </div>
+                                <div class="brand-select-container" style="display:none;">
+                                    {include file="library/filter_brand.lbi"}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="search-key">
+                            <input type="text" name="keyword" size="20" class="text text_2 mr10" placeholder="关键字" />
+                            <a href="javascript:void(0);" class="sc-btn sc-blueBg-btn" onclick="searchGoods()">搜索</a>
+                            <input type="hidden" name="ru_id" value="{$ru_id}" />
+                            <input type="hidden" name="cat_id" id="category">
+                        </div>
+                    </div>
+                    <div class="ecsc-form-goods">
+                        <div class="wrapper-list border1">
+                            <dl>
+                                <dt>{$lang.require_field}&nbsp;砍价商品：</dt>
+                                <dd>
+                                    <div id="goods_id" class="imitate_select select_w320 mr0">
+                                        <div class="cite">{if $goods.goods_id}{$goods.goods_name}{else}请选择{/if}</div>
+                                        <ul>
+                                            <li class="li_not">请先搜索商品</li>
+                                        </ul>
+                                        <input name="goods_id" type="hidden" value="{if $goods.goods_id}{$goods.goods_id}{/if}" id="goods_id_val">
+                                    </div>
+                                  <div class="form_prompt"></div>
+                                </dd>
+                            </dl>
+                           <!--  <dl>
+                          <dt>{$lang.require_field}&nbsp;砍价活动标题：</dt>
+                            <dd><input id="bargain_name" name="data[bargain_name]" type="text" class="text" value="{$goods.bargain_name}" />
+                            <div class="notic"></div>
+                            </dd>
+                        </dl> -->
+
+                         <dl>
+                              <dt>{$lang.require_field}&nbsp;开始时间：</dt>
+                              <dd>
+                                  <div class="text_time">
+                                      <input id="start_time" name="data[start_time]" type="text" class="text" readonly value="{$goods.start_time}" />
+                                  </div>
+                              </dd>
+                          </dl>
+                          <dl>
+                              <dt>{$lang.require_field}&nbsp;结束时间：</dt>
+                              <dd>
+                                  <div class="text_time">
+                                      <input id="end_time" name="data[end_time]" type="text" class="text" readonly value="{$goods.end_time}" />
+                                  </div>
+                              </dd>
+                          </dl>
+
+                        <dl class="goods_price">
+                          <dt>{$lang.require_field}&nbsp;活动原价：</dt>
+                            <dd>
+                            <input name="data[goods_price]" type="text" id="goods_price" value="{$goods.goods_price}" class="text">
+                            <div class="notic"></div>
+                            </dd>
+                        </dl>
+                        <dl class="target_price">
+                          <dt>{$lang.require_field}&nbsp;砍价目标价格：</dt>
+                            <dd>
+                            <input name="data[target_price]" type="text" id="deposit" value="{$goods.target_price}" class="text">
+                            <div class="notic">砍价活动商品底价</div>
+                            </dd>
+                        </dl>
+
+                        <dl class="notBg">
+                                <dt>价格区间：</dt>
+                                <dd>
+                                    <div id="tbody-volume">
+                                        <table class="table_div table_heng">
+                                            <tr class="first_tr">
+                                                <td class="first_td w70">最小值</td>
+
+                                                <td><input type="text" name="data[min_price]" value="{$goods.min_price}" class="text w50" autocomplete="off" /></td>
+
+                                            </tr>
+                                            <tr>
+                                               <td class="first_td">最大值</td>
+                                                <td><input type="text" name="data[max_price]" value="{$goods.max_price}" class="text w50" autocomplete="off" /></td>
+
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="notic">设置活动每次砍价价格区间，如 1 - 10</div>
+                                </dd>
+                            </dl>
+                            <div class="step_item pb0" id="tbody-goodsAttr"></div>
+                            <div class="step_item_table" id="attribute_table"></div>
+                            <dl>
+                                <dt>热销活动:</dt>
+                                <dd>
+                                    <div class="switch switch_2 {if $goods.is_hot}active{/if}" title="否">
+                                        <div class="circle"></div>
+                                    </div>
+                                    <input type="hidden" value="{$goods.is_hot}" name="data[is_hot]">
+                                </dd>
+                            </dl>
+							<dl>
+							  <dt>砍价介绍：</dt>
+								<dd>
+							   <textarea name="data[bargain_desc]" cols="40" rows="3" class="textarea">{$goods.bargain_desc}</textarea>
+
+								<div class="notic"></div>
+								</dd>
+							</dl>
+
+                        <dl class="button_info">
+                          <dt>&nbsp;</dt>
+                            <dd>
+                            <input name="id" type="hidden" value="{$goods.id}">
+                            <input type="hidden" name="bargain_goods_id" value="{$goods.goods_id}">
+                            <input type="submit" name="submit" value="{$lang.button_submit}" class="sc-btn sc-blueBg-btn btn35" id="submitBtn" />
+                            <input type="reset" value="{$lang.button_reset}" class="sc-btn btn35 sc-blue-btn" />
+                            </dd>
+                        </dl>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript">
+
+
+//日期选择插件调用start sunle
+var opts1 = {
+    'targetId':'start_time',//时间写入对象的id
+    'triggerId':['start_time'],//触发事件的对象id
+    'alignId':'start_time',//日历对齐对象
+    'format':'-'//时间格式 默认'YYYY-MM-DD HH:MM:SS'
+},opts2 = {
+    'targetId':'end_time',
+    'triggerId':['end_time'],
+    'alignId':'end_time',
+    'format':'-'
+}
+
+xvDate(opts1);
+xvDate(opts2);
+//日期选择插件调用end sunle
+
+
+<!--
+{literal}
+$(function(){
+  //表单验证
+  $("#submitBtn").click(function(){
+    if($("#group_buy_form").valid()){
+      $("#group_buy_form").submit();
+    }
+  });
+
+  $('#group_buy_form').validate({
+    errorPlacement:function(error, element){
+      var error_div = element.parents('dl').find('div.form_prompt');
+      //element.parents('dl').find(".notic").hide();
+      error_div.append(error);
+    },
+    rules:{
+      goods_id :{
+        required : true
+      },
+      restrict_amount:{
+        digits : true
+      },
+      gift_integral:{
+        digits : true
+      }
+    },
+    messages:{
+      goods_id:{
+        required : '<i class="icon icon-exclamation-sign"></i>您没有选砍价商品！'
+      },
+      restrict_amount:{
+        digits : '<i class="icon icon-exclamation-sign"></i>您没有',
+      },
+      gift_integral:{
+        digits : '<i class="icon icon-exclamation-sign"></i>您没有'
+      }
+    }
+  });
+
+  //团购商品下拉选择
+  $.divselect("#goods_id","#goods_id_val",function(obj){
+    var value = obj.data("value");
+    groupGoods(value);
+  });
+});
+
+function groupGoods(val){
+  var filter = new Object;
+  filter.goods_id = val;
+
+  Ajax.call('bargain.php?is_ajax=1&act=group_goods', filter, groupGoodsResponse, 'GET', 'JSON');
+}
+
+function groupGoodsResponse(result){
+  $('#market_price').html(result.content.marketPrice);
+}
+
+/**
+* 搜索商品
+*/
+function searchGoods()
+{
+ var form = $("#group_buy_form");
+ var filter = new Object;
+ filter.cat_id   = form.find("input[name='category_id']").val();
+ filter.brand_id = form.find("input[name='brand_id']").val();
+ filter.keyword  = form.find("input[name='keyword']").val();
+ filter.ru_id = form.find("input[name='ru_id']").val();
+
+ Ajax.call('bargain.php?is_ajax=1&act=search_goods', filter, searchGoodsResponse, 'GET', 'JSON');
+}
+
+function searchGoodsResponse(result)
+{
+       $("#goods_id").children("ul").find("li").remove();
+
+       var goods = result.content;
+       if (goods)
+       {
+               for (i = 0; i < goods.length; i++)
+               {
+                       $("#goods_id").children("ul").append("<li><i class='sc_icon sc_icon_no'></i><a href='javascript:;' data-value='"+goods[i].goods_id+"' class='ftx-01' onclick='goodsInfo("+goods[i].goods_id+")'>"+goods[i].goods_name+"</a><input type='hidden' name='user_search[]' value='"+goods[i].value+"'></li>")
+               }
+       }
+}
+
+
+var goodsId = $("input[name='bargain_goods_id']").val();
+goodsInfo(goodsId);
+
+/**
+ * 获取选中商品详情
+ */
+
+function goodsInfo(goodsId)
+{
+    if(goodsId){
+        Ajax.call('bargain.php?is_ajax=1&act=goods_info', 'goods_id=' + goodsId , setAttrList, "GET", "JSON");
+    }else{
+        return false;
+    }
+
+}
+
+function setAttrList(result)
+  {
+    $("#goods_price").val(result.shop_price);
+    document.getElementById('tbody-goodsAttr').innerHTML = result.goods_attribute;
+    bargain_set_attribute_table(result.goods_id);
+  }
+
+//设置属性表格
+function bargain_set_attribute_table(goodsId)
+{
+  var attr_id_arr = [];
+  var attr_value_arr = [];
+  var attrId = $("#tbody-goodsAttr").find("input[type=checkbox][data-type=attr_id]:checked");
+  var attrValue = attrId.siblings("input[type=checkbox][data-type=attr_value]");
+  var bargainId = $("input[name='id']").val();//活动id
+  attrId.each(function(){
+    attr_id_arr.push($(this).val());
+  });
+  attrValue.each(function(){
+
+    /**
+    *过滤ajax传值加号问题
+    */
+
+    var dataVal = $(this).val();
+    dataVal = dataVal.replace(/\+/g, "%2B");
+      dataVal = dataVal.replace(/\&/g, "%26");
+
+    attr_value_arr.push(dataVal);
+  });
+
+  //商品模式
+  var extension = "";
+  var goods_model = $("input[name=model_price]").val();
+  var warehouse_id = $("#attribute_model").find("input[type=radio][data-type=warehouse_id]:checked").val();
+  var region_id = $("#attribute_model").find("input[type=radio][data-type=region_id]:checked").val();
+  extension += "&goods_model="+goods_model;
+  if(goods_model == 1){
+    extension += "&region_id="+warehouse_id;
+  }else if(goods_model == 2){
+    extension += "&region_id="+region_id;
+  }
+
+  var goods_type = $("input[name='goods_type']").val();
+  if(goods_type > 0){
+    extension += "&goods_type="+goods_type;
+  }
+
+  $.jqueryAjax('bargain.php', 'act=set_attribute_table&goods_id='+goodsId+'&bargain_id='+bargainId+'&attr_id='+attr_id_arr+'&attr_value='+attr_value_arr+extension, function(data){
+    if(data.content){
+         $("#attribute_table").html(data.content);
+    }else{
+        $(".goods_price").addClass("active");
+        $(".target_price").addClass("active");
+    }
+
+  });
+
+//getAttrList(goodsId);
+}
+
+
+{/literal}
+</script>
+</body>
+</html>

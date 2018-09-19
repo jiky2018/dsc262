@@ -1,0 +1,205 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        <div class="site wrapper">
+			{include file ='library/seller_menu_left.lbi'}
+            <div class="ecsc-layout-right">
+                <div class="main-content" id="mainContent">
+					{include file ='library/url_here.lbi'}
+					{include file ='library/seller_menu_tab.lbi'}
+                    <div class="ecsc-form-goods">
+                        <div class="explanation" id="explanation">
+                            <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4></div>
+                            {$lang.use_help}
+                        </div>
+                        <form action="goods_batch.php?act=upload" method="post" enctype="multipart/form-data" name="theForm" id="goods_batch_form">
+                        <div class="wrapper-list border1 mt20">
+                            <dl>
+                                <dt>{$lang.require_field}&nbsp;{$lang.export_format}：</dt>
+                                <dd>
+                                    <div id="data_cat" class="imitate_select select_w320 mr0">
+                                        <div class="cite">{$lang.please_select}</div>
+                                        <ul style="display: none;">
+                                        {foreach from=$data_format item=data key=key}
+                                            <li><a href="javascript:;" data-value="{$key}" class="ftx-01">{$data}</a></li>
+                                        {/foreach}
+                                        </ul>
+                                        <input name="data_cat" type="hidden" value="" id="data_cat_val">
+                                    </div>
+                                    <div class="form_prompt"></div>
+                                </dd>
+                            </dl>
+                            <dl>
+                                <dt>{$lang.require_field}&nbsp;平台分类：</dt>
+                                <dd>
+                                    <div class="search_select">
+                                        <div class="categorySelect">
+                                            <div class="selection">
+                                                <input type="text" name="category_name" id="category_name" class="text w290 valid" value="{if $parent_category}{$parent_category}{else}顶级分类{/if}" autocomplete="off" readonly data-filter="cat_name" />
+                                                <input type="hidden" name="cat" id="cat" value="0" data-filter="cat_id" />
+                                            </div>
+                                            <div class="select-container w320" style="display:none;">
+                                                {include file="library/filter_category.lbi"}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </dd>
+                            </dl>
+                            <dl>
+                                <dt>{$lang.require_field}&nbsp;店铺分类：</dt>
+                                <dd class="txtline">
+                                    <div class="categorySelect fl">
+                                        <div class="selection">
+                                            <input type="text" name="category_name" id="category_name" class="text w290 valid" value="{if $user_cat_name}{$user_cat_name}{else}顶级分类{/if}" autocomplete="off" readonly data-filter="cat_name" />
+                                            <input type="hidden" name="user_cat" id="category_id" value="" data-filter="cat_id" />
+                                        </div>
+                                        <div class="select-container" style="display:none;">
+                                            {include file="library/filter_category_seller.lbi"}
+                                        </div>
+                                    </div>                                      
+                                </dd>
+                            </dl>
+                            <dl>
+                                <dt>{$lang.require_field}&nbsp;{$lang.file_charset}</dt>
+                                <dd>
+                                    <div id="charset" class="imitate_select select_w320 mr0">
+                                        <div class="cite">{$lang.please_select}</div>
+                                        <ul style="display: none;">
+                                        {foreach from=$lang_list item=list key=key}
+                                            <li><a href="javascript:;" data-value="{$key}" class="ftx-01">{$list}</a></li>
+                                        {/foreach}
+                                        </ul>
+                                        <input name="charset" type="hidden" value="" id="charset_val">
+                                    </div>
+                                    <div class="form_prompt"></div>
+                                </dd>
+                            </dl>
+                            <dl>
+                                <dt>{$lang.require_field}&nbsp;{$lang.csv_file}</dt>
+                                <dd>
+                                    <div class="type-file-box">
+                                        <div class="input">
+                                            <input type="text" name="textfile" class="type-file-text" id="textfield" value="" readonly>
+                                            <input type="button" name="button" id="button" class="type-file-button" value="上传..." />
+                                            <input type="file" class="type-file-file" id="file" name="file" data-state="csvfile" size="30" hidefocus="true" />
+                                        </div>
+                                    </div>
+                                    <div class="form_prompt"></div>
+                                    <div class="notic" id="AdCodeFlash">{$lang.notice_file}</div>
+                                </dd>
+                            </dl>
+                            <dl>
+                                <dt>&nbsp;</dt>
+                                <dd class="lh">{foreach from=$download_list item=download key=charset}<a href="goods_batch.php?act=download&charset={$charset}" class="mr10">{$download}</a>{/foreach}</dd>
+                            </dl>
+                            <dl class="button_info">
+                                <dt>&nbsp;</dt>
+                                <dd><input name="submit" type="submit" id="submitBtn" value="{$lang.button_submit}" class="sc-btn sc-blueBg-btn btn35" /></dd>
+                            </dl>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{literal}
+<script language="JavaScript">
+    var elements;
+	
+	$(function(){
+	//表单验证
+	$("#submitBtn").click(function(){
+		var cat_val = $("input[name='cat']").val();
+		var fald = false;
+		if(cat_val>0){
+			fald = true;
+			$(".categorySelect .form_prompt label").remove();
+		}else{
+			$("#category_name").addClass("error");
+			$(".categorySelect .form_prompt label").remove();
+			$(".categorySelect .form_prompt").append('<label class="label_error"><i class="icon icon-exclamation-sign"></i>请选择分类</label>')
+		}
+		
+		if($("#goods_batch_form").valid()){
+			$("#goods_batch_form").submit();
+		}
+	});
+
+	$('#goods_batch_form').validate({
+		errorPlacement:function(error, element){
+			var error_div = element.parents('dl').find('div.form_prompt');
+			//element.parents('dl').find(".notic").hide();
+			error_div.append(error);
+		},
+		rules:{
+			data_cat : {
+				required : true
+			},
+			cat : {
+				required : true
+			},
+			charset : {
+				required : true
+			},
+			textfile:{
+				required : true
+			}
+		},
+		messages:{
+			data_cat:{
+				required : '<i class="icon icon-exclamation-sign"></i>请选择数据格式'
+			},
+			cat:{
+				required : '<i class="icon icon-exclamation-sign"></i>请选择所属分类'
+			},
+			charset:{
+				required : '<i class="icon icon-exclamation-sign"></i>请选择文件编码'
+			},
+			textfile:{
+				required : '<i class="icon icon-exclamation-sign"></i>请上传批量csv文件'
+			}
+		}			
+	});
+	});
+
+	// 分类分级 by qin
+	function catList(val, level)
+	{
+		var cat_id = val;
+		document.getElementById('cat').value = cat_id;
+		Ajax.call('goods.php?is_ajax=1&act=sel_cat', 'cat_id='+cat_id+'&cat_level='+level, catListResponse, 'GET', 'JSON');
+	}
+
+	function catListResponse(result)
+	{
+		if (result.error == '1' && result.message != '')
+		{
+		  alert(result.message);
+		  return;
+		}
+		var response = result.content;
+		var cat_level = result.cat_level; // 分类级别， 1为顶级分类
+		for(var i=cat_level;i<10;i++)
+		{
+		  $("#cat_list"+Number(i+1)).remove();
+		}
+		if(response)
+		{
+			$("#cat_list"+cat_level).after(response);
+		}
+	  return;
+	}
+</script>
+{/literal}
+
+{include file ='library/seller_footer.lbi'}
+</body>
+</html>

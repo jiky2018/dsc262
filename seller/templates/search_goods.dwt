@@ -1,0 +1,226 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent" >
+                {include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <form action="order.php?act=list" metdod="post" enctype="multipart/form-data" name="searchForm">
+                    <table class="table_item">
+                        <tr>
+                            <td class="label"></td>
+                            <td class="w240">
+                                <input name="order_sn" type="text" id="order_sn" class="text">
+                            </td>
+                            <td class="label">{$lang.label_email}</td>
+                            <td class="w240">
+                                <input name="email" type="text" id="email" class="text">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">{$lang.label_user_name}</td>
+                            <td class="w240">
+                                <input name="user_name" type="text" id="user_name" class="text">
+                            </td>
+                            <td class="label">{$lang.label_consignee}</td>
+                            <td class="w240">
+                                <input name="consignee" type="text" id="consignee" class="text">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">{$lang.label_address}</td>
+                            <td class="w240">
+                                <input name="address" type="text" id="address" class="text">
+                            </td>
+                            <td class="label">{$lang.label_zipcode}</td>
+                            <td class="w240">
+                                <input name="zipcode" type="text" id="zipcode" class="text">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">{$lang.label_tel}</td>
+                            <td class="w240">
+                                <input name="tel" type="text" id="tel" class="text">
+                            </td>
+                            <td class="label">{$lang.label_mobile}</td>
+                            <td class="w240">
+                                <input name="mobile" type="text" id="mobile" class="text">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">{$lang.label_time}</td>
+                            <td colspan="3">
+                                <div class="text_time" id="text_time1">
+                                <input type="text" name="start_time" class="text" size="20" readonly="readonly" id="start_time_id" />
+                                </div>
+                                <span class="bolang">&nbsp;&nbsp;~&nbsp;&nbsp;</span>
+                                <div class="text_time" id="text_time2">
+                                <input type="text" name="end_time" class="text" size="20" readonly="readonly" id="end_time_id" />
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">确认收货时间：</td>
+                            <td colspan="3">
+                              <div class="text_time" id="text_time3">
+                              <input type="text" name="start_take_time" class="text" size="20" readonly="readonly" id="start_take_time_id" />
+                              </div>
+                              <span class="bolang">&nbsp;&nbsp;~&nbsp;&nbsp;</span>
+                              <div class="text_time" id="text_time4">
+                              <input type="text" name="end_take_time" class="text" size="20" readonly="readonly" id="end_take_time_id" />
+                              </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">{$lang.label_area}</td>
+                            <td colspan="3">
+                                <select name="order_country" id="selCountries" onchange="region.changed(this, 1, 'selProvinces')" class="select">
+                                    <option value="0">{$lang.select_please}</option>
+                                    {foreach from=$country_list item=country}
+                                    <option value="{$country.region_id}">{$country.region_name}</option>
+                                    {/foreach}
+                                </select>
+                                <select name="order_province" id="selProvinces" onchange="region.changed(this, 2, 'selCities')" class="select">
+                                    <option value="0">{$lang.select_please}</option>
+                                    {foreach from=$selProvinces_list item=selProvinces}
+                                    <option value="{$selProvinces.region_id}">{$selProvinces.region_name}</option>
+                                    {/foreach}
+                                </select>
+                                <select name="order_city" id="selCities" onchange="region.changed(this, 3, 'selDistricts')" class="select">
+                                    <option value="0">{$lang.select_please}</option>
+                                </select>
+                                <select name="order_district" id="selDistricts" class="select">
+                                    <option value="0">{$lang.select_please}</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">{$lang.label_shipping}</td>
+                            <td colspan="3">
+                                <select name="shipping_id" id="select4" class="select select_4">
+                                    <option value="0">{$lang.select_please}</option>
+                                    {foreach from=$shipping_list item=shipping}
+                                    <option value="{$shipping.shipping_id}">{$shipping.shipping_name}</option>
+                                    {/foreach}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">{$lang.label_payment}</td>
+                            <td colspan="3">
+                                    <select name="pay_id" id="select5" class="select select_4">
+                                    <option value="0">{$lang.select_please}</option>
+                                    {foreach from=$pay_list item=pay}
+                                    <option value="{$pay.pay_id}">{$pay.pay_name}</option>
+                                    {/foreach}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">{$lang.label_order_status}</td>
+                            <td colspan="3">
+                                <select name="order_status" id="select9" class="select select_4">
+                                    <option value="-1">{$lang.select_please}</option>
+                                    {html_options options=$os_list selected=-1}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">{$lang.label_pay_status}</td>
+                            <td colspan="3">
+                                <select name="pay_status" id="select11" class="select select_4">
+                                    <option value="-1">{$lang.select_please}</option>
+                                    {html_options options=$ps_list selected=-1}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">{$lang.label_shipping_status}</td>
+                            <td colspan="3">
+                                <select name="shipping_status" id="select10" class="select select_4">
+                                    <option value="-1">{$lang.select_please}</option>
+                                    {html_options options=$ss_list selected=-1}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr class="no-line">
+                            <td>&nbsp;</td>
+                            <td class="pt20 pb20" colspan="3">
+                                <input name="query" type="submit" class="sc-btn sc-blueBg-btn btn35" id="query" value="{$lang.button_search}" />
+                                <input name="reset" type="reset" class="sc-btn btn35 sc-blue-btn" value="{$lang.button_reset}" />
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript">
+	region.isAdmin = true;
+	onload = function()
+	{
+	  // 开始检查订单
+	  //startCheckOrder();
+	}
+	
+	{if $priv_ru eq 1}
+	function get_store_search(val){
+		if(val == 1){
+			document.forms['searchForm'].elements['merchant_id'].style.display = '';
+			document.forms['searchForm'].elements['store_keyword'].style.display = 'none';
+			document.forms['searchForm'].elements['store_type'].style.display = 'none';
+		}else if(val == 2){
+			document.forms['searchForm'].elements['merchant_id'].style.display = 'none';
+			document.forms['searchForm'].elements['store_keyword'].style.display = '';
+			document.forms['searchForm'].elements['store_type'].style.display = 'none';
+		}else if(val == 3){
+			document.forms['searchForm'].elements['merchant_id'].style.display = 'none';
+			document.forms['searchForm'].elements['store_keyword'].style.display = '';
+			document.forms['searchForm'].elements['store_type'].style.display = '';
+		}else{
+			document.forms['searchForm'].elements['merchant_id'].style.display = 'none';
+			document.forms['searchForm'].elements['store_keyword'].style.display = 'none';
+			document.forms['searchForm'].elements['store_type'].style.display = 'none';
+		}
+	}
+	{/if}
+	
+	//日期选择插件调用start sunle
+	var opts1 = {
+		'targetId':'start_time_id',//时间写入对象的id
+		'triggerId':['start_time_id'],//触发事件的对象id
+		'alignId':'text_time1',//日历对齐对象
+		'format':'-'//时间格式 默认'YYYY-MM-DD HH:MM:SS'
+	},opts2 = {
+		'targetId':'end_time_id',
+		'triggerId':['end_time_id'],
+		'alignId':'text_time2',
+		'format':'-'
+	},opts3 = {
+		'targetId':'start_take_time_id',
+		'triggerId':['start_take_time_id'],
+		'alignId':'text_time3',
+		'format':'-'
+	},opts4 = {
+		'targetId':'end_take_time_id',
+		'triggerId':['end_take_time_id'],
+		'alignId':'text_time4',
+		'format':'-'
+	}
+	
+	xvDate(opts1);
+	xvDate(opts2);
+	xvDate(opts3);
+	xvDate(opts4);
+	//日期选择插件调用end sunle
+</script>
+</body>
+</html>

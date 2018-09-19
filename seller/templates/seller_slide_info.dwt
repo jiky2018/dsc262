@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+    	{include file ='library/seller_menu_left.lbi'}
+		<div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="ecsc-form-goods">
+                    <form method="post" action="seller_shop_slide.php" name="theForm" enctype="multipart/form-data" id="seller_shop_slide_form">
+                    <div class="wrapper-list border1">
+                    <dl>
+                        <dt>{$lang.require_field}&nbsp;{$lang.adv_image}：</dt>
+                        <dd>
+                            <div class="type-file-box">
+                            	<div class="input">
+                                    <input type="text" name="textfile" class="type-file-text" {if $slide.img_url}value="{$slide.img_url}"{/if} id="textfield" readonly>
+                                    <input type="button" name="button" id="button" class="type-file-button" value="上传...">
+                                    <input type="file" class="type-file-file" name="img_url" size="30" hidefocus="true" value="">
+                                </div>
+                                {if $slide.img_url}
+                                <span class="show">
+                                <a href="{$slide.img_url}" target="_blank" class="nyroModal"><i class="icon icon-picture" onmouseover="toolTip('<img src={$slide.img_url}>')" onmouseout="toolTip()"></i></a>
+                                </span>
+                                {/if}
+                            </div>
+                            <div class="form_prompt"></div>
+                            <div class="notic" id="warn_brandlogo">(建议图片尺寸1900x500)</div>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>{$lang.sort_order}：</dt>
+                        <dd><input type="text" name="img_order" maxlength="40" size="15" value="{$slide.img_order}" class="text text_5" /></dd>
+                    </dl>
+                     <dl>
+                        <dt>{$lang.require_field}&nbsp;{$lang.adv_href}：</dt>
+                        <dd>
+                            <input type="text" name="img_link" size="50" value="{$slide.img_link}" class="text" />
+                            <div class="notic">{$lang.adv_href_notice}</div>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>{$lang.whether_display}：</dt>
+                        <dd>
+                        	<div class="checkbox_items">
+                                <div class="checkbox_item">
+                                    <input type="radio" name="is_show" value="1" class="ui-radio" id="is_show_1" {if $slide.is_show eq 1}checked="checked"{/if} />
+                                    <label class="ui-radio-label" for="is_show_1">{$lang.yes}</label>
+                                </div>
+                                <div class="checkbox_item">
+                                    <input type="radio" name="is_show" value="0" class="ui-radio" id="is_show_0" {if $slide.is_show eq 0}checked="checked"{/if} />
+                                    <label class="ui-radio-label" for="is_show_0">{$lang.no}</label>
+                                </div>
+                            </div>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>{$lang.image_transform}：</dt>
+                        <dd>
+                        	<div class="checkbox_items">
+                                <div class="checkbox_item">
+                                    <input type="radio" name="slide_type" value="shade" class="ui-radio" id="shade" {if $slide.slide_type eq 'shade'}checked="checked"{/if} />
+                                    <label class="ui-radio-label" for="shade">{$lang.gradient}</label>
+                                </div>
+                                <div class="checkbox_item">
+                                    <input type="radio" name="slide_type" value="roll" class="ui-radio" id="roll" {if $slide.slide_type eq 'roll'}checked="checked"{/if} />
+                                    <label class="ui-radio-label" for="roll">{$lang.roll}</label>
+                                </div>
+                            </div>
+                            <div class="notic">{$lang.image_transform_notice}</div>
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>{$lang.images_explain}：</dt>
+                        <dd><textarea name="img_desc" class="textarea">{$slide.img_desc}</textarea></dd>
+                    </dl>
+                    <dl class="button_info">
+                    	<dt>&nbsp;</dt>
+                        <dd>
+                        	<input type="submit" class="sc-btn sc-blueBg-btn btn35" value="{$lang.button_submit}" id="submitBtn"/>
+                            <input type="reset" class="sc-btn btn35 sc-blue-btn" value="{$lang.button_reset}" />
+                            <input type="hidden" name="act" value="{$form_action}" />
+                            <input type="hidden" name="id" value="{$slide.id}" />
+                            <input type="hidden" name="old_img" value="{$slide.img_url}">
+                        </dd>
+                    </dl>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file="library/seller_footer.lbi"}
+{literal}
+<script type="text/javascript" src="../js/jquery.picTip.js"></script>
+<script language="JavaScript">
+$(function(){
+	//点击查看图片
+	$('.nyroModal').nyroModal();
+	
+	//表单验证
+	$("#submitBtn").click(function(){
+		if($("#seller_shop_slide_form").valid()){
+			$("#seller_shop_slide_form").submit();
+		}
+	});
+
+	$('#seller_shop_slide_form').validate({
+		errorPlacement:function(error, element){
+			var error_div = element.parents('dl').find('div.form_prompt');
+			//element.parents('dl').find(".notic").hide();
+			error_div.append(error);
+		},
+		rules:{
+			textfile :{
+				required : true
+			}
+		},
+		messages:{
+			textfile:{
+				 required : '<i class="icon icon-exclamation-sign"></i>请选择上传图片'
+			}
+		}			
+	});
+});
+</script>
+{/literal}
+</body>

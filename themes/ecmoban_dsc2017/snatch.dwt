@@ -1,0 +1,382 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<!-- #BeginLibraryItem "/library/js_languages_new.lbi" --><!-- #EndLibraryItem -->
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/css/goods_fitting.css" />
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/css/suggest.css" />
+<link rel="stylesheet" type="text/css" href="../js/calendar/calendar.min.css" />
+</head>
+<body class="bg-ligtGary">
+	<!-- #BeginLibraryItem "/library/page_header_common.lbi" --><!-- #EndLibraryItem -->
+    
+    <div class="content activity-desc-content">
+        <div class="w w1200">
+            <!-- #BeginLibraryItem "/library/ur_here.lbi" --><!-- #EndLibraryItem -->
+            <div class="activity-desc-main clearfix">
+                <div class="acde-left">
+                    <div class="product-info clearfix">
+                        <!-- #BeginLibraryItem "/library/goods_gallery.lbi" --><!-- #EndLibraryItem -->
+                        <div class="product-wrap">
+                            <div class="name">{$snatch_goods.goods_name|escape:html}</div>
+                            <div class="activity-title">
+                                <div class="activity-type"><i class="iconfont icon-time"></i><!-- {if $myprice.is_end eq false} -->正在进行<!--{else}-->结束时间<!--{/if}--></div>
+                                <div class="sk-time-cd">
+                                    <div class="sk-cd-tit">{$lang.End_pitch}</div>
+                                    <div class="cd-time" ectype="time" data-time="{$snatch_goods.gmt_end_time}">
+                                        <div class="days">00</div>
+                                        <span class="split">:</span>
+                                        <div class="hours">00</div>
+                                        <span class="split">:</span>
+                                        <div class="minutes">00</div>
+                                        <span class="split">:</span>
+                                        <div class="seconds">00</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="summary snatch-summary">
+                                <div class="summary-price-wrap">
+                                    <div class="s-p-w-wrap clearfix">
+                                        <div class="summary-item">
+                                            <div class="si-tit">{$lang.current_price}：</div>
+                                            <div class="si-warp">
+                                                <span class="price red"><span id="currentPrice" data-price="{$snatch_goods.start_price}">{$snatch_goods.formated_shop_price}</span></span>
+                                            </div>
+                                        </div>
+                                        <div class="summary-item">
+                                            <div class="si-tit">{$lang.market_price}：</div>
+                                            <div class="si-warp">￥{$snatch_goods.market_price}</div>
+                                        </div>
+                                        <div class="summary-item">
+                                            <div class="si-tit">{$lang.Crowd_onlookers}：</div>
+                                            <div class="si-warp">{$price_list_count}{$lang.ci}</div>
+                                        </div>
+                                        <div class="summary-item">
+                                            <div class="si-tit">夺宝机构：</div>
+                                            <div class="si-warp">{$goods.rz_shopName}</div>
+                                        </div>
+                                        <div class="summary-item">
+                                            <div class="si-tit">{$lang.price_extent_snatch}：</div>
+                                            <div class="si-warp ftx-09">{$snatch_goods.formated_start_price}&nbsp;~&nbsp;{$snatch_goods.formated_end_price}{if $snatch_goods.cost_points gt 0}&nbsp;&nbsp;(每次出价消耗{$snatch_goods.cost_points}积分){/if}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                
+                            </div>
+                            
+                            <!-- {if $specification} -->
+                            <form action="javascript:bid()" method="post" name="ECS_FORMBUY" id="ECS_FORMBUY">
+                            <div class="summary-basic-info">
+                                <!-- {foreach from=$specification item=spec key=spec_key} -->
+                                <!-- {if $spec.values} -->
+                                <div class="summary-item is-attr goods_info_attr" ectype="is-attr" data-type="<!-- {if $spec.attr_type eq 1} -->radio<!-- {else} -->checkbox<!-- {/if} -->">
+                                    <div class="si-tit">{$spec.name}</div>
+                                    <!-- {if $cfg.goodsattr_style eq 1} -->
+                                    <div class="si-warp">
+                                        <ul>
+                                            <!-- {foreach from=$spec.values item=value key=key name=attrvalues} -->
+                                            {if $spec.is_checked > 0}
+                                            <li class="item{if $value.checked eq 1} selected{/if}" data-name="{$value.id}">
+                                                <b></b>
+                                                <a href="{if $value.img_site}{$value.img_site}{else}javascript:void(0);{/if}">
+                                                    {if $value.img_flie}
+                                                    <img src="{$value.img_flie}" width="24" height="24" />
+                                                    {/if}
+                                                    <i>{$value.label}</i>
+                                                    <input id="spec_value_{$value.id}" type="{if $spec.attr_type eq 2}checkbox{else}radio{/if}" data-attrtype="{if $spec.attr_type eq 2}2{else}1{/if}" name="spec_{$spec_key}" value="{$value.id}" autocomplete="off" class="hide" />
+                                                    {if $value.checked eq 1}
+                                                    <script type="text/javascript">
+                                                        $(function(){
+                                                            $("#spec_value_{$value.id}").prop("checked", true);
+                                                        });
+                                                    </script>
+                                                    {/if}
+                                                </a>
+                                            </li>
+                                            {else}
+                                            <li class="item {if $key eq 0} selected{/if}" data-name="{$value.id}">
+                                                <b></b>
+                                                <a href="javascript:void(0);" name="{$value.id}" class="noimg">
+                                                    <i>{$value.label}</i>
+                                                    <input id="spec_value_{$value.id}" type="{if $spec.attr_type eq 2}checkbox{else}radio{/if}" data-attrtype="{if $spec.attr_type eq 2}2{else}1{/if}" name="spec_{$spec_key}" value="{$value.id}" autocomplete="off" class="hide" /></a>
+                                                    {if $key eq 0}
+                                                    <script type="text/javascript">
+                                                        $(function(){
+                                                            $("#spec_value_{$value.id}").prop("checked", true);
+                                                        });
+                                                    </script>
+                                                    {/if}
+                                                </a>
+                                            </li>
+                                            {/if}
+                                            <!-- {/foreach} -->
+                                        </ul>
+                                    </div>
+                                    <!-- {else} 列表下拉-->
+                                    ...
+                                    <!-- {/if} -->
+                                    <input type="hidden" name="spec_list" value="{$spec_key}" data-spectype="{if $spec.attr_type eq 1}attr-radio{else}attr-check{/if}" />
+                                </div>
+                                <!-- {/if} -->
+                                <!-- {/foreach} -->
+                            </div>
+                            </form>
+                            <!-- {/if} -->
+                            
+                            <div class="snatch-summary">
+                            	<!-- {if $myprice.is_end eq false} -->
+                                <form action="javascript:bid()" method="post" name="formBid" id="formBid">
+                                    <div class="summary-count-wp">
+                                        <div class="fp-l" style="display:none">{$lang.min_fare}：<em>￥<span id="priceLowerOffset">1.00</span></em></div>
+                                        <div class="amount-wrap-2">
+                                            <input type="hidden" name="max-price" id="maxPrice" value="{$snatch_goods.end_price}" />
+                                            <i class="iconfont icon-reduce" onclick="decre()"></i>
+                                            <input type="text" name="buy-price"  value="{$snatch_goods.start_price}" id="buyPrice" />
+                                            <i class="iconfont icon-plus" onclick="incre()"></i>
+                                        </div>
+                                    </div>
+                                    <div class="choose-btns clearfix">
+                                        <input type="hidden" name="act" value="buy" />
+                                        <input type="hidden" name="id" value="{$id}" />
+                                        <input type="hidden" name="snatch_id" value="{$id}" />
+                                        <a href="javascript:bid();" class="btn-append">{$lang.me_bid}</a>
+                                    </div>
+                                    
+                                    <input type="hidden" value="" name="goods_attr_id" id="goods_attr_id" />
+                                	<input type="hidden" value="{$goods_id|default:0}" name="goods_id" />
+                                    <input type="hidden" value="{$region_id|default:0}" name="region_id" />
+                                    <input type="hidden" value="{$area_id|default:0}" name="area_id" />
+                                    <input type="hidden" value="{$cfg.add_shop_price}" name="add_shop_price" ectype="add_shop_price" />
+                                </form>
+                                <!--{else}-->
+                                <!-- {if $result.order_count eq 0 and $result.user_id eq $smarty.session.user_id} -->
+                                    <div class="summary-count-wp">
+                                        <div class="me_grab">{$lang.snatch_desc}</div>
+                                        <div class="me_bid">
+                                            <span>{$lang.nin_want_bid}：</span>
+                                            <div class="p-price">{$result.formated_bid_price}</div>
+                                        </div>
+                                    </div>
+                                    <div class="choose-btns clearfix">
+                                        <form name="buy" action="snatch.php" method="post" name="formBid" id="formBid">
+                                            <input type="hidden" name="act" value="buy" />
+                                            <input type="hidden" name="id" value="{$id}" />
+                                            <input type="submit" name="bug" class="sc-btn sc-redBg-btn btn35 w120 mt20" value="{$lang.go_pay}" />
+                                            
+                                            <input type="hidden" value="" name="goods_attr_id" id="goods_attr_id" />
+                                            <input type="hidden" value="{$goods_id|default:0}" name="goods_id" />
+                                            <input type="hidden" value="{$region_id|default:0}" name="region_id" />
+                                            <input type="hidden" value="{$area_id|default:0}" name="area_id" />
+                                            <input type="hidden" value="{$cfg.add_shop_price}" name="add_shop_price" ectype="add_shop_price" />
+                                        </form>
+                                    </div>
+                                    <!--{else} -->
+                                    <div class="choose-btns clearfix">
+                                        <a href="javascript:void(0);" class="btn-invalid">{$lang.has_ended}</a>
+                                    </div>
+                                    <!--{/if}-->
+                                <!--{/if}-->
+                            </div>    
+                        </div>
+                    </div>
+                    <div class="auction-progress clearfxi">
+                        <div class="apt">竞拍流程</div>
+                        <div class="apb">
+                            <ul>
+                                <li>01.获取资格<i class="iconfont icon-arrow-right-alt"></i></li>
+                                <li>02.夺得商品<i class="iconfont icon-arrow-right-alt"></i></li>
+                                <li>03.确认订单<i class="iconfont icon-arrow-right-alt"></i></li>
+                                <li>04.支付订单<i class="iconfont icon-arrow-right-alt"></i></li>
+                                <li>05.交易完成</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="activity-desc-detail" id="detail-slide">
+                        <div class="hd">
+                            <ul>
+                                <li>夺宝介绍</li>
+                                <li>出价记录</li>
+                                <li>服务保障</li>
+                                <li>夺宝攻略</li>
+                            </ul>
+                        </div>
+                        <div class="bd">
+                            <div class="bd-item">
+                                <div class="desc-detail-title">{$lang.The_Indiana}</div>
+                                <div class="desc-detail-content">
+                                	{if $snatch_goods.desc}
+                                    	{$snatch_goods.desc}
+                                    {else}
+                                    	<div class="no_records">
+                                        	<i class="no_icon_two"></i>
+                                            <div class="no_info">
+                                            	<h3>此活动当前未设置夺宝详情信息哟~</h3>
+                                            </div>
+                                        </div>
+                                    {/if}    
+                                </div>
+                            </div>
+                            <div class="bd-item" id="ECS_PRICE_LIST" style="display:none;">
+                                <!-- #BeginLibraryItem "/library/snatch_price.lbi" --><!-- #EndLibraryItem -->
+                            </div>
+                            <div class="bd-item clearfix" style="display:none;">
+                                {if $snatch_goods.act_promise}
+                                	{$snatch_goods.act_promise}
+                                {else}
+                                	<div class="no_records">
+                                        <i class="no_icon_two"></i>
+                                        <div class="no_info">
+                                            <h3>此活动当前未设置服务保障哟~</h3>
+                                        </div>
+                                    </div>
+                                {/if}
+                            </div>
+                            <div class="bd-item clearfix" style="display:none;">
+                                {if $snatch_goods.act_ensure}
+                                	{$snatch_goods.act_ensure}
+                                {else}
+                                	<div class="no_records">
+                                        <i class="no_icon_two"></i>
+                                        <div class="no_info">
+                                            <h3>此活动当前未设置竞拍攻略哟~</h3>
+                                        </div>
+                                    </div>
+                                {/if}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="acde-right">
+                    <div class="org-box">
+                        <!--{if $goods.shopinfo.brand_thumb}--><div class="org-logo"><img src="{$goods.shopinfo.brand_thumb}"></div><!--{/if}-->
+                        <p><span>夺宝机构：</span>{$goods.rz_shopName}</p>
+                        <div class="clearfix">
+                            {if $shop_information.is_IM eq 1 || $shop_information.is_dsc}
+                            <a id="IM" onclick="openWin(this)" href="javascript:;" goods_id="{$goods.goods_id}" class="a-kefu"><i class="icon i-kefu"></i><span>{$lang.con_cus_service}</span></a>
+                            {else}
+                                {if $basic_info.kf_type eq 1}
+                                <a href="http://www.taobao.com/webww/ww.php?ver=3&touid={$basic_info.kf_ww}&siteid=cntaobao&status=1&charset=utf-8" class="a-kefu" target="_blank"><i class="icon"></i><span>{$lang.con_cus_service}</span></a>
+                                {else}
+                                <a href="http://wpa.qq.com/msgrd?v=3&uin={$basic_info.kf_qq}&site=qq&menu=yes" class="a-kefu" target="_blank"><i class="icon"></i><span>{$lang.con_cus_service}</span></a>
+                                {/if}
+                            {/if}
+                        </div>
+                    </div>
+                    <div id="records-list">
+                        <!-- #BeginLibraryItem "/Library/snatch.lbi" --><!-- #EndLibraryItem -->
+                    </div>
+                    <div class="acde-right-title">{$lang.Recommended_Indiana}</div>
+                    <ul class="side-goods">
+                        <!--{foreach from=$hot_goods item=goods name=hot}-->
+                        <li>
+                            <div class="p-img">
+                                <a href="{$goods.url}" target="_blank"><img src="{$goods.thumb}" alt="{$goods.short_style_name}"/></a>
+                            </div>
+                            <div class="p-name"><a href="{$goods.url}" target="_blank" title="{$goods.short_style_name|escape:html}">{$goods.short_style_name}</a></div>
+                            <div class="p-price"><em>￥</em>{$goods.auction.start_price}</div>
+                        </li>
+                        <!--{/foreach}-->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- #BeginLibraryItem "/library/goods_fittings_cnt.lbi" --><!-- #EndLibraryItem -->
+    
+    <!-- @authro guan start	添加对比文件 start -->	 
+    <!-- #BeginLibraryItem "/library/duibi.lbi" --><!-- #EndLibraryItem -->
+    <!-- @authro guan start	添加对比文件 end -->
+    
+    {* DSC 提醒您：动态载入user_menu_position.lbi，显示首页分类小广告 *}{insert name='user_menu_position'}
+    
+    <!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+   
+    {insert_scripts files='jquery.SuperSlide.2.1.1.js,jquery.yomi.js,common.js,cart_common.js,warehouse_area.js,magiczoomplus.js,cart_quick_links.js'}
+    <script type="text/javascript" src="../js/calendar.php?lang={$cfg_lang}"></script>
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/dsc-common.js"></script>
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.purebox.js"></script>
+    
+    <script type="text/javascript">
+	
+	//全局变量
+	var goods_id = {$goods_id|default:0};
+	var goodsId = {$goods_id|default:0};
+	var add_shop_price = $("*[ectype='add_shop_price']").val();
+	
+	$(function(){
+		changePrice('onload');
+	});
+	
+	//价格加减
+	increase();
+	
+	//商品相册小图滚动
+	$(".spec-list").slide({mainCell:".spec-items ul",effect:"left",trigger:"click",pnLoop:false,autoPage:true,scroll:1,vis:5,prevCell:".spec-prev",nextCell:".spec-next"});
+	
+	//夺宝详情切换
+	$("#detail-slide").slide({titCell:".hd li",mainCell:".bd",titOnClassName:"on",trigger: "click"});
+	
+	/*团购倒计时*/
+	$(".cd-time").each(function(){
+		$(this).yomi();
+	});
+	
+	/* 点击可选属性或改变数量时修改商品价格的函数 */
+	function changePrice(onload){
+		var qty = 1;
+		var goods_attr_id = '';
+		var goods_attr = '';
+		var attr_id = '';
+		var attr = '';
+		var region_id = $(":input[name='region_id']").val();
+		var area_id = $(":input[name='area_id']").val();
+
+		if(document.forms['ECS_FORMBUY']){
+			goods_attr_id = getSelectedAttributes(document.forms['ECS_FORMBUY']);
+			$("#goods_attr_id").val(goods_attr_id);
+		}
+		
+
+		if(onload != 'onload'){
+			if(add_shop_price == 0){
+				if(document.forms['ECS_FORMBUY']){
+					attr_id = getSelectedAttributesGroup(document.forms['ECS_FORMBUY']);
+					goods_attr = '&goods_attr=' + attr_id;
+				}
+			}
+			Ajax.call('goods.php', 'act=price&id=' + goodsId + '&attr=' + goods_attr_id + goods_attr + '&number=' + qty + '&warehouse_id=' + region_id + '&area_id=' + area_id, changePriceResponse, 'GET', 'JSON');
+		}else{
+			attr = '&attr=' + goods_attr_id;
+			Ajax.call('goods.php', 'act=price&id=' + goodsId + attr + '&number=' + qty + '&warehouse_id=' + region_id + '&area_id=' + area_id + '&onload=' + onload, changePriceResponse, 'GET', 'JSON');
+		}
+	}
+
+	/* 接收返回的信息 回调函数 */
+	function changePriceResponse(res){
+		if(res.err_msg.length > 0){
+			pbDialog(res.err_msg," ",0,450,80,50);
+		}else{
+
+			if(res.attr_number <= 0){
+				
+				$(".btn-append").hide();
+				
+				pbDialog("很抱歉，您夺宝的商品暂时缺货，请及时联系客服！"," ",0,450,80,50);
+			}else{
+				$(".btn-append").show();
+			}
+		}
+	}
+    </script>
+</body>
+</html>

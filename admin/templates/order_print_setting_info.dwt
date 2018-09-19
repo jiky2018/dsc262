@@ -1,0 +1,124 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$lang.order_print_setting}-{$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.setting_info.0}</li>
+                    <li>{$lang.operation_prompt_content.setting_info.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+                        <form method="post" action="tp_api.php" name="theForm">
+                            <div class="switch_info">
+                                <div class="item">
+                                    <div class="label">{$lang.print_spec}：</div>
+                                    <div class="label_value">
+                                      	<div class="imitate_select select_w120" id="specification">
+                                            <div class="cite">{$lang.please_select}</div>
+                                            <ul style="display: none;">
+												{foreach from=$print_size item=item}
+                                                <li><a href="javascript:;" data-value="{$item.specification}" data-width="{$item.width}" class="ftx-01">{$item.specification}</a></li>
+												{/foreach}
+                                            </ul>
+                                            <input name="specification" type="hidden" value="{$print_setting.specification}" id="specification_val">
+                                        </div>
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.printer}：</div>
+                                    <div class="label_value">
+                                        <input type="text" name="printer" class="text" autocomplete="off" value="{$print_setting.printer}" />
+                                    	<div class="notic">{$lang.printer_name_notic}</div>
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.width}(mm)：</div>
+                                    <div class="label_value">
+                                        <input type="text" name="width" class="text w100" autocomplete="off" value="{$print_setting.width}" />
+                                        <div class="notic">{$lang.print_spec_width_notic}</div>
+                                    </div>
+                                </div>								
+                                <div class="item">
+                                    <div class="label">{$lang.set_default}：</div>
+                                    <div class="label_value">
+                                        <div class="checkbox_items">
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="is_default" id="is_default_1" value="1" {if $print_setting.is_default eq 1} checked="true"{/if} />
+                                                <label for="is_default_1" class="ui-radio-label">{$lang.yes}</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="is_default" id="is_default_2" value="0" {if $print_setting.is_default eq 0} checked="true"{/if} />
+                                                <label for="is_default_2" class="ui-radio-label">{$lang.no}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="item">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="label_value info_btn">
+                                        <a href="javascript:;" class="button" id="submitBtn">{$lang.button_submit}</a>
+                                        <input type="hidden" name="act" value="{$form_action}" />
+                                        <input type="hidden" name="id" value="{$print_setting.id}" />
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+    </div>
+	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+	$(function(){
+		//表单验证
+		$("#submitBtn").click(function(){
+			if($("form[name='theForm']").valid()){
+				$("form[name='theForm']").submit();
+			}
+		});
+	
+		$("form[name='theForm']").validate({
+			errorPlacement:function(error, element){
+				var error_div = element.parents('div.label_value').find('div.form_prompt');
+				element.parents('div.label_value').find(".notic").hide();
+				error_div.append(error);
+			},
+			ignore:"",
+			rules:{
+				specification :{
+					required : true
+				},
+				printer : {
+					required : true
+				}
+			},
+			messages:{
+				specification:{
+					required : '<i class="icon icon-exclamation-sign"></i>'+specification_notic
+				},
+				printer : {
+					required : '<i class="icon icon-exclamation-sign"></i>'+printer_name_notic
+				}
+			}			
+		});
+	});
+	
+	$.divselect("#specification","#specification_val",function(obj){
+		var val = obj.data("width");
+		$("input[name='width']").val(val);
+	});
+	</script>
+</body>
+</html>

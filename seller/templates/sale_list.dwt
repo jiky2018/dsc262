@@ -1,0 +1,244 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+            	{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="clear"></div>
+                <div class="order_stats">
+                    <div class="order_stats_search">
+                        <form name="TimeInterval" action="javascript:getList()" style="margin:0px">
+                            <div class="screeItme">
+                                <strong class="fl lh mr10">{$lang.start_end_date}：</strong>
+                                <div class="text_time" id="text_time1">
+                                    <input name="start_date" type="text" id="start_date" size="15" value='{$start_date}' readonly class="text" />
+                                </div>
+                                <span class="bolang">&nbsp;&nbsp;~&nbsp;&nbsp;</span>
+                                <div class="text_time" id="text_time2">
+                                    <input name="end_date" type="text" id="end_date" size="15" value='{$end_date}' readonly class="text" />
+                                </div>
+							</div>
+                            <div class="screeItme mt10">
+                                <strong class="fl lh mr10">时间类型：</strong>
+                                <div  class="imitate_select select_w145">
+                                    <div class="cite">请选择</div>
+                                    <ul>
+                                        <li><a href="javascript:;" data-value="0" class="ftx-01">按发货时间</a></li>
+                                        <li><a href="javascript:;" data-value="1" class="ftx-01">按下单时间</a></li>
+                                    </ul>
+                                    <input name="time_type" type="hidden" />
+                                </div>
+                            </div>
+                            <div class="screeItme mt10">
+                                <strong class="fl lh mr10">订单来源：</strong>
+                                <div  class="imitate_select select_w145">
+                                    <div class="cite">请选择</div>
+                                    <ul>
+                                        <li><a href="javascript:;" data-value="pc" class="ftx-01">PC</a></li>
+                                        <li><a href="javascript:;" data-value="touch" class="ftx-01">WAP</a></li>
+                                        <li><a href="javascript:;" data-value="mobile" class="ftx-01">APP</a></li>
+                                        <li><a href="javascript:;" data-value="ecjia-cashdesk" class="ftx-01">收银台</a></li>
+                                    </ul>
+                                    <input name="order_referer" type="hidden" value="" id="order_referer_val">
+                                </div>
+                            </div>                            
+                            <div class="screeItme mt10">
+                                <div class="bf100 fl">
+                                    <strong class="fl lh mr10">订单状态：</strong>
+                                    {foreach from=$os_list item=os key=key}
+                                    <div class="checkbox_item fl lh mr10">
+                                    <input name="order_status[]" type="checkbox" value="{$key}" id="status_{$key}" class="ui-checkbox" />
+                                    <label class="ui-label" for="status_{$key}">{$os}</label>
+                                    </div>
+                                    {/foreach}
+                                </div>
+                                <div class="bf100 fl">
+                                    <strong class="fl lh mr10">发货状态：</strong>
+                                    {foreach from=$ss_list item=ss key=key}
+                                    <div class="checkbox_item fl lh mr10">
+                                    <input name="shipping_status[]" type="checkbox" class="ui-checkbox" id="shipping_{$key}" value="{$key}" />
+                                    <label class="ui-label" for="shipping_{$key}">{$ss}</label>
+                                    </div>
+                                    {/foreach}
+                                </div>
+                                <div class="bf100 fl mt5">
+                                    <strong class="fl lh mr10">商品货号：</strong>
+                                    <input name="goods_sn" value="" type="text" class="text text_2 mr10"/>
+                                    <input type="submit" name="submit" value="{$lang.query}" class="sc-btn sc-blueBg-btn btn30" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <form method="POST" action="" name="listForm">
+                        <div class="list-div" id="listDiv">
+                            {/if}
+                            <table width="100%" class="ecsc-default-table ecsc-table-seller mt20">
+                                <tr>
+                                    <th width="10%">商家名称</th>
+                                    <th width="10%">货号</th>
+                                    <th width="30%">{$lang.goods_name}</th>
+                                    <th width="10%">{$lang.order_sn}</th>
+                                    <th width="10%"><a href="javascript:listTable.sort('goods_number'); ">{$lang.amount}</a></th>
+                                    <th width="10%">{$lang.sell_price}</th>
+                                    <th width="10%">总金额</th>
+                                    <th width="10%">{$lang.sell_date}</th>
+                                </tr>
+                                {foreach from=$goods_sales_list item=list}
+                                <tr align="center">
+                                    <td align="center" class="red">{$list.shop_name}</td>
+                                    <td align="center">{$list.goods_sn}</td>
+                                    <td align="left"><a href="../goods.php?id={$list.goods_id}" target="_blank">{$list.goods_name}</a></td>
+                                    <td align="center"><a href="order.php?act=info&order_id={$list.order_id}">{$list.order_sn}</a></td>
+                                    <td align="center">{$list.goods_num}</td>
+                                    <td align="center">{$list.sales_price}</td>
+                                    <td align="center">{$list.total_fee}</td>
+                                    <td align="center">{$list.sales_time}</td>
+                                </tr>
+                                {foreachelse}
+                                <tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+                                {/foreach}
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="20">
+                                        {include file="page.dwt"}
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                            <script type="text/javascript">
+                            	listTable.recordCount = {$record_count};
+								listTable.pageCount = {$page_count};
+								{foreach from=$filter item=item key=key}
+								listTable.filter.{$key} = '{$item}';
+								{/foreach}
+                            </script>
+                            {if $full_page}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript">
+	{literal}
+			onload = function()
+	{
+		// 开始检查订单
+		startCheckOrder();
+		getDownUrl();
+	}
+	
+	function getList()
+	{
+		var frm =  document.forms['TimeInterval'];
+	
+		var where_order = '';
+		var where_shipping = '';
+		var order_arr = new Array();
+		var order_status = frm.elements['order_status[]'];
+	
+		var shipping_arr = new Array();
+		var shipping_status = frm.elements['shipping_status[]'];
+	
+		for(var i=0; i<order_status.length;i++){
+			if(order_status[i].checked == true){
+				order_arr.push(order_status[i].value);
+			}
+		}
+	
+		listTable.filter['order_status'] = order_arr;
+	
+		for(var i=0; i<shipping_status.length;i++){
+			if(shipping_status[i].checked == true){
+				shipping_arr.push(shipping_status[i].value);
+			}
+		}
+	
+		listTable.filter['shipping_status'] = shipping_arr;
+	
+		listTable.filter['start_date'] = frm.elements['start_date'].value;
+		listTable.filter['end_date'] = frm.elements['end_date'].value;
+		listTable.filter['goods_sn'] = frm.elements['goods_sn'].value;
+		listTable.filter['time_type'] = frm.elements['time_type'].value;
+        listTable.filter['order_referer'] = frm.elements['order_referer'].value;
+		listTable.filter['page'] = 1;
+		listTable.loadList();
+		getDownUrl(frm.elements['goods_sn'].value, order_arr, shipping_arr);
+	}
+	
+	function getDownUrl(goods_sn, order_arr, shipping_arr)
+	{
+		var where_sn = '';
+		var where_order = '';
+		var where_shipping = '';
+		var aTags = document.getElementsByTagName('A');
+		for (var i = 0; i < aTags.length; i++)
+		{
+			if (aTags[i].href.indexOf('download') >= 0)
+			{
+				if (listTable.filter['start_date'] == "")
+				{
+					var frm =  document.forms['TimeInterval'];
+					listTable.filter['start_date'] = frm.elements['start_date'].value;
+					listTable.filter['end_date'] = frm.elements['end_date'].value;
+				}
+	
+	
+	
+				if(!(typeof(goods_sn) == 'undefined')){
+					if(goods_sn != ''){
+						where_sn = "&goods_sn=" + goods_sn;
+					}
+				}
+	
+				if(order_arr){
+					where_order = '&order_status=' + listTable.filter['order_status'];
+				}
+	
+				if(shipping_arr){
+					where_shipping = '&shipping_status=' + listTable.filter['shipping_status'];
+				}
+				
+				/* 时间类型 by wu */
+				var where_time = '&time_type=' + listTable.filter['time_type'];	
+
+                /* 订单来源 */
+                var where_referer = '&order_referer=' + listTable.filter['order_referer'];
+	
+				aTags[i].href = "sale_list.php?act=download&start_date=" + listTable.filter['start_date'] + "&end_date=" + listTable.filter['end_date'] + where_sn + where_order + where_shipping + where_time + where_referer;
+			}
+		}
+	}
+	
+	//日期选择插件调用start sunle
+	var opts1 = {
+		'targetId':'start_date',//时间写入对象的id
+		'triggerId':['start_date'],//触发事件的对象id
+		'alignId':'text_time1',//日历对齐对象
+		'format':'-'//时间格式 默认'YYYY-MM-DD HH:MM:SS'
+	},opts2 = {
+		'targetId':'end_date',
+		'triggerId':['end_date'],
+		'alignId':'text_time2',
+		'format':'-'
+	}
+	
+	xvDate(opts1);
+	xvDate(opts2);
+	//日期选择插件调用end sunle
+	
+	//-->
+</script>
+</body>
+</html>
+{/if}

@@ -1,0 +1,304 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                
+                {foreach from=$single_img item=img}
+                    <img style="overflow:hidden; word-break:break-all;" src="{$img.thumb_url}" alt="" title=""/>
+                    <div style="display:none; margin: auto;  position: absolute;  top: 0; left: 0; bottom: 0; right: 0;"><img src='{$img.img_url}' /></div>
+                {/foreach}
+
+                {if $reply_info.content}
+                <div class="info_warp">
+                  <table width="100%">
+                    <tr>
+                      <td>
+                      {$lang.admin_user_name}&nbsp;<a href="mailto:{$msg.email}"><b>{$reply_info.user_name}</b></a>&nbsp;{$lang.from}
+                      &nbsp;{$reply_info.add_time}&nbsp;{$lang.reply}
+                    </td>
+                    </tr>
+                    <tr>
+                      <td><hr color="#dadada" size="1"></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div style="overflow:hidden; word-break:break-all;">{$reply_info.content}</div>
+                        <div align="right"><b>{$lang.ip_address}</b>: {$reply_info.ip_address}</div>
+                      </td>
+                    </tr>
+                    
+                  </table>
+                </div>
+                {/if}
+
+                {if $send_fail}
+                <ul style="padding:0; margin: 0; list-style-type:none; color: #CC0000;">
+                <li style="border: 1px solid #CC0000; background: #FFFFCC; padding: 10px; margin-bottom: 5px;" >{$lang.mail_send_fail}</li>
+                </ul>
+                {/if}
+
+                <div class="ecsc-form-goods">
+                <form method="post" action="discuss_circle.php" name="theForm" onsubmit="return validate_submit();" enctype="multipart/form-data">
+                <div class="wrapper-list border1">
+                	<dl>
+                    	<dt>{$lang.discuss_circle_type}：</dt>
+                        <dd>
+                        	<div class="checkbox_items">
+                            	<div class="checkbox_item">
+                                	<input name="discuss_type" id="discuss_type_1" type="radio" class="ui-radio" {if $msg.dis_type eq 1 || !$msg.dis_type}checked="checked"{/if} value="1" />
+                                    <label class="ui-radio-label" for="discuss_type_1">{$lang.forum.1}</label>
+                                </div>
+                                <div class="checkbox_item">
+                                	<input name="discuss_type" id="discuss_type_2" type="radio" class="ui-radio" {if $msg.dis_type eq 2}checked="checked"{/if} value="2" />
+                                    <label class="ui-radio-label" for="discuss_type_2">{$lang.forum.2}</label>
+                                </div>
+                                <div class="checkbox_item">
+                                    <input name="discuss_type" id="discuss_type_3" type="radio" class="ui-radio" {if $msg.dis_type eq 3}checked="checked"{/if} value="3" />
+                                    <label class="ui-radio-label" for="discuss_type_3">{$lang.forum.3}</label>
+                                </div>
+                            </div>
+                        </dd>
+                    </dl>
+                    {if $act neq 'update'}
+                    <dl>
+                    	<dt>{$lang.search_goods}：</dt>
+                        <dd>
+                        	<input name="keyword" type="text" id="keyword" class="text text_2 mr10">
+                        	<input name="search" type="button" id="search" value="{$lang.button_search}" class="sc-btn sc-blueBg-btn" onclick="searchGoods()" />
+                        </dd>
+                    </dl>
+                    <dl>
+                    	<dt>{$lang.goods_name}：</dt>
+                        <dd>
+                            <div class="imitate_select select_w320">
+                                <div class="cite">{$lang.search_goods}</div>
+                                <ul style="display: none;" id="goods_id">
+                                    <li><a href="javascript:;" data-value="{$key}" class="ftx-01">{$lang.search_goods}</a></li>
+                                </ul>
+                                <input name="goods_id" type="hidden" value="{$tag.goods_id}">
+                            </div>
+                        </dd>
+                    </dl>
+                    <dl>
+                    	<dt>{$lang.discuss_user}：</dt>
+                        <dd><input name="user_name" type="text" id="user_name" class="text text_2"></dd>
+                    </dl>
+                    {else}
+                    <dl>
+                    	<dt>{$lang.discuss_goods}：</dt>
+                        <dd><img width="100" src="../{$msg.original_img}" /><a href="../goods.php?id={$msg.goods_id}" target="_blank">{$msg.goods_name}</a></dd>
+                    </dl>
+                    {/if}
+                    <dl>
+                    	<dt>{$lang.discuss_title}：</dt>
+                        <dd><input id="dis_title" class="text" type="text" name="dis_title" value="{$msg.dis_title}" size="60"></dd>
+                    </dl>
+                    <dl>
+                    	<dt>{$lang.discuss_text}：</dt>
+                        <dd>
+                        	<input type="hidden" name="content" id="content" value="{$msg.dis_text}">
+                    		<iframe src="templates/editor/editor.html?id=content" frameborder="0" scrolling="no" width="693" height="320"></iframe>
+                        </dd>
+                    </dl>
+                    <!--{if $act eq 'update'}
+                    <dl>
+                    	<dt>{$lang.img_list}:</dt>
+                        <dd>
+                        	{foreach from=$imgs item=imgs key=i}
+                            <div id="gallery_{$imgs.img_id}" style="float:left; text-align:center; border: 1px solid #DADADA; margin: 4px; padding:2px;">
+                            <a href="javascript:;" onclick="if (confirm('{$lang.drop_img_confirm}')) dropImg('{$imgs.img_id}')">[-]&nbsp;{$lang.drop_img}</a>
+                            <br />
+                            <a href="goods.php?act=show_image&img_url={$imgs.img_url}" target="_blank"><img src="../{$imgs.thumb_url}" width="300" border="0" /></a>
+                            </div>
+                            {/foreach}
+                        </dd>
+                    </dl>
+                    {/if}
+                    {if $act eq 'insert'}
+                    <dl>
+                    	<dt>{$lang.add_img}：</dt>
+                        <dd>
+                        	<table id="gallery-table" align="left">
+                                <tr class="no-line">
+                                    <td class="pt5">
+                                        <a href="javascript:;" onclick="addImg(this)" class="fl mr10">[+]</a>
+                                        <input type="hidden" name="img_desc[]" size="20" />
+                                        <div id="img_url_id" class="type-file-box">
+                                        	<div class="input">
+                                            <input type="text" name="textfile" class="type-file-text"  id="textfield" autocomplete="off" readonly>
+                                            <input type="button" name="button" id="button" class="type-file-button" value="上传..." />
+                                            <input type="file" class="type-file-file"  name="img_url[]" data-state="imgfile" size="30" hidefocus="true" value="" />
+                                            </div>
+                                        </div>
+                                        <input type="hidden" size="40" value="http://" style="color:#aaa;" name="img_file[]"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </dd>
+                    </dl>
+                    {/if}-->
+                    <dl class="button_info">
+                    	<dt>&nbsp;</dt>
+                        <dd>
+                        	<input name="submit" type="submit" value="{$lang.button_submit}" class="sc-btn sc-blueBg-btn btn35">
+                            <input type="reset" value="{$lang.button_reset}" class="sc-btn btn35 sc-blue-btn">
+                            {if $reply_info.content}<input type="submit" name="remail" value="{$lang.remail}" class="sc-btn sc-blueBg-btn btn35">{/if}
+                            <input type="hidden" name="dis_id" value="{$msg.dis_id}">
+                            <input type="hidden" name="dis_type" value="{$msg.dis_type}">
+                            <input type="hidden" name="act" value="{$act}">
+                        </dd>
+                    </dl>
+                </div>
+                </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<!--start-->
+{literal}
+<script type="text/javascript">
+/**
+ * 
+ */
+function validate_submit()
+{
+	if(document.getElementById("discuss_type").value == "") {
+	      alert("{$lang.please_discuss_type}"); 
+	     document.getElementById("discuss_type").focus();
+	     return false;
+	}
+	
+	if(document.getElementById("goods_id").value == "" || document.getElementById("goods_id").value == "0") {
+	      alert("{$lang.please_select_goods}"); 
+	     document.getElementById("goods_id").focus();
+	     return false;
+	}
+	
+	if(document.getElementById("user_name").value == "") {
+	      alert("{$lang.please_user_name}"); 
+	     document.getElementById("user_name").focus();
+	     return false;
+	}
+	
+	if(document.getElementById("dis_title").value == "") {
+	      alert("{$lang.please_dis_title}"); 
+	     document.getElementById("dis_title").focus();
+	     return false;
+	}
+	
+	if(document.getElementById("content").value == "") {
+	      alert("{$lang.please_dis_text}"); 
+	     document.getElementById("content").focus();
+	     return false;
+	}
+	
+}
+
+onload = function() {
+    //
+    startCheckOrder();
+}
+//-->
+
+function add_integ(obj, act, id, goods_id, user_id)
+{
+	var integ = document.getElementById('add_integration').value;
+	location.href='comment_manage.php?act=single_check&check=' + act + '&id=' + id + '&integ=' + integ + '&goods_id=' + goods_id + '&user_id=' + user_id;
+}
+
+function searchGoods()
+{
+  var filter = new Object;
+  filter.keyword  = document.forms['theForm'].elements['keyword'].value;
+
+  Ajax.call('discuss_circle.php?is_ajax=1&act=search_goods', filter, searchGoodsResponse, 'GET', 'JSON');
+}
+
+function searchGoodsResponse(result)
+{
+  if (result.error == '1' && result.message != '')
+  {
+    alert(result.message);
+	return;
+  }
+
+
+  $("#goods_id").find("ul").html('');
+
+  /* åˆ›å»º options */
+  var goods = result.content;
+  if (goods)
+  {
+    for (i = 0; i < goods.length; i++)
+    {
+      var opt = '<li><a href="javascript:;" data-value="'+ goods[i].goods_id +'" class="ftx-01">'+ goods[i].goods_name +'</a></li>';
+      $("#goods_id").append(opt);
+    }
+  }
+  return;
+}
+
+/**
+ * 新增一个图片
+ */
+function addImg(obj)
+{
+    var src  = obj.parentNode.parentNode;
+    var idx  = rowindex(src);
+    var tbl  = document.getElementById('gallery-table');
+    var tr = tbl.getElementsByTagName('tr');
+	
+	if(tr.length == 10)
+	{
+		alert("{$lang.max_ten_img}");
+		return false;
+	}
+	
+    var row  = tbl.insertRow(idx + 1);
+	row.className="no-line";
+    var cell = row.insertCell(-1);
+    cell.innerHTML = src.cells[0].innerHTML.replace(/(.*)(addImg)(.*)(\[)(\+)/i, "$1removeImg$3$4-");
+}
+
+/**
+ * 删除图片上传
+ */
+function removeImg(obj)
+{
+    var row = rowindex(obj.parentNode.parentNode);
+    var tbl = document.getElementById('gallery-table');
+
+    tbl.deleteRow(row);
+}
+
+/**
+ * 删除图片
+ */
+function dropImg(imgId)
+{
+  Ajax.call('goods.php?is_ajax=1&act=drop_image', "img_id="+imgId, dropImgResponse, "GET", "JSON");
+}
+
+function dropImgResponse(result)
+{
+    if (result.error == 0)
+    {
+        document.getElementById('gallery_' + result.content).style.display = 'none';
+    }
+}
+</script>
+{/literal}
+<!--end-->
+</body>
+</html>

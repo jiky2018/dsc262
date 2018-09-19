@@ -1,0 +1,120 @@
+<!doctype html>
+<html>
+<head>
+{include file ='library/admin_html_head.lbi'}
+</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$lang.goods_alt} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content_common}</li>
+                    <li>{$lang.operation_prompt_content.info.0}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+                        <form action="goods_lib_cat.php" method="post" name="theForm" enctype="multipart/form-data" id="category_info_form">
+                            <div class="switch_info">
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}&nbsp;{$lang.cat_name}：</div>
+                                    <div class="label_value">
+									  <input type='text' class="text" name='cat_name' maxlength="20" value='{$cat_info.cat_name|escape:html}' size='27' />
+                                      <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.parent_id}：</div>
+                                    <div class="label_value">
+										<div class="search_select">
+											<div class="categorySelect">
+												<div class="selection">
+													<input type="text" name="category_name" id="category_name" class="text w290 valid" value="{if $parent_category}{$parent_category}{else}{$lang.top_cat}{/if}" autocomplete="off" readonly data-filter="cat_name" />
+													<input type="hidden" name="parent_id" id="category_id" value="{$parent_id|default:0}" data-filter="cat_id" />
+												</div>
+												<div class="select-container w319" style="display:none;">
+													{include file="library/filter_category.lbi"}
+												</div>
+											</div>
+										</div>
+                                        <div class="notic">{$lang.select_default_topcat_notic}</div>
+                                    </div>
+                                </div>	
+                                <div class="item">
+                                    <div class="label">{$lang.is_show}：</div>
+                                    <div class="label_value">
+                                        <div class="checkbox_items">
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="is_show" id="is_show_1" value="1" {if $cat_info.is_show neq 0} checked="true" {/if}  />
+                                                <label for="is_show_1" class="ui-radio-label">{$lang.yes}</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                                <input type="radio" class="ui-radio" name="is_show" id="is_show_0" value="0" {if $cat_info.is_show eq 0} checked="true" {/if}  />
+                                                <label for="is_show_0" class="ui-radio-label">{$lang.no}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>									
+                                <div class="item">
+                                    <div class="label">{$lang.sort_order}：</div>
+                                    <div class="label_value">
+										<input type="text" class="text text_4 w50" name='sort_order' {if $cat_info.sort_order}value='{$cat_info.sort_order}'{else} value="50"{/if} size="15" autocomplete="off" />
+                                    </div>
+                                </div>								
+                                <div class="item">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="label_value info_btn">
+										<input type="submit" value="{$lang.button_submit}" class="button" id="submitBtn" />
+										<input type="reset" value="{$lang.button_reset}" class="button button_reset" />
+										<input type="hidden" name="act" value="{$form_act}" />
+										<input type="hidden" name="old_cat_name" value="{$cat_info.cat_name}" />
+										<input type="hidden" name="cat_id" value="{$cat_info.cat_id}" />
+                                    </div>
+                                </div>								
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+    </div>
+	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+	$(function(){
+		//表单验证
+		$("#submitBtn").click(function(){
+			if($("#category_info_form").valid()){
+				$("#category_info_form").submit();
+			}
+		});
+		
+		jQuery.validator.addMethod("specialchar", function(value, element){
+		  return this.optional(element) || !/[@'\\"#$%&\^*]/.test(value);   
+		},(not_ts_zf));
+		
+		$('#category_info_form').validate({
+			errorPlacement:function(error, element){
+				var error_div = element.parents('div.label_value').find('div.form_prompt');
+				element.parents('div.label_value').find(".notic").hide();
+				error_div.append(error);
+			},
+			rules:{
+				cat_name :{
+					required : true,
+					specialchar:""
+				}
+			},
+			messages:{
+				cat_name:{
+					 required : '<i class="icon icon-exclamation-sign"></i>'+cat_name_not_null
+				}
+			}			
+		});
+	});
+    </script>
+</body>
+</html>

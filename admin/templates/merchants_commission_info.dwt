@@ -1,0 +1,289 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="merchants_commission.php?act=list" class="s-back">{$lang.back}</a>{$lang.seller} - {$ur_here}</div>
+        <div class="content">
+        	{include file="library/commission_tab.lbi"}
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.info.0}</li>
+                    <li>{$lang.operation_prompt_content.info.1}</li>
+                    <li>{$lang.operation_prompt_content.info.2}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+						<form method="post" action="merchants_commission.php" name="theForm" enctype="multipart/form-data" id="merchants_commission_form">
+                            <div class="switch_info">
+                                <div class="items">
+                                    <div class="item">
+                                        <div class="label">{$lang.suppliers_store}：</div>
+                                        <div class="label_value red">{$shop_name}</div>
+                                    </div>
+                                    
+                                    <div class="item">
+                                        <div class="label">{$lang.account_credit_line}：</div>
+                                        <div class="label_value">
+											<input name="credit_money" type="text" class="text w120" value="{$seller_shopinfo.credit_money|default:0.00}" id="credit_money" autocomplete="off"/>
+                                            <div class="notic">{$lang.account_credit_line_notic}</div>
+										</div>
+                                    </div>
+                                    
+                                    <div class="item">
+                                        <div class="label">{$lang.commission_model}：</div>
+                                        <div class="label_value">
+											<div class="checkbox_items">
+                                                <div class="checkbox_item">
+                                                	<input name="commission_model" class="ui-radio" id="commission_model_0" value="0" {if $server.commission_model eq 0}checked="true"{/if} type="radio" autocomplete="off"/>
+                                                	<label for="commission_model_0" class="ui-radio-label">{$lang.seller_model}</label>
+                                                </div>
+                                                <div class="checkbox_item">
+                                                	<input name="commission_model" class="ui-radio" id="commission_model_1" value="1" {if $server.commission_model eq 1}checked="true"{/if} type="radio" autocomplete="off"/>
+                                                	<label for="commission_model_1" class="ui-radio-label">{$lang.category_model}</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="item {if $server.commission_model eq 1}hide{/if}" id="label_suppliers_percent">
+                                        <div class="label">{$lang.label_suppliers_percent}</div>
+                                        <div class="label_value">
+                                            <div id="merchants_percent" class="imitate_select select_w120">
+												<div class="cite">{$lang.please_select}</div>
+												<ul>
+												{foreach from=$percent_list item=list}
+													<li><a href='javascript:;' data-value='{$list.percent_id}' class='ftx-01'>{$list.percent_value}</a></li>
+												{/foreach}
+												</ul>
+                                                <input name="suppliers_percent" type="hidden" value="{$server.suppliers_percent|default:0}" id="merchants_percent_val">
+											</div>
+                                            <div class="notic">{$lang.label_suppliers_percent_notic}</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="item">
+                                        <div class="label">{$lang.settlement_cycle}：</div>
+                                        <div class="label_value">
+											<div id="settlement_cycle" class="imitate_select select_w120">
+												<div class="cite">{$lang.please_select}</div>
+												<ul>
+												{foreach from=$lang.cfg_range[settlement_cycle] item=options key=k}
+													<li><a href='javascript:;' data-value='{$k}' class='ftx-01'>{$options}</a></li>
+												{/foreach}
+												</ul>
+                                                <input name="settlement_cycle" type="hidden" value="{$server.cycle|default:0}" id="settlement_cycle_val">
+											</div>
+                                        </div>
+                                    </div>
+                                    <div class="item hide" id="label_press_day_number">
+                                        <div class="label">{$lang.label_press_day_number}：</div>
+                                        <div class="label_value">
+											<input name="day_number" type="text" class="text w100" value="{$server.day_number|default:0}" id="day_number"> {$lang.tian}
+										</div>
+                                    </div>
+                                    
+                                    <div class="item">
+                                        <div class="label">&nbsp;</div>
+                                        <div class="label_value">
+											<div class="notic">&nbsp;&nbsp;{$lang.settlement_cycle_notic}</div>
+										</div>
+                                    </div>
+                                    
+                                    <div class="item time_date hide" id="label_time_date">
+                                        <div class="label">{$lang.start_account_bill_time}：</div>
+                                        <div class="label_value">
+											<div id="text_time_end" class="text_time">
+                                                <input type="text" class="text mr0" name="bill_time" id="bill_time_id" value="{if $server.bill_time}{$server.bill_time}{else}{$nowtime}{/if}" autocomplete="off" readonly />
+                                            </div>
+										</div>
+                                    </div>
+                                    
+                                    <div class="item time_date hide">
+                                        <div class="label">&nbsp;</div>
+                                        <div class="label_value">
+											<div class="notic">&nbsp;&nbsp;{$lang.start_account_bill_time_notic}</div>
+										</div>
+                                    </div>
+                                    
+                                    <div class="item">
+                                        <div class="label">{$lang.frozen_bill_time}：</div>
+                                        <div class="label_value">
+											<input name="bill_freeze_day" type="text" class="text w120" value="{$server.bill_freeze_day|default:0}" id="bill_freeze_day">
+                                            <div class="notic">{$lang.frozen_bill_time_notic}</div>
+										</div>
+                                    </div>
+                                    
+                                    <div class="item">
+                                        <div class="label">{$lang.label_suppliers_server_desc}</div>
+                                        <div class="label_value">
+											<textarea  name="suppliers_desc" class="textarea">{$server.suppliers_desc}</textarea>
+										</div>
+                                    </div>
+                                    <div class="item">
+                                        <div class="label">&nbsp;</div>
+                                        <div class="label_value info_btn">
+											<input type="submit" class="button" value="{$lang.button_submit}" id="submitBtn" />
+											<input type="reset" class="button button_reset" value="{$lang.button_reset}" />
+											<input type="hidden" name="act" value="{$form_action}" />
+											<input type="hidden" name="id" value="{$user_id}" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+    <input name="bill_seller" type="hidden" value="{$user_id|default:0}" />
+ 	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+	//检查结算账单
+	checkBill();
+	
+	$(function(){
+		
+		//日期选择插件调用start sunle
+		var opts1 = {
+			'targetId':'bill_time_id',
+			'triggerId':['bill_time_id'],
+			'alignId':'text_time_end',
+			'hms':'off',
+			'format':'-',
+			'min':'{$nowtime}'
+		}
+		xvDate(opts1);
+		//日期选择插件调用end sunle
+	
+		var cycle_val = $("#settlement_cycle_val").val();
+		if(cycle_val == 7){
+			$(".time_date").show();
+			$("#label_press_day_number").show();
+		}else{
+			$(".time_date").hide();
+			$("#label_press_day_number").hide();
+		}
+		
+		get_percent_display({$server.commission_model|default:0});
+		
+		$(":input[name='commission_model']").click(function(){
+			var val = $(this).val();
+			
+			get_percent_display(val);
+		});
+		
+		//表单验证
+		$("#submitBtn").click(function(){
+			if($("#merchants_commission_form").valid()){
+				$("#merchants_commission_form").submit();
+			}
+		});
+		
+		//选择结算周期获取值
+		$("#settlement_cycle").find("ul li").each(function(index, element) {
+			$(this).click(function(){
+				var val = $(this).find("a").data('value');
+				if(val == 7){
+					$(".time_date").show();
+					$("#label_press_day_number").show();
+				}else{
+					$(".time_date").hide();
+					$("#label_press_day_number").hide();
+				}
+			});
+		});
+	
+		$('#merchants_commission_form').validate({
+			errorPlacement:function(error, element){
+				var error_div = element.parents('div.label_value').find('div.form_prompt');
+				element.parents('div.label_value').find(".notic").hide();
+				error_div.append(error);
+			},
+			rules:{
+				merchants_name :{
+					required : true
+				}
+			},
+			messages:{
+				merchants_name:{
+					 required : '<i class="icon icon-exclamation-sign"></i>'+select_user_name
+				}
+			}			
+		});
+	});
+	
+	function get_percent_display(val){
+		if(val == 1){
+			$("#label_suppliers_percent").hide();
+		}else{
+			$("#label_suppliers_percent").show();
+		}
+	}
+
+	//活动商品下拉
+	$.divselect("#merchants_name","#merchants_name_val",function(){
+		var user_id = $("#merchants_name_val").val();
+		Ajax.call('merchants_commission.php?is_ajax=1&act=query_merchants_info', "user_id="+user_id, query_merchantsResponse, "GET", "JSON");
+	});
+
+	function query_merchantsResponse(result)
+	{
+		if(result.content.user_id > 0){
+			document.getElementById('query_merchants').style.display = '';
+			document.getElementById('query_merchants_info').innerHTML = result.content.shoprz_brandName + result.content.shopNameSuffix;
+		}else{
+			document.getElementById('query_merchants').style.display = 'none';
+			document.getElementById('query_merchants_info').innerHTML = '';
+		}
+	}
+
+	function get_query_merchants(user_id)
+	{
+		Ajax.call('merchants_commission.php?is_ajax=1&act=query_merchants_info', "user_id="+user_id, query_merchantsResponse, "GET", "JSON");
+	}
+	
+	function query_merchantsResponse(result)
+	{
+		if(result.content.user_id > 0){
+			document.getElementById('query_merchants').style.display = '';
+			document.getElementById('query_merchants_info').innerHTML = result.content.shoprz_brandName + result.content.shopNameSuffix;
+		}else{
+			document.getElementById('query_merchants').style.display = 'none';
+			document.getElementById('query_merchants_info').innerHTML = '';
+		}
+	}
+			/**
+	* 按用户名搜索用户
+	*/
+	function searchUser()
+	{
+		var eles = document.forms['theForm'].elements;
+		$("#user_search").perfectScrollbar("destroy");
+		$("#user_search").perfectScrollbar();
+		/* 填充列表 */
+		var keywords = Utils.trim(eles['keyword'].value);
+	  
+		Ajax.call('merchants_commission.php?is_ajax=1&act=search_users', 'keywords=' + keywords, searchUserResponse, "GET", "JSON");
+	}
+	
+	function searchUserResponse(result)
+	{
+		$("#user_search").find("li").remove();
+		if (result.error == 0)
+		{
+			for (i = 0; i < result.content.length; i++)
+			{                                                               
+				$("#user_search").append("<li><a href='javascript:;' data-value='"+result.content[i].user_id+"' class='ftx-01'>"+result.content[i].user_name+"</a></li>");
+			}
+			$("#user_search").show();
+		}
+	}
+    </script>
+</body>
+</html>

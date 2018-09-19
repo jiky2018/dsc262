@@ -1,0 +1,212 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+				{include file ='library/url_here.lbi'}
+                
+				{if $action_link}
+				<div class="btn-info">
+					{if $action_link}
+					<a class="sc-btn sc-blue-btn" href="{$action_link.href}"><i class="{$action_link.class}"></i>{$action_link.text}</a>
+					{/if}
+					{if $action_link2}
+					<a class="sc-btn sc-blue-btn" href="{$action_link2.href}"><i class="{$action_link2.class}"></i>{$action_link2.text}</a>
+					{/if}
+					{if $action_link3}
+					<a class="sc-btn sc-blue-btn" href="{$action_link3.href}"><i class="{$action_link3.class}"></i>{$action_link3.text}</a>
+					{/if}
+				</div>
+				{/if}
+                <div class="explanation clear" id="explanation">
+                    <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4></div>
+                    <ul>
+                    	<li>温馨提示：提交操作将会重新审核，请慎重提交确定。</li>
+                    </ul>
+                </div>
+                
+                <div class="ecsc-form-goods">
+                    <div class="items-info">
+                        <form action="topic.php" method="post" name="theForm" id="topic_form" enctype="multipart/form-data">
+                        	<div class="wrapper-list border1">
+                            	<dl>
+                                	<dt>{$lang.require_field}&nbsp;{$lang.topic_title}：</dt>
+                                    <dd>
+                                        <input name="topic_name" type="text" value="{$topic.title}" size="40" class="text"/>
+                                        <div class="form_prompt"></div>
+									</dd>
+                                </dl>
+                                <dl>
+                                	<dt>{$lang.require_field}&nbsp;{$lang.cycle}：</dt>
+                                    <dd>
+                                    	<div class="text_time" id="text_time1">
+                                        	<input name="start_time" type="text" class="text" id="start_time" size="12" value='{$topic.start_time}' readonly="readonly" />
+                                        </div>
+                                        <span class="bolang">&nbsp;&nbsp;~&nbsp;&nbsp;</span>
+                                        <div class="text_time" id="text_time2">
+                                        	<input name="end_time" type="text" class="text" id="end_time" size="12" value='{$topic.end_time}' readonly="readonly" />
+                                        </div>
+                                        <div class="form_prompt"></div>
+                                    </dd>
+                                </dl>
+                                <dl>
+                                	<dt>{$lang.lable_topic_keywords}：</dt>
+                                    <dd><textarea name="keywords" id="keywords" cols="40" rows="3" class="textarea">{$topic.keywords}</textarea></dd>
+                                </dl>
+                                <dl>
+                                	<dt>{$lang.lable_topic_description}：</dt>
+                                    <dd><textarea name="description" id="description" cols="40" rows="5" class="textarea">{$topic.description}</textarea></dd>
+                                </dl>
+                                
+                                {if $topic.topic_id}
+                                <dl>
+                                    <dt>{$lang.adopt_status}：</dt>
+                                    <dd>
+                                        <div class="checkbox_items">
+                                            <div class="checkbox_item">
+                                                {if $topic.review_status eq 1}
+                                                    {$lang.not_audited}
+                                                {elseif $topic.review_status eq 2}
+                                                    {$lang.audited_not_adopt}
+                                                {elseif $topic.review_status eq 3}
+                                                    {$lang.audited_yes_adopt}
+                                                {/if}
+                                            </div>
+                                        </div>
+                                    </dd>
+                                </dl>
+                                    {if $topic.review_status eq 2}
+                                    <dl>
+                                        <dt>{$lang.adopt_reply}：</dt>
+                                        <dd>
+                                            <textarea name="review_content" cols="40" rows="3" class="textarea red" disabled="disabled" style="background:#FFF;">{$topic.review_content}</textarea>
+                                        </dd>
+                                    </dl>
+                                    {/if}
+                                {/if}
+                                <dl>
+                                    <dt>&nbsp;</dt>
+                                    <dd>
+                                        <input name="topic_data" type="hidden" id="topic_data" value='' />
+                                        <input name="act" type="hidden" id="act" value='{$act}' />
+                                        <input name="topic_id" type="hidden" id="topic_id" value='{$topic.topic_id}' />
+                                        <input name="submit" type="submit" value="{$lang.button_submit}" class="sc-btn sc-blueBg-btn btn35" id="submitBtn"/>
+                                        <input name="Reset" type="reset" value="{$lang.button_reset}" class="sc-btn btn35 sc-blue-btn"/>      
+                                    </dd>
+                                </dl>
+                        	</div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript" src="../js/jquery.picTip.js"></script>
+<script type="text/javascript">
+    var myTopic = Object();
+	
+	//表单验证
+	$(function(){
+		$("#submitBtn").click(function(){
+			if($("#topic_form").valid()){
+				checkForm();
+				$("#topic_form").submit();
+			}
+		});
+	
+		$('#topic_form').validate({
+			errorPlacement:function(error, element){
+				var error_div = element.parents('dl').find('div.form_prompt');
+				//element.parents('dl').find(".notic").hide();
+				error_div.append(error);
+			},
+			rules : {
+				topic_name : {
+					required : true
+				},
+				start_time :{
+					required : true
+				},
+				end_time :{
+					required : true,
+					compareDate:"#start_time"
+				}
+			},
+			messages : {
+				topic_name : {
+					required : '<i class="icon icon-exclamation-sign"></i>'+topic_name_empty
+				},
+				start_time :{
+					required : '<i class="icon icon-exclamation-sign"></i>'+start_data_notnull
+				},
+				end_time :{
+					required : '<i class="icon icon-exclamation-sign"></i>'+end_data_notnull,
+					compareDate:'<i class="icon icon-exclamation-sign"></i>'+data_invalid_gt
+				}
+			},
+			onfocusout:function(element,event){
+				//实时去除结束时间是否大于开始时间验证
+				var name = $(element).attr("name");
+				
+				if(name == "end_time"){
+					var endDate = $(element).val();
+					var startDate = $(element).parents("dd").find("input[name='start_time']").val();
+					
+					var date1 = new Date(Date.parse(startDate.replace(/-/g, "/")));
+					var date2 = new Date(Date.parse(endDate.replace(/-/g, "/")));
+					
+					if(date1 > date2){
+						$(element).removeClass("error");
+						$(element).parents("dd").find(".form_prompt").html("");
+					}
+				}
+			}
+		});
+	});
+
+	function checkForm(){
+		//by wu start
+		$("#topic_list").find("li:not(.li_not)").each(function(){
+			var key = $(this).find("a").data("value");
+			var cat = $(this).find("a").text();
+			myTopic[cat] = new Array();
+			$("#target_select").find("li").each(function(){
+				if($(this).find("a").data("type") == key){
+					var text = $(this).find("a").text();
+					var value = $(this).find("a").data("value");
+					myTopic[cat].push(text + "|" + value);			 
+				}
+			});
+		})
+		//by wu end
+		
+		document.getElementById("topic_data").value = $.toJSON(myTopic);
+	}
+	
+	//日期选择插件调用start sunle
+	var opts1 = {
+		'targetId':'start_time',//时间写入对象的id
+		'triggerId':['start_time'],//触发事件的对象id
+		'alignId':'text_time1',//日历对齐对象
+		'format':'-'//时间格式 默认'YYYY-MM-DD HH:MM:SS'
+	},opts2 = {
+		'targetId':'end_time',
+		'triggerId':['end_time'],
+		'alignId':'text_time2',
+		'format':'-'
+	}
+	
+	xvDate(opts1);
+	xvDate(opts2);
+	//日期选择插件调用end sunle
+</script>
+</body>
+</html>

@@ -1,0 +1,172 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.goods_alt} - {$ur_here}</div>
+        <div class="content">
+            {include file="library/common_tabs_info.lbi"}   
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit">
+					<i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span>
+                    {if $open eq 1}
+                    <div class="view-case">
+                    	<div class="view-case-tit"><i></i>{$lang.view_tutorials}</div>
+                        <div class="view-case-info">
+                        	<a href="http://help.ecmoban.com/article-6398.html" target="_blank">{$lang.tutorials_bonus_list_one}</a>
+                        </div>
+                    </div>			
+                    {/if}				
+				</div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.list.0}</li>
+                    <li>{$lang.operation_prompt_content.list.1}</li>
+                    <li>{$lang.operation_prompt_content.list.2}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-head">
+                    <div class="fl">
+                    	{if !$common_tabs.info}<a href="{$action_link.href}"><div class="fbutton"><div class="add" title="{$action_link.text}"><span><i class="icon icon-plus"></i>{$action_link.text}</span></div></div></a>{/if}
+                        {if $action_link1}
+                        <a href="{$action_link1.href}"><div class="fbutton"><div class="reply" title="{$action_link1.text}"><span><i class="icon icon-reply"></i>{$action_link1.text}</span></div></div></a>
+                        {/if}
+                    </div>
+                    <div class="refresh{if !$action_link || $common_tabs.info} ml0{/if}">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+                    <div class="search">
+                    	<form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+						{include file ='library/search_store.lbi'}
+                    	<div class="input">
+                        	<input type="text" name="album_mame" class="text nofocus" placeholder="{$lang.album_mame}" autocomplete="off" />
+                            <input type="submit" class="btn" name="secrch_btn" ectype="secrch_btn" value="" />
+                        </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="common-content">
+                    <form method="post" action="gallery_album.php" name="listForm" onsubmit="return confirm(batch_drop_confirm);">
+                	<div class="list-div" id="listDiv">
+                        {/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                            <thead>
+                                <tr>
+                                    <th width="8%" class="sign"><div class="tDiv tl ml20"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars mr50"></label></div></th>
+                                    <th width="5%"><div class="tDiv">{$lang.record_id}</div></th>
+                                    <th width="15%"><div class="tDiv">{$lang.album_mame}</div></th>
+                                    <th width="7%"><div class="tDiv">{$lang.gallery_count}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.shop_name}</div></th>
+                                    <th width="15%"><div class="tDiv">{$lang.album_cover}</div></th>
+                                    <th width="15%"><div class="tDiv">{$lang.album_desc}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.sort_order}</div></th>
+                                    <th width="15%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {foreach from=$gallery_album item=agency}
+                            	<tr>
+                                    <td class="sign">
+                                        <div class="tDiv">
+                                            <input type="checkbox" name="checkboxes[]" class="checkbox" value="{$agency.album_id}" id="checkbox_{$agency.album_id}" />
+                                            <label for="checkbox_{$agency.album_id}" class="checkbox_stars"></label>
+                                            <div class="setup_span ml10">
+                                            	<em><i class="icon icon-cog"></i>{$lang.setup}<i class="arrow"></i></em>
+                                                <ul>
+                                                	{if !$common_tabs.info}<li><a href="gallery_album.php?act=add&parent_id={$agency.album_id}">{$lang.add_next_level}</a></li>{/if}
+                                                    <li><a href="gallery_album.php?act=list&parent_id={$agency.album_id}&seller_list={$filter.seller_list}">{$lang.view_next_level}</a></li>
+                                                    {if !$common_tabs.info}<li><a href="javascript:void(0);" ectype="transfer_pic" data-cid="{$agency.album_id}">{$lang.transfer_img}</a></li>{/if}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><div class="tDiv">{$agency.album_id}</div></td>
+                                    <td><div class="tDiv">{$agency.album_mame|escape:html}</div></td>
+                                    <td><div class="tDiv">{$agency.gallery_count|nl2br}</div></td>
+                                    <td><div class="tDiv red">{$agency.shop_name|nl2br}</div></td>
+                                    <td>
+                                        <div class="tDiv">
+                                            {if $agency.album_cover}
+                                            <span class="show">
+                                                <a href="../{$agency.album_cover}" class="nyroModal"><i class="icon icon-picture" data-tooltipimg="../{$agency.album_cover}" ectype="tooltip" title="tooltip"></i></a>
+                                            </span>
+                                            {else}
+                                            <span class="show">
+                                                <a href="../data/gallery_album/hover_image.png" class="nyroModal"><i class="icon icon-picture" data-tooltipimg="../data/gallery_album/hover_image.png" ectype="tooltip" title="tooltip"></i></a>
+                                            </span>
+                                            {/if}
+                                        </div>
+                                    </td>
+                                    <td><div class="tDiv">{$agency.album_desc|nl2br}</div></td>
+                                    <td><div class="tDiv"><input type="text" name="sort_order" class="text w40" value="{$agency.sort_order}" onkeyup="listTable.editInput(this, 'edit_sort_order', {$agency.album_id})"/></div></td>
+                                    <td class="handle">
+                                        <div class="tDiv a2">
+                                            <a href="gallery_album.php?act=view&id={$agency.album_id}" title="{$lang.view}" class="btn_see mr10"><i class="sc_icon sc_icon_see"></i>{$lang.view}</a>
+                                            <a href="gallery_album.php?act=edit&id={$agency.album_id}" title="{$lang.edit}" class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>
+                                            <a href="javascript:;" onclick="listTable.remove({$agency.album_id}, '{$lang.ckdelete_album}')" title="{$lang.remove}" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {foreachelse}
+                                <tr><td class="no-records" colspan="12">{$lang.no_records}</td></tr>
+                                {/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="12">
+                                        <div class="tDiv">
+                                        	<div class="tfoot_btninfo">
+                                                <input name="act" type="hidden" value="remove_batch" />
+                                                <input name="remove" type="submit" ectype="btnSubmit" value="{$lang.drop}" class="btn btn_disabled" disabled />
+                                            </div>
+                                            <div class="list-page">
+                                                {include file="library/page.lbi"}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        {if $full_page}
+                    </div>
+                    </form>
+                </div>
+            </div>
+		</div>
+	</div>
+	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+    listTable.recordCount = {$record_count|default:0};
+    listTable.pageCount = {$page_count|default:1};
+    
+    {foreach from=$filter item=item key=key}
+    listTable.filter.{$key} = '{$item}';
+    {/foreach}
+        
+    $(".ps-container").perfectScrollbar();
+    
+    //转移分类
+    $(document).on('click',"*[ectype='transfer_pic']",function(){
+        var inherit = 0;
+		var album_id = $(this).data("cid");
+        
+        if(confirm('{$lang.zi_album_handle}')){
+            inherit = 1
+        }
+		
+        $.jqueryAjax("gallery_album.php", "act=move_pic&album_id="+album_id+"&inherit=" + inherit, function(data){
+			
+			goods_visual_desc('{$lang.transfer_img}',732,data.content,function(){
+				$("#movepicalbum").submit();
+			},"transfer_dialog","{$lang.start_transfer}","{$lang.close}");
+
+			reset_select("#transfer_dialog");
+        });
+    });
+</script>     
+</body>
+</html>
+{/if}

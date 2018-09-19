@@ -1,0 +1,50 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+{insert_scripts files='warehouse.js'}
+<div id="filter">
+        <div class="component-filter-sort w1200 mt0">
+        	<div class="filter-sortbar" id="filter-sortbar">
+            	<div class="button-strip">
+                    <a href="history_list.php?page={$pager.page}&sort=goods_id&is_ship={$pager.search.is_ship}&order=<!-- {if $pager.search.sort == 'goods_id' && $pager.search.order == 'DESC'} -->ASC<!-- {else} -->DESC<!-- {/if} -->" class="button-strip-item <!-- {if $pager.search.sort == 'goods_id'}-->current<!-- {/if} -->">{$lang.default}<i class="icon <!-- {if $pager.search.sort == 'goods_id' && $pager.search.order == 'DESC'} -->icon-down<!-- {else} -->icon-up<!-- {/if} -->"></i></a>
+                    <a href="history_list.php?page={$pager.page}&sort=sales_volume&is_ship={$pager.search.is_ship}&order=<!-- {if $pager.search.sort == 'sales_volume' && $pager.search.order == 'DESC'} -->ASC<!-- {else} -->DESC<!-- {/if} -->" class="button-strip-item <!-- {if $pager.search.sort == 'sales_volume'}-->current<!-- {/if} -->">{$lang.sales_volume}<i class="icon <!-- {if $pager.search.sort == 'sales_volume' && $pager.search.order == 'DESC'} -->icon-down<!-- {else} -->icon-up<!-- {/if} -->"></i></a>
+                    <a href="history_list.php?page={$pager.page}&sort=last_update&is_ship={$pager.search.is_ship}&order=<!-- {if $pager.search.sort == 'last_update' && $pager.search.order == 'DESC'} -->ASC<!-- {else} -->DESC<!-- {/if} -->" class="button-strip-item <!-- {if $pager.search.sort == 'last_update'}-->current<!-- {/if} -->">{$lang.is_new}<i class="icon <!-- {if $pager.search.sort == 'last_update' && $pager.search.order == 'DESC'} -->icon-down<!-- {else} -->icon-up<!-- {/if} -->"></i></a>
+                    <a href="history_list.php?page={$pager.page}&sort=shop_price&is_ship={$pager.search.is_ship}&order=<!-- {if $pager.search.sort == 'shop_price' && $pager.search.order == 'ASC'} -->DESC<!-- {else} -->ASC<!-- {/if} -->" class="button-strip-item <!-- {if $pager.search.sort == 'shop_price'}-->current<!-- {/if} -->">{$lang.price}<i class="icon <!-- {if $pager.search.sort == 'shop_price' && $pager.search.order == 'DESC'} -->icon-down<!-- {else} -->icon-up<!-- {/if} -->"></i></a>
+                </div>
+                <div class="button-page">
+                	<span class="pageState"><span>{$pager.page}</span>/{$pager.page_count}</span>
+                    <!-- {if $pager.page_next} --><a href="{$pager.page_next}" title="{$lang.page_next}" class="pageNext">&gt;</a><!-- {else} --><a href="javascript:;">&gt;</a><!-- {/if} -->
+                    <!-- {if $pager.page_prev} --><a href="{$pager.page_prev}" title="{$lang.page_prev}" class="pagePrev">&lt;</a><!-- {else} --><a href="javascript:;">&lt;</a><!-- {/if} -->
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+<script type="text/javascript">
+//价格筛选提交
+	$('.ui-btn-submit').click(function(){
+		var min_price = Number($(".price-min").val());
+		var max_price = Number($(".price-max").val());
+		
+		if(min_price == '' && max_price == ''){
+			alert(json_languages.search_one);
+			return false;
+		}else if(min_price == ''){
+			alert(json_languages.search_two);
+			return false;
+		}else if(max_price == ''){
+			alert(json_languages.search_three);
+			return false;
+		}else if(min_price > max_price || min_price == max_price){
+			alert(json_languages.search_four);
+			return false;
+		}
+		
+		$("form[name='listform']").submit();
+	});
+	function selectStoreTab(a){
+		var li =$(".tab").find("li").eq(a);
+		if(!li.hasClass("curr")){
+			li.addClass("curr").siblings().removeClass("curr");
+		}
+		$("#stock_list").find(".mc").eq(a).removeClass("hide").siblings(".mc").addClass("hide");
+	}
+</script>

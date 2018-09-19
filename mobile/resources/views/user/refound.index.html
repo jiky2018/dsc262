@@ -1,0 +1,242 @@
+{include file="page_header"}
+<div class="con">
+	<div class="goods-info user-order of-hidden ect-tab j-ect-tab ts-3" style="padding-top: 4rem;">
+		<nav class=" j-tab-title tab-title b-color-f of-hidden" style="position: fixed;">
+			<ul class="dis-box">
+				<li class="box-flex active">{$lang.return}</li>
+				<li class="box-flex">{$lang.return_progres}</li>
+			</ul>
+		</nav>
+		<div id="j-tab-con" class="tab-con">
+			<div class="swiper-wrapper">
+				<section class="swiper-slide order_info">
+					<script id="j-order" type="text/html">
+					<%if order_list != ''%>
+					<%each order_list as order%>
+					<section class="flow-checkout-pro m-top08">
+						<div class="padding-all m-top1px b-color-f n-reture-num">
+							<a href="<%order.order_url%>">
+							<h4 class="t-remark2"><label class="t-remark">{$lang.order_number}：</label><%order.order_sn%></h4>
+							<p class="t-remark3 m-top04">{$lang.order_addtime}：<%order.add_time%> <span class="color-red"><%order.status%></span></p>
+							</a>
+						</div>
+						<!--order-list s-->
+						<%each order.goods_list as goods%>
+						<div class="flow-checkout-pro">
+						<section class="n-return-list-box b-color-f">
+							<ul class="dis-box">
+								<li  class="reture-left-img">
+									<a href="javascript:;" >
+										<div class="img-box"><img class="product-list-img" src="<%goods.goods_thumb%>"></div>
+									</a>
+								</li>
+								<li class="box-flex reture-right-cont">
+									<a href="javascript:;"><h4 class="onelist-hidden m-top02"><%goods.goods_name%></h4></a>
+									<div class="dis-box reture-footer">
+										<div class=""><span class="f-03 col-7">{$lang.number_to}：×<%goods.goods_number%></span></div>
+										<%if goods.goods_attr%>
+										<div class=""><span class="f-03 col-7">属性：×<%goods.goods_attr%></span></div>
+										<%/if%>
+										<div class="box-flex">
+
+										</div>
+									</div>
+								</li>
+							</ul>
+						</section>
+						<footer class="padding-all b-color-f m-top1px of-hidden dis-box">
+							<h4 class="t-remark2 box-flex"></h4>
+							<p class="ect-button-more ect-button-more-dete n-br-5">
+								<%if goods.apply_return_url%>
+								<%if goods.goods_cause == 0%>
+								<a href="javascript:;" class="btn-default-new br-5 cancel-order" style="border:1px solid #cccccc; color: #cccccc">{$lang.applied_to}</a>
+								<%else%>
+								<a href="<%goods.apply_return_url%>" class="btn-default-new br-5 cancel-order"  style="border:1px solid #ec5151;color:#EC5151">{$lang.applied_to}</a>
+								<%/if%>
+								<%else if goods.is_refound == 1%>
+								<a class="btn-default-new br-5 cancel-order" style="color:#337ab7;">{$lang.have_applied}</a>
+								<%/if%>
+							</p>
+						</footer>
+							</div>
+						<%/each%>
+						<!--order-list e-->
+					</section>
+					<%/each%>
+					<%else%>
+					<div class="no-return-list">
+						<i class="iconfont icon-biaoqingleiben"></i>
+						<p>亲，此处没有内容～！</p>
+					</div>
+					<%/if%>
+					</script>
+				</section>
+				<section class="swiper-slide refound_info">
+					<script id="j-refound" type="text/html">
+					<%if refound_list != ''%>
+					<%each refound_list as refound%>
+					<!--list s-->
+					<section class="flow-checkout-pro m-top08">
+						<div class="padding-all m-top1px b-color-f n-reture-num refound-list">
+							<!-- <h4 class="t-remark2 "><label class="t-remark">{$lang.order_number}：</label><%refound.order_sn%></h4> -->
+							<h4 class="t-remark2 "><label class="t-remark">{$lang.return_sn_user}：</label><%refound.return_sn%></h4>
+							<p class="t-remark3 m-top04">{$lang.apply_time}：<%refound.apply_time%>
+							<span class="color-red"><%if refound.agree_apply == 1%>{$lang.is_agree_apply}<%else if refound.agree_apply == 0%>{$lang.no_agree_apply}<%/if%></span>
+							<span class="color-red"><%refound.reimburse_status%></span></p>
+						</div>
+						<!--refound-list s-->
+						<section class="n-return-list-box b-color-f">
+							<ul class="dis-box">
+								<li class="reture-left-img">
+									<div class="img-box"><img class="product-list-img" src="<%refound.goods_thumb%>"></div>
+								</li>
+								<li class="box-flex reture-right-cont">
+									<h4 class="onelist-hidden"><%refound.goods_name%></h4>
+									<div class="dis-box reture-footer">
+										<div class=""><span class="f-04 col-7">{$lang.number_to}：× <%refound.return_number%></span></div>
+										<div class="box-flex">
+											<div class="fr">
+											<%if refound.refound_cancel_url%>
+											<a class="btn-default n-return-btn br-5 cancel_return_order" href="javascript:;" data-href="<%refound.refound_cancel_url%>">{$lang.is_cancel}</a>
+											<%/if%>
+											<a class="btn-submit1 n-return-btn br-5" style="border:1px solid #ec5151;" href="<%refound.refound_detail_url%>">{$lang.return_detail_look}</a>
+
+											<%if refound.activation_type == 1%>
+											<a href="javascript:;"  class="btn-submit n-return-btn br-5 activation_return_order" data-id="<%refound.ret_id%>" >{$lang.activation_return}</a>
+											<%/if%>
+
+											<%if refound.return_status == 4%>
+											<a href="javascript:;"  class="btn-submit n-return-btn br-5 delete_return_order" data-item="<%refound.ret_id%>" >{$lang.drop}</a>
+											<%/if%>
+											</div>
+										</div>
+									</div>
+								</li>
+							</ul>
+						</section>
+						<!--refound-list e-->
+					</section>
+					<!--list e-->
+					<%/each%>
+					<%else%>
+					<div class="no-return-list">
+						<i class="iconfont icon-biaoqingleiben"></i>
+						<p>亲，此处没有内容～！</p>
+					</div>
+					<%/if%>
+					</script>
+				</section>
+			</div>
+		</div>
+	</div>
+</div>
+    <!--快捷导航-->
+    {include file="float_nav"}
+    {include file="float_nav_footer"}
+<script type="text/javascript">
+	/*切换*/
+	var tabsSwiper = new Swiper('#j-tab-con', {
+		speed: 100,
+		noSwiping: true,
+		autoHeight: true,
+		onSlideChangeStart: function() {
+			$(".j-tab-title .active").removeClass('active')
+			$(".j-tab-title li").eq(tabsSwiper.activeIndex).addClass('active')
+		}
+	})
+	$(".j-tab-title li").on('touchstart mousedown', function(e) {
+		e.preventDefault()
+		$(".j-tab-title .active").removeClass('active')
+		$(this).addClass('active')
+		tabsSwiper.slideTo($(this).index())
+	})
+	$(".j-tab-title li").click(function(e) {
+		e.preventDefault()
+	})
+	//订单列表
+	var infinite1 = $('.order_info').infinite({url: "{url('user/refound/index')}", template: 'j-order', params: 'type=0&order_id='+{$order_id}});
+	var infinite2 = $('.refound_info').infinite({url: "{url('user/refound/index')}", template: 'j-refound', params: 'type=1&order_id='+{$order_id}});
+
+
+	// 激活退换货订单
+	$('.activation_return_order').click(function(){
+		var ret_id = $(this).attr('data-id');
+		layer.open({
+            content: '你确认要激活吗？激活后可以再次申请退换货操作',
+            btn: ['确定', '取消'],
+            shadeClose: false,
+            yes: function() {
+            	// 请求
+				$.post("{url('activation_return_order')}", {ret_id:ret_id}, function(data){
+		            d_messages(data.msg);
+		            if (data.error == 0) {
+		                if (data.url) {
+		                    window.location.href = data.url;
+		                } else {
+		                    window.location.reload();
+		                }
+		            } else {
+		                return false;
+		            }
+		        }, 'json');
+            },
+            no: function() { }
+		});
+	});
+
+	// 删除已完成退换货订单
+	$('.delete_return_order').click(function(){
+		var ret_id = $(this).attr('data-item');
+		layer.open({
+            content: '你确认要删除该退换货订单吗？',
+            btn: ['确定', '取消'],
+            shadeClose: false,
+            yes: function() {
+            	// 请求
+				$.post("{url('delete_return_order')}", {ret_id:ret_id}, function(data){
+		            d_messages(data.msg);
+		            if (data.error == 0) {
+		                if (data.url) {
+		                    window.location.href = data.url;
+		                } else {
+		                    window.location.reload();
+		                }
+		            } else {
+		                return false;
+		            }
+		        }, 'json');
+            },
+            no: function() { }
+		});
+	});
+
+
+	// 取消退换货申请
+	$(".refound_info").on('click','.cancel_return_order', function() {
+		var cancel_url = $(this).attr('data-href');
+		layer.open({
+            content: '您确定要取消退换货申请吗？',
+            btn: ['确定', '取消'],
+            shadeClose: false,
+            yes: function() {
+            	// 请求
+				$.get(cancel_url, {}, function(data){
+		            d_messages(data.msg);
+		            if (data.error == 0) {
+		                if (data.url) {
+		                    window.location.href = data.url;
+		                } else {
+		                    window.location.reload();
+		                }
+		            } else {
+		                return false;
+		            }
+		        }, 'json');
+            },
+            no: function() { }
+		});
+	});
+
+</script>
+</body>
+</html>

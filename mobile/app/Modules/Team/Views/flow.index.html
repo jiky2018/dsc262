@@ -1,0 +1,855 @@
+{include file="page_header"}
+<style>
+    .con-filter-div-scrll{overflow-y:scroll;}
+        .con-filter-div-scrll::-webkit-scrollbar{width:2px;height:2px;}
+        .select-three-invoice .ect-select label {line-height:normal;height:auto;}
+        .select-three-invoice{padding:0 1.1rem;}
+       .select-three-invoice  .invoice-list{padding:.4rem 0;}
+       .select-three-invoice  .header-cont{padding:1rem 0;font-size:1.6rem; color:#333;}
+       .flow-receipt-title-1 input,.flow-receipt-title input{font-size:1.6rem;}
+       .btn-box{background:#f6f6f9;color:#999}
+</style>
+<form action="{url('team/flow/done')}" method="post" name="theForm" id="theForm" onSubmit="return checkOrderForm(this)">
+    <div class="con">
+        <div class="flow-checkout">
+            {if $isStoreOrder == 0}
+            <section class="flow-checkout-adr padding-all">
+                <a href="{url('team/flow/address_list')}"></a>
+                <p class="flow-no-adr" style="display:none"><i class="iconfont icon-dingwei"></i>请选择配送地址</p>
+                <div class="address-icon"><i class="iconfont icon-dingwei"></i></div>
+                    <div class="flow-have-adr">
+                        <div class="f-h-adr-title dis-box p-r">
+                            <span class="address-name onelist-hidden">{$consignee.consignee}</span><label class="mobile">{$consignee.mobile}</label>
+                            {if $is_default}<div class="p-r address-default-box"><span class="t-first address-default">默认</span></div>{/if}
+                        </div>
+                        <div class="f-h-adr-con f-04 m-top04">{$consignee.region} {$consignee.address}</div>
+                    </div>
+                <span class="t-jiantou"><i class="iconfont icon-jiantou tf-180"></i></span>
+            </section>
+            {elseif $isStoreOrder == 1}
+            <section class="flow-checkout-adr padding-all">
+                <a href="{url('offline_store/index/StoreList', array('id'=>$store_goods_id))}"></a>
+                <p class="flow-no-adr" style="display:none"><i class="iconfont icon-dingwei"></i>请选择配送地址</p>
+                <div class="flow-have-adr">
+                    <p class="f-h-adr-title ">{$store.stores_name}</p>
+                    <p class="f-h-adr-con t-remark m-top04">{$store.address}</p>
+                    <p class="f-05 col-7 m-top02">服务电话：{$store.stores_tel}</p>
+                    <p class="f-05 col-7 m-top02">营业时间：{$store.stores_opening_hours}</p>
+                    <p class="f-05 col-7 m-top02">门店地址：[{$store.province_name} {$store.city_name} {$store.district_name}] {$store.stores_address}</p>
+                </div>
+                <span class="t-jiantou"><i class="iconfont icon-jiantou tf-180"></i></span>
+                <input type="hidden" name="ru_id[]" value="{$store.ru_id}" />
+            </section>
+            {/if}
+            <!-- 门店信息     -->
+            {foreach $goods_list as $ru}
+            <section class="m-top10">
+                <section class="flow-checkout-pro j-flow-checkout-pro {if $ru.goods_count < 2}active{/if}">
+                    <header class="b-color-f padding-all">
+                        {$ru.ru_name}
+                    </header>
+                    <div class="product-list-small m-top1px b-color-f dis-box">
+                        {if $ru.goods_count > 1}
+                        <ul class="flow-checkout-smallpic box-flex">
+                            {foreach $ru.goods_list as $key=>$goods}
+                            {if $key < 3 && $goods.extension_code != 'package_buy'}
+                            <li><img class="product-list-img" src="{$goods.goods_thumb}" /></li>
+                            {/if}
+                            {/foreach}
+                        </ul>
+                        <ul class="box-flex flow-checkout-bigpic">
+                            {foreach $ru.goods_list as $key=>$goods}
+                            {if $goods.extension_code != 'package_buy'}
+                            <li>
+                                <div class="product-div">
+                                    <a class="product-div-link" href="{$goods.url}"></a>
+                                    <img class="product-list-img" src="{$goods.goods_thumb}" />
+                                    <div class="product-text">
+                                        <h4>{$goods.goods_name}</h4>
+                                        <p><span class="p-price t-first ">{$goods.formated_goods_price} <small class="fr t-remark">x{$goods.goods_number}</small></span></p>
+                                        <p class="dis-box p-t-remark">{nl2br($goods.goods_attr)}</p>
+
+                                    </div>
+                                </div>
+                            </li>
+                            {/if}
+                            {/foreach}
+                        </ul>
+                        <span class="t-jiantou"><span class="f-c-a-count">共 {$ru.goods_count} 件</span><i class="iconfont icon-jiantou tf-180"></i></span>
+                        {else}
+                        <ul class="box-flex flow-checkout-bigpic">
+                            {foreach $ru.goods_list as $key=>$goods}
+                            {if $goods.extension_code != 'package_buy'}
+                            <li>
+                                <div class="product-div">
+                                    <a class="product-div-link" href="{$goods.url}"></a>
+                                    <img class="product-list-img" src="{$goods.goods_thumb}" />
+                                    <div class="product-text">
+                                        <h4>{$goods.goods_name}</h4>
+                                        <p><span class="p-price t-first ">{$goods.formated_goods_price} <small class="fr t-remark">x{$goods.goods_number}</small></span></p>
+                                        <p class="dis-box p-t-remark">{nl2br($goods.goods_attr)}</p>
+
+                                    </div>
+                                </div>
+                            </li>
+                            {/if}
+                            {/foreach}
+                        </ul>
+                        {/if}
+
+                    </div>
+                    {if $ru.package_goods_num > 0}
+                    {foreach $ru.goods_list as $key=>$goods}
+                    {if $goods.extension_code == 'package_buy'}
+                    <!--超级礼包-->
+                    <section class="m-top10">
+                        <section class="flow-checkout-pro j-flow-checkout-pro">
+                            <div class="product-list-small m-top1px b-color-f dis-box">
+                                <ul class="flow-checkout-smallpic box-flex" style="display:block;">
+                                    <li class="p-r"><img class="product-list-img" src="{$goods.goods_thumb}" /><div class="gift-tag">礼包</div></li>
+                                    <div class="gift-cont">
+                                        <h5 class="onelist-hidden">[超级礼包]{$goods.goods_name}</label></h5>
+                                        <p class="f-05 color-red">套餐价:{$goods.formated_goods_price}</p>
+                                        <p class="f-03"><del>(已优惠 {$goods.formated_package_saving})</del></p>
+                                    </div>
+                                </ul>
+                                <span class="t-jiantou-gift">共{count($goods.package_goods_list)}件<i class="iconfont icon-jiantou tf-180 ts-5"></i></span>
+                            </div>
+                        </section>
+                    </section>
+                    <section class="gift-list-box">
+                        <section class="flow-checkout-pro j-flow-checkout-pro active">
+                            <div class="product-list-small m-top1px b-color-f dis-box">
+                                <ul class="box-flex flow-checkout-bigpic">
+                                    {foreach $goods.package_goods_list as $package}
+                                    <li>
+                                        <div class="product-div">
+                                            <a class="product-div-link" href="{$package.url}"></a>
+                                            <img class="product-list-img" src="{$package.goods_thumb}" />
+                                            <div class="product-text">
+                                                <h4>{$package.goods_name}</h4>
+                                                <p><span class="p-price t-first ">{price_format($package.rank_price)}<small class="fr t-remark">x{$package.goods_number}</small></span></p>
+                                                <p class="dis-box p-t-remark">{$package.goods_attr}</p>
+
+                                            </div>
+                                        </div>
+                                    </li>
+                                    {/foreach}
+                                </ul>
+                            </div>
+                        </section>
+                    </section>
+                    <!--超级礼包-->
+                    {/if}
+                    {/foreach}
+                    {/if}
+                </section>
+
+
+                </section>
+                <section class="flow-checkout-select b-color-f m-top08">
+                    <ul>
+						{if $total.real_goods_count > 0}
+                        {if $isStoreOrder == 0}
+                        <li>
+                            <section class="dis-box j-goods-dist {if !empty($ru.shipping)}j-show-div{/if} j-show-get-val padding-all">
+                                <label class="t-remark g-t-temark">配送方式</label>
+                                <div class="box-flex t-goods1 text-right onelist-hidden">
+                                    {foreach $ru.shipping as $sh}
+                                    {if $sh.shipping_code != 'cac' && $ru.tmp_shipping_id == $sh.shipping_id}
+                                    <span>
+                                        {$sh.shipping_name}
+                                    </span>
+                                    <em class="t-first">
+                                        {if $sh.shipping_fee}
+                                        {$sh.format_shipping_fee}
+                                        {else}
+                                        免运费
+                                        {/if}
+                                    </em>
+                                    {elseif $sh.shipping_code == 'cac' && $ru.tmp_shipping_id == $sh.shipping_id}
+                                    <span> 门店自提 </span>
+                                    {/if}
+                                    {/foreach}
+                                    {if empty($ru.shipping)}
+                                    <span>该地区不支持配送</span>
+                                    {/if}
+                                </div>
+                                <div class="f-04"><span class="t-jiantou"><i class="iconfont icon-jiantou tf-180"></i></span></div>
+                                <!--配送方式star-->
+                                <div class="show-goods-dist ts-3 b-color-1 j-show-goods-text j-filter-show-div">
+                                    <section class="goods-show-title of-hidden padding-all b-color-f">
+                                        <h3 class="fl g-c-title-h3">配送方式</h3>
+                                        <i class="iconfont icon-guanbi2 show-div-guanbi fr"></i>
+                                    </section>
+                                    <section class="s-g-list-con swiper-scroll">
+                                        <div class="swiper-wrapper">
+                                            <div class="swiper-slide select-two shoppingList">
+                                                <ul class="j-get-one padding-all select-shipping ">
+                                                    {if $ru.shipping_type == 0}
+                                                    {foreach $ru.shipping as $sh}
+                                                    {if $sh.shipping_code != 'cac'}
+                                                    <li class="ect-select">
+                                                        <label class="ts-1 dis-box {if $ru.tmp_shipping_id == $sh.shipping_id}active{/if}" data-type="0" data-shipping="{$sh.shipping_id}" data-ruid="{$ru.ru_id}">
+                                                            <dd>
+                                                                <span>
+                                                                    {$sh.shipping_name}
+                                                                </span>
+                                                                <em class="t-first">
+                                                                    {if $sh.shipping_fee}
+                                                                    {$sh.format_shipping_fee}
+                                                                    {else}
+                                                                    免运费
+                                                                    {/if}
+                                                                </em>
+                                                            </dd>
+                                                            <i class="fr iconfont icon-gou ts-1"></i>
+                                                        </label>
+                                                    </li>
+                                                    {/if}
+                                                    {/foreach}
+                                                    {/if}
+                                                    <input type="hidden" name="ru_id[]" value="{$ru.ru_id}" />
+                                                    <input type="hidden" name="ru_name[]" value="{$ru.ru_name}" />
+                                                    {if $ru.self_point != '' && !empty($picksite_list)}
+                                                    <!-- 自营商家有自提点 -->
+                                                    <li class="ect-select goods-site">
+                                                        <label class="ts-1 {if $ru.shipping_type == 1}active{/if}" data-type="1" data-shipping="{$ru.self_point.0.shipping_id}" data-ruid="{$ru.ru_id}"><dd><span>门店自提</span></dd><i class="fr iconfont icon-gou ts-1"></i></label>
+                                                    </li>
+                                                    {/if}
+                                                </ul>
+                                                <input type="hidden" name="shipping[]" value="{if $ru.shipping_type == 0}{$ru.tmp_shipping_id}{else}{$ru.self_point.0.shipping_id}{/if}"/>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </div>
+                                <!--配送方式end-->
+                            </section>
+                        </li>
+                        {/if}
+						{/if}
+                        <!-- 自营商家 -->
+
+                        {if $ru.shipping_type == 1 || ($ru.shipping_type == 0 && !empty($ru.tmp_shipping_id))}
+                        <li class="j-goods-site-li j-goods-site-li-time{$ru.ru_id} {if $ru.shipping_type == 0 && empty($ru.is_cac)}show-temark-div{/if}">
+                            <section class="distribution-time j-distribution-time{$ru.ru_id} j-distribution-time b-color-f">
+                                <div class="text-right dis-box">
+                                    <label class="t-remark g-t-temark">时间</label>
+                                    <span class="t-goods1 box-flex distribution-time-con">
+                                        <input type="text" name="shipping_dateStr[{$ru.ru_id}]" value="{$ru.self_point.0.shipping_dateStr}" id="txt_area{$ru.ru_id}"/>
+                                        <input type="hidden" id="hd_area"/>
+                                    </span>
+                                    <i class="iconfont icon-rili t-first"></i>
+                                </div>
+                            </section>
+                            <script type="text/javascript">
+            var selectArea2 = new MobileSelectArea();
+            selectArea2.init({
+            trigger: '.j-distribution-time{$ru.ru_id},#txt_area{$ru.ru_id}',
+                    data: {$shipping_date},
+                    eventName: 'click',
+                    level: 2,
+                    callback: function(scroller, text, value){
+                    if (value[0] == 0 || value[1] == 0){
+                    d_messages('该时间无法配送，请另选配送时间');
+                            return false;
+                    }
+                    $.post("{url('select_picksite')}", {shipping_date: text[0], time_range: text[1]}, function(result){
+                    if (result.error > 0){
+                    if (result.err_msg){
+                    d_messages(result.err_msg);
+                    }
+                    return false;
+                    }
+                    }, 'json');
+                            return true;
+                    }
+            });</script>
+                        </li>
+                        {if $ru.self_point != '' && !empty($picksite_list)}
+                        <li class="goods-site-li dis-box j-goods-site-li j-goods-site-li{$ru.ru_id} f-c-s-coupon {if $ru.shipping_type == 0 && empty($ru.is_cac)}active{/if}">
+                            <label class="t-remark g-t-temark">自提点</label>
+                            <div class="box-flex t-goods1 text-right onelist-hidden"><span>{$ru.self_point.0.name}</span></div>
+                            <span class="t-jiantou"><i class="iconfont icon-jiantou tf-180"></i></span>
+                            <div id="j-filter-div" class="j-filter-div filter-div ts-5 filter-site-div">
+                                <section class="close-filter-div j-close-filter-div">
+                                    <div class="close-f-btn">
+                                        <i class="iconfont icon-fanhui"></i>
+                                        <span>关闭</span>
+                                    </div>
+                                </section>
+                                <div class=" con-filter-div">
+                                    <div class="flow-site j-flow-site">
+                                        <div class="swiper-scroll">
+                                            <div class="swiper-wrapper">
+                                                <div class="swiper-slide">
+                                                    <ul class="j-get-one select-two">
+                                                        {foreach $ru.self_point as $key => $pick}
+                                                        <li class="ect-select padding-lr">
+                                                            <label class="ts-1 {if $key == 0}active{/if}" data-point="{$pick.point_id}" data-ruid="{$ru.ru_id}">
+                                                                <h4>{$pick.name}</h4>
+                                                                <p>地址：{$pick.address}</p>
+                                                                <p>电话：{$pick.mobile}</p>
+                                                                <i class="fr iconfont icon-gou ts-1"></i>
+                                                            </label>
+                                                        </li>
+                                                        {/foreach}
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="point_id[{$ru.ru_id}]" id="point_id{$ru.ru_id}" value="{$ru.self_point.0.point_id}">
+                            <input type="hidden" id="cachepointid{$ru.ru_id}" value="{$ru.self_point.0.point_id}">
+                        </li>
+                        {/if}
+                        <input type="hidden" name="shipping_type[{$ru.ru_id}]" id="shipping_type{$ru.ru_id}" value="{$ru.shipping_type}">
+                        {if $pack_list}
+                        <!--<li class="dis-box j-show-div j-show-get-val">
+                            <label class="t-remark g-t-temark">商品包装</label>
+                            <div class="box-flex t-goods1 text-right onelist-hidden">
+                                {if $pack_info.pack_name}
+                                <span>{$pack_info.pack_name}</span>
+                                <em class="t-first">{$pack_info.format_pack_fee}</em>
+                                <span>免费额度</span>
+                                <em class="t-first">{$pack_info.format_free_money}</em>
+                                {else}
+                                <span>不要包装</span>
+                                {/if}
+                            </div>
+                            <span class="t-jiantou"><i class="iconfont icon-jiantou tf-180"></i></span>
+                                                        &lt;!&ndash;商品包装star&ndash;&gt;
+                            <div class="show-goods-dist ts-3 b-color-1 j-show-goods-text j-filter-show-div goods-pack">
+                                <section class="goods-show-title of-hidden padding-all b-color-f">
+                                    <h3 class="fl g-c-title-h3">商品包装</h3>
+                                    <i class="iconfont icon-guanbi2 show-div-guanbi fr"></i>
+                                </section>
+                                <section class="s-g-list-con swiper-scroll">
+                                    <div class="swiper-wrapper">
+                                        <div class="swiper-slide select-two">
+                                            <ul class="j-get-one padding-all">
+                                                <li class="ect-select">
+                                                    <label class="ts-1 {if empty($order.pack_id)}active{/if}" onclick="selectPack(0)"><dd><span>不要包装</span></dd><i class="fr iconfont icon-gou ts-1"></i></label>
+                                                </li>
+                                                {foreach $pack_list as $pack}
+                                                <li class="ect-select goods-site">
+                                                    <label class="ts-1 {if $order.pack_id == $pack.pack_id}active{/if}" onclick="selectPack({$pack.pack_id})">
+                                                        <dd><span>{$pack.pack_name}</span> <em class="t-first">{$pack.format_pack_fee}</em> <span>（订单满<em class="t-first">{$pack.format_free_money}</em>免费）</span> </dd><i class="fr iconfont icon-gou ts-1"></i></label>
+                                                </li>
+                                                {/foreach}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                            &lt;!&ndash;商品包装end&ndash;&gt;
+                            <input  type="hidden" name="pack" value="{$order.pack_id}" />
+                        </li>-->
+                        {/if}
+                        {/if}
+                        <div class="f-c-select-msg dis-box padding-all" style="border-bottom:1px solid #f6f6f9;">
+                            <label class="t-remark g-t-temark">买家留言</label>
+                            <div class="box-flex flow-check-input f-04">
+                                <input name="postscript[]" class="f-05" style="line-height: normal;" maxlength="50" placeholder="选填(50)"/>
+                            </div>
+                        </div>
+                    </ul>
+                    <p class="f-05 text-right t-remark padding-all">共 {$ru.goods_count} 件商品，合计：<span class="t-first" id="ru_amount{$ru.ru_id}">{$ru.amount}</span></p>
+                    <input type="hidden"  id="amount{$ru.ru_id}" value="{$ru.amount}">
+                    <input type="hidden"  id="goods_price_amount{$ru.ru_id}" value="{$ru.goods_price_amount}">
+                </section>
+            </section>
+            {/foreach}
+
+            <section class="m-top10">
+                <ul>
+                    {if $is_exchange_goods != 1 || $total.real_goods_count != 0}
+                    <li class="dis-box padding-all m-top1px b-color-f j-show-div" id="payment">
+                        <label class="t-remark g-t-temark">支付方式</label>
+                        <div class="box-flex t-goods1 text-right onelist-hidden" id="payment_info">
+                            {if $payment_selected.pay_name}
+                            <span>{$payment_selected.pay_name}{if $payment_selected.pay_fee} <em class="t-remark">[手续费]</em>{/if}</span> {if $payment_selected.pay_fee}<em class="t-first">{$payment_selected.format_pay_fee}</em>{/if}
+                            {else}
+                            <span>请选择</span>
+                            {/if}
+                        </div>
+                        <div class="f-04"><span class="t-jiantou"><i class="iconfont icon-jiantou tf-180"></i></span></div>
+                        <!--支付方式star-->
+                        <div class="show-goods-dist ts-3 b-color-1 j-show-goods-text j-filter-show-div">
+                            <section class="goods-show-title of-hidden padding-all b-color-f">
+                                <h3 class="fl g-c-title-h3">支付方式</h3>
+                                <i class="iconfont icon-guanbi2 show-div-guanbi fr"></i>
+                            </section>
+                            <section class="s-g-list-con swiper-scroll">
+                                <div class="swiper-wrapper">
+                                    <div class="swiper-slide select-two">
+                                        <ul class="j-get-one padding-all">
+                                            {foreach $payment_list as $payment}
+                                            <li class="ect-select goods-site" onclick="selectPayment({$payment.pay_id})" date-code="{$payment.pay_code}">
+                                                <label class="ts-1 {if $order.pay_id == $payment.pay_id}active{/if}">
+                                                    <dd>
+                                                        <span>{$payment.pay_name}{if $payment.pay_fee}<em class="t-remark">[手续费]</em>{/if}</span>
+                                                        {if $payment.pay_fee}<em class="t-first">{$payment.format_pay_fee}</em>{/if}
+                                                    </dd>
+                                                    <i class="fr iconfont icon-gou ts-1"></i>
+                                                </label>
+                                            </li>
+                                            {/foreach}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                        <!--支付方式end-->
+                        <input name="payment" type="hidden" value="{if $payment_selected}{$order.pay_id}{else}0{/if}" />
+                    </li>
+                    {else}
+                    <input name="payment" type="hidden" value="-1" />
+                    {/if}
+                    {if $order.need_inv}
+                    <li class="dis-box padding-all-n m-top1px b-color-f  f-c-s-coupon j-f-c-receipt">
+                        <label class="t-remark g-t-temark">发票信息</label>
+                        <div class="box-flex t-goods1 text-right onelist-hidden">
+                            <p class="receipt-title">{$order.inv_payee}</p>
+                            <p class="receipt-name">{$order.inv_content}</p>
+                        </div>
+                        <span class="t-jiantou"><i class="iconfont icon-jiantou tf-180"></i></span>
+                        <div id="j-filter-div" class="j-filter-div filter-div ts-5 filter-receipt-div">
+                            <div class=" con-filter-div  con-filter-div-scrll">
+                                <div class="j-flow-site" >
+                                    <div class="flow-receipt">
+                                        <section class="invoice-warp-box padding-all bg-white">
+                                            <div class="invoice-warp">
+                                                <header class="f-06 col-3">
+                                                    发票类型
+                                                </header>
+                                                <ul class="j-get-invoice-1 flow-receipt-cont">
+                                                    <li class="ect-select list-select promotion my-but-pre">
+                                                        <label class="ts-1 dis-block j-paper active"  data-type="0" for="msg-type0">普通发票<i></i></label>
+                                                    </li>
+
+                                                    <li class="ect-select  my-but-pre">
+                                                        <label class="ts-1 dis-block j-electron  {if $users_vat_invoices_id ==''}btn-box{/if}" data-type="1" vat_invoices_id="{$users_vat_invoices_id}" for="msg-type1">增值发票<i></i></label>
+                                                    </li>
+                                                </ul>
+                                                <p class="f-03 col-7 m-top08">电子发票是税务局认可的有效凭证，其法律效力、基本用途及使用规定
+                                                </p>
+                                            </div>
+                                        </section>
+                                        <div class="flow-consignee-list">
+                                        <section class="invoice-cont-box">
+                                            <div class="invoice-warp-box-1  bg-white">
+                                                <div class="select-one-1 invoice-cont-list">
+                                                    <ul class="j-get-invoice flow-receipt-invoice_id">
+                                                        <li class="ect-select list-select promotion my-but-pre">
+                                                            <label class="ts-1 dis-block active"  invoice-type="0" data="1" data-invoice-id='{$invoice_list}'>个人<i></i></label>
+                                                        </li>
+                                                        <li class="ect-select  my-but-pre">
+                                                            <label class="ts-1 dis-block" invoice-type="1" data="2">单位<i></i></label>
+                                                        </li>
+
+                                                    </ul>
+                                                </div>
+                                            </div>
+<!--                                        <ul class="m-top10 bg-white invoice-cont flow-receipt-title text-all-select">
+                                                <li class="dis-box f-06">
+                                                    <div class="">个人姓名：</div>
+                                                    <input class="j-input-text" type="text" placeholder="可填写个人名称" data-invoice-id='{$invoice_list}'/>
+                                                </li>
+                                                <div class="text-all-select-div">
+                                                <ul class="padding-all">
+                                                    {foreach $invoice_list as $invoice}
+                                                    <li data-invoice-id="{$invoice.invoice_id}">{$invoice.inv_payee}</li>
+                                                    {/foreach}
+                                                </ul>
+                                            </div>
+                                            </ul>-->
+
+                                            <ul class="m-top10 bg-white invoice-cont-1 flow-receipt-title-1 text-all-select">
+
+                                                <li class="dis-box f-06">
+                                                    <div class="">单位名称：</div>
+                                                    <input class="j-input-text j-input-text-1" type="text" placeholder="可填写单位名称" />
+                                                </li>
+                                                <div class="text-all-select-div">
+                                                    <ul class="padding-all">
+                                                        {foreach $invoice_list_company as $invoice}
+                                                        <li data-tax-id="{$invoice.tax_id}" data-invoice-id="{$invoice.invoice_id}">{$invoice.inv_payee}</li>
+                                                        {/foreach}
+                                                    </ul>
+                                                </div>
+
+                                                <li class="dis-box f-06">
+                                                    <div class="">纳税人识别号：</div>
+                                                    <input class="box-flex j-input-text-tax-id" type="tel" placeholder="纳税人识别号" />
+                                                </li>
+                                            </ul>
+
+                                                <ul class="m-top10 bg-white  j-invoice-r select-three select-three-invoice">
+                                                    <div class="header-cont">发票内容</div>
+                                                    {foreach $inv_content_list as $key => $content}
+                                                    <li class="flow-checkout-adr invoice-list of-hidden">
+                                                        <div class="ect-select fl">
+                                                            <label class="dis-box {if $key == 0 }invli{else}invliothers{/if}  ts-1 {if $order.inv_content == $content}active{/if}" data-type="{$key}">
+                                                                <i class="select-btn active-i"></i>
+                                                                <span class="t-first margin-lr">
+                                                                        <a class="ml10 ftx-05 " href="javascript:void(0);">{$content}</a>
+                                                                </span>
+                                                            </label>
+                                                        </div>
+                                                    </li>
+                                                    {/foreach}
+                                                </ul>
+                                        </section>
+                                        <div class="ect-button-more dis-box padding-all-n ">
+                                                <input class="box-flex j-input-text-team" type="hidden" name="need_inv" value="team" >
+                                                <button class="btn-submit box-flex r-btn-submit br-5">确定</button>
+                                        </div>
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <input type="hidden" name="need_inv" value="0" id="ECS_NEEDINV">
+                        <input type="hidden" name="inv_type" value="{$order.inv_type}" id="inv_type">
+                        <input type="hidden" name="tax_id" value="{$order.tax_id}" id="ECS_TAX_ID">
+                        <input type="hidden" name="inv_payee" value="{$order.inv_payee}" id="ECS_INVPAYEE">
+                        <input type="hidden" name="inv_content" value="{$order.inv_content}" id="ECS_INVCONTENT">
+                        <input type="hidden" name="invoice_id" value="{$order.invoice_id}" id="ECS_INVOICE_ID">
+                        <input type="hidden" name="invoice" value="{$order.invoice}" id="ECS_INVOICE">
+                        <input type="hidden" name="vat_id" value="{$order.vat_id}" id="ECS_VAT_ID">
+                    </li>
+                    {/if}
+                    {if $allow_use_bonus && $user_bonus_count > 0}
+                    <li class="dis-box padding-all m-top1px b-color-f f-c-s-coupon j-f-c-s-coupon">
+                                           <label class="t-remark g-t-temark">红包({$user_bonus_count}张)</label>
+                        <div class="box-flex t-goods1 text-right onelist-hidden">
+                            {if $order_bonus}
+                            <span class="coupon-text">优惠金额</span>
+                            <em class="t-first coupon-price">{$order_bonus.type_money_format}</em>
+                            {else}
+                            <span class="coupon-text">不使用红包</span>
+                            <em class="t-first coupon-price"></em>
+                            {/if}
+                        </div>
+                        <span class="t-jiantou"><i class="iconfont icon-jiantou tf-180"></i></span>
+                        <div id="j-filter-div" class="j-filter-div filter-div ts-5 filter-coupon-div flow-coupon">
+                            <div class="con-filter-div" style="height: 90%;">
+                                <ul class="select-three flow-couon-list padding-all bonus-list">
+                                    <script id="j-bonus-list" type="text/html">
+                                    <%each bonus_list as bonus%>
+                                    <li class="big-remark-all">
+                                        <div class="dis-box">
+                                            <div class="remark-all temark-{if $bonus.type_money>=0}{if $bonus.type_money>=50}{if $bonus.type_money>=100}1{else}2{/if}{else}3{/if}{else}3{/if} tb-lr-center">
+                                                <span class="b-r-a-price"><sup>¥</sup><%bonus.type_money%></span>
+                                            </div>
+                                            <div class="box-flex b-color-f padding-all">
+                                                <%if bonus.shop_name%>
+                                                <h4><%bonus.shop_name%></h4>
+                                                <%/if%>
+                                                <p><%bonus.type_name%></p>
+                                                <p class="t-remark"><%bonus.use_start_date%> ~ <%bonus.use_end_date%></p>
+                                                <div class="ect-select">
+                                                    <label data-bonus="<%bonus.bonus_id%>" data-money="<%bonus.type_money%>" <%if {$order.bonus_id} == bonus.bonus_id%>class="active" <%/if%> >
+                                                           <i class="j-select-btn active-i"></i>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <%/each%>
+                                    </script>
+                                </ul>
+                            </div>
+                            <div class="ect-button-more dis-box n-ect-btn j-coupon-submit flow-coupon">
+                                <button class="btn-submit box-flex c-btn-submit" name="btncoupons">确定</button>
+                            </div>
+                        </div>
+                        <input type="hidden" name="bonus" value="{$order.bonus_id}" id="ECS_BONUS" />
+                    </li>
+             	 {/if}
+           {if $user_coupons > 0}
+                       <!--  <li class="dis-box padding-all m-top1px b-color-f f-c-s-coupon j-f-c-s-coupon-1">
+                                           <label class="t-remark g-t-temark">优惠券</label>
+                        <div class="box-flex t-goods1 text-right onelist-hidden">
+                            {if $order.cou_id > 0}
+                            <span class="coupon-text">优惠金额</span>
+                            <em class="t-first coupon-price">{$order_coupont.type_cou_money}</em>
+                            {else}
+                            <span class="coupon-text">不使用优惠券</span>
+                            <em class="t-first coupon-price"></em>
+                            {/if}
+                        </div>
+                        <span class="t-jiantou"><i class="iconfont icon-jiantou tf-180"></i></span>
+                        <div id="j-filter-div" class="j-filter-div filter-div-1 ts-5 filter-coupon-div-1 flow-coupon">
+                            <div class=" con-filter-div-1" style="height: 90%;">
+                                <ul class="select-three flow-couon-list padding-all couon-list">
+                                    <script id="j-couon-list" type="text/html">
+                                    <%each user_coupons as vo%>
+                                    <li class="big-remark-all">
+                                        <div class="dis-box">
+                                            <div class="remark-all temark-1 tb-lr-center">
+                                                <span class="b-r-a-price"><sup>¥</sup> <%vo.cou_money%></span>
+                                            </div>
+                                            <div class="box-flex b-color-f padding-all">
+                                               <p><%vo.cou_name%></p>
+                                               <p>满<%vo.cou_man%>减<%vo.cou_money%>元</p>
+                                                <div class="ect-select">
+                                                    <label data-coupont="<%vo.uc_id%>" data-money="<%vo.cou_money%>" <%if {$order.cou_id} == vo.uc_id%>class="active"<%/if%> >
+                                                           <i class="j-select-btn"></i>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <%/each%>
+                                    </script>
+                                </ul>
+                            </div>
+                            <div class="ect-button-more dis-box padding-all">
+                                <button class="btn-submit box-flex cou-btn-submit" name="coupont">确定</button>
+                            </div>
+                        </div>
+                        <input type="hidden" name="uc_id" value="{$order.cou_id}" id="ECS_COUPONT" />
+                    </li> -->
+           {/if}
+                </ul>
+            </section>
+
+            {if $allow_use_integral}
+           <!--  <section class="radio-switching padding-all m-top10 b-color-f {if $order.integral}active{/if}" onclick="changeIntegral({$order_max_integral})">
+                <label class="fl">本单可使用积分抵扣 <span class="t-first">{if $integral_money > $total.goods_price}{$total.goods_price_formated}{else}{$integral_money}{/if}</span></label>
+                <span class="fr"><em class="ts-1 ingeral"></em><hr class="ts-1" /></span>
+                <input type="hidden" name="integral" value="{if $order.integral}{$order_max_integral}{else}0{/if}" id="ECS_INTEGRAL" />
+            </section> -->
+            {/if}
+
+            <section class="m-top10" id="ECS_ORDERTOTAL">
+               {include file="order_total"}
+            </section>
+
+        </div>
+    </div>
+
+    <div class="mask-filter-div"></div>
+    <!--悬浮btn star-->
+    <section class="filter-btn f-checkout-filter-btn dis-box pl">
+        <input type="hidden" name="user_id" value="{$user_id}" />
+        <input type="hidden" id="store_id" name='store_id' value="{$store_id}"/>
+
+        <span class="box-flex t-remark">实付款 {if $total.exchange_integral}<em class="t-first">{$total.exchange_integral}积分 + </em>{/if}<em class="t-first" id="amount">{$total.amount_formated}</em></span>
+        {if $isStoreOrder == 1}<a href="{url('category/index/index')}" class="btn-submit">继续购物</a>{/if}
+        <a href="javascript:;" type="button" class="btn-submit" onclick="$('#theForm').submit();">{if $total.exchange_integral}确认兑换{else}提交订单{/if}</a>
+    </section>
+</form>
+<!--悬浮btn end-->
+    {include file="team_nav"}
+<script type="text/javascript">
+
+                    var flow_no_payment = "{$lang.flow_no_payment}";
+                    var flow_no_shipping = "{$lang.flow_no_shipping}";
+                    $(function(){
+                    //配送方式切换
+                    $(".select-shipping li label").click(function(){
+                    var type = $(this).attr("data-type");
+                            var ru_id = $(this).attr("data-ruid");
+                            var shipping = $(this).attr("data-shipping");
+                            if (type == 1){
+                    if ($(".j-goods-site-li-time" + ru_id).hasClass("show-temark-div")){
+                    $(".j-goods-site-li-time" + ru_id).removeClass("show-temark-div");
+                    }
+                    if ($(".j-goods-site-li" + ru_id).hasClass("active")){
+                    $(".j-goods-site-li" + ru_id).removeClass("active");
+                    }
+
+                    var cachepointid = $("#cachepointid" + ru_id).val();
+                            $("#point_id" + ru_id).val(cachepointid);
+                            var goods_price_amount = $("#goods_price_amount" + ru_id).val();
+                            $("#ru_amount" + ru_id).html(goods_price_amount);
+                            var mySwiper = new Swiper('.swiper-scroll', {
+                            scrollbar: false,
+                                    direction: 'vertical',
+                                    slidesPerView: 'auto',
+                                    mousewheelControl: true,
+                                    freeMode: true
+                            });
+                    }
+                    else{
+                    if (!$(".j-goods-site-li-time" + ru_id).hasClass("show-temark-div")){
+                    $(".j-goods-site-li-time" + ru_id).addClass("show-temark-div");
+                    }
+                    if (!$(".j-goods-site-li" + ru_id).hasClass("active")){
+                    $(".j-goods-site-li" + ru_id).addClass("active");
+                    }
+                    $("#point_id" + ru_id).val("");
+                            var amount = $("#amount" + ru_id).val();
+                            $("#ru_amount" + ru_id).html(amount);
+                    }
+                    $(this).parents(".select-shipping").siblings("input[type=hidden]").val(shipping);
+                        var shipping_id= get_cart_shipping_id();
+                            $.post("{url('shipping_fee')}", {ru_id: ru_id, type: type, shipping_id:shipping_id}, function(result){
+                            if (result.message){
+                            d_messages(result.message);
+                                    return false;
+                            }
+                            if (result.content){
+                            $("#ECS_ORDERTOTAL").html(result.content);
+                            }
+                            if (result.amount){
+                            $("#amount").html(result.amount);
+                            }
+                            if ($(".j-filter-show-div").hasClass("show")){
+                            document.removeEventListener("touchmove", handler, false);
+                                    $(".j-filter-show-div").removeClass("show");
+                                    $(".mask-filter-div").removeClass("show");
+                            }
+                            $("#shipping_type" + ru_id).val(type);
+                            }, 'json');
+                    });
+                            //自提点
+                            $(".j-goods-site-li li label").click(function(){
+                    var point = parseInt($(this).attr("data-point"));
+                            var ru_id = parseInt($(this).attr("data-ruid"));
+                            if (point > 0){
+                    $.post("{url('select_picksite')}", {picksite_id: point, ru_id:ru_id}, function(result){
+                    if (result.error > 0){
+                    if (result.err_msg){
+                    d_messages(result.err_msg);
+                    }
+                    return false;
+                    }
+                    $("#point_id" + ru_id).val(point);
+                    }, 'json');
+                    }
+                    });
+                            //优惠券
+                   $(".flow-couon-list").on('click','.j-select-btn',function(){
+                        var label = $(this).parent();
+                        if (label.hasClass("active")){
+                             label.removeClass("active");
+                        }
+                        else{
+                        $(this).parents('.flow-couon-list').find("li label").removeClass("active");
+                                label.addClass("active");
+                        }
+                    });
+                            //积分
+                            $(".radio-switching").click(function(){
+
+                    });
+                            $(".invhead").css('display', 'none');
+                            $(".invliothers").click(function(){
+                    $(".invhead").css('display', 'block');
+                    });
+                            $(".invli").click(function(){
+                    $(".invhead").css('display', 'none');
+                    });
+                   });
+                    //优惠券 2016-09-05
+                    $(".blibli").click(function(){
+
+                        var label = $(this).parent();
+                        if (label.hasClass("active")){
+                             label.removeClass("active");
+                        }
+                        else{
+                        $(".flow-couon-list li label").removeClass("active");
+                                label.addClass("active");
+                        }
+
+                    $name = $(this).attr("name");
+
+                    $value = $(this).attr("value");
+
+                    if ($name == 'couponsed'){
+                         $(this).removeAttr("name");
+                    $.get("{url('flow/index/changecount')}", {cou_id: 0}, function (info) {
+                    });
+                    } else{
+                    $(this).attr("name", "couponsed");
+                        $.get("{url('flow/index/changecount')}", {cou_id: $value}, function (info) {
+
+                        });
+                    }
+
+                 })
+
+    {if $allow_use_bonus && $user_bonus_count > 0}
+        //  订单确认页面--显示红包
+        var url = ROOT_URL + 'index.php?m=flow&a=get_user_bonus&total_goods_price={$total_goods_price}&cart_value={$cart_value}';
+        $('.bonus-list').infinite({url: url, template:'j-bonus-list'});
+    {/if}
+
+    {if $user_coupons > 0}
+        //  订单确认页面--显示优惠券
+        url = ROOT_URL + 'index.php?m=flow&a=get_user_couon&total_goods_price={$total_goods_price}&cart_value={$cart_value}';
+        var infi2 = $('.couon-list').infinite({url: url, template:'j-couon-list', pager:1});
+    {/if}
+
+    //发票
+    var users_vat_invoices_id={$users_vat_invoices_id};
+    $(".j-get-invoice-1 li").click(function () {
+        if({$users_vat_invoices_id}==0){
+             $(this).parent(".ect-select").siblings().find("label").removeClass("active");
+        }else{
+              $(this).find("label").addClass("active").parent(".ect-select").siblings().find("label").removeClass("active");
+        }
+        if($(this).find("label").attr("for") == "msg-type0") {
+            $(".invoice-cont-box").removeClass("active");
+        }
+        if($(this).find("label").attr("for") == "msg-type1") {
+
+            if({$users_vat_invoices_id} ==0){
+                  $(".invoice-cont-box").removeClass("active");
+            }else{
+                  $(".invoice-cont-box").addClass("active");
+
+            }
+        }
+    });
+    $(".j-get-invoice li").click(function () {
+        $(this).find("label").addClass("active").parent(".ect-select").siblings().find("label").removeClass("active");
+      if($(this).find("label").attr("data") == 1) {
+            $(".invoice-cont").removeClass("cur");
+            $(".invoice-cont-1").removeClass("cur");
+        }
+        if($(this).find("label").attr("data") == 2) {
+            $(".invoice-cont-1").addClass("cur");
+            $(".invoice-cont").addClass("cur");
+        }
+    });
+    /*单选consignee*/
+    $(".j-invoice-r label").click(function () {
+        $(this).addClass("active").parents(".flow-checkout-adr").siblings().find("label").removeClass("active");
+    });
+
+    $(".btn-box").click(function () {
+        layer.open({
+        content: '没有增值发票，确定去添加吗？',
+        btn: ['确定', '取消'],
+        yes: function(index) {
+        window.location.href="{url('user/index/inv_info')}";
+        layer.close(index);
+        }
+        });
+     });
+                    function get_cart_shipping_id(){
+                        /*获取配送方式 by kong */
+                        var arr = [];
+                        $(".shoppingList").each(function(k,v){
+                            var arr2 = [];
+                            var ru_id = $(this).find("input[name='ru_id[]']").val();
+                            var shipping = $(this).find("input[name='shipping[]']").val();
+                            arr2.push(ru_id);
+                            arr2.push(shipping);
+                            arr[k] = arr2;
+
+                        });
+                        return JSON.stringify(arr);
+                    }
+  </script>
+</body>
+</html>

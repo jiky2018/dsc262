@@ -1,0 +1,163 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+{if $topBanner}
+{$topBanner}
+{else}
+{* ECSHOP 提醒您：动态载入position_get_adv.lbi，显示首页分类小广告 *}{insert name='get_adv' logo_name=$top_banner}
+{/if}
+<div class="site-nav" id="site-nav">
+    <div class="w w1200">
+        <div class="fl">
+        {* DSC 提醒您：根据用户id来调用header_region_style.lbi显示不同的界面  *}{insert name='header_region'}
+            <div class="txt-info" id="ECS_MEMBERZONE">
+		{* DSC 提醒您：根据用户id来调用member_info.lbi显示不同的界面  *}{insert name='member_info'}	
+            </div>
+        </div>
+        <ul class="quick-menu fr">
+            <!--{if $navigator_list.top}-->
+            <!-- {foreach name=nav_top_list from=$navigator_list.top item=nav key=key} -->
+            <!--{if $smarty.foreach.nav_top_list.index < 4}-->
+            <li>
+                <div class="dt"><a href="{$nav.url}" {if $nav.opennew}target="_blank"{/if}>{$nav.name}</a></div>
+            </li>
+            <li class="spacer"></li>
+            <!--{/if}-->
+            <!-- {/foreach} -->
+            <!-- {/if} -->
+            <!--{if $navigator_list.top}-->
+            <li class="li_dorpdown" data-ectype="dorpdown">
+                <div class="dt dsc-cm">{$lang.Site_navigation}<i class="iconfont icon-down"></i></div>
+                <div class="dd dorpdown-layer">
+                    <dl class="fore1">
+                        <dt>特色主题</dt>
+                        <dd>
+                            <!-- {foreach name=nav_top_list from=$top_cat_list item=topc_cats key=key} -->
+                                <!--{if $smarty.foreach.nav_top_list.index < 3}-->
+                                    <div class="item"><a href="{$topc_cats.url}" target="_blank">{$topc_cats.cat_alias_name}</a></div>
+                                <!--{/if}-->
+                            <!-- {/foreach} -->
+                        </dd>
+                    </dl>
+                    <dl class="fore2">
+                        <dt>促销活动</dt>
+                        <dd>
+                            <!-- {foreach name=nav_top_list from=$navigator_list.top item=nav key=key} -->
+                                <!--{if $smarty.foreach.nav_top_list.index >= 4}-->
+                                    <div class="item"><a href="{$nav.url}"{if $nav.opennew} target="_blank"{/if}>{$nav.name}</a></div>
+                                <!--{/if}-->
+                            <!-- {/foreach} -->
+                        </dd>
+                    </dl>
+                </div>
+            </li>
+            <!-- {/if} -->
+        </ul>
+    </div>
+</div>
+<div class="header header-b2b">
+    <div class="w w1200">
+        <div class="logo">
+            <div class="logoImg"><a href="wholesale.php"><img src="{$site_domain}themes/<?php echo $GLOBALS['_CFG']['template']; ?>/images/business_logo.gif" /></a></div>
+        </div>
+        <div class="dsc-search">
+            <div class="form">
+                <form id="searchForm" name="searchForm" method="get" action="wholesale_search.php" onSubmit="return checkSearchForm()" class="search-form">
+                    <input autocomplete="off"  name="keywords" type="text" id="keyword" value="{if $wholesale_search_keywords}{$wholesale_search_keywords}{else}{insert name='wholesale_rand_keyword'}{/if}" class="search-text"/>
+                    <button type="submit" class="button button-goods" onclick="checkstore_search_cmt(0)" >搜商品</button>
+					<a href="javascript:;" ectype="wantToBuy" class="wantToBuy"><i class="iconfont icon-book"></i>发布求购单</a>
+					<input type="hidden" name="user_id" value="{$user_id|default:0}">
+                </form>
+                {if $wholesale_keywords}
+                <ul class="keyword">
+                {foreach from=$wholesale_keywords item=val}
+                <li><a href="wholesale_search.php?keywords={$val|escape:url}" target="_blank">{$val}</a></li>
+                {/foreach}
+                </ul>
+                {/if}
+                <!-- @Author guan 搜索栏提示 start -->
+                <div class="suggestions_box" id="suggestions" style="display:none;">
+                    <div class="suggestions_list" id="auto_suggestions_list">
+                        &nbsp;
+                    </div>
+                </div>
+                <!-- @Author guan 搜索栏提示 end -->
+            </div>
+        </div>
+        <div class="shopCart b2b-shopCart" data-ectype="dorpdown" id="ECS_WHOLESALE_CARTINFO" data-carteveval="0">
+        {* DSC 提醒您：根据用户id来调用wholesale_cart_info.lbi显示不同的界面  *}{insert name='wholesale_cart_info'}
+        </div>
+    </div>
+</div>
+<div class="nav nav-b2b{if $filename neq 'wholesale'} dsc-zoom{/if}">
+    <div class="w w1200">
+        <div class="b2b-categorys">
+        	<div class="b2b-categorys-all"><a href="wholesale_cat.php" target="_blank">全部批发商品</a></div>
+            <div class="b2b-categorys-content{if $filename neq 'wholesale'} hide{/if}">
+            	<ul>
+                	<!--{foreach from=$wholesale_cat item=cat name=wholesale_cat}-->
+                    <!--{if $smarty.foreach.wholesale_cat.index < 10}-->
+                	<li>
+                    	<div class="b2b-cate-item">
+                        	<!--{if $cat.style_icon eq 'other'}-->
+                            {if $cat.cat_icon}<div class="icon-other"><img src="{$cat.cat_icon}" alt="分类图标"></div>{/if}
+                            <!--{else}-->
+                            <i class="iconfont icon-{$cat.style_icon}"></i>
+                            <!--{/if}-->
+                            <a href="{$cat.url}" target="_blank">{$cat.name|escape:html}</a>
+                        </div>
+                        {if $cat.cat_id}
+                    	<div class="b2b-cate-layer" ectype="cateLayer">
+                        	<div class="b2b-cate-layer-con clearfix">
+                                <div class="cate_detail">
+									<!--{foreach from=$cat.cat_id item=child name=foo2}-->
+                                	<dl>
+                                    	<dt><a href="{$child.url}" target="_blank">{$child.name|escape:html}</a></dt>
+                                        <dd>
+											<!--{foreach from=$child.cat_id item=childer}--> 
+                                        	<a href="{$childer.url}" target="_blank">{$childer.name|escape:html}</a>
+											<!--{/foreach}-->
+                                        </dd>
+                                    </dl>
+                                    <!--{/foreach}-->
+                                </div>
+                            </div>
+                        </div>
+                        {/if}
+                    </li>
+                    <!-- {/if} -->
+                    <!--{/foreach}-->
+                </ul>
+            </div>
+        </div>
+        <div class="nav-main">
+        	<ul class="navitems">
+            	<li><a href="../wholesale.php" {if $index eq 'index'}class="curr"{/if}>批发首页</a></li>
+                <li><a href="wholesale_purchase.php?act=list" {if $buy eq 'list'}class="curr"{/if}>求购信息</a></li>
+				{foreach from=$get_wholsale_navigator item=get_wholsale_navigator}
+				<li><a href="{$get_wholsale_navigator.url}" {if $get_wholsale_navigator.cat_id eq $get_wholsale_navigator.active}class="curr"{/if}>{$get_wholsale_navigator.cat_name}</a></li>
+				{/foreach}
+            </ul>
+        </div>
+    </div>
+</div>
+{if $filename neq 'wholesale'}
+<script type="text/javascript">
+$(document).on("mouseover", ".b2b-categorys", function(){
+	$(".b2b-categorys-content").removeClass('hide');
+})
+$(document).on("mouseout", ".b2b-categorys", function(){
+	$(".b2b-categorys-content").addClass('hide');
+})
+</script>
+{/if}
+<script type="text/javascript">
+//发布求购单
+$(document).on('click', "[ectype='wantToBuy']", function(){
+  var user_id = $("input[name='user_id']").val();
+  var url = 'wholesale_purchase.php?act=release';
+  if(user_id > 0){
+	location.href = url;
+  }else{
+	$.notLogin("get_ajax_content.php?act=get_login_dialog", url);
+  }
+})
+</script>

@@ -1,0 +1,69 @@
+{if $attr_spec}
+<div class="step_title">
+	<i class="ui-step"></i>
+    <h3 class="fl">属性图片</h3>
+    {if $goods_attr_price eq 0}
+        {if $goods_model eq 1}
+        	<a href="goods_warehouse_attr_batch.php?act=add&goods_id={$goods_id}" class="btn btn35 red_btn ml30" target="_blank">CSV批量上传</a>
+        {elseif $goods_model eq 2}
+        	<a href="goods_area_attr_batch.php?act=add&goods_id={$goods_id}" class="btn btn35 red_btn ml30" target="_blank">CSV批量上传</a>
+        {/if}
+    {/if}
+</div>
+<div class="attr_gallerys">
+{foreach from=$attr_spec item=spec skey=key name=onspec}
+<div class="step_content attr_gallery">
+	<div class="attr_tit">{$spec.attr_name}：</div>
+	{foreach from=$spec.attr_values_arr item=val key=key name=attr_values}
+	<!--处理属性图片 start-->
+    <div class="attr_item" style="width:{if $goods_attr_price eq 0}580{else}{if $val.attr_type eq 1}465{else}580{/if}{/if}px;">
+        <div class="txt" title="{$val.attr_value}" data-toggle="tooltip">{$val.attr_value}</div>
+        <div class="info {if $goods_attr_price neq 0}{if $val.attr_type eq 1}hide{/if}{/if}">
+            {if $goods_model eq 1}
+            <input name="warehouse_butt" class="button fl mr10 {if $goods_attr_price neq 0}{if $val.attr_type eq 1}hide{/if}{/if}" value="仓库价格" type="button" data-goodsattrid="{$val.goods_attr_id}">  
+            {elseif $goods_model eq 2}
+            <input name="area_butt" class="button fl mr10 {if $goods_attr_price neq 0}{if $val.attr_type eq 1}hide{/if}{/if}" value="地区价格" type="button" data-goodsattrid="{$val.goods_attr_id}">
+            {else}
+            <!--<label class="fl mr10 {if $goods_attr_price neq 0}{if $val.attr_type eq 1}hide{/if}{/if}">价格</label>
+            <input type="text" class="text w80 {if $goods_attr_price neq 0}{if $val.attr_type eq 1}hide{/if}{/if}" name="gallery_attr_price[]" onBlur="listTable.editInput(this, 'edit_attr_price', {$val.goods_attr_id|default:0});" size="10" value="{$val.attr_price|default:0.00}" />-->
+            {/if}
+        </div>
+        <div class="info">
+            <label>排序：</label>
+            <input type="text" class="text w80" name="gallery_attr_sort[]" onBlur="listTable.editInput(this, 'edit_attr_sort', {$val.goods_attr_id|default:0});" size="10" value="{$val.attr_sort}" />
+        </div>
+        
+        {if $spec_count gt 1}
+            {if $smarty.foreach.onspec.first && $val.goods_attr_id}
+            <a href="javascript:;" ectype="add_attr_img" class="up_img" class="button" data-goodsattrid="{$val.goods_attr_id|default:0}" data-attrid="{$val.attr_id|default:0}">上传图片</a>
+            {/if}
+            
+            {if $val.attr_checked}
+            <div class="img" data-type="img"><img src="images/yes.png" /></div>
+            {/if}
+            
+            {if $val.attr_gallery_flie}
+            <a href="../{$val.attr_gallery_flie}" class="nyroModal" style="cursor:pointer; font-size:14px; margin:5px 0px 0px 5px;"><i class="icon icon-picture"></i></a>
+            {/if}
+        {/if}
+        
+        <input name="attr_id" type="hidden" value="{$spec.attr_id}" id="attrId" autocomplete="off"/>
+        <input name="attr_value" type="hidden" value="{$val.attr_value}" id="goodsAttrValue_{$val.goods_attr_id}" autocomplete="off"/>
+        <input type="hidden" class="text w80" name="gallery_attr_value[]" size="10" value="{$val.attr_value}" />
+        <input type="hidden" class="text w80" name="gallery_attr_id[]" size="10" value="{$spec.attr_id}" />
+    </div>
+	<!--处理属性图片 end-->
+    {/foreach}
+</div>
+{/foreach}
+</div>
+{/if}
+<script type="text/javascript">
+$(function(){
+	$(".nyroModal").nyroModal();
+	$(".attr_gallerys").hover(function(){
+		$(".attr_gallerys").perfectScrollbar("destroy");
+		$(".attr_gallerys").perfectScrollbar();
+	});
+});
+</script>

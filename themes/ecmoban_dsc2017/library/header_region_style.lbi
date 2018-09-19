@@ -1,0 +1,58 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+{if !$is_insert}
+<div class="city-choice" id="city-choice" data-ectype="dorpdown">
+	<div class="dsc-choie dsc-cm" ectype="dsc-choie">
+		<i class="iconfont icon-map-marker"></i>
+		<span class="ui-areamini-text" data-id="1" title="{$region_name}">{$region_name}</span>
+	</div>
+	<div class="dorpdown-layer" ectype="dsc-choie-content">
+        {/if}
+        {if $is_insert}
+        {if $pin_region_list}
+		<div class="ui-areamini-content-wrap" id="ui-content-wrap">
+			<div class="hot">
+            	{foreach from=$region_list item=list}
+                <a href="javascript:get_district_list({$list.region_id}, 0);"  {if $city_top eq $list.region_id}style="background-color:#eee; color:#f42424;"{/if}>{$list.region_name}</a>
+                {/foreach}
+			</div>
+			<div class="search-first-letter">
+				{foreach from=$pin_region_list item=pin key=letter}
+				<a href="javascript:void(0);" data-letter="{$letter}">{$letter}</a>
+				{/foreach}
+			</div>
+			<div class="scrollBody" id="scrollBody">
+				<div class="all-list" id="scrollMap">
+					<ul id="ul">
+						{foreach from=$pin_region_list item=pin_region key=letter name=reg}
+						<li data-id="{$smarty.foreach.reg.iteration}" data-name="{$letter}">
+							<em>{$letter}</em>
+							<div class="itme-city">
+								{foreach from=$pin_region item=region}
+								{if $region.is_has}
+								<a href="javascript:get_district_list({$region.region_id}, 0);" {if $city_top eq $region.region_id}class="city_selected"{/if}>{$region.region_name}</a>
+								{else}
+								<a href="javascript:void(0);" class="is_district">{$region.region_name}</a>
+								{/if}
+								{/foreach}
+							</div>
+						</li>
+						{/foreach}
+					</ul>
+				</div>
+				<div class="scrollBar" id="scrollBar">
+                	<p id="city_bar"></p>
+                </div>
+				<input name="area_phpName" type="hidden" id="phpName" value="{$area_phpName}">
+			</div>
+		</div>
+        {/if}
+		<script type="text/javascript">
+        $(function(){
+        $("#site-nav").jScroll();
+        });
+        </script>
+        {/if}
+        {if !$is_insert}
+	</div>
+</div>
+{/if}

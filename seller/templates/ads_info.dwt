@@ -1,0 +1,394 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+            	{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <!--start-->
+                <div class="ecsc-form-goods">
+                	<form action="ads.php" method="post" name="theForm" enctype="multipart/form-data" id='ads_form'>
+                	<div class="wrapper-list border1">
+                    	<dl>
+                        	<dt>{$lang.ad_type}：</dt>
+                            <dd>
+                            	<div class="checkbox_items">
+                                	<div class="checkbox_item">
+                                    	<input name="ad_type" type="radio" class="ui-radio" value="0" id="ad_type_0" {if $ads.ad_type eq 0}checked="checked"{/if} onclick="get_ad_type(this.value);" />
+                                    	<label class="ui-radio-label" for="ad_type_0">{$lang.ad_type1}</label>
+                                    </div> 
+                                    <div class="checkbox_item">
+                                        <input name="ad_type" type="radio" class="ui-radio" value="1" id="ad_type_1" {if $ads.ad_type eq 1}checked="checked"{/if} onclick="get_ad_type(this.value);" />
+                                        <label class="ui-radio-label" for="ad_type_1">{$lang.ad_type2}</label>
+                                    </div>
+                                 </div>
+                            </dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.require_field}&nbsp;{$lang.ad_name}：</dt>
+                            <dd>
+                            	<input type="text" name="ad_name" class="text"  value="{$ads.ad_name}" id="ad_name" autocomplete="off" />
+								<div class="form_prompt"></div>
+                                <div class="notic m20">{$lang.ad_name_notic}</div>
+                                <div class="ad-set">
+                                    <div class="num-set">
+                                        <strong>广告名称序号：</strong>
+                                        <input type="button" value="-" class="num_add">
+                                        <input type='text' value="1" class="num_id text" name="num_id">
+                                        <input type="button" value="+" class="num_reduce">
+                                    </div>
+                                    
+                                     <div class="cat-set" style="display:none">
+                                        <strong>选择广告分类ID：</strong>
+                                        <input type='text' class="text text_4 mr10" value="" class="cat_id" placeholder="请输入分类ID" name="cat_id">
+                                        <div class="categorySelect fl">
+                                            <div class="selection">
+                                                <input type="text" name="category_name" id="category_name" class="text w250 valid" value="请选择分类" autocomplete="off" readonly data-filter="cat_name" />
+                                                <input type="hidden" name="category_id" id="category_id" value="0" data-filter="cat_id" />
+                                            </div>
+                                            <div class="select-container" style="display:none;">
+                                                {include file="library/filter_category.lbi"}
+                                            </div>
+                                        </div>
+                                     </div>
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl id="ad_type_2" style="display:{if $ads.ad_type eq 0}none{else}{/if}">
+                        	<dt>{$lang.goods_name}：</dt>
+                            <dd>
+                            	<input type="text" name="goods_name" value="{$ads.goods_name}" size="55" class="text"/>
+                        		<div class="notic">{$lang.ad_name_notic2}</div>
+                            </dd>
+                        </dl>
+                        {if $action eq "add"}
+                        <input type="hidden" name="media_type" value="0" />
+                        {else}
+                        <input type="hidden" name="media_type" value="{$ads.media_type}" />
+                        {/if}
+                        <dl>
+                        	<dt>{$lang.position_id}：</dt>
+                            <dd>
+                                <div  class="imitate_select select_w320">
+                                    <div class="cite">{$lang.outside_posit}</div>
+                                    <ul>
+                                        <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.outside_posit}</a></li>
+                                        {foreach from=$position_list item=list key=key}
+                                        <li><a href="javascript:;" data-value="{$key}" class="ftx-01">{$list}</a></li>
+                                        {/foreach}
+                                    </ul>
+                                    <input name="position_id" type="hidden" />
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.start_end_date}：</dt>
+                            <dd>
+                            	<div class="text_time" id="text_time1">
+                                    <input name="start_time" type="text" class="text" id="start_time" size="22" value='{$ads.start_time}' readonly="readonly" />
+                                </div>
+                                <span class="bolang">&nbsp;&nbsp;~&nbsp;&nbsp;</span>
+                                <div class="text_time" id="text_time2">
+                                    <input name="end_time" type="text" class="text" id="end_time" size="22" value='{$ads.end_time}' readonly="readonly" />
+                                </div>
+                            </dd>
+                        </dl>
+                        {if $ads.media_type eq 0 OR $action eq "add"}
+                        <dl>
+                        	<dt>{$lang.ad_link}：</dt>
+                            <dd><input type="text" name="ad_link" value="{$ads.ad_link}" size="35" class="text" /></dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.require_field}&nbsp;{$lang.upfile_img}：</dt>
+                            <dd>
+                                <div class="type-file-box">
+                                	<div class="input">
+                                        <input type="text" name="textfile" class="type-file-text" id="textfield" autocomplete="off" value="{if $ads.ad_code}../data/afficheimg/{$ads.ad_code}{/if}" readonly />
+                                        <input type="button" name="button" id="button" class="type-file-button" value="上传..." />
+                                        <input type="file" class="type-file-file" id="ad_img" name="ad_img" data-state="imgfile" size="30" hidefocus="true" value="" />
+                                    </div>
+                                    {if $ads.ad_code}
+                                    <span class="show">
+                                        <a href="../data/afficheimg/{$ads.ad_code}" target="_blank" class="nyroModal"><i class="icon icon-picture" onmouseover="toolTip('<img src=../data/afficheimg/{$ads.ad_code}>')" onmouseout="toolTip()"></i></a>
+                                    </span>
+                                    {/if}
+                                </div>
+                                <div class="form_prompt"></div>
+                                <div class="notic m20" id="AdCodeImg">{$lang.ad_code_img}</div>
+                            </dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.img_url}：</dt>
+                            <dd><input type="text" name="img_url" value="{$url_src}" size="35" class="text" /></dd>
+                        </dl>
+                        {/if}
+                        {if $ads.media_type eq 1 OR $action eq "add"}
+                        <dl style="{if $ads.media_type neq 1 OR $action eq 'add'}display:none{/if}">
+                        	<dt>{$lang.upfile_flash}：</dt>
+                            <dd>
+                                <div class="type-file-box">
+                                    <div class="input">
+                                        <input type="text" name="flash_textfile" class="type-file-text" id="textfield" value="{if $ads.ad_code}{$ads.ad_code|escape}{/if}" autocomplete="off" readonly />
+                                        <input type="button" name="button" id="button" class="type-file-button" value="上传..." />
+                                        <input type="file" class="type-file-file" id="upfile_flash" name="upfile_flash" data-state="imgfile" size="30" hidefocus="true" value="" />
+                                    </div>
+                                    {if $ads.ad_code}
+                                    <span class="show">
+                                        <a href="../data/afficheimg/{$ads.ad_code}" target="_blank" class="nyroModal"><i class="icon icon-picture" onmouseover="toolTip('<img src=../data/afficheimg/{$ads.ad_code}>')" onmouseout="toolTip()"></i></a>
+                                    </span>
+                                    {/if}
+                                </div>
+                                <div class="notic m20" id="AdCodeFlash">{$lang.ad_code_flash}</div>
+                            </dd>
+                        </dl>
+                        <dl style="{if $ads.media_type neq 1 OR $action eq 'add'}display:none{/if}">
+                        	<dt>{$lang.flash_url}：</dt>
+                            <dd><input type="text" name="flash_url" value="{$flash_url}" size="35" class="text" /></dd>
+                        </dl>
+                        {/if}
+                        {if $ads.media_type eq 2 OR $action eq "add"}
+                        <dl id="2" style="{if $ads.media_type neq 2 OR $action eq 'add'}display:none{/if}">
+                        	<dt>{$lang.enter_code}：</dt>
+                            <dd><textarea name="ad_code" cols="50" rows="7" class="textarea">{$ads.ad_code}</textarea></dd>
+                        </dl>
+                        {/if}
+                        {if $ads.media_type eq 3 OR $action eq "add"}
+                        <div id="3" style="{if $ads.media_type neq 3 OR $action eq 'add'}display:none{/if}">
+                            <dl>
+                                <dt>{$lang.ad_link}：</dt>
+                                <dd><input type="text" name="ad_link2" value="{$ads.ad_link}" size="35" class="text" /></dd>
+                            </dl>
+                            <dl>
+                                <dt>{$lang.ad_code}：</dt>
+                                <dd><textarea name="ad_text" cols="40" rows="3" class="textarea">{$ads.ad_code}</textarea></dd>
+                            </dl>
+                        </div>
+                        {/if}
+                        <dl>
+                        	<dt>{$lang.background_color}：</dt>
+                            <dd><input type="text" name="link_color" value="{$ads.link_color}" size="35" class="text" /></dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.enabled}：</dt>
+                            <dd>
+                            	<div class="checkbox_items">
+                                	<div class="checkbox_item">
+                                        <input type="radio" class="ui-radio" name="enabled" value="1" id="enabled_1" {if $ads.enabled eq 1} checked="true" {/if} />
+                                        <label for="enabled_1" class="ui-radio-label">{$lang.is_enabled}</label>
+                                    </div>
+                                    <div class="checkbox_item">
+                                        <input type="radio" class="ui-radio" name="enabled" value="0" id="enabled_0" {if $ads.enabled eq 0} checked="true" {/if} />
+                                        <label for="enabled_0" class="ui-radio-label">{$lang.no_enabled}</label>
+                                    </div>
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl style="display:none">
+                        	<dt>{$lang.home_rec_mer_pro}：</dt>
+                            <dd>
+                            	<div class="checkbox_items">
+                                    <div class="checkbox_item">
+                                        <input type="checkbox" class="ui-checkbox" name="is_new" value="1" id="is_new" {if $ads.is_new eq 1} checked="true" {/if} />
+                                        <label class="ui-label" for="is_new">{$lang.new_adv}</label>
+                                    </div>
+                                    <div class="checkbox_item">
+                                        <input type="checkbox" class="ui-checkbox" name="is_hot" value="1" id="is_hot" {if $ads.is_hot eq 1} checked="true" {/if} />
+                                        <label class="ui-label" for="is_hot">{$lang.hot_adv}</label>
+                                    </div>
+                                    <div class="checkbox_item">
+                                        <input type="checkbox" class="ui-checkbox" name="is_best" value="1" id="is_best" {if $ads.is_best eq 1} checked="true" {/if} />
+                                        <label class="ui-label" for="is_best">{$lang.best_adv}</label>
+                                    </div>
+                                </div>
+                            </dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.link_man}：</dt>
+                            <dd><input type="text" name="link_man" value="{$ads.link_man}" size="35" class="text" /></dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.link_email}：</dt>
+                            <dd><input type="text" name="link_email" value="{$ads.link_email}" size="35" class="text" /></dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.link_phone}：</dt>
+                            <dd><input type="text" name="link_phone" value="{$ads.link_phone}" size="35" class="text" /></dd>
+                        </dl>
+                        <dl class="button_info">
+                         	<dt>&nbsp;</dt>
+                            <dd>
+                            	<input type="submit" value="{$lang.button_submit}" class="sc-btn sc-blueBg-btn btn35" id='submitBtn'/>
+                                <input type="reset" value="{$lang.button_reset}" class="sc-btn btn35 sc-blue-btn" />
+                                <input type="hidden" name="act" value="{$form_act}" />
+                                <input type="hidden" name="id" value="{$ads.ad_id}" />
+                            </dd>
+                        </dl>
+                    </div> 
+                    </form>
+                </div>					
+                <!--end-->
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript" src="../js/jquery.picTip.js"></script>
+<script type="text/javascript">
+    $.divselect("#media_type_div","#media_typeval",function(obj){
+		var val = obj.attr("data-value");
+		showMedia(val);
+	});
+	var ad_model=jQuery.parseJSON('{$ad_model}');
+	var action='{$action}';
+	// 存在广告模型
+	if(ad_model && ad_model.ad_type>0)
+	{
+		var ad_name=$("input[name=ad_name]");
+		var numId=$(".num_id");
+		var catId=$(".cat_id");
+		$(".ad-set").show();
+		if(action=='add')
+		{
+			changeSet();
+		}
+	
+		// 只包含num_id
+		if(ad_model.ad_type==1)
+		{	
+			$(".num-set").show();
+		}	
+		// 只包含cat_id
+		if(ad_model.ad_type==2)
+		{	
+			$(".cat-set").show();
+		}
+		// 包含num_id,cat_id，分类循环广告
+		if(ad_model.ad_type>2)
+		{
+			$(".num-set").show();
+			$(".cat-set").show();
+		}	
+		
+		/* 设置广告序号 */		
+		$(".num_add").click(function(){
+			if(numId.val()>1)
+			{	
+				numId.val(parseInt(numId.val())-1);
+			}
+			else
+			{
+				alert('广告序号最小为1');
+				numId.val(1);
+			}
+			changeSet();
+		})
+	
+		$(".num_reduce").click(function(){
+			numId.val(parseInt(numId.val())+1);
+			changeSet();
+		})
+		
+		$(".num_id").keyup(function(){
+			changeSet();
+		});
+		/* 设置广告序号 */
+		
+		/* 设置分类 ID */
+		$(document).on('click', '.categorySelect li', function(){
+			catId.val($(this).data('cid'));
+			changeSet();
+		})
+		
+		$(".cat_id").keyup(function(){
+			changeSet();
+		})
+		/* 设置分类 ID */
+	}
+
+	function changeSet(){
+		ad_name.val(ad_model.ad_model_init.replace('[num_id]',numId.val()));
+		ad_name.val(ad_name.val().replace('[cat_id]',catId.val()));
+		ad_name.val(ad_name.val().replace('[merchant_id]',{$ru_id|default:0}));
+	}
+
+	var MediaList = new Array('0', '1', '2', '3');
+	{literal}
+	function showMedia(AdMediaType){
+		for (I = 0; I < MediaList.length; I ++){
+			if (MediaList[I] == AdMediaType){
+				document.getElementById(AdMediaType).style.display = "";
+			}else{
+				document.getElementById(MediaList[I]).style.display = "none";
+			}
+		}
+	}
+	
+	$(function(){
+		//点击查看图片
+		$('.nyroModal').nyroModal();
+		
+		//表单验证
+		$("#submitBtn").click(function(){
+			if($("#ads_form").valid()){
+				$("#ads_form").submit();
+			}
+		});
+	
+		$('#ads_form').validate({
+			errorPlacement:function(error, element){
+				var error_div = element.parents('dl').find('div.form_prompt');
+				//element.parents('dl').find(".notic").hide();
+				error_div.append(error);
+			},
+			rules:{
+				ad_name :{
+					required : true
+				},
+				textfile :{
+					required : true
+				}
+			},
+			messages:{
+				ad_name:{
+					required : '<i class="icon icon-exclamation-sign"></i>'+ad_name_empty
+				},
+				textfile :{
+					required : '<i class="icon icon-exclamation-sign"></i>'+ad_photo_empty
+				}
+			}			
+		});
+	});
+  
+	function get_ad_type(val){
+		if(val == 1){
+			$("#ad_type_2").css("display","block")
+		}else{
+			$("#ad_type_2").css("display","none")
+		}
+	}
+  
+    //日期选择插件调用start sunle
+	var opts1 = {
+		'targetId':'start_time',//时间写入对象的id
+		'triggerId':['start_time'],//触发事件的对象id
+		'alignId':'text_time1',//日历对齐对象
+		'format':'-'//时间格式 默认'YYYY-MM-DD HH:MM:SS'
+	},opts2 = {
+		'targetId':'end_time',
+		'triggerId':['end_time'],
+		'alignId':'text_time2',
+		'format':'-'
+	}
+
+	xvDate(opts1);
+	xvDate(opts2);
+	//日期选择插件调用end sunle
+  {/literal}
+</script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$lang.goods_alt} - {$lang.virtual_card_list} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.replenish.0}</li>
+                    <li>{$lang.operation_prompt_content_common}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+                        <form method="post" action="virtual_card.php" name="theForm" id="virtual_card_form">
+                            <div class="switch_info">
+                                <div class="item">
+                                    <div class="label">{$lang.lab_goods_name}：</div>
+                                    <div class="label_value">
+										<input type="text" name="goods_name" maxlength="60"  value="{$card.goods_name}" disabled="true" class="text text_2" />
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}{$lang.lab_card_sn}：</div>
+                                    <div class="label_value">
+										<input type="text" name="card_sn" maxlength="60" size="40" value="{$card.card_sn}" class="text " />
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>								
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}{$lang.lab_card_password}：</div>
+                                    <div class="label_value">
+										<input type="text" name="card_password" maxlength="60" size="40" value="{$card.card_password}" class="text " />
+                                    	<div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.lab_end_date}：</div>
+                                    <div class="label_value">
+										<div id="" class="imitate_select select_w85">
+											<div class="cite">{$lang.please_select}</div>
+											<ul>
+												<li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.please_select}</a></li>
+												{foreach from=$data_year item=data key=key}
+												<li><a href="javascript:;" data-value="{$data}" class="ftx-01">{$data}</a></li>
+												{/foreach}
+											</ul>
+											<input name="end_dateYear" type="hidden" value="{$data_time.year}" id="">
+										</div>
+										<div id="" class="imitate_select select_w85">
+											<div class="cite">{$lang.please_select}</div>
+											<ul>
+												<li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.please_select}</a></li>
+												{foreach from=$data_month item=data key=key}
+												<li><a href="javascript:;" data-value="{$data}" class="ftx-01">{$data}</a></li>
+												{/foreach}
+											</ul>
+											<input name="end_dateMonth" type="hidden" value="{$data_time.month}" id="">
+										</div>
+										<div id="" class="imitate_select select_w85">
+											<div class="cite">{$lang.please_select}</div>
+											<ul>
+												<li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.please_select}</a></li>
+												{foreach from=$data_day item=data key=key}
+												<li><a href="javascript:;" data-value="{$data}" class="ftx-01">{$data}</a></li>
+												{/foreach}
+											</ul>
+											<input name="end_dateDay" type="hidden" value="{$data_time.day}" id="">
+										</div>										
+										<!--{html_select_date prefix="end_date" field_order="YMD" month_format="%m"  day_value_format="%02d" start_year="-1" end_year="+10" display_days=yes time=$card.end_date}-->
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="label_value info_btn">
+										<input type="hidden" name="act" value="action" />
+										<input type="hidden" name="goods_id" value="{$card.goods_id}" />
+										<input type="hidden" name="old_card_sn" value="{$card.card_sn}" />
+										<input type="hidden" name="card_id" value="{$card.card_id}" />
+										<input type="submit" value="{$lang.button_submit}" class="button" id="submitBtn" />
+                                    </div>
+                                </div>								
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+    </div>
+ 	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+	$(function(){
+		//表单验证
+		$("#submitBtn").click(function(){
+			if($("#virtual_card_form").valid()){
+				$("#virtual_card_form").submit();
+			}
+		});
+		
+		$('#virtual_card_form').validate({
+			errorPlacement:function(error, element){
+				var error_div = element.parents('div.label_value').find('div.form_prompt');
+				element.parents('div.label_value').find(".notic").hide();
+				error_div.append(error);
+			},
+			rules:{
+				card_sn :{
+					required : true
+				},
+				card_password :{
+					required : true
+				}
+			},
+			messages:{
+				card_sn:{
+					 required : '<i class="icon icon-exclamation-sign"></i>'+card_sn_null
+				},
+				card_password:{
+					 required : '<i class="icon icon-exclamation-sign"></i>'+card_password_null
+				}
+			}			
+		});
+	});
+	</script>
+</body>
+</html>

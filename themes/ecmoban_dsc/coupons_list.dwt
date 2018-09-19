@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>首页-领券中心</title>
+    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="icon" href="animated_favicon.gif" type="image/gif" />
+    <link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/base.css" />
+    <link href="{$ecs_css_path}" rel="stylesheet" type="text/css" />
+    <link href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/quan_item.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/quickLinks.css" />
+    <link rel="alternate" type="application/rss+xml" title="RSS|{$page_title}" href="{$feed_url}" />
+    <link rel="stylesheet" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/purebox.css">
+    {* 包含脚本文件 *}
+    {insert_scripts files='jquery-1.9.1.min.js,jquery.json.js,transport_jquery.js,cart_common.js,cart_quick_links.js'}
+    {insert_scripts files='common.js,global.js,utils.js,compare.js,jd_choose.js,parabola.js'}
+
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/sc_common.js"></script>
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.SuperSlide.2.1.1.js"></script>
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.tabso_yeso.js"></script>
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.yomi.js"></script>
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/rotate3di.js"></script>
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/scroll_city.js"></script>
+    <script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/notLogin.js"></script>
+    <style>.suspension{ display:none;}</style>
+    <!-- #BeginLibraryItem "/library/js_languages.lbi" --><!-- #EndLibraryItem -->
+</head>
+
+<body>
+<!-- #BeginLibraryItem "/library/page_header_coupons.lbi" --><!-- #EndLibraryItem -->
+<div id="content" class="w1200">
+    <div class="quan-main mt20">
+        <div class="w1200">
+            <div class="m">
+                <div class="quan-filter">
+                    <div class="f-sort">
+                        <a href="coupons.php?act=coupons_list" {if empty($smarty.get.field)}class="selted"{/if} data-param="st" data-id="0">{$lang.default}</a>
+                        <a href="coupons.php?act=coupons_list&field=cou_end_time" {if $smarty.get.field==cou_end_time}class="selted"{/if}>{$lang.Will_expire}</a>
+                        <a href="coupons.php?act=coupons_list&field=cou_money"  {if $smarty.get.field==cou_money}class="selted"{/if}>{$lang.max_Face}</a>
+                    </div>
+                    <div class="f-types">
+                        <a href="javascript:void(0);" {if empty($smarty.get.type) || $smarty.get.type==undefined}class="selted"{/if} data-id="3,4"><i></i>{$lang.type_all}</a>
+                        <a href="javascript:void(0);" {if $smarty.get.type==all}class="selted"{/if} data="all"><i></i>{$lang.vouchers_all}</a>
+                        <a href="javascript:void(0);" {if $smarty.get.type==member}class="selted"{/if} data="member"><i></i>{$lang.vouchers_user}</a>
+                    </div>
+                </div>
+            </div>
+            <div class="m">
+                <div class="quan-list">
+
+
+                    {foreach from=$cou_data item=vo}
+                    <div class="quan-item quan-d-item quan-item-acoupon{if $vo.cou_surplus eq 0} quan-gray-item{/if}">
+                        <div class="q-type">
+                            <div class="q-price">
+                                <em>￥</em>
+                                <strong class="num">{$vo.cou_money}</strong>
+                                <div class="txt" style="float: none;"><div class="typ-txt">{$vo.cou_type_name}</div></div>
+                                <div class="txt">
+                                    <div class="limit"><span class="ftx-06">{$lang.full}{$vo.cou_man}{$lang.available_full}</span></div>
+                                </div>
+                            </div>
+                            <div class="q-range">
+                                <div class="range-item"><p title="{if $vo.cou_goods}<p>{$lang.permissions_buy}</p>{else}<p>{$lang.category}</p>{/if}">
+                                    {$vo.cou_title}
+                                </p></div>
+                                <div class="range-item">{$vo.store_name}</div>
+                                <div class="range-item">{$vo.cou_start_time_format}-{$vo.cou_end_time_format}</div>
+                            </div>
+                        </div>
+                        {if $smarty.session.user_id && $vo.cou_is_receive}
+                        {if $vo.is_use eq 0}
+                        {if $vo.cou_surplus eq 0}
+                        <div class="q-opbtns"><a href="javascript:;" class="" cou_id="{$vo.cou_id}"><b class="semi-circle"></b>{$lang.Take_up}</a></div>
+                        {else}
+                        <div class="q-opbtns"><a href="search.php?cou_id={$vo.cou_id}" target="_blank"><b class="semi-circle"></b>{$lang.Immediate_use}</a></div>
+                        <div class="q-state"><div class="btn-state btn-geted">{$lang.receive_hove}</div></div>
+                        {/if}
+
+                        {else}
+                        {if $vo.cou_surplus eq 0}
+                        <div class="q-opbtns"><a href="javascript:;" class="" cou_id="{$vo.cou_id}"><b class="semi-circle"></b>{$lang.Take_up}</a></div>
+                        {else}
+                        <div class="q-opbtns"><a href="javascript:;" class="q-btn get-coupon" cou_id="{$vo.cou_id}"><b class="semi-circle"></b>{$lang.receive_now}</a></div>
+                        {/if}
+                        {/if}
+                        {else}
+                        {if $vo.cou_surplus eq 0}
+                        <div class="q-opbtns"><a href="javascript:;" class="" cou_id="{$vo.cou_id}"><b class="semi-circle"></b>{$lang.Take_up}</a></div>
+                        {else}
+                        <div class="q-opbtns"><a href="javascript:;" class="q-btn get-coupon" cou_id="{$vo.cou_id}"><b class="semi-circle"></b>{$lang.receive_now}</a></div>
+                        {/if}
+                        {/if}
+                    </div>
+
+                    {/foreach}
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(".f-types a,.f-service a").click(function(){
+            if($(this).hasClass("selted")){
+                $(this).removeClass("selted");
+            }else{
+                $(this).addClass("selted");
+            }
+        });
+    </script>
+
+    {if $page_total>1}
+    <div class="pages" id="pager">
+        <ul>
+            <li class="previous"><a href="coupons.php?{$page_url}&p={$prev_page}"><i>&lt;&lt;</i>{$lang.page_prev}</a></li>
+            {foreach from=$page_total2 item=vo}
+            <li {if $page==$vo }class="current"{/if}><a href=coupons.php?{$page_url}&p={$vo}>{$vo}</a></li>
+            {/foreach}
+            <li class="nextious"><a href="coupons.php?{$page_url}&p={$next_page}">{$lang.page_next}<i>&gt;&gt;</i></a></li>
+        </ul>
+    </div>
+    {/if}
+
+</div>
+{* DSC 提醒您：动态载入user_menu_position.lbi，显示首页分类小广告 *}{insert name='user_menu_position'}
+
+<!-- @authro guan start	添加对比文件 start -->
+<!-- #BeginLibraryItem "/library/duibi.lbi" --><!-- #EndLibraryItem -->
+<!-- @authro guan start	添加对比文件 end -->
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.purebox.js"></script>
+<input name="script_name" value="{$script_name}" type="hidden" />
+<input name="cur_url" value="{$cur_url}" type="hidden" />
+</body>
+
+
+
+<!--@author-bylu 搜索过滤 start-->
+    <script type="text/javascript">
+        $('.f-types a').on('click',function(){
+            var index=location.href.indexOf('&type');
+            if(index == -1)
+                var url = location.href;
+            else
+                var url = location.href.substr(0,index);
+
+            location.href=url+'&type='+$(this).attr('data')
+
+        })
+
+
+        //优惠券领取 bylu
+        $(".get-coupon").click(function(){
+            if({$smarty.session.user_id} == 0){
+                var back_url = "coupons.php?act=coupons_list";
+				$.notLogin("get_ajax_content.php?act=get_login_dialog",back_url);
+				return false;
+            }else{
+                var cou_id = $(this).attr('cou_id');
+                $.post('coupons.php?act=coupons_receive',{'cou_id':cou_id},function(data){
+                    if(data.status=='ok'){
+                        $(".item-fore h3").html(data.msg);
+                        $(".success-icon").removeClass("i-icon").addClass("m-icon");
+                        var content =$("#pd_coupons").html();
+
+                        pb({
+                            id:"coupons_dialog",
+                            title:json_languages.receive_coupons,
+                            width:550,
+                            height:140,
+                            ok_title:json_languages.Immediate_use, 	//按钮名称
+                            cl_title:json_languages.close, 	//按钮名称
+                            content:content, 	//调取内容
+                            drag:false,
+                            foot:true,
+                            onOk:function(){
+                                location.href="search.php?cou_id="+cou_id
+                            }
+                        });
+
+                        $(".pb-ok").addClass("color_df3134");
+                    }else{
+                        $(".success-icon").removeClass("m-icon").addClass("i-icon");
+                        $(".item-fore h3").addClass("red");
+                        $(".item-fore h3").html(data.msg);
+                        var content =$("#pd_coupons").html();
+
+                        pb({
+                            id:"coupons_dialog",
+                            title:json_languages.receive_coupons,
+                            width:550,
+                            height:140,
+                            ok_title:json_languages.close, 	//按钮名称
+                            content:content, 	//调取内容
+                            cl_cBtn:false
+                        });
+                    }
+                },'json');
+            }
+        });
+
+    </script>
+ <!--@author-bylu end-->
+
+</html>

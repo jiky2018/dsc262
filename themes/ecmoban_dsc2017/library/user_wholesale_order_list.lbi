@@ -1,0 +1,100 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<div class="user-order-list user-purchase">
+    {foreach from=$orders.order_list item=order}
+    <dl class="item">
+        <dt class="item-t">
+            <div class="t-statu">{$order.order_status}</div>
+            <div class="t-info">
+                <span class="info-item">订单号：{$order.order_sn}</span>
+                <span class="info-item">{$order.order_time}</span>
+                <span class="info-item">
+                    <a href="{$order.shop_url}" class="user-shop-link">{$order.shop_name}</a>
+                    {if $order.is_IM eq 1 || $order.is_dsc}
+                    <a id="IM" onclick="openWin(this)" href="javascript:;" goods_id="{$goods.goods_id}"  class="iconfont icon-kefu user-shop-kefu"></a>
+                    {else}
+                    {if $order.kf_type eq 1}
+                    <a href="http://www.taobao.com/webww/ww.php?ver=3&touid={$order.kf_ww}&siteid=cntaobao&status=1&charset=utf-8" class="iconfont icon-kefu user-shop-kefu" target="_blank"></a>
+                    {else}
+                    <a href="http://wpa.qq.com/msgrd?v=3&uin={$order.kf_qq}&site=qq&menu=yes" class="iconfont icon-kefu user-shop-kefu" target="_blank"></a>
+                    {/if}
+                    {/if}
+                </span>
+            </div>
+            {if $order.order_over eq 0}
+            <div class="t-btn ml20"><a href="javascript:void(0);" data-orderid="{$order.order_id}" ectype="userWhoConfirm" class="sc-btn sc-blue-btn">设为完成</a></div>
+            {/if}
+            <div class="t-price mr0">{$order.total_fee}</div>
+        </dt>
+        <dd class="item-c">                        
+            <div class="itemc-left">
+            	<div class="itemc-left-info">
+                {foreach from=$order.order_goods item=goods name=foo}
+                <div class="itemc-goods {if $smarty.foreach.foo.last}last-child{/if}">
+                    <div class="c-img"><a href="{$goods.url}"><img src="{if $goods.goods_thumb}{$goods.goods_thumb}{else}{$order.no_picture}{/if}" alt=""></a></div>
+                    <div class="c-info">
+                        <div class="c-name"><a href="{$goods.url}" target="_blank">{$goods.goods_name}</a></div>
+                        <div class="c-lie">
+                            <span class="c-row">{$goods.goods_attr|nl2br}</span>
+                            <span class="c-row ftx-07">{$goods.goods_price}</span>
+                            <span class="c-row last">X{$goods.goods_number}</span>
+                        </div>
+                    </div>
+                </div>
+                {/foreach}
+                </div>
+            </div>
+
+            <div class="itemc-right">
+                <div class="p-i-items">
+                    <div class="lie">
+                        <div class="label">联系人：</div>
+                        <div class="value">{$order.consignee}</div>
+                    </div>
+                    <div class="lie">
+                        <div class="label">联系方式：</div>
+                        <div class="value">{$order.mobile}</div>
+                    </div>
+                    <div class="lie">
+                        <div class="label">收货地址：</div>
+                        <div class="value">{$order.address}</div>
+                    </div>
+                    <div class="lie">
+                        <div class="label">是否开发票：</div>
+                        <div class="value">{$lang.need_invoice.$order.inv_type}</div>
+                    </div>
+					{if $order.inv_type}
+                    <div class="lie">
+                        <div class="label">发票抬头：</div>
+                        <div class="value">{$order.inv_payee}</div>
+                    </div>
+                    <div class="lie">
+                        <div class="label">纳税人识别号：</div>
+                        <div class="value">{$order.tax_id}</div>
+                    </div>					
+					{/if}
+                    <div class="lie">
+                        <div class="label">支付方式：</div>
+                        <div class="value">线下支付</div>
+                    </div>
+                    <div class="lie last">
+                        <div class="label">其他备注：</div>
+                        <div class="value">{$order.postscript}</div>
+                    </div>
+                </div>
+            </div>
+            <a href="javascript:delete_wholesale_order({$order.order_id})" class="pur-remove" ectype="pur-remove"><i class="iconfont icon-remove-alt"></i></a>
+        </dd>
+    </dl>
+    {foreachelse}
+    <div class="no_records">
+	<i class="no_icon"></i>
+        <div class="no_info">
+            <h3>主人，您现在还没有采购订单哟！</h3>
+        </div>
+    </div>
+    {/foreach}
+</div>
+
+{if $orders.order_list}
+<div class="pages pages_warp">{$orders.pager}</div>
+{/if}

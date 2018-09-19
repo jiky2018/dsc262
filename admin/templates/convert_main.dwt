@@ -1,0 +1,239 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.13_backup} - {$ur_here}</div>
+        <div class="content">
+			<form name="theForm" action="convert.php?act=check" method="post" id="convert_form">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li class="red">{$lang.confirm_convert}</li>
+					<li>{$lang.backup_data}<a href="database.php?act=backup" class="blue">{$lang.backup}</a></li>
+                    <li>{$lang.dir_notes}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+						<div class="switch_info">
+							<div class="items">
+								<div class="item">
+									<div class="label">{$lang.require_field}{$lang.select_system}</div>
+									<div class="label_value">
+										<div id="selModule" class="imitate_select select_w320">
+											<div class="cite">{$lang.please_select}</div>
+											<ul>
+												{foreach from=$module_list item=module}
+												<li><a href="javascript:;" data-value="{$module.code}" class="ftx-01">{$module.desc}</a></li>
+												{/foreach}
+											</ul>
+											<input name="selModule" type="hidden" value="" id="selModule_val">
+										</div>
+                                        <div class="form_prompt"></div>
+									</div>
+								</div>
+								<div class="item">
+									<div class="label">{$lang.require_field}{$lang.select_charset}</div>
+									<div class="label_value">
+										<div id="selCharset" class="imitate_select select_w320">
+											<div class="cite">{$lang.please_select}</div>
+											<ul>
+												{foreach from=$charset_list item=v key=k}
+												<li><a href="javascript:;" data-value="{$k}" class="ftx-01">{$v}</a></li>
+												{/foreach}
+											</ul>
+											<input name="selCharset" type="hidden" value="" id="selCharset_val">
+										</div>
+                                        <div class="form_prompt"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+                        <div class="switch_info mt20">
+							<div class="items">
+								<div class="item">
+									<div class="label">{$lang.require_field}{$lang.your_host}</div>
+									<div class="label_value"><input name="host" type="text" id="host" value="{$def_val.host}" class="text" /><div class="form_prompt"></div></div>
+								</div>
+								<div class="item">
+									<div class="label">{$lang.require_field}{$lang.your_db}</div>
+									<div class="label_value"><input name="db" type="text" id="db" value="{$def_val.db}" class="text" /><div class="form_prompt"></div></div>
+								</div>
+								<div class="item">
+									<div class="label">{$lang.require_field}{$lang.your_user}</div>
+									<div class="label_value"><input name="user" type="text" id="user" value="{$def_val.user}" class="text" /><div class="form_prompt"></div></div>
+								</div>
+								<div class="item">
+									<div class="label">{$lang.your_pass}</div>
+									<div class="label_value"><input type="password"   style="display:none"/> <input name="pass" type="password" id="pass" value="{$def_val.pass}" class="text" /><div class="form_prompt"></div></div>
+								</div>
+								<div class="item">
+									<div class="label">{$lang.your_prefix}</div>
+									<div class="label_value"><input name="prefix" type="text" id="prefix" value="{$def_val.prefix}" class="text" /><div class="form_prompt"></div></div>
+								</div>
+								<div class="item">
+									<div class="label">{$lang.require_field}{$lang.your_path}</div>
+									<div class="label_value"><input name="path" type="text" id="path" value="{$def_val.path}" class="text" /><div class="form_prompt"></div></div>
+								</div>
+								<div class="item">
+									<div class="label">&nbsp;</div>
+									<div class="label_value info_btn">
+										<input name="convert" type="submit" class="button" id="convert" onclick="convertData()" value="{$lang.convert}" />
+									</div>
+								</div>
+							</div>
+                            <div class="items">
+                            	<div class="item">
+                            		<span id="status_1"></span>
+                                </div>
+                                <div class="item">
+                                	<span id="status_2"></span>
+                                </div>
+                                <div class="item">
+                                	<span id="status_3"></span>
+                                </div>
+                            </div>
+						</div>
+                    </div>
+                </div>
+            </div>
+			</form>
+		</div>
+	</div>
+	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+	$(function(){
+		//表单验证
+		$("#convert").click(function(){
+			if($("#convert_form").valid()){
+				$("#convert_form").submit();
+			}
+		});
+		
+		$('#convert_form').validate({
+			errorPlacement:function(error, element){
+				var error_div = element.parents('div.label_value').find('div.form_prompt');
+				element.parents('div.label_value').find(".notic").hide();
+				error_div.append(error);
+			},
+			rules:{
+				selModule :{
+					required : true
+				},
+				selCharset :{
+					required : true
+				},
+				host :{
+					required : true
+				},
+				db :{
+					required : true
+				},
+				user :{
+					required : true
+				},				
+				path :{
+					required : true
+				}
+			},
+			messages:{
+				selModule:{
+					 required : '<i class="icon icon-exclamation-sign"></i>{$lang.select_system}'
+				},
+				selCharset:{
+					 required : '<i class="icon icon-exclamation-sign"></i>{$lang.select_charset}'
+				},
+				host :{
+					required : '<i class="icon icon-exclamation-sign"></i>' + host_not_null
+				},
+				db :{
+					required : '<i class="icon icon-exclamation-sign"></i>' + db_not_null
+				},
+				user :{
+					required : '<i class="icon icon-exclamation-sign"></i>' + user_not_null
+				},
+				path :{
+					required : '<i class="icon icon-exclamation-sign"></i>' + path_not_null
+				}
+			}			
+		});
+	});
+	
+      /**
+       * 检查可选系统
+       */
+      function checkSystem()
+      {
+        var sel = document.forms['theForm'].elements['selModule'];
+        if (sel.options.length <= 0)
+        {
+          alert(no_system);
+          return false;
+        }
+        return true;
+      }
+      
+      /**
+       * 转换
+       */
+      function convertData()
+      {
+        // 取得设置
+        var config = new Object();
+        var ele = document.forms['theForm'].elements;
+        config.host    = ele['host'].value;
+        config.db      = ele['db'].value;
+        config.user    = ele['user'].value;
+        config.pass    = ele['pass'].value;
+        config.prefix  = ele['prefix'].value;
+        config.code    = ele['selModule'].value;
+        config.path    = ele['path'].value;
+        config.charset = ele['selCharset'].value;
+    
+        // 测试数据库链接，检查表，检查目录
+        output(check_your_db);
+        Ajax.call('convert.php?is_ajax=1&act=check', config, response, 'POST', 'JSON');
+      }
+    
+      function response(result)
+      {
+        if (!result.error)
+        {
+          if (result.content.length > 0)
+          {
+            output(result.message);
+            Ajax.call('convert.php?is_ajax=1&act=process', 'step=' + result.content, response, 'POST', 'JSON');
+          }
+          else
+          {
+            output(act_ok);
+            alert(act_ok);
+          }
+        }
+        else
+        {
+          output(result.message);
+          alert(result.message);
+        }
+      }
+    
+      /**
+       * 输出信息
+       * @param string msg
+       */
+      function output(msg)
+      {
+        today = new Date();
+        msg = today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds() + '   ' + msg;
+        for (i = 3; i > 1; i--)
+        {
+          document.getElementById('status_' + i).innerHTML = document.getElementById('status_' + (i - 1)).innerHTML;
+        }
+        document.getElementById('status_1').innerHTML = msg;
+      }
+    </script>
+</body>
+</html>

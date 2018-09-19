@@ -1,0 +1,88 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<div class="m-left">
+<div class="attention-rate">
+    <h3>{$lang.brand_home}</h3>
+      <span class="spacer"></span>
+      <div class="pinpai-logo"><img src="data/brandlogo/{$brand.brand_logo}" /></div>
+      <span class="spacer"></span>
+      <div class="follow-info">
+          <span class="follow-sum"><p id="collect_count">{$brand.collect_count}</p><i>人</i></span><em>{$lang.follow}</em>
+      </div>
+      <div class="go-follow  {if $brand.is_collect}logined{/if}" id="collect_brand"  {if $brand.is_collect}onclick="cancel_brand()"{else}onclick="collect_brand()"{/if} data-bid="{$brand_id}">
+          <i></i><span class="follow">{if $brand.is_collect}{$lang.follow_yes}{else}{$lang.follow}{/if}</span>
+      </div>
+  </div>
+  <script type="text/javascript">
+      $(document).on("click","#collect_brand",function(){
+          var brand_id = $("#collect_brand").data('bid');
+          if($(this).hasClass("logined")){
+              $(this).removeClass("logined");
+              $(this).find(".follow").html('{$lang.follow}');
+
+              Ajax.call('brandn.php', 'act=cancel&id=' + brand_id, collect_brandResponse, 'POST', 'JSON');
+          }else{
+              $(this).addClass("logined");
+              $(this).find(".follow").html('{$lang.follow_yes}');
+
+              Ajax.call('brandn.php', 'act=collect&id=' + brand_id, collect_brandResponse, 'POST', 'JSON');
+          }
+      });
+
+      function collect_brandResponse(result)
+      {
+          if (result.error > 0) {
+              alert(result.message);
+          }
+          else
+          {
+              
+              $("#collect_count").html(result.collect_count);
+          }
+      }
+
+      function cancel_brandResponse(result)
+      {
+          if (result.error > 0) {
+              alert(result.message);
+          }
+          else
+          {
+              $("#collect_count").html(result.collect_count);
+          }
+      }
+  </script>
+  <div class="pinpai-detail">
+    {insert name='get_adv_child' ad_arr=$brandn_left_ad id=0}
+    <div class="item types clearfix">
+        <b></b>
+          <h3>{$lang.brand_category}</h3>
+          <div class="type-items clearfix">
+          <!-- {foreach from=$brand_cat_list item=brand_cat name=brand} -->
+          	<!--{if !$smarty.foreach.brand.first}-->
+            <a href="{$brand_cat.url}">{$brand_cat.cat_name}</a>
+            <!--{/if}-->
+          <!-- {/foreach} -->
+          </div>
+      </div>
+  </div>
+</div>
+<div class="m-right">
+  <div class="subnavwrap">
+      <b></b>
+      <div class="subnav">
+          <a href="brandn.php?id={$brand_id}" {if $act eq 'index'} class="curr" {/if}><i></i><span>{$lang.home}</span></a>
+          <a href="brandn.php?act=new&id={$brand_id}" {if $act eq 'new'} class="curr" {/if}><i></i><span>{$lang.look_new}</span></a>
+          <a href="brandn.php?act=hot&id={$brand_id}" {if $act eq 'hot'} class="curr" {/if}><i></i><span>{$lang.look_hot}</span></a>
+          <a href="brandn.php?act=cat&id={$brand_id}" {if $act eq 'cat'} class="curr" {/if}><i></i><span>{$lang.all_category}</span></a>
+      </div>
+  </div>
+  <div class="sort-list">
+      <ul>
+      <!-- {foreach from=$brand_cat_list item=brand_cat name=brand} -->
+              <li><a href="{$brand_cat.url}" {if $brand_cat.cat_id eq $category} class="all"{/if} >{$brand_cat.cat_name}</a></li>
+          <!-- {/foreach} -->
+      </ul>
+  </div>
+</div>
+

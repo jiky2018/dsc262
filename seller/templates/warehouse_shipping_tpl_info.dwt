@@ -1,0 +1,317 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+		{include file ='library/seller_menu_left.lbi'}
+		<div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+				{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="ecsc-form-goods">
+                <form method="post" action="warehouse.php" name="theForm" enctype="multipart/form-data">
+                <div class="wrapper-list">
+                	<dl>
+                    	<dt>{$lang.require_field}&nbsp;模板名称：</dt>
+                        <dd><input type="text" name="tpl_name" maxlength="60" size="20" value="{if $shipping_area.tpl_name}{$shipping_area.tpl_name}{/if}" class="text"></dd>
+                    </dl>
+                    <dl>
+                    	<dt>始发地：</dt>
+                        <dd>
+                        	<div class="checkbox_items">
+                            {foreach from=$warehouse_list item=warehouse}
+                            <div class="checkbox_item">
+                                <input name="warehouse_id[{$warehouse.region_id}]" value="{$warehouse.region_id}" id="checkbox_{$warehouse.region_id}" class="ui-checkbox" type="checkbox" {if $warehouse.check_status eq 1}checked="checked"{/if}>
+                                <label for="checkbox_{$warehouse.region_id}" class="ui-label">{$warehouse.region_name}</label>
+                            </div>    
+                            {/foreach}
+                            </div>
+                        </dd>
+                    </dl>
+                    <dl>
+                    	<dt>物流配送：</dt>
+                        <dd>
+                            <div id="shipping_id" class="imitate_select select_w320">
+                              <div class="cite">{$lang.select_please}</div>
+                              <ul>
+                                 {foreach from=$shipping_list item=shipping}
+                                 {if $shipping.shipping_id==$shipping_id}
+                                 <li><a href="javascript:;" data-value="{$shipping.shipping_id}" class="ftx-01">{$shipping.shipping_name}</a></li>
+                                 {/if}
+                                 {/foreach}
+                              </ul>
+                              <input name="shipping_id" type="hidden" value="{$shipping_id}" id="shipping_id_val">
+                            </div>
+                        </dd>
+                    </dl>
+                    {if $shipping_area.shipping_code =='ems' || $shipping_area.shipping_code =='yto' || $shipping_area.shipping_code =='zto' || $shipping_area.shipping_code =='sto_express' || $shipping_area.shipping_code =='post_mail' || $shipping_area.shipping_code =='sf_express' || $shipping_area.shipping_code =='post_express' }
+                    <dl>
+                    	<dt>{$lang.fee_compute_mode}：</dt>
+                        <dd>
+                        	<div class="checkbox_items">
+                            	<div class="checkbox_item">
+                            		<input type="radio" class="ui-radio" {if $fee_compute_mode != 'by_number' }checked="true"{/if} onclick="compute_mode('{$shipping_area.shipping_code}','weight')" name="fee_compute_mode" id="by_weight" value="by_weight" /><label class="ui-radio-label" for="by_weight">{$lang.fee_by_weight}</label>
+                                </div>
+                                <div class="checkbox_item">
+                                    <input type="radio" class="ui-radio" {if $fee_compute_mode == 'by_number'}checked="true"{/if}  onclick="compute_mode('{$shipping_area.shipping_code}','number')" name="fee_compute_mode" id="by_number" value="by_number" /><label class="ui-radio-label" for="by_number">{$lang.fee_by_number}</label>
+                                </div>    
+                            </div>
+                        </dd>
+                    </dl>
+                    {/if}
+                    <!--{if $shipping_area.shipping_code != 'cac'}-->
+                    {foreach from=$fields item=field}
+                    <!--{if $fee_compute_mode == 'by_number'}-->
+                        <!--{if $field.name == 'item_fee' || $field.name == 'free_money' || $field.name == 'pay_fee'}-->
+                        <dl id="{$field.name}">
+                            <dt>{$lang.require_field}&nbsp;{$field.label}：</dt>
+                            <dd><input type="text" name="{$field.name}"  maxlength="60" size="20" value="{$field.value}" class="text text_2" /></dd>
+                        </dl>
+                        <!--{else}-->
+                        <dl id="{$field.name}" style="display:none">
+                            <dt>{$lang.require_field}&nbsp;{$field.label}：</dt>
+                            <dd><input type="text" name="{$field.name}"  maxlength="60" size="20" value="{$field.value}" class="text text_2" /></dd>
+                        </dl>
+                        <!--{/if}-->
+                    <!--{else}-->
+                    	<!--{if $field.name != 'item_fee'}-->
+                        <dl id="{$field.name}">
+                            <dt>{$lang.require_field}&nbsp;{$field.label}：</dt>
+                            <dd><input type="text" name="{$field.name}"  maxlength="60" size="20" value="{$field.value}" class="text text_2" /></dd>
+                        </dl>
+                        <!--{else}-->
+                        <dl id="{$field.name}" style="display:none">
+                            <dt>{$lang.require_field}&nbsp;{$field.label}：</dt>
+                            <dd><input type="text" name="{$field.name}"  maxlength="60" size="20" value="{$field.value}" class="text text_2" /></dd>
+                        </dl>
+                        <!--{/if}-->
+                    <!--{/if}-->
+                    {/foreach}
+                    <!--{/if}-->
+                    <dl>
+                    	<dt>到达目的地：</dt>
+                        <dd>
+                        	<!--{if $shipping_area.shipping_code != 'cac'}-->
+                            <div class="checkbox_items" id="regionCell">
+                            {foreach from=$regions item=region key=id}
+                            <label><input type="checkbox" name="regions[]" class="checkbox" value="{$id}" checked="true" />{$region}</label>
+                            {/foreach}
+                            </div>
+                            <!--{/if}-->
+                        </dd>
+                    </dl>
+                    <dl>
+                    	<dt>&nbsp;</dt>
+                        <dd>
+                                <div id="selCountries" class="ui-dropdown smartdropdown alien mr15">
+                                    <input type="hidden" value="1" name="country" id="selcountry">
+                                        <div class="txt">国家</div>
+                                        <i class="down u-dropdown-icon"></i>
+                                        <div class="options clearfix" style="max-height:300px;">
+                                            {foreach from=$countries item=list}
+                                            <span class="liv" data-text="{$list.region_name}" data-type="1"  data-value="{$list.region_id}">{$list.region_name}</span>
+                                            {/foreach}
+                                        </div>
+                                </div>
+                            <div id="dlProvinces" class="ui-dropdown smartdropdown alien">
+                                <input type="hidden" value="{$province.region_id}" name="province" id="selProvinces">
+                                    <div class="txt">省/直辖市</div>
+                                    <i class="down u-dropdown-icon"></i>
+                                    <div class="options clearfix" style="max-height:300px;">
+                                        {foreach from=$province_all item=list}
+                                        <span class="liv" data-text="{$list.region_name}" data-type="2"  data-value="{$list.region_id}">{$list.region_name}</span>
+                                        {/foreach}
+                                    </div>
+                            </div>
+                            <div id="dlCity" class="ui-dropdown smartdropdown alien">
+                                <input type="hidden" value="{$city.region_id}" name="city" id="selCities">
+                                    <div class="txt">市</div>
+                                    <i class="down u-dropdown-icon"></i>
+                                    <div class="options clearfix" style="max-height:300px;">
+                                        {foreach from=$city_all item=list}
+                                        <span class="liv" data-text="{$list.region_name}" data-type="3"  data-value="{$list.region_id}">{$list.region_name}</span>
+                                        {/foreach}
+                                    </div>
+                            </div>
+                           <div id="dlRegion" class="ui-dropdown smartdropdown alien">
+                            <input type="hidden" value="{$district.region_id}" name="district" id="selDistricts">
+                                <div class="txt">区/县</div>
+                                <i class="down u-dropdown-icon"></i>
+                                <div class="options clearfix" style="max-height:300px;">
+                                    {foreach from=$district_all item=list}
+                                    <span class="liv" data-text="{$list.region_name}" data-type="4"  data-value="{$list.region_id}">{$list.region_name}</span>
+                                    {/foreach}
+                                </div>
+                        </div>
+                        <div id="dlStreet" class="ui-dropdown smartdropdown alien">
+                            <input type="hidden" value="{$street.region_id}" name="street" id="selStreet">
+                                <div class="txt">街道</div>
+                                <i class="down u-dropdown-icon"></i>
+                                <div class="options clearfix" style="max-height:300px;">
+                                    {foreach from=$street_all item=item}
+                                    < <span class="liv" data-text="{$list.region_name}" data-type="5"  data-value="{$list.region_id}">{$list.region_name}</span>
+                                    {/foreach}
+                                </div>
+                        </div>
+                            {if $shipping_area.shipping_code != 'cac'}<span class="ml10"><input type="button" value="添加" class="sc-btn btn35 sc-blue-btn" onclick="addRegion()" /></span>{/if}
+                        </dd>
+                    </dl>
+                    <dl class="button_info">
+                    	<dt>&nbsp;</dt>
+                        <dd>
+                            <input type="submit" value="{$lang.button_submit}" class="sc-btn sc-blueBg-btn btn35" />
+                            <input type="reset" value="{$lang.button_reset}" class="sc-btn btn35 sc-blue-btn" />
+                            <input type="hidden" name="act" value="{$form_action}" />
+                            <input name="id" value="{$shipping_area.id}" type="hidden" id="region_id"/>
+                            <input name="rId" value="{$regionId}" type="hidden"  id="regionId"/>
+                        </dd>
+                    </dl>
+                </div> 
+                </form>
+                </div>
+        	</div>
+    	</div>
+	</div>
+</div>
+{include file ='library/seller_footer.lbi'}
+{literal}
+<script type="text/javascript" src="js/region.js"></script>
+<script type="text/javascript">
+$.levelLink();
+onload = function(){
+	document.getElementById("selCountries").options[0].selected=true;
+	region.changed(document.getElementById('selCountries'), 1, 'selProvinces')
+}
+		
+function addImg(obj)
+  {
+      var src  = obj.parentNode.parentNode;
+      var idx  = rowindex(src);
+      var tbl  = document.getElementById('info-table');
+      var row  = tbl.insertRow(idx + 1);
+      var cell = row.insertCell(-1);
+      cell.innerHTML = src.cells[0].innerHTML.replace(/(.*)(addImg)(.*)(\[)(\+)/i, "$1removeImg$3$4-");
+  }
+function removeImg(obj)
+  {
+      var row = rowindex(obj.parentNode.parentNode);
+      var tbl = document.getElementById('info-table');
+
+      tbl.deleteRow(row);
+  } 
+ /**
+ * 配送费用计算方式
+ */
+function compute_mode(shipping_code,mode)
+{
+    var base_fee  = document.getElementById("base_fee");
+    var step_fee  = document.getElementById("step_fee");
+    var item_fee  = document.getElementById("item_fee");
+    if(shipping_code == 'post_mail' || shipping_code == 'post_express')
+    {
+     var step_fee1  = document.getElementById("step_fee1");
+    }
+
+    if(mode == 'number')
+    {
+      item_fee.style.display = '';
+      base_fee.style.display = 'none';
+      step_fee.style.display = 'none';
+      if(shipping_code == 'post_mail' || shipping_code == 'post_express')
+      {
+       step_fee1.style.display = 'none';
+      }
+    }
+    else
+    {
+      item_fee.style.display = 'none';
+      base_fee.style.display = '';
+      step_fee.style.display = '';
+      if(shipping_code == 'post_mail' || shipping_code == 'post_express')
+      {
+       step_fee1.style.display = '';
+      }
+    }
+}
+
+/**
+ * 添加一个区域
+ */
+function addRegion()
+{
+    var selCountry  = document.forms['theForm'].elements['country'];
+    var selProvince = document.forms['theForm'].elements['province'];
+    var selCity     = document.forms['theForm'].elements['city'];
+    var selDistrict = document.forms['theForm'].elements['district'];
+    var selStreet 	= document.forms['theForm'].elements['street'];
+    var regionCell  = document.getElementById("regionCell");
+    var regionId = 0;
+    var regionName = '';
+   
+    if(selStreet.value > 0){
+        regionId = selStreet.value;
+        regionName = $("#selStreet").parents('.smartdropdown').find(".txt").html();
+    }else{
+        if (selDistrict.value > 0)
+        {
+            regionId = selDistrict.value;
+            regionName = $("#selDistricts").parents('.smartdropdown').find(".txt").html();
+        }
+        else
+        {
+            if (selCity.value > 0)
+            {
+                regionId = selCity.value;
+                regionName = $("#selCities").parents('.smartdropdown').find(".txt").html();
+            }
+            else
+            {
+                if (selProvince.value > 0)
+                {
+                    regionId = selProvince.value;
+                    regionName = $("#selProvinces").parents('.smartdropdown').find(".txt").html();
+                }
+                else
+                {
+                    if (selCountry.value >= 0)
+                    {
+                        regionId = selCountry.value;
+                        regionName = $("#selcountry").parents('.smartdropdown').find(".txt").html();
+                    }
+                    else
+                    {
+                        regionId = 0;
+                        regionName = '';
+                    }
+                }
+            }
+        }
+    }
+
+    // 检查该地区是否已经存在
+    exists = false;
+    for (i = {if $warehouse_count}{$warehouse_count}{else}0{/if}; i < document.forms['theForm'].elements.length; i++)
+    {
+      if (document.forms['theForm'].elements[i].type=="checkbox")
+      {
+        if (document.forms['theForm'].elements[i].value == regionId)
+        {
+          exists = true;
+          //alert(region_exists);
+		  alert("该地区已存在");
+        }
+      }
+    }
+    // 创建checkbox
+    if (!exists)
+    {
+      regionCell.innerHTML += "<label><input type='checkbox' name='regions[]' value='" + regionId + "' checked='true' class='checkbox' /> " + regionName+ "</lable>";
+    }
+}
+</script>
+{/literal}
+</body>
+</html>

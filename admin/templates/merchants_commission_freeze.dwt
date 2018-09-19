@@ -1,0 +1,153 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="merchants_commission.php?act=list" class="s-back"></a>{$lang.seller} - {$ur_here}</div>
+        <div class="content">
+        	{include file="library/commission_tab.lbi"}
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>商家结算佣金周期列表。</li>
+                    <li>可进行查看每周期的佣金金额。</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-head">
+                	<div class="search mr0">
+                        <div id="text_time_start" class="text_time">
+                            <input type="text" readonly placeholder="{$lang.order_start_time}" autocomplete="off" class="text mr0" id="start_time_id" name="start_time">
+                        </div>
+                        <span class="bolang">&nbsp;&nbsp;~&nbsp;&nbsp;</span>
+                        <div id="text_time_end" class="text_time">
+                            <input type="text" readonly autocomplete="off" placeholder="{$lang.order_end_time}" class="text" id="end_time_id" value="" name="end_time">
+                        </div>
+                        <input type="submit" value="搜索" class="btn btn30 blue_btn_2" />
+                    </div>
+                </div>
+            
+                <div class="common-content">
+                	<div class="list-div"  id="listDiv" >
+						{/if}
+						<form method="post" action="" name="listForm" onsubmit="return confirm('确定批量结算？');">
+                    	<table cellpadding="1" cellspacing="1">
+                        	<thead>
+                            	<tr>
+                                	<th width="3%" class="sign">
+                                        <div class="tDiv">
+                                        	<input type="checkbox" name="all_list" class="checkbox" id="all_list" />
+                                        	<label for="all_list" class="checkbox_stars"></label>
+                                        </div>
+                                    </th>
+                                    <th><div class="tDiv">账单编号</div></th>
+                                    <th><div class="tDiv">订单总金额</div></th>
+                                    <th><div class="tDiv">运费总金额</div></th>
+                                    <th><div class="tDiv">退单金额</div></th>
+                                    <th><div class="tDiv">佣金比例</div></th>
+                                    <th><div class="tDiv">收取佣金</div></th>
+                                    <th><div class="tDiv">本期应结</div></th>
+                                    <th><div class="tDiv">出账时间</div></th>
+                                    <th><div class="tDiv">出账状态</div></th>
+                                    <th width="10%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+								{foreach from=$order_list item=order name=noorder}
+								{if !$smarty.foreach.noorder.last}
+								<tr>
+								<td class="sign">
+                                    <div class="tDiv">
+                                    	<input type="checkbox" name="checkboxes[]" value="{$order.order_id}" class="checkbox" id="checkbox_{$order.order_id}" />
+                                    	<label for="checkbox_{$order.order_id}" class="checkbox_stars"></label>
+                                    </div>
+                                </td>
+								<td><div class="tDiv"></div></td>
+							    <td class="handle">
+                                    <div class="tDiv a2">
+                                        <a href="merchants_commission.php?act=handle_log&id={$order.order_id}&user_id={$user_id}" class="btn_see"><i class="sc_icon sc_icon_see"></i>操作日志</a>							
+                                    </div>
+								</td>
+								</tr>
+								{/if}
+								{foreachelse}
+								<tr><td class="no-records" colspan="14">{$lang.no_records}</td></tr>
+								{/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="14">
+                                        <div class="tDiv">
+                                            <div class="tfoot_btninfo">
+                                                <input name="ru_id" type="hidden" value="{$user_id}" />
+                                                <input name="act" type="hidden" value="batch" />
+                                                <input type="hidden" name="type" value="button_closed" />
+                                                <input type="submit" value="{$lang.batch_closed}" name="btnSubmit" ectype="btnSubmit" class="btn btn_disabled" disabled="">
+                                            </div>
+                                            <div class="list-page">
+                                                {include file="library/page.lbi"}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+						</form>
+						{if $full_page}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+ {include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+        //分页传值
+        listTable.recordCount = {$record_count|default:0};
+        listTable.pageCount = {$page_count|default:1};
+        listTable.query = "order_query";
+    
+        {foreach from=$filter item=item key=key}
+        listTable.filter.{$key} = '{$item}';
+        {/foreach}
+        
+        //导出商家佣金列表
+        function order_downloadList()
+        {
+          var args = '';
+          for (var i in listTable.filter)
+          {
+            if (typeof(listTable.filter[i]) != "function" && typeof(listTable.filter[i]) != "undefined")
+            {
+              args += "&" + i + "=" + encodeURIComponent(listTable.filter[i]);
+            }
+          }
+          
+          location.href = "merchants_commission.php?act=merchant_download" + args;
+        }
+    
+    
+        //日期选择插件调用start sunle
+        var opts1 = {
+            'targetId':'start_time_id',//时间写入对象的id
+            'triggerId':['start_time_id'],//触发事件的对象id
+            'alignId':'text_time_start',//日历对齐对象
+            'format':'-',//时间格式 默认'YYYY-MM-DD HH:MM:SS'
+            'min':'' //最小时间
+        },opts2 = {
+            'targetId':'end_time_id',
+            'triggerId':['end_time_id'],
+            'alignId':'text_time_end',
+            'format':'-',
+            'min':''
+        }
+        xvDate(opts1);
+        xvDate(opts2);
+        //日期选择插件调用end sunle
+        
+        $.gjSearch("-240px");  //高级搜索
+    </script>
+</body>
+</html>
+{/if}

@@ -1,0 +1,298 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+	<div class="site wrapper">
+		{include file ='library/seller_menu_left.lbi'}
+		<div class="ecsc-layout-right">
+			<div class="main-content" id="mainContent">
+				{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="search-info">
+				<form action="javascript:searchInventory()" name="searchForm">
+				<div class="search-form">
+                	<input type="text" name="keyword" size="15" class="text w120 mr10" placeholder="{$lang.goods_name}" />
+                    <input type="text" name="order_sn" size="15" class="text w120 mr10" placeholder="{$lang.order_id}" />
+                    <div class="text_time mr10" id="text_time1">
+                    <input name="start_time" type="text" class="text" id="start_time" size="22" value='' readonly="readonly" placeholder="{$lang.start_time}" />
+                    </div>
+                    <div class="text_time" id="text_time2">
+                        <input name="end_time" type="text" class="text" id="end_time" size="22" value='' readonly="readonly" placeholder="{$lang.end_time}" />
+                    </div>
+                    <div class="fl mt10">
+                        {if $warehouse_list}
+                        <div id="warehouse_id" class="imitate_select select_w170">
+                            <div class="cite">{$lang.please_select}{$lang.warehouse}</div>
+                            <ul style="display: none;">
+                                <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.please_select}</a></li>
+                                {foreach from=$warehouse_list item=list}
+                                <li><a href="javascript:;" data-value="{$list.region_id}" class="ftx-01">{$list.region_name}</a></li>
+                                {/foreach}
+                            </ul>
+                            <input name="warehouse_id" type="hidden" value="" id="warehouse_id_val">
+                        </div>
+                        <div class="imitate_select select_w170">
+                            <div class="cite">{$lang.please_select}{$lang.region}</div>
+                            <ul style="display: none;" id="area_list">
+                                <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.please_select}</a></li>
+                            </ul>
+                            <input name="area_id" type="hidden" value="" >
+                        </div>
+                        {/if}
+                        
+                        {if $step eq 'put'}
+                        <div class="imitate_select select_w170">
+                            <div class="cite">{$lang.please_select}{$lang.operation_type}</div>
+                            <ul style="display: none;" >
+                                <li><a href="javascript:;" data-value="-1" class="ftx-01">{$lang.please_select}</a></li>
+                                <li><a href="javascript:;" data-value="2" class="ftx-01">{$lang.order_invalid}</a></li>
+                                <li><a href="javascript:;" data-value="3" class="ftx-01">{$lang.order_cancel}</a></li>
+                                <li><a href="javascript:;" data-value="5" class="ftx-01">{$lang.order_not_shipped}</a></li>
+                                <li><a href="javascript:;" data-value="6" class="ftx-01">{$lang.order_return}</a></li>
+                                <li><a href="javascript:;" data-value="7" class="ftx-01">{$lang.add_goods}</a></li>
+                                <li><a href="javascript:;" data-value="13" class="ftx-01">{$lang.edit_goods}</a></li>
+                                <li><a href="javascript:;" data-value="9" class="ftx-01">{$lang.add_goods_product}</a></li>
+                                <li><a href="javascript:;" data-value="11" class="ftx-01">{$lang.edit_goods_product}</a></li>
+                            </ul>
+                            <input name="operation_type" type="hidden" value="-1" >
+                        </div>
+                        {else}
+                        <div class="imitate_select select_w170">
+                            <div class="cite">{$lang.please_select}{$lang.operation_type}</div>
+                            <ul style="display: none;" >
+                                <li><a href="javascript:;" data-value="-1" class="ftx-01">{$lang.please_select}</a></li>
+                                <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.delivery_time}</a></li>
+                                <li><a href="javascript:;" data-value="1" class="ftx-01">{$lang.order_time}</a></li>
+                                <li><a href="javascript:;" data-value="4" class="ftx-01">{$lang.order_confirm_receipt}</a></li>
+                                <li><a href="javascript:;" data-value="8" class="ftx-01">{$lang.edit_goods}</a></li>
+                                <li><a href="javascript:;" data-value="10" class="ftx-01">{$lang.edit_goods_product}</a></li>
+                            </ul>
+                            <input name="operation_type" type="hidden" value="-1" >
+                        </div>
+                        {/if}
+                        <input name="submit" type="submit" value="{$lang.comfrom}" class="sc-btn btn30 sc-blueBg-btn" />
+                    </div>
+				</div>
+				</form>
+				</div>
+				<form method="POST" action="goods_inventory_logs.php?act=batch_drop" name="listForm">
+				<div class="list-div" id="listDiv">
+				{/if}
+
+				<table class="ecsc-default-table">
+                  <thead>
+				  <tr>
+					<th width="8%">
+						<div class="first_all">
+							<input onclick='listTable.selectAll(this, "checkboxes")' type="checkbox" id="all" class="ui-checkbox">
+							<label for="all" class="ui-label"><a href="javascript:listTable.sort('id');">{$lang.record_id}</a></label>
+							<div class="img">{$sort_goods_id}</div>
+						</div>
+					</th>
+					<th width="30%">{$lang.goods_name}</th>
+					<!--<th width="10%" class="tc">{$lang.goods_attr}</th>-->
+					<th width="10%" class="tc">{$lang.order_sn}</th>
+					<th width="10%" class="tc">{$lang.operation_type}</th>
+					<th width="10%" class="tc">{$lang.operation_admin}</th>
+					<th width="5%" class="tc">{$lang.inventory}</th>
+					<th width="12%" class="tc">{$lang.inventory_type}</th>
+					<th width="15%" class="tc">{$lang.operation_time}</th>
+				  </tr>
+                  </thead>
+				  {if $log_list}
+				  {foreach from=$log_list item=list}
+				  <tr class="bd-line">
+					<td class="first_td_checkbox">
+						<div class="first_all"><input name="checkboxes[]" type="checkbox" value="{$list.id}" id="checkboxes_{$list.id}" class="ui-checkbox" /><label for="checkboxes_{$list.id}" class="ui-label">{$list.id}</label></div>
+					</td>
+                    <td class="tl"><a href='../goods.php?id={$list.goods_id}' target="_blank">{$list.goods_name}</a></td>
+					
+					<td class="tc"><span>{$list.order_sn}</span></td>
+					<td class="tc">
+						<span>
+							{if $list.use_storage eq 0}
+								{$lang.delivery_time}
+							{elseif  $list.use_storage eq 1}
+								{$lang.order_time}
+							{elseif  $list.use_storage eq 2}
+								{$lang.order_invalid}
+							{elseif  $list.use_storage eq 3}
+								{$lang.order_cancel}
+							{elseif  $list.use_storage eq 4}
+								{$lang.order_confirm_receipt}
+							{elseif  $list.use_storage eq 5}
+								{$lang.order_not_shipped}
+							{elseif  $list.use_storage eq 6}
+								{$lang.order_return}
+							{elseif  $list.use_storage eq 7}
+                                {$lang.add_goods}
+                            {elseif  $list.use_storage eq 8 || $list.use_storage eq 13}
+                                {$lang.edit_goods}    
+                            {elseif  $list.use_storage eq 9}
+                                {$lang.add_goods_product}    
+                            {elseif  $list.use_storage eq 10 || $list.use_storage eq 11}
+                                {$lang.edit_goods_product}            
+                            {/if}
+						</span>
+					</td>
+					<td class="tc"><span>{$list.admin_name}</span></td>
+					<td class="tc"><span>{$list.number}</span></td>
+					<td class="tc">
+						<span>
+							{if $list.product_id}
+								{$lang.goods_attr_stock}<br />
+								<font class="navy">(
+								{if $list.model_attr eq 1}
+									{$lang.warehouse}：{$list.warehouse_name}
+								{elseif $list.model_attr eq 2}
+									{$lang.region}：{$list.area_name}
+								{else}
+									{$lang.default}
+								{/if}
+								)</font>
+							{else}
+								{$lang.goods_stock}<br />
+								<font class="navy">(
+								{if $list.model_inventory eq 1}
+									{$lang.warehouse}：{$list.warehouse_name}
+								{elseif $list.model_inventory eq 2}
+									{$lang.region}： {$list.area_name}
+								{else}
+									{$lang.default}
+								{/if}
+								)</font>
+							{/if}
+						</span>
+					</td>
+					<td class="tc"><span>{$list.add_time}</span></td>
+				  </tr>
+				  {/foreach}
+				  {else}
+				  <tr>
+					<td colspan="8" class="no-records">{$lang.no_records}</td>
+				  </tr>
+				  {/if}
+                  <tfoot>
+                  	<tr>
+                    	<td colspan="8" class="td_border">
+                        	<div class="shenhe">
+                            	<input name="drop_type_id" type="submit" id="btnSubmit" value="{$lang.drop_logs}" disabled="true" class="sc-btn btn_disabled" />
+                                <input name="step" type="hidden" value="{$step}" />
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                    	<td colspan="8" class="tc">{include file="page.dwt"}</td>
+                    </tr>
+                  </tfoot>
+				</table>
+				{if $full_page}
+				</div>
+				</form>				
+			</div>
+		</div>
+    </div>
+</div>
+
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript" language="JavaScript">
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+  {literal}
+  onload = function()
+  {
+    startCheckOrder();
+  }
+  $.divselect("#warehouse_id","#warehouse_id_val",function(obj){
+    var val = obj.attr("data-value");
+    get_search_area(val);
+});
+  {if $priv_ru eq 1}
+	function get_store_search(val){
+		if(val == 1){
+			document.forms['searchForm'].elements['merchant_id'].style.display = '';
+			document.forms['searchForm'].elements['store_keyword'].style.display = 'none';
+			document.forms['searchForm'].elements['store_type'].style.display = 'none';
+		}else if(val == 2){
+			document.forms['searchForm'].elements['merchant_id'].style.display = 'none';
+			document.forms['searchForm'].elements['store_keyword'].style.display = '';
+			document.forms['searchForm'].elements['store_type'].style.display = 'none';
+		}else if(val == 3){
+			document.forms['searchForm'].elements['merchant_id'].style.display = 'none';
+			document.forms['searchForm'].elements['store_keyword'].style.display = '';
+			document.forms['searchForm'].elements['store_type'].style.display = '';
+		}else{
+			document.forms['searchForm'].elements['merchant_id'].style.display = 'none';
+			document.forms['searchForm'].elements['store_keyword'].style.display = 'none';
+			document.forms['searchForm'].elements['store_type'].style.display = 'none';
+		}
+	}
+	{/if}
+	
+    function searchInventory()
+    {
+		{if $priv_ru eq 1}
+		listTable.filter['store_search'] = Utils.trim(document.forms['searchForm'].elements['store_search'].value);
+		listTable.filter['merchant_id'] = Utils.trim(document.forms['searchForm'].elements['merchant_id'].value);
+		listTable.filter['store_keyword'] = Utils.trim(document.forms['searchForm'].elements['store_keyword'].value);
+		listTable.filter['store_type'] = Utils.trim(document.forms['searchForm'].elements['store_type'].value);
+		{/if}
+
+        listTable.filter['keyword'] = Utils.trim(document.forms['searchForm'].elements['keyword'].value);
+		listTable.filter['order_sn'] = Utils.trim(document.forms['searchForm'].elements['order_sn'].value);
+		listTable.filter['start_time'] = Utils.trim(document.forms['searchForm'].elements['start_time'].value);
+		listTable.filter['end_time'] = Utils.trim(document.forms['searchForm'].elements['end_time'].value);
+		listTable.filter['warehouse_id'] = document.forms['searchForm'].elements['warehouse_id'].value;
+		listTable.filter['area_id'] = document.forms['searchForm'].elements['area_id'].value;
+		listTable.filter['operation_type'] = document.forms['searchForm'].elements['operation_type'].value;
+		
+		listTable.filter['page'] = 1;
+		
+		if(listTable.filter['start_time'] != '' && listTable.filter['end_time'] == ''){
+			alert('结束时间不能为空');
+		}else if(listTable.filter['start_time'] == '' && listTable.filter['end_time'] != ''){
+			alert('开始时间不能为空');
+		}else{
+			listTable.loadList();
+		}
+    }
+	
+	function get_search_area(warehouse_id)
+	{
+		Ajax.call('goods_inventory_logs.php?is_ajax=1&act=search_area', "warehouse_id=" + warehouse_id, search_areaResult, "GET", "JSON");
+	}
+	
+	function search_areaResult(result)
+	{
+		$('#area_list').html(result.content);
+	}
+	
+	//日期选择插件调用start sunle
+	var opts1 = {
+		'targetId':'start_time',//时间写入对象的id
+		'triggerId':['start_time'],//触发事件的对象id
+		'alignId':'text_time1',//日历对齐对象
+		'format':'-'//时间格式 默认'YYYY-MM-DD HH:MM:SS'
+	},opts2 = {
+		'targetId':'end_time',
+		'triggerId':['end_time'],
+		'alignId':'text_time2',
+		'format':'-'
+	}
+
+	xvDate(opts1);
+	xvDate(opts2);
+	//日期选择插件调用end sunle
+  {/literal}
+</script>
+</body>
+</html>
+{/if}

@@ -1,0 +1,199 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$lang.08_members} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.info.0}</li>
+                    <li>{$lang.operation_prompt_content_common}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+                        <form action="user_account.php" method="post" name="theForm" id="user_account_form" >
+                            <div class="switch_info">
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}&nbsp;{$lang.user_id}：</div>
+                                    <div class="label_value">
+                                        <input type="text" id="user_id" name="user_id" class="text" value="{$user_name}" autocomplete="off" {if $user_surplus.process_type eq 2 || $user_surplus.process_type eq 3 || $action eq "edit"} disabled {/if} />
+                                        {if $user_surplus.process_type eq 2 || $user_surplus.process_type eq 3 || $action eq "edit"}
+                                        <input type="hidden" name="user_id" value="{$user_name}"/>
+                                        {/if}
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}&nbsp;{$lang.surplus_amount}：</div>
+                                    <div class="label_value">
+                                        <input type="text" name="amount" class="text" value="{$user_surplus.amount}" id="amount" autocomplete="off" {if $user_surplus.process_type eq 2 || $user_surplus.process_type eq 3 || $action eq "edit"} disabled {/if}/>
+                                        {if $user_surplus.process_type eq 2 || $user_surplus.process_type eq 3 || $action eq "edit"}
+                                        	<input type="hidden" name="amount" value="{$user_surplus.amount}"/>
+                                        {/if}
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item payment" {if $user_surplus.process_type eq 1} style=" display:none;"{/if}>
+                                    <div class="label">{$lang.pay_mothed}：</div>
+                                    <div class="label_value">
+                                        <div id="user_grade" class="imitate_select select_w320">
+                                          <div class="cite">{if $user_surplus.payment}{$user_surplus.payment}{else}{$lang.please_select}{/if}</div>
+                                          <ul {if $user_surplus.process_type eq 2 || $user_surplus.process_type eq 3}style="display:none" {/if}>
+                                             <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.please_select}</a></li>
+                                             {foreach from=$payment_list item=item key=k}
+                                             <li><a href="javascript:;" data-value="{$item.pay_id}" class="ftx-01">{$item.pay_name}</a></li>
+                                             {/foreach}
+                                          </ul>
+                                          <input name="pay_id" type="hidden" value="{$user_surplus.pay_id|default:$payment_list.0.pay_id}" id="user_grade_val">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.process_type}：</div>
+                                    <div class="label_value">
+                                        <div class="checkbox_items">
+                                            <div class="checkbox_item">
+                                                <input type="radio" name="process_type" value="0" id="sex_0" class="ui-radio" {if $user_surplus.process_type eq 0} checked="true" {/if}{if $user_surplus.process_type eq 2 || $user_surplus.process_type eq 3 || $action eq "edit"} disabled="true"{/if} />
+                                                <label for="sex_0" class="ui-radio-label">{$lang.surplus_type_0}</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                                <input type="radio" name="process_type" value="1" id="sex_1" class="ui-radio" {if $user_surplus.process_type eq 1} checked="true" {/if}{if $user_surplus.process_type eq 2 || $user_surplus.process_type eq 3|| $action eq "edit"} disabled="true"{/if} />
+                                                <label for="sex_1" class="ui-radio-label">{$lang.surplus_type_1}</label>
+                                            </div>
+                                            {if $action eq "edit" && ($user_surplus.process_type eq 2 || $user_surplus.process_type eq 3)}
+                                            <div class="checkbox_item">
+                                                <input type="radio" name="process_type" value="2" id="sex_2" class="ui-radio" {if $user_surplus.process_type eq 2|| $action eq "edit"} checked="true"{/if}{if $user_surplus.process_type eq 2 || $user_surplus.process_type eq 3} disabled="true"{/if} />
+                                                <label for="sex_2" class="ui-radio-label">{$lang.surplus_type_2}</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                                <input type="radio" name="process_type" value="3" id="sex_3" class="ui-radio" {if $user_surplus.process_type eq 3|| $action eq "edit"} checked="true"{/if}{if $user_surplus.process_type eq 2 || $user_surplus.process_type eq 3} disabled="true"{/if} />
+                                                <label for="sex_3" class="ui-radio-label">{$lang.surplus_type_3}</label>
+                                            </div>
+                                            {/if}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.surplus_notic}</div>
+                                    <div class="label_value">
+                                        <textarea name="admin_note" cols="60" rows="4" class="textarea" id="change_desc" {if $user_surplus.process_type eq 2 || $user_surplus.process_type eq 3} disabled="true" {/if}>{$user_surplus.admin_note}</textarea>
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.surplus_desc}</div>
+                                    <div class="label_value">
+                                        <textarea name="user_note" cols="60" rows="4" class="textarea" id="change_desc" {if $user_surplus.process_type eq 2 || $user_surplus.process_type eq 3} disabled="true" {/if}>{$user_surplus.user_note}</textarea>
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.status}：</div>
+                                    <div class="label_value">
+                                        <div class="checkbox_items">
+                                            <div class="checkbox_item">
+                                                <input type="radio" name="is_paid" value="0" id="is_paid" class="ui-radio" {if $user_surplus.is_paid eq 0} checked="true"{/if} {if $user_surplus.process_type eq 2 || $user_surplus.process_type eq 3 ||$action eq "edit"} disabled="true"{/if}/>
+                                                <label for="is_paid" class="ui-radio-label">{$lang.unconfirm}</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                                <input type="radio" name="is_paid" value="1" class="ui-radio" id="is_paid_1" {if $user_surplus.is_paid eq 1} checked="true" {/if} {if $user_surplus.process_type eq 2 || $user_surplus.process_type eq 3 ||$action eq "edit"} disabled="true"{/if}/>
+                                                <label for="is_paid_1" class="ui-radio-label">
+                                                	{if $user_surplus.process_type eq 1}
+                                                    	{$lang.is_confirm}
+                                                    {else}
+                                                    	{$lang.confirm}
+                                                    {/if}
+                                                </label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                                <input type="radio" name="is_paid" value="2" id="is_paid_2" class="ui-radio" {if $user_surplus.is_paid eq 2} checked="true" {/if} {if $user_surplus.process_type eq 2 || $user_surplus.process_type eq 3 ||$action eq "edit"} disabled="true"{/if}/>
+                                                <label for="is_paid_2" class="ui-radio-label">
+                                                	{if $user_surplus.process_type eq 1}
+                                                    	{$lang.cancel}
+                                                    {else}
+                                                    	{$lang.confirm_nopay}
+                                                    {/if}
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="label_value info_btn">
+                                        {if $user_surplus.process_type eq 0 || $user_surplus.process_type eq 1}
+                                        <a href="javascript:;" class="button" id="submitBtn">{$lang.button_submit}</a>
+                                        {/if}
+                                        <input type="hidden" name="id" value="{$user_surplus.id}" />
+                                        <input type="hidden" name="act" value="{$form_act}" />
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+	</div>
+    </div>
+ {include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+		//列表导航栏设置下路选项
+    	$(".ps-container").perfectScrollbar();
+		
+        //会员基本信息 div仿select 
+        $.divselect("#user_grade","#user_grade_val");
+
+$(function(){
+	
+	$(":input[name='process_type']").click(function(){
+		var val =$(this).val();
+		
+		if(val == 1){
+			$(".payment").hide();
+		}else{
+			$(".payment").show();
+		}
+	});
+	
+    $("#submitBtn").click(function(){
+            if($("#user_account_form").valid()){
+                    $("#user_account_form").submit();
+            }
+    });
+
+    $('#user_account_form').validate({
+            errorPlacement:function(error, element){
+				var error_div = element.parents('div.label_value').find('div.form_prompt');
+				element.parents('div.label_value').find(".notic").hide();
+				error_div.append(error);
+			},
+            rules : {
+                    user_id : {
+                            required : true
+                    },
+                    amount : {
+                            required : true,
+                            number : true,
+                            min : 0
+                    }
+            },
+            messages : {
+                    user_id : {
+                            required : '<i class="icon icon-exclamation-sign"></i>'+user_id_empty
+                    },
+                    amount : {
+                            required : '<i class="icon icon-exclamation-sign"></i>'+deposit_amount_empty,
+                            number : '<i class="icon icon-exclamation-sign"></i>'+deposit_amount_error,
+                            min : '<i class="icon icon-exclamation-sign"></i>'+deposit_amount_error
+                    }
+            }
+    });
+});
+    </script>     
+</body>
+</html>

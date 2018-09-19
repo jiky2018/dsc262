@@ -1,0 +1,227 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$lang.10_priv_admin} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.info.0}</li>
+                    <li>{$lang.operation_prompt_content.info.1}</li>
+                    <li>{$lang.operation_prompt_content_common}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+                        <form name="theForm" method="post" enctype="multipart/form-data" id="user_form" >
+                            <div class="switch_info">
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}{$lang.user_name}：</div>
+                                    <div class="label_value">
+                                        <input type="text" id="user_name" name="user_name" class="text" value="{$user.user_name|escape}" autocomplete="off" />
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}{$lang.email}：</div>
+                                    <div class="label_value">
+                                        <input type="text" name="email" class="text"  id="email" value="{$user.email|escape}" autocomplete="off" />
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                {if $action eq "add"}
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}{$lang.password}：</div>
+                                    <div class="label_value">
+                                        <input type="password"   style="display:none"/><input type="password" name="password" class="text"  id="password"/>
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}{$lang.pwd_confirm}：</div>
+                                    <div class="label_value">
+                                        <input type="password"   style="display:none"/><input type="password" name="pwd_confirm" class="text" id="pwd_confirm"/>
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                {/if}
+                                
+                                {if $action neq "add"}
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}{$lang.old_password}：</div>
+                                    <div class="label_value">
+                                        <input type="password"   style="display:none"/><input type="password" name="old_password" class="text"  id="old_password"/>
+                                        <div class="form_prompt"></div>
+                                        <div class="notic m20">{$lang.password_notic}</div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}{$lang.new_password}：</div>
+                                    <div class="label_value">
+                                        <input type="password"   style="display:none"/><input type="password" name="new_password" class="text"id="new_password"/>
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}{$lang.pwd_confirm}：</div>
+                                    <div class="label_value">
+                                        <input type="password"   style="display:none"/><input type="password" name="pwd_confirm" class="text" id="pwd_confirm"/>
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+                                {if $user.agency_name}
+                                <div class="item">
+                                    <div class="label">{$lang.agency}：</div>
+                                    <div class="label_value">
+                                        {$user.agency_name}
+                                    </div>
+                                </div>
+                                {/if}
+                                {/if}
+								{if $select_role}
+                                <div class="item">
+                                    <div class="label">{$lang.select_role}：</div>
+                                    <div class="label_value">
+                                        <div  class="imitate_select select_w320">
+                                          <div class="cite">{$lang.select_please}</div>
+                                          <ul>
+                                             <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.select_please}</a></li>
+                                             {foreach from=$select_role item=list}
+                                             <li><a href="javascript:;" data-value="{$list.role_id}" class="ftx-01">{$list.role_name}</a></li>
+                                             {/foreach}
+                                          </ul>
+                                          <input name="select_role" type="hidden" value="{$user.role_id|default:0}" >
+                                        </div>
+                                    </div>
+                                </div>
+								{/if}								
+                                <div class="item">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="label_value info_btn">
+                                        <a href="javascript:;" class="button" id="submitBtn">{$lang.button_submit}</a>
+                                        <input type="hidden" name="act" value="{$form_act}" />
+                                        <input type="hidden" name="token" value="{$token}" />
+                                        <input type="hidden" name="id" value="{$user.user_id}" />
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+    </div>
+	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+        var action = "{$action}";
+		$(function(){
+			$("#submitBtn").click(function(){
+				if($("#user_form").valid()){
+					$("#user_form").submit();
+				}
+			});
+			
+			//添加表单验证js
+			if(action == 'add'){
+				$('#user_form').validate({
+					errorPlacement:function(error, element){
+						var error_div = element.parents('div.label_value').find('div.form_prompt');
+						element.parents('div.label_value').find(".notic").hide();
+						error_div.append(error);
+					},
+					rules : {
+						user_name : {
+							required : true
+						},
+						email : {
+							required : true,
+							email : true
+						},
+						password : {
+							required : true,
+							minlength:6
+						},
+						pwd_confirm : {
+							required : true,
+							equalTo:"#password"
+						}
+					},
+					messages : {
+						user_name : {
+							required : '<i class="icon icon-exclamation-sign"></i>'+user_name_empty
+						},
+						email : {
+							required : '<i class="icon icon-exclamation-sign"></i>'+email_empty,
+							email : '<i class="icon icon-exclamation-sign"></i>'+email_error
+						},
+						password : {
+							required : '<i class="icon icon-exclamation-sign"></i>'+new_password_empty,
+							minlength : '<i class="icon icon-exclamation-sign"></i>'+new_password_error
+						},
+						pwd_confirm : {
+							required : '<i class="icon icon-exclamation-sign"></i>'+pwd_confirm_empty,
+							equalTo:'<i class="icon icon-exclamation-sign"></i>'+password_error
+						}
+					}
+				});
+			}
+			
+			//修改验证表单js
+			if(action == 'edit'){
+				$('#user_form').validate({
+					errorPlacement:function(error, element){
+						var error_div = element.parents('div.label_value').find('div.form_prompt');
+						element.parents('div.label_value').find(".notic").hide();
+						error_div.append(error);
+					},
+					rules : {
+						user_name : {
+							required : true
+						},
+						email : {
+							required : true,
+							email : true
+						},
+						old_password : {
+							required : true,
+							minlength:6
+						},
+						new_password : {
+							required : true,
+							minlength:6
+						},
+						pwd_confirm : {
+							required : true,
+							equalTo:"#new_password"
+						}
+					},
+					messages : {
+						user_name : {
+							required : '<i class="icon icon-exclamation-sign"></i>'+user_name_empty
+						},
+						email : {
+							required : '<i class="icon icon-exclamation-sign"></i>'+email_empty,
+							email : '<i class="icon icon-exclamation-sign"></i>'+email_error
+						},
+						old_password : {
+							required : '<i class="icon icon-exclamation-sign"></i>'+old_password_empty,
+							minlength : '<i class="icon icon-exclamation-sign"></i>'+old_password_error
+						},
+						new_password : {
+							required : '<i class="icon icon-exclamation-sign"></i>'+new_password_empty,
+							minlength : '<i class="icon icon-exclamation-sign"></i>'+new_password_error
+						},
+						pwd_confirm : {
+							required : '<i class="icon icon-exclamation-sign"></i>'+pwd_confirm_empty,
+							equalTo:'<i class="icon icon-exclamation-sign"></i>'+password_error
+						}
+					}
+				});
+			}
+		});
+    </script>     
+</body>
+</html>

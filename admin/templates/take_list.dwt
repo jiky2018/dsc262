@@ -1,0 +1,137 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.promotion} - {$ur_here}</div>
+        <div class="content">
+            {include file="library/common_tabs_info.lbi"}
+        	<div class="explanation m10" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.take_list.0}</li>
+                    <li>{$lang.operation_prompt_content.take_list.1}</li>
+                    <li>{$lang.operation_prompt_content.take_list.2}</li>
+                </ul>
+            </div>            
+        	<div class="tabs_info">
+            	<ul>
+                    <li><a href="gift_gard.php?act=list{$seller_list}">{$lang.gift_gard_list}</a></li>
+                    <li class="curr"><a href="gift_gard.php?act=take_list{$seller_list}">{$lang.gift_gard_pakup}</a></li>
+				</ul>
+            </div>	
+            <div class="flexilist">
+            	<div class="common-head">
+                    <div class="refresh ml0">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+                    <div class="search">
+                    	<form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+						{include file ='library/search_store.lbi'}
+                    	<div class="input">
+                        	<input type="text" name="keywords" class="text nofocus" placeholder="{$lang.keywords_placeholder}" autocomplete="off" />
+                            <input type="submit" class="btn" name="secrch_btn" ectype="secrch_btn" value="" />
+                        </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="common-content">
+				<form method="POST" action="gift_gard.php?act=batch&bonus_type={$smarty.get.bonus_type}" name="listForm">
+                	<div class="list-div" id="listDiv" >
+						{/if}
+                    	<table cellpadding="1" cellspacing="1" >
+                        	<thead>
+                            	<tr>
+                                	<th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars"></label></div></th>
+									<th width="4%"><div class="tDiv">{$lang.record_id}<div></th>
+                                    <th width="6%"><div class="tDiv">{$lang.gift_sn}</div></th>
+                                    <th width="7%"><div class="tDiv">{$lang.goods_steps_name}</div></th>
+                                    <th width="13%"><div class="tDiv">{$lang.gift_goods_name}</div></th>
+                                    <th width="13%"><div class="tDiv">{$lang.address}</div></th>
+                                    <th width="7%"><div class="tDiv">{$lang.gift_user_name}</div></th>
+                                    <th width="6%"><div class="tDiv">{$lang.confirm_ship}</div></th>
+                                    <th width="7%"><div class="tDiv">{$lang.status}</div></th>
+                                    <th width="15%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+						    {foreach from=$bonus_list item=bonus}
+                            	<tr>
+                                	<td class="sign"><div class="tDiv">
+										<input type="checkbox" name="checkboxes[]" value="{$bonus.gift_gard_id}" class="checkbox" id="checkbox_{$bonus.goods_id}" />
+										<label for="checkbox_{$bonus.goods_id}" class="checkbox_stars"></label>
+									</div></td>
+                                    <td><div class="tDiv">{$bonus.gift_gard_id}</div></td>
+                                    <td><div class="tDiv">{$bonus.gift_sn}</div></td>
+                                	<td><div class="tDiv red">{$bonus.shop_name}</div></td>
+                                    <td><div class="tDiv"><a target="_blank" href="../goods.php?id={$bonus.goods_id}">{$bonus.goods_name}</div></td>
+                                    <td>
+                                        <div class="tDiv">
+                                        	{$bonus.address}
+                                            <p>{$bonus.consignee_name}</p>
+                                        	<p>{$bonus.mobile}</p>
+                                        </div>
+                                    </td>
+                                    <td><div class="tDiv">{if $bonus.user_name}{$bonus.user_name}{else}{$lang.anonymous_user}{/if}</div></td>
+                                    <td><div class="tDiv"><img src="images/{if $bonus.status eq 2 || $bonus.status eq 3}yes{else}no{/if}.gif" /></div></td>
+                                    <td><div class="tDiv">{if $bonus.status eq 1}{$lang.bonus_status_1}{elseif $bonus.status eq 2}{$lang.bonus_status_2}{elseif $bonus.status eq 3}{$lang.status_ok}{else}{$lang.bonus_status_3}{/if}</div></td>
+                                    <td class="handle">
+										<div class="tDiv a3">
+                                        	{if $bonus.status neq 2 && $bonus.status neq 3}
+                                        	<a href="javascript:;" class="btn_edit"  onclick="listTable.remove({$bonus.gift_gard_id}, '{if $bonus.status eq 2}{$lang.bonus_handle_1}{elseif $bonus.status eq 1}{$lang.bonus_handle_2}{elseif $bonus.status eq 3}{$lang.bonus_handle_3}{/if}', 'confirm_ship')"><i class="icon icon-edit"></i>{$lang.bonus_handle_4}</a>
+											{/if}
+                                            <a href="gift_gard.php?act=handle_log&id={$bonus.gift_gard_id}" class="btn_see"><i class="sc_icon sc_icon_see"></i>{$lang.handle_log}</a>
+											{if $priv_ru eq 1}
+											<a href="javascript:;" onclick="listTable.remove({$bonus.gift_gard_id}, '{$lang.drop_confirm}', 'remove_take')" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>
+											{/if}					
+										</div>
+									</td>
+                                </tr>
+							{foreachelse}
+							<tr><td class="no-records" align="center" colspan="15">{$lang.no_records}</td></tr>
+							{/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+									<td colspan="15">
+                                        <div class="tDiv">
+                                            <div class="tfoot_btninfo">
+                                              <div class="shenhe">
+                                                  <input type="submit" name="drop" id="btnSubmit" value="{$lang.drop}" class="btn btn_disabled" disabled="true" ectype="btnSubmit" />
+                                              </div>										
+                                            </div>
+                                            <div class="list-page">
+                                                {include file="library/page.lbi"}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+						{if $full_page}
+                    </div>
+				</form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+    	//列表导航栏设置下路选项
+    	$(".ps-container").perfectScrollbar();
+    	
+    	//分页传值
+    	listTable.recordCount = {$record_count|default:0};
+    	listTable.pageCount = {$page_count|default:1};
+    	listTable.query = "query_take";
+
+    	{foreach from=$filter item=item key=key}
+    	listTable.filter.{$key} = '{$item}';
+    	{/foreach}
+    </script>
+</body>
+</html>
+{/if}

@@ -1,0 +1,76 @@
+{include file="pageheader"}
+<div class="wrapper">
+	<div class="title"><a href="{url('extend_index')}" class="s-back">返回</a> 中奖名单</div>
+	<div class="content_tips">
+        <div class="explanation" id="explanation">
+            <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4><span id="explanationZoom" title="收起提示"></span></div>
+            <ul>
+                <li>中奖名称显示所有中奖的用户信息，未中奖的、未关注微信公众号的不显示。</li>
+                <li>可根据用户填写的联系方式，线下联系用户相关领奖事宜，点击通知用户可以推送一条微信通知消息。（此消息需要用户关注微信公众号，并且48小时内与之有过互动，才能发送成功）</li>
+                <li>相关奖品发送并与用户确认完成后，点击 立即发放，以标识此用户已经领奖。</li>
+            </ul>
+        </div>
+		<div class="flexilist">
+            <div class="common-head">
+                <form action="{url('', array('ks' => $activity_type))}" name="searchForm" method="post" role="search">
+                    <div class="search">
+                        <div class="input">
+                            <input type="text" name="keywords" class="text nofocus" placeholder="搜索微信昵称" autocomplete="off" >
+                            <input type="submit" value="" class="btn search_button">
+                        </div>
+                    </div>
+                </form>
+            </div>
+			<div class="common-content">
+				<div class="list-div">
+    			<table cellspacing="0" cellpadding="0" border="0">
+                    <tr>
+                        <th><div class="tDiv">微信昵称</div></th>
+                        <th><div class="tDiv">奖品</div></th>
+                        <th><div class="tDiv">是否发放</div></th>
+                        <th><div class="tDiv">中奖用户信息</div></th>
+                        <th><div class="tDiv">中奖时间</div></th>
+                        <th><div class="tDiv">操作</div></th>
+                    </tr>
+                    {foreach $list as $val}
+                    <tr>
+                        <td><div class="tDiv">{$val['nickname']}</div></td>
+                        <td><div class="tDiv">{$val['prize_name']}</div></td>
+                        <td><div class="tDiv">{if $val['issue_status']}已发放{else}未发放{/if}</div></td>
+                        <td><div class="tDiv">{if is_array($val['winner'])}姓名：{$val['winner']['name']}<br />手机号：{$val['winner']['phone']}<br />联系地址：{$val['winner']['address']}{/if}</div></td>
+                        <td><div class="tDiv">{$val['dateline']}</div></td>
+                        <td class="handle">
+                        	<div class="tDiv a3">
+                            {if $val['issue_status']}
+                            <a href="{url('winner_issue', array('id'=>$val['id'], 'cancel'=>1, 'ks'=>$activity_type))}" class="btn_region"><i class="fa fa-send"></i>取消发放</a>
+                            {else}
+                            <a href="{url('winner_issue', array('id'=>$val['id'], 'cancel'=>0, 'ks'=>$activity_type))}" class="btn_region"><i class="fa fa-send-o"></i>立即发放</a>
+                            {/if}
+                            <a href="{url('send_custom_message', array('openid'=>$val['openid']))}" class="btn_inst fancybox fancybox.iframe"><i class="fa fa-bullhorn"></i>通知用户</a>
+                            <a href="javascript:if(confirm('确定删除吗?'))window.location.href='{url('winner_del', array('id'=>$val['id'], 'ks'=>$activity_type))}';" class="btn_trash"><i class="fa fa-trash-o"></i>删除</a>
+                             </div>
+                        </td>
+                    </tr>
+                    {/foreach}
+
+                      {if empty($list)}
+                      <tbody>
+                             <tr><td class="no-records" colspan="6">没有找到任何记录</td></tr>
+                      </tbody>
+                      {/if}
+                    <tfoot>
+                        <tr>
+                            <td colspan="6">
+                                {include file="pageview"}
+                            </td>
+                        </tr>
+                    </tfoot>
+    			</table>
+		        </div>
+			</div>
+		</div>
+	  </div>
+
+</div>
+
+{include file="pagefooter"}

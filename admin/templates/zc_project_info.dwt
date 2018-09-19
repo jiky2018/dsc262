@@ -1,0 +1,229 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>众筹 - {$ur_here}</div>
+        <div class="content">
+        	<div class="tabs_info">
+            	<ul>
+                	<li id="linklist-tab" data-tab="info" class="curr"><a href="javascript:;">基本信息</a></li>
+					<li id="linklist-tab" data-tab="project_details"><a href="javascript:;">众筹详情</a></li>
+                	<li id="linklist-tab" data-tab="project_desc"><a href="javascript:;">众筹说明</a></li>
+                	<li id="linklist-tab" data-tab="risk_instruction"><a href="javascript:;">风险说明</a></li>
+                </ul>
+            </div>		
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content_common}</li>
+                </ul>
+            </div>
+			<form action="zc_project.php?act={$state}" method="post" name="theForm" enctype="multipart/form-data" id="zc_project_form">
+            <div class="flexilist" data-table="info">
+                <div class="common-content">
+                    <div class="mian-info">
+						<!--基本信息 start-->
+						<div class="switch_info">
+							<div class="item">
+								<div class="label">{$lang.require_field}{$lang.zc_project_name}：</div>
+								<div class="label_value">
+									<input type='text' size="50" class="text" name='title' value='{$info.title}' />
+									<div class="form_prompt"></div>
+								</div>
+							</div>
+							<div class="item">
+								<div class="label">{$lang.require_field}{$lang.initiator_name}：</div>
+								<div class="label_value">										
+									<div class="imitate_select select_w320" id="initiator_div">
+										<div class="cite">{$lang.please_select}</div>
+										<ul>
+											{foreach from=$initiator item=val key=key}
+											<li><a href="javascript:void(0);" data-value="{$val.id}">{$val.name}</a></li>
+											{/foreach}
+										</ul>
+										<input name="initiator" type="hidden" value="{$info.init_id}" id="initiator_val">
+									</div>
+									<div class="form_prompt"></div>
+								</div>
+							</div>								
+                            <div class="item">
+                                <div class="label">{$lang.require_field}{$lang.category_name}：</div>
+                                <div class="label_value">
+                                    <div class="search_select">
+                                        <div class="categorySelect">
+                                            <div class="selection">
+                                                <input type="text" name="category_name" id="category_name" class="text w290 valid" value="{if $parent_category}{$parent_category}{else}顶级分类{/if}" autocomplete="off" readonly data-filter="cat_name" />
+                                                <input type="hidden" name="cat_id" id="category_id" value="{$info.cat_id|default:0}" data-filter="cat_id" />
+                                            </div>
+                                            <div class="select-container w319" style="display:none;">
+                                                {include file="library/filter_category.lbi"}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="notic">不选择分类默认为顶级分类</div>
+                                </div>
+                            </div>
+							<div class="item">
+								<div class="label">{$lang.require_field}{$lang.zc_project_raise_money}：</div>
+								<div class="label_value">
+									<input type='text' size="10" name='money' value='{$info.amount}' class="text" />
+									<div class="form_prompt"></div>
+								</div>
+							</div>								
+							<div class="item">
+								<div class="label">{$lang.zc_project_title_img}：</div>
+								<div class="label_value">
+									<div class="type-file-box">
+										<input type="button" name="button" id="button" class="type-file-button" value="" />
+										<input type="file" class="type-file-file" id="tit_img" name="tit_img" data-state="imgfile" size="30" hidefocus="true" value="" />
+										{if $info}
+										<span class="show">
+											<a href="../{$info.title_img}" target="_blank" class="nyroModal"><i class="icon icon-picture" data-tooltipimg="../{$info.title_img}" ectype="tooltip" title="tooltip"></i></a>
+										</span>
+										{/if}
+										<input type="text" name="textfile" class="type-file-text" value="{if $info}../{$info.title_img}{/if}" id="textfield" autocomplete="off" readonly />
+									</div>
+									<label class="bf100 fl">注意：项目大图上传尺寸为790*400，否则图片会出现失真</label>
+									<div class="form_prompt"></div>
+								</div>
+							</div>	
+							<div class="item">
+								<div class="label">{$lang.act_time}：</div>
+								<div class="label_value">
+									<div class="text_time" id="text_time1">
+										<input type="text" name="promote_start_date" value="{if $info}{$info.start_time}{else}{$start_date}{/if}" id="promote_start_date" class="text mr0" readonly />
+									</div>
+									<span class="bolang">&nbsp;&nbsp;~&nbsp;&nbsp;</span>
+									<div class="text_time" id="text_time2">
+										<input type="text" name="promote_end_date" value="{if $info}{$info.end_time}{else}{$end_date}{/if}" id="promote_end_date" class="text" readonly />
+									</div>										
+								</div>
+							</div>
+							<div class="item">
+								<div class="label">{$lang.whether_recommend}：</div>
+								<div class="label_value">
+									<div class="checkbox_items">
+										<div class="checkbox_item">
+											<input type="radio" class="ui-radio" name="is_best" id="is_best_1" value="1" {if $info.is_best eq 1} checked="true" {/if}  />
+											<label for="is_best_1" class="ui-radio-label">{$lang.yes}</label>
+										</div>
+										<div class="checkbox_item">
+											<input type="radio" class="ui-radio" name="is_best" id="is_best_0" value="0" {if $info.is_best eq 0} checked="true" {/if}  />
+											<label for="is_best_0" class="ui-radio-label">{$lang.no}</label>
+										</div>
+									</div>
+								</div>
+							</div>												
+						</div> 
+						<!--基本信息 end-->
+						<!--众筹详情 start-->
+						<div class="switch_info" data-table="project_details" style="display:none;">
+							{$details}
+						</div> 
+						<!--众筹详情 end-->	
+						<!--众筹说明 start-->
+						<div class="switch_info" data-table="project_desc" style="display:none;">
+							{$describe}
+						</div> 
+						<!--众筹说明 end-->	
+						<!--风险说明 start-->
+						<div class="switch_info" data-table="risk_instruction" style="display:none;">
+							{$risk_instruction}
+						</div> 
+						<!--风险说明 end-->
+                        <div class="info_btn info_btn_bf100 button-info-item0" id="info_btn_bf100">
+                            <div class="label">&nbsp;</div>
+                            <div class="value font0">
+                                <input type="submit" class='button mr10' value="{$lang.button_submit}" id="submitBtn" />
+                                <input type="reset" class='button button_reset' value="{$lang.button_reset}" />
+                                <input type='hidden' name='item_id' value='{$item_id}' />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+			</form>
+		</div>
+    </div>
+    <style type="text/css">
+		.button-info-item0,.button-info-item3{text-align:left;}
+    	.button-info-item0 .label,.button-info-item3 .label{width:30%; padding-right:9px;}
+    </style>
+ 	{include file ='library/pagefooter.lbi'}
+    
+	<script type="text/javascript">
+	//切换标签
+	$(".tabs_info li").click(function(){
+		var this_tab = $(this).data('tab');
+		$(".flexilist[data-table="+this_tab+"]").show();
+		$(".flexilist[data-table="+this_tab+"]").siblings(".flexilist").hide();
+	});
+	
+	$(function(){
+		//表单验证
+		$("#submitBtn").click(function(){
+			if($("#zc_project_form").valid()){
+				$("#zc_project_form").submit();
+			}
+		});
+	
+		$('#zc_project_form').validate({
+			errorPlacement:function(error, element){
+				var error_div = element.parents('div.label_value').find('div.form_prompt');
+				element.parents('div.label_value').find(".notic").hide();
+				error_div.append(error);
+			},
+			rules:{
+				title :{
+					required : true
+				},
+				initiator :{
+					required : true
+				},
+				money :{
+					required : true,
+					number:true
+				},
+				textfile:{
+					required : true
+				}
+			},
+			messages:{
+				title:{
+					 required : '<i class="icon icon-exclamation-sign"></i>{$lang.zc_project_name}{$lang.empty}'
+				},
+				initiator :{
+					required : '<i class="icon icon-exclamation-sign"></i>{$lang.initiator_name}{$lang.empty}'
+				},
+				money :{
+					required : '<i class="icon icon-exclamation-sign"></i>{$lang.zc_project_raise_money}{$lang.empty}',
+					digits : '<i class="icon icon-exclamation-sign"></i>众筹金额必须为数字'
+				},
+				textfile:{
+					required : '<i class="icon icon-exclamation-sign"></i>封面图片不能为空'
+				}
+			}			
+		});
+		$('.nyroModal').nyroModal();
+	});
+	
+	var opts1 = {
+		'targetId':'promote_start_date',
+		'triggerId':['promote_start_date'],
+		'alignId':'text_time1',
+		'format':'-',
+		'hms':'off'
+	},opts2 = {
+		'targetId':'promote_end_date',
+		'triggerId':['promote_end_date'],
+		'alignId':'text_time2',
+		'format':'-',
+		'hms':'off'
+	}
+	xvDate(opts1);
+	xvDate(opts2);
+	</script>
+</body>
+</html>

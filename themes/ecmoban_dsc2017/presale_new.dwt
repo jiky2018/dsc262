@@ -1,0 +1,135 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<!-- #BeginLibraryItem "/library/js_languages_new.lbi" --><!-- #EndLibraryItem -->
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/css/other/presale.css" />
+</head>
+
+<body class="show">
+<!-- #BeginLibraryItem "/library/page_header_presale.lbi" --><!-- #EndLibraryItem -->
+{* DSC 提醒您：动态载入presale_banner_new.lbi，显示首页分类小广告 *}{insert name='get_adv_child' ad_arr=$presale_banner_new}
+
+<div class="preSale-filter">
+    <div id="filter">
+        <div class="filter-section-wrapper mb-component mt-component w1200 mt20 w">
+            <div class="component-filter component-filter-category">
+                <div class="filter-label-list">
+                    <div class="label">{$lang.category}：</div>
+                    <div class="filter-quanbu {if $pager.cat_id eq 0 }selected{/if}"><a href="{$pre_status.status_cat}">{$lang.all_attribute}</a></div>
+                    <ul class="inline-block-list">
+                    <!-- {foreach from=$pre_category item=category} -->
+                        <li {if $pager.cat_id eq $category.cat_id }class="selected"{/if}><a href="{$category.url}">{$category.cat_name}</a></li>
+                    <!-- {/foreach} -->
+                    </ul>
+                </div>
+                <div class="filter-label-list">
+                    <div class="label">{$lang.au_bid_status}：</div>
+                    <div class="filter-quanbu {if $pager.status eq 0 }selected{/if}"><a href="{$pre_status.status_all}">{$lang.all_attribute}</a></div>
+                    <ul class="inline-block-list">
+                        <li {if $pager.status eq 1 }class="selected"{/if}><a href="{$pre_status.status_one}">{$lang.begin_minute}</a></li>
+                        <li {if $pager.status eq 2 }class="selected"{/if}><a href="{$pre_status.status_two}">{$lang.Appointment}</a></li>
+                        <li {if $pager.status eq 3 }class="selected"{/if}><a href="{$pre_status.status_three}">{$lang.has_ended}</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="content">
+    <div class="preSaleNew-list w1200 pb40 w">
+		{if $date_result}
+		<!-- {foreach from=$date_result item=date_result_goods} 遍历日期楼层 -->
+        <div class="preSaleNew-item">
+            <div class="preSaleNewTime">
+                <div class="p-data">
+                    <span>{$date_result_goods.end_time_y}&nbsp;{$lang.year}&nbsp;{$date_result_goods.end_time_m}&nbsp;{$lang.month}</span>
+                    <strong>{$date_result_goods.end_time_d}</strong>
+                </div>
+                <div class="row"></div>
+            </div>
+            <div class="preSaleNewProduct">
+                <ul>
+                <!-- {foreach from=$date_result_goods.goods item=goods} 遍历楼层商品 -->
+                    <li>
+                        <div class="p-warp">
+                            <div class="p-img"><a href="{$goods.url}" target="_blank"><img src="{$goods.thumb}" width="196" height="196"/></a></div>
+                            <div class="p-info">
+                                <div class="p-name"><a href="{$goods.url}" title="{$goods.goods_name|escape:html}" target="_blank">{$goods.goods_name}</a></div>
+                                <div class="p-item">
+                                    <div class="p-price"><em>￥</em>{$goods.shop_price}</div>
+                                    <span class="appointment">{$lang.existing}<em>{$goods.pre_num}</em>{$lang.subscribe_p}</span>
+                                </div>
+                                <div class="p-dibu">
+                                    <!-- {if $goods.no_start eq 1} -->
+                                        <div class="time"  ectype="time" data-time="{$goods.start_time_date}">
+                                            {$lang.Start_from}<span class="days">17</span>{$lang.day}&nbsp;<span class="hours">18</span>:<span class="minutes">26</span>:<span class="seconds">22</span>
+                                        </div>
+                                        <a class="btn" href="{$goods.url}">{$lang.View_details}</a>
+									<!-- {elseif $goods.already_over eq 1} -->
+									    <a class="btn" >{$lang.presale_end}</a>
+                                    <!-- {else} -->
+                                        <div class="time" ectype="time" data-time="{$goods.end_time_date}">
+                                            {$lang.Count_down}<span class="days">17</span>{$lang.day}&nbsp;<span class="hours">18</span>:<span class="minutes">26</span>:<span class="seconds">22</span>
+                                        </div>
+                                        <a class="btn" href="{$goods.url}">{$lang.make_appointment_now}</a>
+                                    <!-- {/if} -->
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <!-- {/foreach} -->
+
+                </ul>
+            </div>
+        </div>
+        <!-- {/foreach} -->
+		{else}
+		<div class="no_records no_records_tc">
+            <i class="no_icon_two"></i>
+            <div class="no_info no_info_line">
+                <h3>该分类下没有内容</h3>
+                <div class="no_btn">
+                    <a href="index.php" class="btn sc-redBg-btn">返回首页</a>
+                </div>
+            </div>
+        </div>
+		{/if}
+    </div>
+</div>
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+{insert_scripts files='jquery.SuperSlide.2.1.1.js,jquery.yomi.js'}
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/dsc-common.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.purebox.js"></script>
+<script type="text/javascript">
+	//日期链接竖线长度自定义
+	$(".preSaleNew-item").each(function(){
+		var height = $(this).height();
+		var timeHeight =$(this).find(".p-data").height();
+		var rowHeight = height - timeHeight;
+		$(this).find(".preSaleNewTime").css("height",height);
+		$(this).find(".row").css("height",rowHeight);
+	});
+
+	//倒计时JS
+	$(".time").each(function(){
+		$(this).yomi();
+	});
+	
+	var length = $(".banner-new .bd ul").find("li").length;
+	if(length>1){
+		$(".banner-new").slide({titCell:".hd ul",mainCell:".bd ul",effect:"top",interTime:3500,delayTime:500,autoPlay:true,autoPage:true});
+	}else{
+		$(".banner-new .hd ul").hide();
+	}
+</script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+		{include file ='library/seller_menu_left.lbi'}
+		<div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+            	{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="search-info">
+                    <div class="search-form">
+                        <form action="javascript:searchSize()" name="searchForm">
+                            <div class="search-key">
+                                <input type="text" name="keyword" size="15" class="text text_2" placeholder="{$lang.keyword}" />
+                                <input type="submit" value="{$lang.button_search}" class="submit" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+				{/if}
+				<form method="post" action="" name="listForm">
+					<div class="list-div" id="listDiv"> 
+						<table class="ecsc-default-table mt20">
+                        	<thead>
+                                <tr>
+                                    <th width="5%" class="tl pl10">{$lang.record_id}</th>
+                                    <th width="15%" class="tl">规格</th>
+                                    <th width="20%" class="tl">打印机</th>
+                                    <th width="20%" class="tl">宽度(mm)</th>
+									<th width="15%" class="tl">排序</th>
+                                    <th width="15%" class="tl">设为默认</th>
+                                    <th width="10%">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {foreach from=$print_setting item=list}
+                            <tr>
+                                <td class="first-cell tl pl10"><span>{$list.id}</span></td> 
+                                <td class="tl"><span>{$list.specification}</span></td>
+                                <td class="tl"><span onclick="javascript:listTable.edit(this, 'edit_order_printer', {$list.id})">{$list.printer}</span></td>
+                                <td class="tl"><span onclick="javascript:listTable.edit(this, 'edit_print_width', {$list.id})">{$list.width}</span></td>
+								<td class="tl"><span onclick="javascript:listTable.edit(this, 'edit_sort_order', {$list.id})">{$list.sort_order}</span></td>
+                                <td class="tl"><span>
+								    <div class="switch {if $list.is_default}active{/if}" title="{if $list.is_default}是{else}否{/if}" data-type="only" onclick="listTable.switchBt(this, 'toggle_order_is_default', {$list.id})">
+										<div class="circle"></div>
+									</div>
+									<input type="hidden" value="{$list.is_default}" name="">
+								</span></td>
+                                <td class="ecsc-table-handle">
+                                    <span><a href="tp_api.php?act=order_print_setting_edit&id={$list.id}" title="{$lang.edit}" class="btn-green"><i class="icon icon-edit"></i><p>{$lang.edit}</p></a></span>
+                                    <span><a href="javascript:;" onclick="listTable.remove({$list.id}, '{$lang.drop_confirm}', 'order_print_setting_remove')" title="{$lang.remove}" class="btn-red"><i class="icon icon-trash"></i><p>{$lang.remove}</p></a></span>
+                                </td>
+                            </tr>
+                            {foreachelse}
+                            <tr><td class="no-records" colspan="5">{$lang.no_records}</td></tr>
+                            {/foreach}
+                            </tbody>
+							<tfoot>
+								<tr><td colspan="10">{include file="page.dwt"}</td></tr>
+							</tfoot>
+						</table>
+						{if $full_page}
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+{include file="library/seller_footer.lbi"}
+<script type="text/javascript">
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+  listTable.query = 'order_print_setting_query';
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+  {literal}
+  onload = function()
+  {
+    startCheckOrder();
+  }
+  
+  function searchSize()
+  {
+	listTable.filter['keyword'] = Utils.trim(document.forms['searchForm'].elements['keyword'].value);
+	listTable.filter['page'] = 1;
+
+	listTable.loadList();
+  }
+  {/literal}
+</script>
+</body>
+</html>
+{/if}

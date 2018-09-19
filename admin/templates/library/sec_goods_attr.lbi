@@ -1,0 +1,117 @@
+{if $full_page}
+<div class="sku_goods_info">
+    <div id="attrlistDiv">
+	{/if}    
+        <table class="table">
+            <thead>
+                <th width="40%">商品名称</th>
+                <th width="20%">价格</th>
+                <th width="20%">数量</th>
+                <th width="20%">限购</th>
+            </thead>
+            <tbody>
+                {foreach from=$product_list item=list name=product}
+                <tr>
+                    <td><span>{$list.goods_name}</span></td>
+                    <td><input class="text w60 tc fn" style="margin-right:0px;" name="sec_price[]" onblur="listTable.editInput(this, 'edit_sec_price', {$list.id});" autocomplete="off" value="{$list.sec_price}" type="text"></td>
+                    <td><input class="text w60 tc fn" style="margin-right:0px;" name="sec_num[]" onblur="listTable.editInput(this, 'edit_sec_num', {$list.id});" autocomplete="off" value="{$list.sec_num}" type="text"></td>
+                    <td><input class="text w60 tc fn" style="margin-right:0px;" name="sec_limit[]" onblur="listTable.editInput(this, 'edit_sec_limit', {$list.id});" autocomplete="off" value="{$list.sec_limit}" type="text"></td>
+                </tr> 
+                {foreachelse}
+                <tr><td class="no-records"  colspan="5">{$lang.no_records}</td></tr>								
+                {/foreach}
+            </tbody>
+        </table>
+        <!--<div class="pb_page">
+            <div class="pageDiv">
+                <a href="javascript:;" class="item item_first item_gray">共 {$sku_page_count} 页</a>
+                <a href="javascript:listTable_pb.gotoPageFirst();" class="item item_first">首页</a>
+                <a href="javascript:listTable_pb.gotoPagePrev();" class="item item_prev">上一页</a>
+                <span class="item">{$sku_filter.page}</span>
+                <a href="javascript:listTable_pb.gotoPageNext();" class="item item_next">下一页</a>
+                <a href="javascript:listTable_pb.gotoPageLast();" class="item item_last">尾页</a>
+            </div>
+            <div class="clear"></div>
+        </div>-->
+{if $full_page}
+	</div>    
+</div>
+<script type="text/javascript">
+
+listTable_pb.recordCount = '{$sku_record_count}';
+listTable_pb.pageCount = '{$sku_page_count}';
+listTable_pb.url = "seckill.php?is_ajax=1";
+listTable_pb.query = '{$query}';
+
+{foreach from=$sku_filter item=item key=key}
+listTable_pb.filter.{$key} = '{$item}';
+{/foreach}
+
+$(function(){
+	{if $goods.model_attr eq 1 || $goods.model_attr eq 2}
+		var w_name = $("#warehouse_0").data("name");
+		var w_value = $("#warehouse_0").data("value");
+	
+		$("#w_select_please").html(w_name);
+	{/if}
+	
+	{if $goods.model_attr eq 1}
+		$("#warehouse_name").val(w_value);
+	{elseif $goods.model_attr eq 2}
+		$("#warehouse_area_name_val").val(w_value);
+		
+		$.divselect("#warehouse_area_name","#warehouse_area_name_val",function(obj){
+			 var value = $(obj).data("value");
+			 
+			 get_warehouse_area_name(value, 1 ,{$goods_id}, {$user_id}, 0);
+		});
+		
+		get_warehouse_area_name({$warehouse_id}, 1 ,{$goods_id}, {$user_id}, 0);
+	{/if}
+	
+	$("[data-toggle='tooltip']").tooltip({
+		position: {
+			my: "center top+5",
+			at: "center bottom"
+		}
+	});
+	
+	$(".get_warehouse").click(function(){
+		var warehouse_id = $(this).data("value");
+		var area_id = 0;
+		
+		product_list(warehouse_id, area_id);
+	});
+	
+	$(".pro_btn").click(function(){
+		listTable_pb.filter['product_sn'] = $("#product_sn").val();
+		listTable_pb.filter['page'] = 1;
+	
+		listTable_pb.loadList();
+	});
+});
+
+function product_list(warehouse_id, area_id)
+{
+	listTable_pb.filter['warehouse_id'] = warehouse_id;
+	listTable_pb.filter['area_id'] = area_id;
+	listTable_pb.filter['page'] = 1;
+
+	listTable_pb.loadList();
+}
+
+function get_warehouse_area_name(warehouse_id, key, goods_id, ru_id, type){
+	Ajax.call('goods.php?is_ajax=1&act=edit_warehouse_area_list', "id="+warehouse_id + "&key="+key + "&goods_id=" + goods_id + "&ru_id=" + ru_id + "&type=" + type, ResponseWarehouse_area, "GET", "JSON");
+}
+
+function ResponseWarehouse_area(result)
+{
+	if (result.content.error == 0)
+	{
+		$('#warehouse_area_list_' + result.content.key).html(result.content.html);
+	}else{
+		$('#warehouse_area_list_' + result.content.key).find('select').remove();
+	}
+}
+</script>
+{/if}

@@ -1,0 +1,142 @@
+<!-- $Id: deal_store_order.htm 16854 2009-12-07 06:20:09Z sxc_shop $ -->
+<!--付款自提 start-->
+<!--{if $form_action eq 'pick_goods'}-->
+<form method="post" action="order.php" name="theForm" enctype="multipart/form-data">
+	<div class="store_order_page">
+		<div class="store_order_section">
+			<span class="store_order_title">收货人信息</span>
+			<p class="mt5">买家姓名：{$order_info.consignee}</p>
+			<p>联系电话：{$order_info.mobile}</p>
+			<p>自提店地址：{$store_info.complete_store_address}</p>
+			{if $order_info.postscript}
+			<p>订单留言：{$order_info.postscript}</p>
+			{/if}
+		</div>
+		<div class="store_order_section">
+			<span class="store_order_title">订单商品</span>
+            {foreach from=$order_goods_list item=goods}
+            <div class="store_order_product">
+            	<div class="img"><img src="{$goods.goods_thumb}" width="50" height="50"></div>
+                <div class="info">
+                	<div class="name">{$goods.goods_name}</div>
+                    <div class="lie">
+                    	<span>数量：{$goods.goods_number}</span>
+                        <span>单价：{$goods.formated_goods_price}</span>
+                    </div>
+                </div>
+            </div>
+            {/foreach}
+		</div>
+        <div class="store_order_section">
+			<span class="store_order_title">提货验证</span>
+			{if $order_info.pay_status neq 2}<span class="store_order_note">该笔尚未付款，需支付<span class="price">{$order_info.formated_total_fee}</span>，门店收款后再进行提货验证。</span>{/if}
+            <div class="store_order_input">
+            	<span class="input">
+                    <input type="text" name="pick_code" value="" class="pick_code text" placeholder="请输入提货验证码" autocomplete="off">
+                    <span id="notic"></span>
+                </span>
+            </div>
+            <p class="notic">该验证码为商城订单生成时，自动发送给发货人手机及买家订单详情中的提供的“6位验证码”</p>
+		</div>
+        <div class="store_button_info">
+        	<input type="button" name="button" class="submit" value="提交">
+        </div>
+		<input type="hidden" name="act" value="{$form_action}" />
+		<input type="hidden" name="id" value="{$id}" />
+		<input type="hidden" name="order_id" value="{$order_id}" />
+	</div>
+</form>
+<script type="text/javascript">
+	$(".submit").click(function(){
+    var form = $(this).parents("form[name='theForm']")
+		var code = form.find(".pick_code").val();
+		var id= form.find("input[name='id']").val();
+		var order_id= form.find("input[name='order_id']").val();
+		$.jqueryAjax("order.php", "act=pick_goods" + "&id=" + id + "&order_id=" + order_id + "&pick_code=" + code, function(data){
+			if(data.error == 1){
+				window.location.href = "order.php?act=list"; 
+			}else{
+				$("#notic").html(data.message);
+			}
+		});
+	});
+</script>
+<!--{/if}-->
+<!--付款自提 end-->
+
+<!--我要抢单 start-->
+<!--{if $form_action eq 'grab_order'}-->
+<form method="post" action="order.php" name="theForm" enctype="multipart/form-data">
+	<div class="store_order_page">
+		<div class="store_order_section">
+			<span class="store_order_title">收货人信息</span>
+			<p>买家姓名：{$order_info.consignee}</p>
+			<p>联系电话：{$order_info.mobile}</p>
+			<p>收货地址：{$complete_user_address}</p>
+			{if $order_info.postscript}
+			<p>订单留言：{$order_info.postscript}</p>
+			{/if}
+		</div>
+        <div class="store_button_info">
+        	<!--<input type="submit" name="submit" class="submit" value="确认抢单">-->
+        	<input type="button" name="submit" class="submit" value="确认抢单" onclick="send_form_data('form[name=theForm]')">
+        </div>
+		<input type="hidden" name="act" value="{$form_action}" />
+		<input type="hidden" name="id" value="{$id}" />		
+		<input type="hidden" name="order_id" value="{$order_id}" />		
+	</div>
+</form>
+<!--{/if}-->
+<!--我要抢单 end-->
+
+<!--门店发货 start-->
+<!--{if $form_action eq 'delivery' || $form_action eq 'achieve'}-->
+<form method="post" action="order.php" name="theForm" enctype="multipart/form-data">
+	<div class="store_order_page">
+		<div class="store_order_section">
+			<span class="store_order_title">收货人信息</span>
+			<p>买家姓名：{$order_info.consignee}</p>
+			<p>联系电话：{$order_info.mobile}</p>
+			<p>收货地址：{$complete_user_address}</p>
+			{if $order_info.postscript}
+			<p>订单留言：{$order_info.postscript}</p>
+			{/if}
+		</div>
+        <div class="store_order_section">
+			<span class="store_order_title">订单商品</span>
+            {foreach from=$order_goods_list item=goods}
+            <div class="store_order_product">
+            	<div class="img"><img src="{$goods.goods_thumb}" width="50" height="50"></div>
+                <div class="info">
+                	<div class="name">{$goods.goods_name}</div>
+                    <div class="lie">
+                    	<span>数量：{$goods.goods_number}</span>
+                        <span>单价：{$goods.formated_goods_price}</span>
+                    </div>
+                </div>
+            </div>
+            {/foreach}
+        </div>
+        <!--{if $form_action neq 'achieve'}-->
+        <div class="store_order_section">
+            <span class="store_order_title">快递单号</span>
+            <div class="store_order_input">
+                <span class="input">
+                    <input type="text" name="invoice_no" class="text" placeholder="请输入快递单号" autocomplete="off">
+                </span>
+            </div>
+        </div>
+        <!--{/if}-->
+		<!--{if $form_action neq 'achieve'}-->
+        <div class="store_button_info">			
+			<!--<input type="submit" name="submit" class="submit" value="确认发货">-->
+			<input type="button" name="submit" class="submit" value="确认发货" onclick="send_form_data('form[name=theForm]')">
+        </div>
+		<input type="hidden" name="act" value="{$form_action}" />
+		<input type="hidden" name="id" value="{$id}" />		
+		<input type="hidden" name="order_id" value="{$order_id}" />	
+		<!--{/if}-->	
+	</div>
+</form>
+<!--{/if}-->
+<!--门店发货 end-->

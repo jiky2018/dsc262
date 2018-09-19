@@ -1,0 +1,102 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$ur_here}</div>
+        <div class="content">		
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.info.0}</li>
+                    <li>{$lang.operation_prompt_content.info.1}</li>
+                    <li>{$lang.operation_prompt_content_common}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<!--商品列表-->
+                <div class="common-head">
+                    <div class="fl">
+                    	<a href="tag_manage.php?act=add"><div class="fbutton"><div class="add" title="{$lang.add_tag}"><span><i class="icon icon-plus"></i>{$lang.add_tag}</span></div></div></a>
+                    </div>				
+                    <div class="refresh">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+                </div>
+                <div class="common-content">
+					<form method="POST" action="tag_manage.php?act=batch_drop" name="listForm">
+                	<div class="list-div" id="listDiv">
+						{/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                	<th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars"></label></div></th>
+                                	<th width="3%"><div class="tDiv">{$lang.record_id}</div></th>
+                                    <th width="15%"><div class="tDiv">{$lang.tag_words}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.user_id}</div></th>
+                                    <th width="59%"><div class="tDiv">{$lang.goods_id}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.handler}</div></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+								{foreach from=$tag_list item=tag}
+                            	<tr>
+                                    <td class="sign"><div class="tDiv">
+										<input type="checkbox" name="checkboxes[]" value="{$tag.tag_id}" class="checkbox" id="checkbox_001" />
+										<label for="checkbox_001" class="checkbox_stars"></label>
+									</div></td>
+                                    <td><div class="tDiv">{$tag.tag_id}</div></td>
+                                    <td><div class="tDiv">{$tag.tag_words|escape}</div></td>
+                                    <td><div class="tDiv">{$tag.user_name}</div></td>
+                                    <td><div class="tDiv"><a href="../goods.php?id={$tag.goods_id}" target="_blank">{$tag.goods_name}</a></div></td>
+                                    <td class="handle">
+                                        <div class="tDiv a2">
+                                            <a href="tag_manage.php?act=edit&amp;id={$tag.tag_id}" class="btn_see"><i class="sc_icon sc_icon_see"></i>{$lang.edit}</a>
+                                            <a href="javascript:;" onclick="listTable.remove({$tag.tag_id}, '{$lang.drop_confirm}')" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>
+                                        </div>
+                                    </td>                           
+                                </tr>
+								{foreachelse}
+                                    <tr><td class="no-records" colspan="12">{$lang.no_records}</td></tr>
+                                {/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                	<td colspan="7">
+                                        <div class="tDiv">
+                                            <div class="tfoot_btninfo">
+                                                <div class="shenhe">
+                                                    <input type="submit" id="btnSubmit" value="{$lang.drop}" class="btn btn_disabled" disabled="true" ectype="btnSubmit" />
+                                                </div>										
+                                            </div>
+                                            <div class="list-page">
+                                               {include file="library/page.lbi"}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+						{if $full_page}
+                    </div>
+					</form>
+                </div>
+                <!--商品列表end-->
+            </div>
+		</div>
+	</div>
+	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript" language="JavaScript">
+	  listTable.recordCount = {$record_count|default:0};
+	  listTable.pageCount = {$page_count|default:1};
+
+	  {foreach from=$filter item=item key=key}
+	  listTable.filter.{$key} = '{$item}';
+	  {/foreach}
+	</script>
+</body>
+</html>
+{/if}

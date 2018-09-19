@@ -1,0 +1,102 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+  
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="brand.php?act=list" class="s-back">{$lang.back}</a>{$lang.goods_alt} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                {$lang.use_help}
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+						<div class="list-div">
+						当前需要修改的数据有{$record_count|default:0}条
+						</div>
+						<div style=" width:100px; height:10px; clear:both; overflow:hidden;"></div>
+						<div class="list-div">
+						<table id="listTable">
+							<tr>     
+                            	{foreach from=$attr_names item=vo}
+                            	<th><div class="tDiv">{$vo}</div></th>
+                                {/foreach}
+                                <th><div class="tDiv">商品ID</div></th>
+								<!--<th><div class="tDiv">本店价格</div></th>-->
+								<th><div class="tDiv">库存</div></th>
+                                <!--<th><div class="tDiv">预警值</div></th>-->
+                                <th><div class="tDiv">货号</div></th>
+                                <!--<th><div class="tDiv">条形码</div></th>-->
+                                <th><div class="tDiv">状态</div></th>
+							</tr>
+						</table>
+						</div>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+	{include file ='library/pagefooter.lbi'}
+    {insert_scripts files="jquery.purebox.js"}
+    <script type="text/javascript">
+		
+		$(function(){
+			start({$page});
+			ajax_title();
+		});
+		function start(page)
+		{
+			{if $smarty.get.act != 'add'}
+			Ajax.call('wholesale_goods_produts_batch.php?act=ajax_insert', 'page=' + page, start_response, 'POST', 'JSON');
+			{/if}
+		}
+		
+		
+		function start_response(result)
+		{
+			if(result.list){
+				var tbl = document.getElementById("listTable"); 
+				var row = tbl.insertRow(-1);
+				var attr_arr = result.list.goods_attr_name.split('|');
+				var attr_num=attr_arr.length;
+				var num = 0;
+				
+				for(var i=0;i<attr_num;i++){
+					cell = row.insertCell(i);
+					cell.innerHTML = "<div class='tDiv'>"+attr_arr[i]+"</div>";
+				}
+				
+				
+				
+				cell = row.insertCell(attr_num);
+				cell.innerHTML = "<div class='tDiv'>"+result.list.goods_id+"</div>";
+				cell = row.insertCell(attr_num+1);
+				
+				
+				cell.innerHTML = "<div class='tDiv'>"+result.list.product_number+"</div>";
+				cell = row.insertCell(attr_num+2);
+				
+				
+				cell.innerHTML = "<div class='tDiv'>"+result.list.product_sn+"</div>";
+				cell = row.insertCell(attr_num+3);
+				
+				
+				cell.innerHTML = "<div class='tDiv'>"+result.status_lang+"</div>";				
+				
+				if(result.is_stop == 1){
+                    start(result.page);
+                }	
+			}
+			
+			if(result.is_stop == 0){
+				$("#title_name").addClass("red");
+				$("#title_name").html("已完成更新，请关闭该窗口！");
+			}else{
+				$("#title_name").html("正在更新数据中，请勿关闭该窗口！");
+			}
+		}
+    </script>
+</body>
+</html>

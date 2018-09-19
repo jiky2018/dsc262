@@ -1,0 +1,79 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+    	{include file ='library/seller_menu_left.lbi'}
+		<div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="items-info">
+					{/if}
+                    <form method="post" action="" name="listForm">
+                    <div class="list-div" id="listDiv">
+                      <table class="ecsc-default-table mt20">
+                      	<thead>
+                        <tr>
+                          <th width="26%">{$lang.carousel_image}</th>
+                          <th width="24%">{$lang.image_href}</th>
+                          <th width="18%">{$lang.image_explain}</th>
+                          <th width="8%">{$lang.sort_order}</th>
+                          <th width="8%">{$lang.transform_style}</th>
+                          <th width="6%">{$lang.display}</th>
+                          <th width="12%">{$lang.handler}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {foreach from=$seller_slide_list item=slide_list}
+                        <tr>
+                            <td>
+                                <img src="{$slide_list.img_url}" height="70" />
+                            </td>
+                            <td><a href="{$slide_list.img_link}" target="_blank">{$slide_list.img_link}</a></td>
+                            <td>{$slide_list.img_desc}</td>
+                            <td><span onclick="javascript:listTable.edit(this, 'edit_sort_order', {$slide_list.id})">{$slide_list.img_order}</span></td>
+                            <td>{$slide_list.slide_type}</td>
+                            <td>
+                                <div class="switch {if $slide_list.is_show}active{/if}" title="{if $slide_list.is_show}是{else}否{/if}" onclick="listTable.switchBt(this, 'toggle_show', {$slide_list.id})">
+                                    <div class="circle"></div>
+                                </div>
+                                <input type="hidden" value="0" name="">
+                            </td>
+                            <td class="ecsc-table-handle tr">
+                                <span><a href="seller_shop_slide.php?act=edit&id={$slide_list.id}" title="{$lang.edit}" class="btn-green"><i class="icon icon-edit"></i><p>{$lang.edit}</p></a></span>
+                                <span><a href="javascript:;" onclick="listTable.remove({$slide_list.id}, '{$lang.drop_confirm}')" title="{$lang.drop}" class="btn-red"><i class="icon icon-trash"></i><p>{$lang.drop}</p></a></span>
+                            </td>
+                        </tr>
+                        {foreachelse}
+                        <tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+                        {/foreach}
+                        </tbody>
+                      </table>
+                    </div>
+                    </form>
+				{if $full_page}
+                </div>						
+            </div>
+        </div>
+    </div>    
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript" src="../js/jquery.picTip.js"></script>
+<script type="text/javascript">
+  <!--
+  listTable.recordCount = {if $record_count}{$record_count}{else}1{/if};
+  listTable.pageCount = {if $page_count}{$page_count}{else}1{/if};
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+
+  //-->
+</script>
+</body>
+{/if}

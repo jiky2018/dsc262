@@ -1,0 +1,118 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<!-- #BeginLibraryItem "/library/js_languages_new.lbi" --><!-- #EndLibraryItem -->
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/css/other/gift.css" />
+<link rel="stylesheet" type="text/css" href="../js/perfect-scrollbar/perfect-scrollbar.min.css" />
+</head>
+<body>
+<!-- #BeginLibraryItem "/library/page_header_common.lbi" --><!-- #EndLibraryItem -->
+<div class="ecsc-breadcrumb w1200 w">
+	<!-- #BeginLibraryItem "/library/ur_here.lbi" --><!-- #EndLibraryItem -->
+</div>
+
+<div class="w1200 w">
+	<div class="AreaL">
+        <!-- TemplateBeginEditable name="左边区域" -->
+        <!-- #BeginLibraryItem "/library/history.lbi" --><!-- #EndLibraryItem -->
+        <!-- TemplateEndEditable -->
+    </div>
+    <div class="AreaR">
+        <!-- TemplateBeginEditable name="右边区域" -->
+        <!-- #BeginLibraryItem "/library/gift_gard_list.lbi" --><!-- #EndLibraryItem -->
+        <!-- #BeginLibraryItem "/library/pages.lbi" --><!-- #EndLibraryItem -->
+        <!-- TemplateEndEditable -->
+    </div>
+</div>
+{* DSC 提醒您：动态载入user_menu_position.lbi，显示首页分类小广告 *}{insert name='user_menu_position'}
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+{insert_scripts files='common.js,perfect-scrollbar/perfect-scrollbar.min.js,cart_common.js,parabola.js,cart_quick_links.js'}
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/dsc-common.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.purebox.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/region.js"></script>
+<script type="text/javascript">
+$(function(){
+	$("*[ectype='openLayer']").on("click",function(){
+		var value = $(this).data("value");
+
+		//添加收货地址信息
+		Ajax.call('gift_gard.php?act=edit_Consignee&goodsId=' + value,'', function(data){
+			pb({
+				id:"gift_gard_content",
+				title:json_languages.gift_gard_title,
+				width:805,
+				height:300,
+				content:data.content, 	//调取内容
+				drag:false,
+				foot:true,
+				ok_title:json_languages.Confirmation_delivery,
+				cl_title:json_languages.cancel,
+				onOk:function(){
+					if(gift_update("form[name='theForm']") == false){
+						gift_update("form[name='theForm']");
+						return false;
+					}else{
+						$("form[name='theForm']").submit();
+					}	
+				}
+			});
+			
+			$.levelLink(1);
+			
+		}, 'POST','JSON');
+	});
+	
+	function gift_update(frm){
+		var obj = $(frm),
+			consignee = obj.find("[name='consignee']").val(),
+			country   = obj.find("[name='country']").val(),
+			province  = obj.find("[name='province']").val(),
+			city	  = obj.find("[name='city']").val(),
+			district  = obj.find("[name='district']").val(),
+			street 	  = obj.find("[name='street']").val(),
+			address   = obj.find("[name='address']").val(),
+			mobile    = obj.find("[name='mobile']").val(),
+			email     = obj.find("[name='email']").val(),
+			shipping_time = obj.find("[name='shipping_time']").val();
+			
+		if(consignee == ""){
+			pbDialog("请填写收货人信息",'',0);
+			return false;
+		}else if(country == 0){
+			pbDialog("请选择所在国家",'',0);
+			return false;
+		}else if(province == 0){
+			pbDialog("请选择所在省份",'',0);
+			return false;
+		}else if(city == 0){
+			pbDialog("请选择所在区域",'',0);
+			return false;
+		}else if(!$('#selDistricts_').is(":hidden") && district == 0){
+			pbDialog("请选择所在街道",'',0);
+			return false;
+		}else if(!$('#selStreets_').is(":hidden") && street == 0){
+			pbDialog("请选择所在",'',0);
+			return false;
+		}else if(address == ""){
+			pbDialog("详细地址不能为空",'',0);
+			return false;
+		}else if(!Utils.isTel(mobile) || mobile.length != 11){
+			pbDialog("手机号码不正确",'',0);
+			return false;
+		}else{
+			return true;
+		}
+	}	
+});
+</script>
+</body>
+</html>

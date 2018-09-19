@@ -1,0 +1,237 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>手机-{$ur_here}</div>
+            <div class="content">
+            <div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.info.0}</li>
+                    <li>{$lang.operation_prompt_content.info.1}</li>
+                    <li>{$lang.operation_prompt_content_common}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="mian-info">
+                    <form action="touch_navigator.php" method="post" name="form" enctype="multipart/form-data" id="agency_form">
+                        <div class="switch_info">
+                            <div class="item">
+                                <div class="label">{$lang.system_main}：</div>
+                                <div class="label_value">
+                                    <div id="" class="imitate_select select_w320">
+                                        <div class="cite">{$lang.please_select}</div>
+                                        <ul>
+                                            <li><a href="javascript:add_main('-');" class="add_category" data-value="-1" class="ftx-01">-</a></li>
+                                            <li><a href="javascript:;" class="add_category" data-value="-2" class="ftx-01">{$lang.03_category_manage}</a></li>
+                                            {foreach from=$sysmain item=val key=key}
+                                            <li><a href="javascript:add_main('{$key}');" class="add_category" data-value="{$key}" class="ftx-01">{if $val.2}{$val.2}{else}{$val.0}{/if}</a></li>
+                                            {/foreach}
+                                        </ul>
+                                        <input name="menulist" id="menulist" type="hidden" value="{$rt.ifshow}" id="">
+                                    </div>										
+                                </div>
+                            </div>
+                            <div class="item category_list hide">
+                                <div class="label">&nbsp;&nbsp;</div>
+                                <div class="goods_search_div" style="padding:0px; margin:0px; width:30%">
+                                    <div class="search_select">
+                                        <div class="categorySelect">
+                                            <div class="selection">
+                                                <input type="text" name="category_name" id="category_name" class="text w250 valid" value="{$lang.select_cat}" autocomplete="off" readonly data-filter="cat_name" />
+                                                <input type="hidden" name="category_id" id="category_id" value="0" data-filter="cat_id" />
+                                            </div>
+                                            <div class="select-container" style="display:none;">
+                                                {include file="library/filter_category.lbi"}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.require_field}&nbsp;{$lang.item_name}</div>
+                                <div class="label_value">
+                                    <input type="text" name='item_name' value='{$rt.item_name}' id="item_name" class="text" autocomplete="off"  onKeyPress="javascript:key();"/>
+                                    <div class="form_prompt"></div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.require_field}&nbsp;{$lang.item_url}</div>
+                                <div class="label_value">
+                                    <input type="text" name='item_url' value='{$rt.item_url}' id="item_url" class="text" autocomplete="off"  onKeyPress="javascript:key();" id="vote_name"/>
+                                    <div class="notic" id="notice_url">{$lang.notice_url}</div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.item_vieworder}</div>
+                                <div class="label_value">
+                                    <input type="text" name='item_vieworder' value='{$rt.item_vieworder}' class="text" autocomplete="off" />
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.item_ifshow}：</div>
+                                <div class="label_value">
+                                    <div class="switch switch_2 {if $rt.item_ifshow_1}active{/if}" title="{if $rt.item_ifshow_1}是{else}否{/if}">
+                                        <div class="circle"></div>
+                                    </div>
+                                    <input type="hidden" name="item_ifshow" value="{$rt.ifshow}">
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.item_opennew}：</div>
+                                <div class="label_value">
+                                    <div class="switch switch_2 {if $rt.item_opennew_1}active{/if}" title="{if $rt.item_opennew_1}是{else}否{/if}">
+                                        <div class="circle"></div>
+                                    </div>
+                                    <input type="hidden" name="item_opennew" value="{$rt.opennew}">
+                                </div>
+                            </div>
+                            <div class="item hide">
+                                <div class="label">{$lang.item_type}：</div>
+                                <div class="label_value">
+                                    <div class="imitate_select select_w320">
+                                      <div class="cite">{$lang.top}</div>
+                                      <ul>
+                                         <li><a href="javascript:;" data-value="top" class="ftx-01">{$lang.top}</a></li>
+                                         <li><a href="javascript:;" data-value="middle" class="ftx-01">{$lang.middle}</a></li>
+                                         <li><a href="javascript:;" data-value="bottom" class="ftx-01">{$lang.bottom}</a></li>
+                                      </ul>
+                                      <input name="item_type" type="hidden" value="top" value="{$rt.item_type}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.nav_img}：</div>
+                                <div class="label_value">
+                                    <div class="type-file-box">
+                                        <input type="button" name="button" id="button" class="type-file-button" value="" />
+                                        <input type="file" class="type-file-file" name="pic" size="30" hidefocus="true" value="" />
+                                        {if $rt.pic}
+                                        <span class="show">
+                                                <a href="../{$rt.pic}" target="_blank" class="nyroModal"><i class="icon icon-picture" data-tooltipimg="../{$rt.pic}" ectype="tooltip" title="tooltip"></i></a>
+                                        </span>
+                                        {/if}
+                                        <input type="text" name="textfile" class="type-file-text" id="textfield" readonly />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">&nbsp;</div>
+                                <div class="label_value info_btn mt0">
+                                    <a href="javascript:;" class="button" name="Submit" id="submitBtn">{$lang.button_submit}</a>
+                                    <input type="hidden" name="id" value="{$rt.id}" />
+                                    <input type="hidden" name="step" value="2" />
+                                    <input type="hidden" name="act" value="{$rt.act}" />
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+ 	{include file ='library/pagefooter.lbi'}
+	
+    <script type="text/javascript">
+            
+    $.divselect("#user_grade","#menulist",function(obj){
+        var val = obj.attr("data-value");
+    });
+    
+    //表单验证
+    $(function(){
+        $("#submitBtn").click(function(){
+            if($("#agency_form").valid()){
+                $("#agency_form").submit();
+            }
+        });
+    
+        $('#agency_form').validate({
+            errorPlacement:function(error, element){
+                var error_div = element.parents('div.label_value').find('div.form_prompt');
+                element.parents('div.label_value').find(".notic").hide();
+                error_div.append(error);
+            },
+            rules:{
+                item_name :{
+                    required:true
+                },
+                item_url :{
+                    required:true
+                }
+            },
+            messages:{
+                item_name :{
+                    required:'<i class="icon icon-exclamation-sign"></i>'+namecannotnull
+                },
+                item_url :{
+                    required:'<i class="icon icon-exclamation-sign"></i>'+url_null
+                }
+            }
+        });
+        
+        $(".add_category").click(function(){
+            var val = $(this).data('value');
+            
+            if(val == -2){
+                
+                $("#item_name").val('');
+                $("#item_url").val('');
+                
+                $(".category_list").addClass('show');
+                $(".category_list").removeClass('hide');
+            }else{
+                $(".category_list").addClass('hide');
+                $(".category_list").removeClass('show');
+            }
+        });
+    });
+            
+    var last;
+    function add_main(key)
+    {
+        var sysm = new Object;
+        {foreach from=$sysmain item=val key=key}
+            sysm[{$key}] = new Array();
+            sysm[{$key}][0] = '{$val.0}';
+            sysm[{$key}][1] = '{$val.1}';
+        {/foreach}
+        if (key != '-')
+        {
+            if(sysm[key][0] != '-')
+            {
+                document.getElementById('item_name').value = sysm[key][0];
+                document.getElementById('item_url').value = sysm[key][1];
+                last = document.getElementById('menulist').selectedIndex;
+            }
+            else
+            {
+                if(last < document.getElementById('menulist').selectedIndex)
+                {
+                    document.getElementById('menulist').selectedIndex ++;
+                }
+                else
+                {
+                    document.getElementById('menulist').selectedIndex --;
+                }
+                last = document.getElementById('menulist').selectedIndex;
+                document.getElementById('item_name').value = sysm[last-1][0];
+                document.getElementById('item_url').value = sysm[last-1][1];
+            }
+        }
+        else
+        {
+            last = document.getElementById('menulist').selectedIndex = 1;
+            document.getElementById('item_name').value = sysm[last-1][0];
+            document.getElementById('item_url').value = sysm[last-1][1];
+        }
+    }
+    function key()
+    {
+        last = document.getElementById('menulist').selectedIndex = 0;
+    }
+    </script>
+</body>
+</html>

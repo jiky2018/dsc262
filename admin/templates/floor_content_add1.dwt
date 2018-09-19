@@ -1,0 +1,334 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="set_floor_brand.php?act=list&filename=index" class="s-back">{$lang.back}</a>模板 - 设置模板 - 楼层品牌添加</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4><span id="explanationZoom" title="收起提示"></span></div>
+                <ul>
+                    <li>搜索出品牌，选择添加楼层，把品牌添加到相应楼层</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <form enctype="multipart/form-data" action="set_floor_brand.php" method="post" name="theForm" >
+                    	<div class="step" ectype="filter" data-filter="get_content">
+                            <div class="step_content">
+                                <div class="goods_search_div">
+                                    <div class="search_select">
+                                        <div class="categorySelect">
+                                            <div class="selection">
+                                                <input type="text" name="category_name" id="category_name" class="text w250 valid" value="请选择分类" autocomplete="off" readonly data-filter="cat_name" />
+                                                <input type="hidden" name="category_id" id="category_id" value="0" data-filter="cat_id" />
+                                            </div>
+                                            <div class="select-container" style="display:none;">
+                                                {include file="library/filter_category.lbi"}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="search_select">
+                                        <div class="brandSelect">
+                                            <div class="selection">
+                                                <input type="text" name="brand_name" id="brand_name" class="text w120 valid" value="请选择品牌" autocomplete="off" readonly data-filter="brand_name" />
+                                                <input type="hidden" name="brand_id" id="brand_id" value="0" data-filter="brand_id" />
+                                            </div>
+                                            <div class="brand-select-container" style="display:none;">
+                                                {include file="library/filter_brand.lbi"}
+                                            </div>
+                                        </div>                            
+                                    </div>
+                                    <input type="text" name="keyword" class="text w150" value="" placeholder="请输入关键字" data-filter="keyword" autocomplete="off" />
+                                    <a href="javascript:void(0);" class="btn btn30" ectype="search"><i class="icon icon-search"></i>搜索</a>
+                                </div>
+								<div class="clear"></div>
+                                <div class="move_div" >
+                                    <div class="move_left" style="width:38%">
+                                        <h4>可选品牌</h4>
+                                        <div class="move_info">
+                                            <div class="move_list" id="source_select">
+                                                {include file="library/move_left.lbi"}
+                                            </div>
+                                        </div>
+                                        <div class="move_handle">
+                                            <a href="javascript:void(0);" class="btn btn25 moveAll" ectype="moveAll">全选</a>
+                                            <a href="javascript:void(0);" class="btn btn25 red_btn" ectype="sub" data-operation="add_floor_content">确定</a>
+                                        </div>
+                                    </div>
+                                    <div class="move_middle" style="width:20%; margin:30px 20px 0">
+                                        <div class="item">
+                                            <div class="label tc">{$lang.set_floor}</div>
+                                            <div class="label_value">
+                                                <div id="format" class="imitate_select select_w220 fn" style=" margin:0 auto;">
+                                                    <div class="cite">请选择</div>
+                                                    <ul style="max-height:220px;">
+                                                        <li><a href="javascript:;" data-value="0" class="ftx-01">请选择</a></li>
+                                                        {foreach from=$template item=list key=key}
+                                                        <li><a href="javascript:;" data-value="{$list.filename}|{$list.id}|{$list.region}" class="ftx-01">{$list.region}|{$list.cat_name}</a></li>
+                                                    	{if $cat_id eq $list.id}
+														<script type="text/javascript">
+                                                            $(function(){
+                                                                $("#format").find(".cite").html('{$list.region}|{$list.cat_name}');
+                                                                $("#format").find("input[name='group2']").val('{$list.filename}|{$list.id}|{$list.region}');
+                                                            });
+                                                        </script>
+                                                        {/if}
+                                                        {/foreach}
+                                                    </ul>
+                                                    <input name="group2" type="hidden" value="" id="format_val">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="move_right" style="width:38%">
+                                        <h4>已选品牌</h4>
+                                        <div class="move_info">
+                                            <div class="move_list">
+                                                <ul>
+                                                    {foreach from=$floor_content item=content}
+                                                    <li data-value="{$content.fb_id}" data-text="[{$content.id_name}]{$content.brand_name}"><i class="sc_icon sc_icon_no"></i><a href="javascript:void(0);">[{$content.id_name}]{$content.brand_name}</a></li>
+                                                    {/foreach}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="move_handle">
+                                            <a href="javascript:void(0);" class="btn btn25 moveAll" ectype="moveAll">全选</a>
+                                            <a href="javascript:void(0);" class="btn btn25 btn_red" ectype="sub" data-operation="drop_floor_content">移除关联</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <input name="goods_id" value="0" type="hidden">
+                    </form>
+                </div>
+            </div>
+        </div>
+	</div>                
+	{include file ='library/pagefooter.lbi'}
+</body>
+<script type="text/javascript">
+<<<<<<< .mine
+	var fileName = '{$filename}';
+	var elements = document.forms['theForm'].elements;
+  
+	function searchContents(){
+		var elements  = document.forms['theForm'].elements;
+		var filters   = new Object;
+		filters.cat_id = elements['category_id'].value;
+		filters.brand_id = elements['brand_id'].value;
+		filters.keyword = Utils.trim(elements['keyword'].value);
+		$("#source_select").find("ul").html("<i class='icon-spinner icon-spin'></i>");
+		setTimeout(function(){Ajax.call('set_floor_brand.php?is_ajax=1&act=get_content', filters, searchContentsResponse, 'GET', 'JSON');},300);
+		
+	}
+	
+	function searchContentsResponse(result){
+		var step = $("#source_select").parents(".step[ectype=filter]:first");	 
+		$("#source_select").find("li,i").remove();
+		var goods = result.content;
+		if (goods)
+		{
+		  for (i = 0; i < goods.length; i++)
+		  {
+			$("#source_select").children("ul").append("<li><i class='sc_icon sc_icon_ok'></i><a href='javascript:;' data-value='"+goods[i].value+"' class='ftx-01'>"+goods[i].text+"</a><input type='hidden' name='user_search[]' value='"+goods[i].value+"'></li>")
+		  }
+		}
+		step.find(".move_list").perfectScrollbar();	
+	  }  
+
+	function addContents()
+	{
+
+		var brandsId = [];
+		var floor = document.getElementById('selLib_val').value;
+		$("#source_select").find("li").each(function(){
+			if($(this).attr("class") == 'current'){
+				var value = $(this).find("a").data('value');
+				brandsId.push(value);
+			}
+		});
+		Ajax.call('set_floor_brand.php?is_ajax=1&act=add_floor_content&floor='+ floor +'&filename='+ fileName, brandsId, addContentsResponse, 'GET', 'JSON');
+	}	
+
+	function addContentsResponse(result){
+		if(!result.error){
+			$("#target_select").find('li').remove();
+			var goods = result.content;
+			for(i=0;i<goods.length;i++){
+				$("#target_select").find("ul").append("<li><i class='sc_icon sc_icon_no'></i><a href='javascript:;' data-value='"+goods[i].value+"' class='ftx-01'>"+goods[i].text+"</a></li>")
+			}
+		}
+
+	}	
+	
+	function delContents()
+	{
+		var brandsId = [];
+		var floor = document.getElementById('selLib_val').value;
+				
+		$("#target_select").find("li").each(function(){
+			if($(this).attr("class") == 'current'){
+				var value = $(this).find("a").data('value');
+				brandsId.push(value);
+			}
+		});	
+		Ajax.call('set_floor_brand.php?is_ajax=1&act=drop_floor_content&floor='+ floor +'&filename='+ fileName, brandsId, delContentsResponse, 'GET', 'JSON');
+	}
+
+	function delContentsResponse(result){
+		
+		if(!result.error){
+			$("#target_select").find('li').remove();
+			var goods = result.content;
+			if(goods){
+				for(i=0;i<goods.length;i++){
+					$("#target_select").find("ul").append("<li><i class='sc_icon sc_icon_no'></i><a href='javascript:;' data-value='"+goods[i].value+"' class='ftx-01'>"+goods[i].text+"</a></li>")
+				}
+			}
+		}		
+			$("#target_select").find(".move_left .move_list").perfectScrollbar();
+	}
+	
+  	// 分类分级 by qin
+	function catList(val, level)
+	{
+		var cat_id2 = val;
+		document.getElementById('cat_id2').value = cat_id2;
+		Ajax.call('goods.php?is_ajax=1&act=sel_cat', 'cat_id='+cat_id2+'&cat_level='+level, catListResponse, 'GET', 'JSON');
+	}
+	
+	function catListResponse(result)
+	{
+		if (result.error == '1' && result.message != '')
+		{
+		  alert(result.message);
+		  return;
+		}
+		var response = result.content;
+		var cat_level = result.cat_level; // 分类级别， 1为顶级分类
+		for(var i=cat_level;i<10;i++)
+		{
+		  $("#cat_list"+Number(i+1)).remove();
+		}
+		if(response)
+		{
+			$("#cat_list"+cat_level).after(response);
+		}
+	  return;
+	}
+||||||| .r5970
+	var fileName = '{$filename}';
+	var elements = document.forms['theForm'].elements;
+  
+	function searchContents(){
+		var elements  = document.forms['theForm'].elements;
+		var filters   = new Object;
+		filters.cat_id = elements['category_id'].value;
+		filters.brand_id = elements['brand_id'].value;
+		filters.keyword = Utils.trim(elements['keyword'].value);
+		$("#source_select").find("ul").html("<i class='icon-spinner icon-spin'></i>");
+		setTimeout(function(){Ajax.call('set_floor_brand.php?is_ajax=1&act=get_content', filters, searchContentsResponse, 'GET', 'JSON');},300);
+		
+	}
+	 function searchContentsResponse(result){
+		 
+	$("#source_select").find("li,i").remove();
+	 var goods = result.content;
+		if (goods)
+		{
+		  for (i = 0; i < goods.length; i++)
+		  {
+			$("#source_select").children("ul").append("<li><i class='sc_icon sc_icon_ok'></i><a href='javascript:;' data-value='"+goods[i].value+"' class='ftx-01'>"+goods[i].text+"</a><input type='hidden' name='user_search[]' value='"+goods[i].value+"'></li>")
+		  }
+		}		
+	  }  
+
+	function addContents()
+	{
+
+		var brandsId = [];
+		var floor = document.getElementById('selLib_val').value;
+		$("#source_select").find("li").each(function(){
+			if($(this).attr("class") == 'current'){
+				var value = $(this).find("a").data('value');
+				brandsId.push(value);
+			}
+		});
+		Ajax.call('set_floor_brand.php?is_ajax=1&act=add_floor_content&floor='+ floor +'&filename='+ fileName, brandsId, addContentsResponse, 'GET', 'JSON');
+	}	
+
+	function addContentsResponse(result){
+		if(!result.error){
+			$("#target_select").find('li').remove();
+			var goods = result.content;
+			for(i=0;i<goods.length;i++){
+				$("#target_select").find("ul").append("<li><i class='sc_icon sc_icon_no'></i><a href='javascript:;' data-value='"+goods[i].value+"' class='ftx-01'>"+goods[i].text+"</a></li>")
+			}
+		}
+	}	
+	
+	function delContents()
+	{
+		var brandsId = [];
+		var floor = document.getElementById('selLib_val').value;
+				
+		$("#target_select").find("li").each(function(){
+			if($(this).attr("class") == 'current'){
+				var value = $(this).find("a").data('value');
+				brandsId.push(value);
+			}
+		});	
+		Ajax.call('set_floor_brand.php?is_ajax=1&act=drop_floor_content&floor='+ floor +'&filename='+ fileName, brandsId, delContentsResponse, 'GET', 'JSON');
+	}
+
+	function delContentsResponse(result){
+		
+		if(!result.error){
+			$("#target_select").find('li').remove();
+			var goods = result.content;
+			if(goods){
+				for(i=0;i<goods.length;i++){
+					$("#target_select").find("ul").append("<li><i class='sc_icon sc_icon_no'></i><a href='javascript:;' data-value='"+goods[i].value+"' class='ftx-01'>"+goods[i].text+"</a></li>")
+				}
+			}
+		}	
+	
+	}
+	
+  	// 分类分级 by qin
+	function catList(val, level)
+	{
+		var cat_id2 = val;
+		document.getElementById('cat_id2').value = cat_id2;
+		Ajax.call('goods.php?is_ajax=1&act=sel_cat', 'cat_id='+cat_id2+'&cat_level='+level, catListResponse, 'GET', 'JSON');
+	}
+	
+	function catListResponse(result)
+	{
+		if (result.error == '1' && result.message != '')
+		{
+		  alert(result.message);
+		  return;
+		}
+		var response = result.content;
+		var cat_level = result.cat_level; // 分类级别， 1为顶级分类
+		for(var i=cat_level;i<10;i++)
+		{
+		  $("#cat_list"+Number(i+1)).remove();
+		}
+		if(response)
+		{
+			$("#cat_list"+cat_level).after(response);
+		}
+	  return;
+	}
+=======
+$(function(){
+	$(".step[ectype=filter]").find(".move_right .move_list").perfectScrollbar('destroy');
+	$(".step[ectype=filter]").find(".move_right .move_list").perfectScrollbar();
+});
+>>>>>>> .r5975
+</script>
+</html>

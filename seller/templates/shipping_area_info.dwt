@@ -1,0 +1,379 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+		{include file ='library/seller_menu_left.lbi'}
+		<div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+				{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="info_warp">
+                <form method="post" action="shipping_area.php" name="theForm" onsubmit="return validate()" enctype="multipart/form-data" style="background:#FFF">
+                <fieldset style="border:1px solid #DDEEF2; margin:10px 0;">
+                  <table width="100%" class="since_table table_item" style="margin-top:0;">
+                    <tr>
+                        <td class="label" style="width:30%;">{$lang.require_field}&nbsp;{$lang.shipping_area_name}：</td>
+                        <td><input type="text" name="shipping_area_name" maxlength="60" size="30" class="text text_2" value="{$shipping_area.shipping_area_name}" /></td>
+                    </tr>
+                    {if $form_action eq 'update' && $shipping_area.shipping_code == 'cac'}
+                    <tr>
+                        <td class="label" style="width:30%;">{$lang.shipping_area_pointInfo}：</td>
+                        <td>
+                            {foreach from=$shipping_area.point item=field}
+                            <div class="item"> 	
+                                  <a href="javascript:void(0);" class="since_delete" onclick="remove_point_pro({$field.id}, '{$lang.remove_confirm}', 'remove_point')">{$lang.drop}</a>
+                                  <p><label>{$lang.require_field}{$lang.since_name}：</label><input type="text" name="point_name[]" size="20" value="{$field.name}"/></p>
+                                  <p><label>{$lang.require_field}{$lang.since_contacts}：</label><input type="text" name="user_name[]" size="10" value="{$field.user_name}"/></p>
+                                  <p><label>{$lang.require_field}{$lang.since_tel}：</label><input type="text" name="mobile[]" size="12" value="{$field.mobile}"/></p>
+                                  <p><label>{$lang.since_map_image}：</label><input type="file" name="img_url[]" class="file" />
+                                  {if $field.img_url}
+                                    <a href="../{$field.img_url}" target="_blank"><img src="images/yes.gif" border="0" /></a>
+                                  {else}
+                                    <img src="images/no.gif" style="vertical-align:middle;"/>
+                                  {/if}
+                                  </p>
+                                  <p><label>{$lang.anchor_keyword}：</label><input type="text" size="10" name="anchor[]" value="{$field.anchor}"></p>
+                                  <p><label>{$lang.require_field}{$lang.since_address}：</label><input type="text" size="40" value="{$field.address}" name="address[]"/></p>
+                                  <p><label>{$lang.arrival_route}：</label><textarea cols="50" rows="5" name="line[]">{$field.line}</textarea></p>
+                                  <input type="hidden" value="{$field.id}" name="point_id[]">
+                                  <input type="hidden" value="{$field.img_url}" name="map_img[]">
+                            </div>
+                            {/foreach}
+                            <div class="since_btn"><a href="javascript:void(0);" onclick="continueAdd(this)">{$lang.shipping_area_addBtn}</a></div>
+                        </td>
+                    </tr>
+                    {/if}
+                    {if $form_action neq 'update' && $shipping_area.shipping_code == 'cac'}
+                    <tr>
+                      <td class="label" style="width:30%;">{$lang.shipping_area_addPoint}{$shipping_area.point|@count}：</td>
+                      <td id="pointInner">
+                        <div class="item"> 	
+                              <a href="javascript:void(0);" class="since_delete" onclick="addPointer(this)">{$lang.dorp}</a>
+                              <p><label>{$lang.require_field}{$lang.since_name}：</label><input type="text" name="point_name[]" size="20" value=""/></p>
+                              <p><label>{$lang.require_field}{$lang.since_contacts}：</label><input type="text" name="user_name[]" size="10" value="" class="text text_2"/></p>
+                              <p><label>{$lang.require_field}{$lang.since_tel}：</label><input type="text" name="mobile[]" size="12" value="" class="text text_2"/></p>
+                              <p><label>{$lang.since_map_image}：</label><input type="file" name="img_url[]" class="file" /></p>
+                              <p><label>{$lang.anchor_keyword}：</label><input type="text" size="10" name="anchor[]" value="" class="text text_2"></p>
+                              <p><label>{$lang.require_field}{$lang.since_address}：</label><input type="text" size="40" value="{$lang.shipping_area_pointAddress}" name="address[]"/></p>
+                              <p><label>{$lang.arrival_route}：</label><textarea cols="50" rows="5" name="line[]">{$field.line}</textarea></p>
+                              <input type="hidden" value="" name="map_img[]">
+                        </div>
+                        <div class="since_btn"><a href="javascript:void(0);" onclick="continueAdd(this)">{$lang.shipping_area_addBtn}</a></div>
+                      </td>
+                    </tr>
+                    {/if}
+                  {if $shipping_area.shipping_code =='ems' || $shipping_area.shipping_code =='yto' || $shipping_area.shipping_code =='zto' || $shipping_area.shipping_code =='sto_express' || $shipping_area.shipping_code =='post_mail' || $shipping_area.shipping_code =='sf_express' || $shipping_area.shipping_code =='post_express' || $shipping_area.shipping_code =='yunda' || $shipping_area.shipping_code =='tiantian' || $shipping_area.shipping_code =='quanfeng' || $shipping_area.shipping_code =='zjs' || $shipping_area.shipping_code =='huitong' }
+                    <tr>
+                    <td class="label">{$lang.fee_compute_mode}:</td>
+                    <td>
+                    
+                    <div class="checkbox_items">
+                    	<div class="checkbox_item" style="margin-right:10px;">
+                        	<input type="radio"{if $fee_compute_mode != 'by_number' } checked="true"{/if} onclick="compute_mode('{$shipping_area.shipping_code}','weight')" name="fee_compute_mode" value="by_weight" id="by_weight" class="ui-radio" />
+                   			<label for="by_weight" class="ui-radio-label">{$lang.fee_by_weight}</label>
+                        </div>
+                        <div class="checkbox_item">
+                    		<input type="radio"{if $fee_compute_mode == 'by_number'} checked="true"{/if}  onclick="compute_mode('{$shipping_area.shipping_code}','number')" name="fee_compute_mode" value="by_number" id="by_number" class="ui-radio" />
+                            <label for="by_number" class="ui-radio-label">{$lang.fee_by_number}</label>
+                        </div>
+                    </div>
+                    
+                    </td>
+                    </tr>
+                  {/if}
+                  <!--{if $shipping_area.shipping_code != 'cac'}-->
+                    {foreach from=$fields item=field}
+                    <!--{if $fee_compute_mode == 'by_number'}-->
+                       <!--{if $field.name == 'item_fee' || $field.name == 'free_money' || $field.name == 'pay_fee'}-->
+                            <tr id="{$field.name}" >
+                              <td class="label">{$lang.require_field}&nbsp;{$field.label}</td>
+                              <td><input type="text" name="{$field.name}"  maxlength="60" size="20" value="{$field.value}" class="text text_2" /></td>
+                            </tr>
+                            <!--{else}-->
+                            <tr id="{$field.name}" style="display:none">
+                              <td class="label">{$lang.require_field}&nbsp;{$field.label}</td>
+                              <td><input type="text" name="{$field.name}"  maxlength="60" size="20" value="{$field.value}" class="text text_2" /></td>
+                            </tr>
+                        <!--{/if}-->
+                    <!--{else}-->
+                        <!--{if $field.name != 'item_fee'}-->
+                            <tr id="{$field.name}">
+                              <td class="label">{$lang.require_field}&nbsp;{$field.label}</td>
+                              <td><input type="text" name="{$field.name}"  maxlength="60" size="20" value="{$field.value}" class="text text_2" /></td>
+                            </tr>
+                        <!--{else}-->
+                            <tr id="{$field.name}" style="display:none">
+                              <td class="label">{$lang.require_field}&nbsp;{$field.label}</td>
+                              <td><input type="text" name="{$field.name}"  maxlength="60" size="20" value="{$field.value}" class="text text_2" /></td>
+                            </tr>
+                        <!--{/if}-->
+                     <!--{/if}-->
+                    {/foreach}
+                <!--{/if}-->
+                  </table>
+                </fieldset>
+                
+                <fieldset style="border:1px solid #DDEEF2; margin:10px 0;">
+                  <legend style="background:#FFF;margin-left:10px;">{$lang.shipping_area_regions}:</legend>
+                  <table style="width:700px"  align="center">
+                  <tr>
+                    <td class="pb10">
+                        <div id="selCountries" class="ui-dropdown smartdropdown alien mr15">
+                            <input type="hidden" value="1" name="country" id="selcountry">
+                            <div class="txt">国家</div>
+                            <i class="down u-dropdown-icon"></i>
+                            <div class="options clearfix" style="max-height:300px;">
+                                {foreach from=$countries item=list}
+                                <span class="liv" data-text="{$list.region_name}" data-type="1"  data-value="{$list.region_id}">{$list.region_name}</span>
+                                {/foreach}
+                            </div>
+                        </div>
+                        <div id="dlProvinces" class="ui-dropdown smartdropdown alien">
+                            <input type="hidden" value="{$province.region_id}" name="province" id="selProvinces">
+                            <div class="txt">省/直辖市</div>
+                            <i class="down u-dropdown-icon"></i>
+                            <div class="options clearfix" style="max-height:300px;">
+                                {foreach from=$province_all item=list}
+                                <span class="liv" data-text="{$list.region_name}" data-type="2"  data-value="{$list.region_id}">{$list.region_name}</span>
+                                {/foreach}
+                            </div>
+                        </div>
+                        <div id="dlCity" class="ui-dropdown smartdropdown alien">
+                            <input type="hidden" value="{$city.region_id}" name="city" id="selCities">
+                            <div class="txt">市</div>
+                            <i class="down u-dropdown-icon"></i>
+                            <div class="options clearfix" style="max-height:300px;">
+                                {foreach from=$city_all item=list}
+                                <span class="liv" data-text="{$list.region_name}" data-type="3"  data-value="{$list.region_id}">{$list.region_name}</span>
+                                {/foreach}
+                            </div>
+                        </div>
+                        <div id="dlRegion" class="ui-dropdown smartdropdown alien">
+                            <input type="hidden" value="{$district.region_id}" name="district" id="selDistricts">
+                            <div class="txt">区/县</div>
+                            <i class="down u-dropdown-icon"></i>
+                            <div class="options clearfix" style="max-height:300px;">
+                                {foreach from=$district_all item=list}
+                                <span class="liv" data-text="{$list.region_name}" data-type="4"  data-value="{$list.region_id}">{$list.region_name}</span>
+                                {/foreach}
+                            </div>
+                        </div>
+                        <div id="dlStreet" class="ui-dropdown smartdropdown alien">
+                            <input type="hidden" value="{$street.region_id}" name="street" id="selStreets">
+                            <div class="txt">街道</div>
+                            <i class="down u-dropdown-icon"></i>
+                            <div class="options clearfix" style="max-height:300px;">
+                                {foreach from=$street_all item=item}
+                                < <span class="liv" data-text="{$list.region_name}" data-type="5"  data-value="{$list.region_id}">{$list.region_name}</span>
+                                {/foreach}
+                            </div>
+                        </div>
+                        {if $shipping_area.shipping_code != 'cac'}<span><input type="button" value="添加" class="sc-btn sc-blueBg-btn btn32" onclick="addRegion()" /></span>{/if}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="pb10">
+                    <div class="checkbox_items" id="regionCell">
+                      <!--{if $shipping_area.shipping_code != 'cac'}-->
+                      {foreach from=$regions item=region key=id}
+                      <div class="checkbox_item lh30">
+                      	<input type="checkbox" name="regions[]" value="{$id}" checked="true" class="ui-checkbox" id="regions_{$id}" />
+                        <label for="regions_{$id}" class="ui-label">{$region}</label>
+                      </div>
+                      {/foreach}
+                      <!--{/if}-->
+                    </div>  
+                    </td>
+                  </tr>
+                  </table>
+                </fieldset>
+                <div class="buttom tc">
+                	<div class="button_info">
+                    	<input type="submit" value="{$lang.button_submit}" class="sc-btn sc-blueBg-btn btn35" />
+                        <input type="reset" value="{$lang.button_reset}" class="sc-btn btn35 sc-blue-btn" />
+                        <input type="hidden" name="act" value="{$form_action}" />
+                        <input type="hidden" name="id" value="{$shipping_area.shipping_area_id}" />
+                        <input type="hidden" name="shipping" value="{$shipping_area.shipping_id}" />
+                        <input type="hidden" name="shipping_code" value="{$shipping_area.shipping_code}" />
+                    </div>
+                </div>
+                </form>
+                </div>
+        	</div>
+    	</div>
+	</div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript" src="js/region.js"></script>
+<script type="text/javascript">
+    $.levelLink();
+<!--
+{literal}
+
+/**
+* 新增自提点信息
+*/
+function addPointer(obj)
+{
+	var src  = obj.parentNode.parentNode;
+	var idx  = rowindex(src);
+	var tbl  = document.getElementById("gallery-table");
+	var row  = tbl.insertRow(idx + 1);
+	var cell = row.insertCell(-1);
+	cell.innerHTML = src.cells[0].innerHTML.replace(/(.*)(addPointer)(.*)(\[)(\+)/i, "$1removePointer$3$4-");
+}
+/**
+* 删除以存在的自提点信息
+*/
+function remove_point_pro(id,msg,act)
+{
+	if(confirm(msg)==true)
+	{
+		$.ajax({
+			type:"GET",
+			url:"shipping_area.php",
+			data:"act="+act+"&id="+id,
+			dataType:"json",
+			success:function(data)
+			{
+				if(data['error']==2)
+				{
+					location.reload();
+				}									
+			}
+		});
+	}
+}
+/**
+*	继续添加
+*/
+function continueAdd(obj){
+	var _div = '<div class="item gallery-table"><a href="javascript:void(0);" class="since_delete" onclick="removePointer(this)">删除</a><p><label>名　　称：</label><input type="text" name="point_name[]" size="20" value=""/>{$lang.require_field}</p><p><label>联 系 人：</label><input type="text" name="user_name[]" size="10" value=""/>{$lang.require_field}</p><p><label>电　　话：</label><input type="text" name="mobile[]" size="12"/>{$lang.require_field}</p><p><label>地图图片：</label><input type="file" name="img_url[]" class="file" /></p><p><label>锚点关键词：</label><input type="text" size="10" name="anchor[]" value=""></p><p><label>地　　址：</label><input type="text" size="40" value="" name="address[]"/>{$lang.require_field}</p><p><label>到达路线：</label><textarea cols="50" rows="5" name="line[]"></textarea></p><input type="hidden" value="" name="map_img[]"></div>';
+	$(obj).parent().before(_div);
+}
+
+/**
+*	删除新增自提
+*/
+function removePointer(obj)
+{
+   $(obj).parent().remove();
+}
+
+
+/**
+ * 添加一个区域
+ */
+function addRegion()
+{
+    var selCountry  = document.forms['theForm'].elements['country'];
+    var selProvince = document.forms['theForm'].elements['province'];
+    var selCity     = document.forms['theForm'].elements['city'];
+    var selDistrict = document.forms['theForm'].elements['district'];
+    var selStreet 	= document.forms['theForm'].elements['street'];
+    var regionCell  = document.getElementById("regionCell");
+    var regionId = 0;
+    var regionName = '';
+   
+    if(selStreet.value > 0){
+        regionId = selStreet.value;
+        regionName = $("#selStreets").parents('.smartdropdown').find(".txt").html();
+    }else{
+        if (selDistrict.value > 0)
+        {
+            regionId = selDistrict.value;
+            regionName = $("#selDistricts").parents('.smartdropdown').find(".txt").html();
+        }
+        else
+        {
+            if (selCity.value > 0)
+            {
+                regionId = selCity.value;
+                regionName = $("#selCities").parents('.smartdropdown').find(".txt").html();
+            }
+            else
+            {
+                if (selProvince.value > 0)
+                {
+                    regionId = selProvince.value;
+                    regionName = $("#selProvinces").parents('.smartdropdown').find(".txt").html();
+                }
+                else
+                {
+                    if (selCountry.value >= 0)
+                    {
+                        regionId = selCountry.value;
+                        regionName = $("#selcountry").parents('.smartdropdown').find(".txt").html();
+                    }
+                    else
+                    {
+                        regionId = 0;
+                        regionName = '';
+                    }
+                }
+            }
+        }
+    }
+    // 检查该地区是否已经存在
+    exists = false;
+    for (i = 0; i < document.forms['theForm'].elements.length; i++)
+    {
+      if (document.forms['theForm'].elements[i].type=="checkbox")
+      {
+        if (document.forms['theForm'].elements[i].value == regionId)
+        {
+          exists = true;
+          alert(region_exists);
+        }
+      }
+    }
+    // 创建checkbox
+    if (!exists)
+    {
+      regionCell.innerHTML += "<div class='checkbox_item'><input type='checkbox' class='ui-checkbox' name='regions[]' value='" + regionId + "' id='checkbox_" + regionId + "' checked='true' /><label for='checkbox_" + regionId + "' class='ui-label'>" + regionName + "</lable></div>";
+    }
+}
+
+/**
+ * 配送费用计算方式
+ */
+function compute_mode(shipping_code,mode)
+{
+    var base_fee  = document.getElementById("base_fee");
+    var step_fee  = document.getElementById("step_fee");
+    var item_fee  = document.getElementById("item_fee");
+    if(shipping_code == 'post_mail' || shipping_code == 'post_express')
+    {
+     var step_fee1  = document.getElementById("step_fee1");
+    }
+
+    if(mode == 'number')
+    {
+      item_fee.style.display = '';
+      base_fee.style.display = 'none';
+      step_fee.style.display = 'none';
+      if(shipping_code == 'post_mail' || shipping_code == 'post_express')
+      {
+       step_fee1.style.display = 'none';
+      }
+    }
+    else
+    {
+      item_fee.style.display = 'none';
+      base_fee.style.display = '';
+      step_fee.style.display = '';
+      if(shipping_code == 'post_mail' || shipping_code == 'post_express')
+      {
+       step_fee1.style.display = '';
+      }
+    }
+}
+//-->
+{/literal}
+</script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+		{include file ='library/seller_menu_left.lbi'}
+		<div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+				{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="ecsc-form-goods">
+                <form method="post" action="warehouse_shipping_mode.php" name="theForm" enctype="multipart/form-data">
+                <div class="wrapper-list">
+                	<dl>
+                    	<dt>{$lang.originating_place}：</dt>
+                        <dd class="lh">{$region_name1}</dd>
+                    </dl>
+                    <dl>
+                    	<dt>{$lang.reach_the_destination}：</dt>
+                        <dd class="lh red">{$region_name2}</dd>
+                    </dl>
+                    {if $shipping_area.shipping_code =='ems' || $shipping_area.shipping_code =='yto' || $shipping_area.shipping_code =='zto' || $shipping_area.shipping_code =='sto_express' || $shipping_area.shipping_code =='post_mail' || $shipping_area.shipping_code =='sf_express' || $shipping_area.shipping_code =='post_express' }
+                    <dl>
+                    	<dt>{$lang.fee_compute_mode}：</dt>
+                        <dd>
+                        	<div class="checkbox_items">
+                            	<div class="checkbox_item">
+                                <input type="radio" class="ui-radio" {if $fee_compute_mode != 'by_number' }checked="true"{/if} onclick="compute_mode('{$shipping_area.shipping_code}','weight')" name="fee_compute_mode" value="by_weight" id="by_weight" /><label for="by_weight" class="ui-radio-label">{$lang.fee_by_weight}</label>
+                                </div>
+                                <div class="checkbox_item">
+                                <input type="radio" class="ui-radio" {if $fee_compute_mode == 'by_number'}checked="true"{/if}  onclick="compute_mode('{$shipping_area.shipping_code}','number')" name="fee_compute_mode" value="by_number" id="by_number" /><label for="by_number" class="ui-radio-label">{$lang.fee_by_number}</label>
+                                </div>
+                            </div>
+                        </dd>
+                    </dl>
+                    {/if}
+                    <!--{if $shipping_area.shipping_code != 'cac'}-->
+                        {foreach from=$fields item=field}
+                        <!--{if $fee_compute_mode == 'by_number'}-->
+                           <!--{if $field.name == 'item_fee' || $field.name == 'free_money' || $field.name == 'pay_fee'}-->
+                                <dl id="{$field.name}{$freight.id}" >
+                                  <dt>{$lang.require_field}&nbsp;{$field.label}：</dt>
+                                  <dd><input type="text" name="{$field.name}" class="text" maxlength="60" size="20" value="{$field.value}" /></dd>
+                                </dl>
+                                <!--{else}-->
+                                <dl id="{$field.name}{$freight.id}" style="display:none">
+                                  <dt>{$lang.require_field}&nbsp;{$field.label}：</dt>
+                                  <dd><input type="text" name="{$field.name}" class="text" maxlength="60" size="20" value="{$field.value}" /></dd>
+                                </dl>
+                            <!--{/if}-->
+                        <!--{else}-->
+                            <!--{if $field.name != 'item_fee'}-->
+                                <dl id="{$field.name}{$freight.id}">
+                                  <dt>{$lang.require_field}&nbsp;{$field.label}：</dt>
+                                  <dd><input type="text" name="{$field.name}" class="text" maxlength="60" size="20" value="{$field.value}" /></dd>
+                                </dl>
+                            <!--{else}-->
+                                <dl id="{$field.name}{$freight.id}" style="display:none">
+                                  <dt>{$lang.require_field}&nbsp;{$field.label}：</dt>
+                                  <dd><input type="text" name="{$field.name}" class="text" maxlength="60" size="20" value="{$field.value}" /></dd>
+                                </dl>
+                            <!--{/if}-->
+                         <!--{/if}-->
+                        {/foreach}
+                    <!--{/if}-->
+                    <dl>
+                    	<dt>&nbsp;</dt>
+                        <dd id="freightArea"></dd>
+                    </dl>
+                    <dl class="button_info">
+                    	<dt>&nbsp;</dt>
+                        <dd>
+                            <input type="submit" value="{$lang.button_submit}" class="sc-btn sc-blueBg-btn btn35" />
+                            <input type="reset" value="{$lang.button_reset}" class="sc-btn btn35 sc-blue-btn" />
+                            <input type="hidden" name="act" value="{$form_action}" />
+                            <input type="hidden" name="id" value="{$shipping_area.id}" />
+                        </dd>
+                    </dl>
+                </div>
+                </form>
+                </div>
+        	</div>
+    	</div>
+	</div>
+</div>
+{include file ='library/seller_footer.lbi'}
+{literal}
+<script type="text/javascript">
+/**
+ * 配送费用计算方式
+ */
+function compute_mode(shipping_code,mode)
+{
+    var base_fee  = document.getElementById("base_fee");
+    var step_fee  = document.getElementById("step_fee");
+    var item_fee  = document.getElementById("item_fee");
+    if(shipping_code == 'post_mail' || shipping_code == 'post_express')
+    {
+     var step_fee1  = document.getElementById("step_fee1");
+    }
+
+    if(mode == 'number')
+    {
+      item_fee.style.display = '';
+      base_fee.style.display = 'none';
+      step_fee.style.display = 'none';
+      if(shipping_code == 'post_mail' || shipping_code == 'post_express')
+      {
+       step_fee1.style.display = 'none';
+      }
+    }
+    else
+    {
+      item_fee.style.display = 'none';
+      base_fee.style.display = '';
+      step_fee.style.display = '';
+      if(shipping_code == 'post_mail' || shipping_code == 'post_express')
+      {
+       step_fee1.style.display = '';
+      }
+    }
+}
+
+/**
+ * 配送费用计算方式
+ */
+function compute_mode_list(shipping_code,mode,id)
+{
+    var base_fee  = document.getElementById("base_fee" + id);
+    var step_fee  = document.getElementById("step_fee" + id);
+    var item_fee  = document.getElementById("item_fee" + id);
+    if(shipping_code == 'post_mail' || shipping_code == 'post_express')
+    {
+     var step_fee1  = document.getElementById("step_fee1" + id);
+    }
+
+    if(mode == 'number')
+    {
+      item_fee.style.display = '';
+      base_fee.style.display = 'none';
+      step_fee.style.display = 'none';
+      if(shipping_code == 'post_mail' || shipping_code == 'post_express')
+      {
+       step_fee1.style.display = 'none';
+      }
+    }
+    else
+    {
+      item_fee.style.display = 'none';
+      base_fee.style.display = '';
+      step_fee.style.display = '';
+      if(shipping_code == 'post_mail' || shipping_code == 'post_express')
+      {
+       step_fee1.style.display = '';
+      }
+    }
+}
+</script>
+{/literal}
+</body>
+</html>

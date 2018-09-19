@@ -1,0 +1,139 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<!-- #BeginLibraryItem "/library/js_languages_new.lbi" --><!-- #EndLibraryItem -->
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/css/wholesale_new.css" />
+<link rel="stylesheet" type="text/css" href="../js/perfect-scrollbar/perfect-scrollbar.min.css" />
+</head>
+<body class="bg-ligtGary">
+<!-- #BeginLibraryItem "/library/page_header_business.lbi" --><!-- #EndLibraryItem -->
+
+<div class="content b2b-content">
+    <div class="banner b2b-home-banner">
+        {* DSC 提醒您：动态载入wholesale_ad.lbi，显示首页分类小广告 *}{insert name='get_adv_child' ad_arr=$wholesale_ad}
+        <div class="vip-outcon">
+            {* DSC 提醒您：动态载入business_user_info.lbi，显示首页分类小广告 *}{insert name='business_user_info'}
+        </div>
+    </div>
+    <div class="b2b-purchase">
+        <div class="w w1200">
+            <div class="bp-title">
+                <h3>限时采购</h3>
+            </div>
+            <div class="bp-content">
+                <!-- <div class="hd"><ul></ul></div> -->
+                <div class="bd">
+                    <ul>
+                    	<!-- {foreach from=$wholesale_limit item=wholesale_limit} 遍历限时采购的商品 -->
+                        <li class="opacity_img">
+                            <div class="p-img"><a href="{$wholesale_limit.url}" target="_blank"><img src="{$wholesale_limit.thumb}"></a></div>
+                            <div class="info">
+                                <div class="p-name"><a href="{$wholesale_limit.url}" target="_blank" title="{$wholesale_limit.goods_name|escape:html}">{$wholesale_limit.goods_name}</a></div>
+                                <div class="p-lie">
+                                    {if $wholesale_limit.goods_price eq 0}
+                                    <div class="p-price">{$wholesale_limit.volume_price}<span>/{$wholesale_limit.goods_unit}</span></div>
+                                    <div class="p-number"><em>{$wholesale_limit.volume_number}{$wholesale_limit.goods_unit}</em>起批</div> 
+                                    {else}
+                                    <div class="p-price">{$wholesale_limit.goods_price}<span>/{$wholesale_limit.goods_unit}</span></div>
+                                    <div class="p-number"><em>{$wholesale_limit.moq}{$wholesale_limit.goods_unit}</em>起批</div> 
+                                    {/if}
+                                </div>
+                                {if $wholesale_limit.small_time > 86400}
+                                <div class="p-time lefttime" data-time='{$wholesale_limit.formated_end_date}'>剩余时间：<span class="days"></span>天</div>
+                                {else}
+                                <div class="p-time">剩余时间：1 天</div>
+                                {/if}
+                                <a href="{$wholesale_limit.url}" class="p-btn" target="_blank">立即采购</a>
+                            </div>
+                        </li>
+                        <!-- {/foreach} -->
+                    </ul>
+					<a href="javascript:void(0);" class="prev"><i class="iconfont icon-left"></i></a>
+					<a href="javascript:void(0);" class="next"><i class="iconfont icon-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="b2b-floor">
+        <div class="w w1200" ectype="wholesale_cat_level">
+            <!-- {foreach from=$get_wholesale_cat item=wholesale_goods name=wholesale_goods} 遍历分类数据 -->
+            <!-- {if $wholesale_goods.count_goods neq 0} 如果分类下商品不为空 -->			
+            <div class="b2b-floor-line">
+                <div class="floor-hd">
+                    <div class="title"><em></em>{$wholesale_goods.cat_name}</div>
+                    <div class="more"><a href="{$wholesale_goods.cat_url}" target="_blank">更多批发<i></i></a></div>
+                </div>
+                <div class="floor-bd">
+                    <ul>
+                        <li class="floor-adv">{* DSC 提醒您：动态载入wholesale_cat_ad.lbi，显示首页分类小广告 *}{insert name='get_adv_child' ad_arr=$wholesale_cat_ad id=$wholesale_goods.cat_id}</li>
+                        <!-- {foreach from=$wholesale_goods.goods item=goods name=goods} 遍历分类下的商品 -->
+						{if $smarty.foreach.goods.iteration<9}
+                        <li class="floor-goods opacity_img">
+                            <div class="p-img"><a href="{$goods.url}" target="_blank"><img src="{$goods.thumb}" width="202" height="202"></a></div>
+                            <div class="p-name"><a href="{$goods.url}" target="_blank" title="{$goods.goods_name|escape:html}">{$goods.goods_name}</a></div>
+                            {if $goods.goods_price eq 0}
+                            <div class="p-lie"><span class="label">批发价：</span><div class="p-price">{$goods.volume_price}<span>/{$goods.goods_unit}</span></div></div>
+                            {else}
+                            <div class="p-lie"><span class="label">批发价：</span><div class="p-price">{$goods.goods_price}<span>/{$goods.goods_unit}</span></div></div>
+                            {/if}
+                            <div class="p-lie">
+                                {if $goods.goods_price eq 0}
+                                 <div class="fl"><span class="label">起批量：</span><em class="org">{$goods.volume_number}</em></div>
+                                {else}
+                                <div class="fl"><span class="label">起批量：</span><em class="org">{$goods.moq}</em></div>
+                                {/if}
+                                <div class="fr"><span class="label">成交量：</span><em>{$goods.goods_sale|default:0}</em></div>
+                            </div>
+                            {$goods.goods_extends.is_delivery}
+                            <!-- {if $goods.goods_extend.is_delivery || $goods.goods_extend.is_return || $goods.goods_extend.is_free} -->
+                            <div class="p-lie p-tiy">
+                                {if $goods.goods_extend.is_delivery}<a href="javascript:void(0);" class="goods-icons">48</a>{/if}
+                                {if $goods.goods_extend.is_free}<a href="javascript:void(0);" class="goods-icons">邮</a>{/if}
+                                {if $goods.goods_extend.is_return}<a href="javascript:void(0);" class="goods-icons">退</a>{/if}
+                            </div>
+                            <!-- {/if} -->
+                            <a href="{$goods.url}" class="p-btn" target="_blank">立即采购</a>
+                        </li>
+						{/if}
+                        <!-- {/foreach} -->
+                    </ul>
+                </div>
+            </div>
+            <!--{/if}-->
+            <!-- {/foreach} -->
+            
+        </div>
+    </div>
+</div>
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+{insert_scripts files='jquery.SuperSlide.2.1.1.js,jquery.yomi.js'}
+<script type="text/javascript" src="../js/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/dsc-common.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.purebox.js"></script>
+<script type="text/javascript">
+    $(".banner").slide({titCell:".hd ul",mainCell:".bd ul",effect:"fold",interTime:3500,delayTime:500,autoPlay:true,autoPage:true,trigger:"click"});
+	$(".vip-item").slide({titCell:".tit a",mainCell:".con"});
+    $(".bp-content").slide({mainCell:".bd ul",effect:"leftLoop",interTime:3500,delayTime:500,autoPlay:true,autoPage:true,trigger:"click",vis:5,scroll:1});
+    //倒计时
+    $(".lefttime").each(function(){
+        $(this).yomi();
+    });
+    //首页楼层层数
+    $(function(){
+		$(".b2b-floor-line").each(function(i, e) {
+			i++;
+			$(this).find(".title em").html(i+"F");
+		});
+    })
+</script>
+</body>
+</html>

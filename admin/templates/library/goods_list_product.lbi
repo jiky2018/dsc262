@@ -1,0 +1,75 @@
+{if $method neq ''}
+<form id="warehouseForm" runat="server" enctype="multipart/form-data" method="post" action="dialog.php?act={$method}">
+{/if}
+<div id="merge_dialog">
+	<div class="items merge_items">
+		<div class="item">
+			<div class="label">商品名称：</div>
+			<div class="value lh30">
+				{$goods_info.goods_name}
+			</div>
+		</div>
+        <div class="item">
+			<div class="label">货品编号：</div>
+			<div class="value lh30">
+				{$product.product_sn}
+			</div>
+		</div>
+        
+        {if $warehouse}
+        <div class="item">
+			<div class="label">仓库名称：</div>
+			<div class="value lh30">
+				{$warehouse.region_name}
+			</div>
+		</div>
+        	{if $warehouse.area_name}
+            <div class="item">
+                <div class="label">地区名称：</div>
+                <div class="value lh30">
+                    {$warehouse.area_name}
+                </div>
+            </div>
+            {/if}
+        {/if}
+	
+        {if $product.goods_attr}
+        <div class="item_attr_list clearfix">
+        {foreach from=$product.goods_attr item=attr}
+        <div class="item">
+			<div class="label">【{$attr.attr_value}】：</div>
+			<div class="value lh30">
+            	{if $editInput neq ''}
+            	<input type="text" name="attr_price" value="{$attr.attr_price|default:0.00}" class="text w120" onBlur="listTable.editInput(this, '{$editInput}', {$attr.goods_attr_id});" placeholder="属性价格" />
+                {else}
+                	{if $goods_info.model_attr eq 1}
+                	<input name="attr_price_{$attr.goods_attr_id}" value="{$attr.attr_price|default:0.00}" type="text" class="text w120" placeholder="属性价格" />
+                	<input type="hidden" name="goods_attr_id[]" value="{$attr.goods_attr_id}" />
+                    {elseif $goods_info.model_attr eq 2}
+                    <input name="attrPrice_{$attr.goods_attr_id}" value="{$attr.attr_price|default:0.00}" type="text" class="text w120" placeholder="属性价格" />
+                	<input type="hidden" name="goods_attr_id[]" value="{$attr.goods_attr_id}" />
+                    {/if}
+                {/if}
+			</div>
+		</div>
+        {/foreach}
+        </div>
+        {/if} 
+	</div>
+</div>
+
+{if $method neq ''}
+<input type="hidden" name="goods_id" value="{$goods_info.goods_id}" />
+{if $goods_info.model_attr eq 1}
+<input type="hidden" name="warehouse_name" value="{$warehouse_id}" />
+{elseif $goods_info.model_attr eq 2}
+<input type="hidden" name="area_name" value="{$area_id}" />
+{/if}
+</form>
+{/if}
+<script type="text/javascript">
+	$(".item_attr_list").hover(function(){
+		$(".item_attr_list").perfectScrollbar("destroy");
+		$(".item_attr_list").perfectScrollbar();
+	});
+</script>

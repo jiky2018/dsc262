@@ -1,0 +1,141 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+		{include file ='library/seller_menu_left.lbi'}
+		<div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+				{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <form method="post" action="" name="listForm">
+                <!-- start ad position list -->
+                <div class="list-div" id="listDiv">
+				{/if}
+                <table class="ecsc-default-table">
+                    <thead>
+                    <tr>
+                    	<th width="5%"><div class="tDiv">{$lang.record_id}</div></th>
+                        <th width="8%"><div class="tDiv">类目</div></th>
+                        <th width="20%"><div class="tDiv">{$lang.album_mame}</div></th>
+                        <th width="10%"><div class="tDiv">{$lang.gallery_count}</div></th>
+                        <th width="10%"><div class="tDiv">{$lang.album_cover}</div></th>
+                        <th width="20%"><div class="tDiv">{$lang.album_desc}</div></th>
+                        <th width="15%" class="handle">{$lang.handler}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {foreach from=$gallery_album item=agency}
+                    <tr>
+                    	<td>{$agency.album_id}</td>
+                        <td class="tl pl10">
+                            <div class="tDiv first_setup">
+                                <div class="setup_span">
+                                    <em><i class="icon icon-cog"></i>设置<i class="arrow"></i></em>
+                                    <ul>
+                                        <li><a href="gallery_album.php?act=add&parent_id={$agency.album_id}">新增下一级</a></li>
+                                        <li><a href="gallery_album.php?act=list&parent_id={$agency.album_id}">查看下一级</a></li>
+                                        <li><a href="javascript:void(0);" ectype="transfer_pic" data-cid="{$agency.album_id}">转移图片</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </td>
+                        <td align="left">{$agency.album_mame|escape:html}</td>
+                        <td align="left">{$agency.gallery_count|escape:html}</td>
+                        <td style="background-color: rgb(255, 255, 255);" valign="middle">
+                            <div class="tDiv">
+                                {if $agency.album_cover}
+                                <span class="show">
+                                    <a href="../{$agency.album_cover}" class="nyroModal" target="_blank"><i class="icon icon-picture" onmouseover="toolTip('<img src=../{$agency.album_cover}>')" onmouseout="toolTip()"></i></a>
+                                </span>
+                                {else}
+                                <span class="show">
+                                    <a href="../data/gallery_album/hover_image.png" class="nyroModal"><i class="icon icon-picture" onmouseover="toolTip('<img src=../data/gallery_album/hover_image.png>')" onmouseout="toolTip()"></i></a>
+                                </span>
+                                {/if}
+                            </div>
+                        </td>
+                        <td align="center">{$agency.album_desc|nl2br}</td>
+                        <td class="ecsc-table-handle tr">
+                          <span><a href="gallery_album.php?act=view&id={$agency.album_id}" class="btn-orange"><i class="icon sc_icon_see"></i><p>{$lang.view}</p></a></span>
+                          <span><a href="gallery_album.php?act=edit&id={$agency.album_id}" title="{$lang.edit}" class="btn-green"><i class="icon icon-edit"></i><p>{$lang.edit}</p></a></span>
+                          <span><a href="javascript:void(0);" onclick="listTable.remove({$agency.album_id}, '确定删除该相册吗？删除后图片无法找回！')" title="{$lang.drop}" class="btn-red"><i class="icon icon-trash"></i><p>{$lang.drop}</p></a></span>
+                        </td>
+                    </tr>
+                    {foreachelse}
+                    <tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+                    {/foreach}
+                    </tbody>
+                    <tfoot>
+                        <tr><td colspan="10">{include file="page.dwt"}</td></tr>
+                    </tfoot>
+                </table>
+				{if $full_page}
+                </div>
+				<!-- end ad_position list -->
+				</form>
+            </div>
+        </div>
+    </div>
+</div>
+{include file="library/seller_footer.lbi"}
+{if $full_page}
+<script type="text/javascript" src="../js/jquery.picTip.js"></script>
+<script type="text/javascript" src="js/jquery.purebox.js"></script>
+<script type="text/javascript">
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+  {literal}
+  onload = function()
+  {
+    startCheckOrder();
+  }
+  
+  function searchAd_position()
+    {
+        listTable.filter['keyword'] = Utils.trim(document.forms['searchForm'].elements['keyword'].value);
+        listTable.filter['page'] = 1;
+
+        listTable.loadList();
+    }
+  {/literal}
+      
+//转移分类
+    $(document).on('click',"*[ectype='transfer_pic']",function(){
+        var inherit = 0;
+        
+        if(confirm('子相册是否继承此操作？')){
+            inherit = 1
+        }
+        var album_id = $(this).data("cid");
+        $.jqueryAjax("gallery_album.php", "act=move_pic&album_id="+album_id+"&inherit=" + inherit, function(data){
+                var content = data.content;
+                pb({
+                        id:"transfer_dialog",
+                        title:"转移图片",
+                        width:732,
+                        content:content,
+                        ok_title:"开始转移",
+                        cl_title:"关闭",
+                        drag:false,
+                        foot:true,
+                        onOk:function(){
+                                $("#movepicalbum").submit();
+                        }
+                });
+                reset_select("#transfer_dialog");
+        });
+    });
+</script>
+{/if}
+</body>
+</html>
+{/if}

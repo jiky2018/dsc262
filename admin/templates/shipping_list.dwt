@@ -1,0 +1,176 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.11_system} - {$ur_here}</div>
+        <div class="content">
+        	{include file ='library/shipping_menu_tab.lbi'}		
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit">
+                <i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span>
+                {if $open eq 1}
+                <div class="view-case">
+                	<div class="view-case-tit"><i></i>{$lang.view_tutorials}</div>
+                    <div class="view-case-info">
+                    	<a href="http://help.ecmoban.com/article-3141.html" target="_blank">{$lang.tutorials_bonus_list_one}</a>
+                    </div>
+                </div>			
+                {/if}	
+				      </div>
+              <ul>
+              	<li>{$lang.operation_prompt_content.list.0}</li>
+                <li>{$lang.operation_prompt_content.list.1}</li>
+                <li>{$lang.operation_prompt_content.list.2}</li>
+              </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                	<div class="list-div">
+                        <table class="table_layout">
+                        	<thead>
+                            	<tr>
+                                  <th width="12%"><div class="tDiv">{$lang.shipping_name}</div></th>
+                                  <th width="30%"><div class="tDiv">{$lang.shipping_url}</div></th>
+                                  <!--<th width="7%"><div class="tDiv">{$lang.insure}</div></th>-->
+                                  <th width="7%"><div class="tDiv">{$lang.support_cod}</div></th>
+                                  <th width="7%"><div class="tDiv">{$lang.kuaidiniao_dayin}</div></th>
+                                  <th width="7%"><div class="tDiv">{$lang.default_mode}</div></th>
+                                  <th width="8%"><div class="tDiv">{$lang.sort_order}</div></th>
+                                  <th width="22%" class="handle">{$lang.handler}</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                            	{foreach from=$modules item=module}
+                                {if ($seller_shopinfo.ru_id>0 && $module.install == 1 && $module.code != 'cac') || $seller_shopinfo.ru_id==0}
+                                <tr>
+                                    <td>
+                                    	<div class="tDiv">
+                                        {if $module.install == 1}
+                                        	<div class="editSpanInput" ectype="editSpanInput">
+                                        		<span onclick="listTable.edit(this, 'edit_name', '{$module.code}')">{$module.name}</span>
+                                            	<i class="icon icon-edit"></i>									
+                                            </div>
+                                        {else}
+                                            {$module.name}
+                                        {/if}
+                                        </div>
+                                    </td>
+                                    <td>
+                                    	<div class="tDiv">
+                                          {if $module.install == 1}
+                                          <span onclick="listTable.edit(this, 'edit_desc', '{$module.code}'); return false;">{$module.desc}</span>
+                                          {else}
+                                          <span>{$module.desc}</span>
+                                          {/if}
+                                        </div>
+                                    </td>
+                                    <!--<td>
+                                    	<div class="tDiv">
+                                          {if $module.install == 1 && $module.is_insure neq 0}
+                                          <span onclick="listTable.edit(this, 'edit_insure', '{$module.code}'); return false;">{$module.insure_fee}</span>
+                                          {else}
+                                          {$module.insure_fee}
+                                          {/if}
+                                        </div>
+                                    </td>-->
+                                    <td><div class="tDiv">{if $module.cod==1}<img src="images/yes.png" alt="{$lang.yes}" title="{$lang.yes}">{else}<img src="images/no.png" alt="{$lang.no}" title="{$lang.no}">{/if}</div></td>
+                                    <td><div class="tDiv">{if $module.kdniao_print==1}<img src="images/yes.png" alt="{$lang.yes}" title="{$lang.yes}">{else}<img src="images/no.png" alt="{$lang.no}" title="{$lang.no}">{/if}</div></td>
+                                    <td><div class="tDiv">{if $seller_shopinfo.ru_id==0 && $module.id==$seller_shopinfo.shipping_id}<img src="images/yes.png" title="{$module.name}已启用">{else}<img src="images/no.png" alt="{$lang.no}" title="{$lang.no}">{/if}</div></td>
+                                    <td><div class="tDiv">{if $module.install == 1}<span onclick="listTable.edit(this, 'edit_order', '{$module.code}'); return false;">{$module.shipping_order}</span>{else}0{/if}</div></td>
+                                    <td class="handle handle_tr tr">
+                                        <div class="tDiv">
+                                          {if $module.install == 1}
+                                              {if $module.kdniao_print == 1}
+                                                  <a href="javascript:void(0);" class="btn_region" ectype="account_setting" data-id="{$module.id}" data-code="{$module.code}"><i class="icon icon-cog"></i>{$lang.kuaidiniao_set}</a>
+                                              {/if}
+                                          <a href="javascript:confirm_redirect(lang_removeconfirm,'shipping.php?act=uninstall&code={$module.code}')" class="btn_trash"><i class="icon icon-trash"></i>{$lang.uninstall}</a>
+                                          {if $module.code eq 'cac'}
+                                          <a href="shipping_area.php?act=list&shipping={$module.id}" class="btn_region"><i class="sc_icon icon-map-marker"></i>{$lang.shipping_area}</a> 
+                                          {/if}
+                                          <a href="shipping.php?act=edit_print_template&shipping={$module.id}" class="btn_edit"><i class="icon icon-edit"></i>{$lang.shipping_print_edit}</a>
+                                          {else}
+                                          <a href="shipping.php?act=install&code={$module.code}" class="btn_inst"><i class="sc_icon sc_icon_inst"></i>{$lang.install}</a>
+                                          {/if}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {/if}
+                                {foreachelse}
+                                <tr><td class="no-records" colspan="12">{$lang.no_records}</td></tr>
+                                {/foreach}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+ 	{include file ='library/pagefooter.lbi'}
+	{insert_scripts files="jquery.purebox.js"}
+	<script type="text/javascript">
+	//帐号设置
+	$(document).on('click', "*[ectype='account_setting']", function(){
+		var id = $(this).data('id');
+		$.jqueryAjax('shipping.php', 'act=account_setting&id='+id, function(data){
+			var content = data.content;
+			pb({
+				id:"setting_dialog",
+				title:'{$lang.zhanghu_set}',
+				width:500,
+				content:content,
+				ok_title:"{$lang.button_submit_alt}",
+				cl_title:"{$lang.cancel}",
+				drag:true,
+				foot:true,
+				onOk:function(){
+					save_account();
+				}
+			});		
+		})
+	})
+	//保存设置
+	function save_account(){
+		var obj = $("#setting_dialog");
+    var this_data = obj.find("form").serialize();
+		$.jqueryAjax('shipping.php', this_data, function(data){
+      pbDialog('{$lang.set_success}', '', 1);
+		}, 'post')
+	}
+
+  //帐号申请
+  $(document).on('click', "*[ectype='account_apply']", function(){
+    var id = $(this).data('id');
+    $.jqueryAjax('shipping.php', 'act=account_apply&id='+id, function(data){
+      var content = data.content;
+      pb({
+        id:"apply_dialog",
+        title:'{$lang.customer_apply}',
+        width:700,
+        content:content,
+        ok_title:"{$lang.button_submit_alt}",
+		cl_title:"{$lang.cancel}",
+        drag:true,
+        foot:true,
+        onOk:function(){
+          submit_account();
+        }
+      });   
+    })
+  })
+  //提交申请
+  function submit_account(){
+    var obj = $("#apply_dialog");
+    var this_data = obj.find("form").serialize();
+    $.jqueryAjax('shipping.php', this_data, function(data){
+      if(data.error == 1){
+        pbDialog("{$lang.subimt_apply_fail}", data.message, 0);
+      }else{
+        pbDialog("{$lang.subimt_apply_success}", '', 1);
+      }
+    }, 'post')
+  }
+	</script>	
+</body>
+</html>

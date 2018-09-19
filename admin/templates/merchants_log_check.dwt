@@ -1,0 +1,286 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+<div class="warpper">
+    <div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$lang.seller} - {$ur_here}</div>
+    <div class="content">
+        <div class="explanation" id="explanation">
+            <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+            <ul>
+                <li>{$lang.operation_prompt_content_common}</li>
+                <li>{$lang.operation_prompt_content.check.0}</li>
+            </ul>
+        </div>
+        <div class="flexilist">
+            <div class="common-content">
+                <div class="mian-info">
+                    <form method="post" action="merchants_account.php" name="theForm" id="submitForm" enctype="multipart/form-data">
+                        <div class="switch_info">
+                            <div class="item">
+                                <div class="label">{$lang.goods_steps_name}：</div>
+                                <div class="label_value red">{$log_info.shop_name}</div>
+                            </div>
+                            {if $log_info.log_type eq 5}
+                            <div class="item">
+                                <div class="label">{$lang.log_type.6}：</div>
+                                <div class="label_value">{$log_info.frozen_money}</div>
+                            </div>
+                            {else}
+                                {if $log_info.log_type neq 1 && $log_info.log_type neq 4}
+                                <div class="item">
+                                    <div class="label">{if $log_info.payment_info.pay_name eq '银行汇款/转帐'}{$lang.label_topup}{else}{$lang.label_deposit_balance}{/if}：</div>
+                                    <div class="label_value">{$seller_shopinfo.seller_money}</div>
+                                </div>
+                                {/if}
+                            <div class="item">
+                                <div class="label">{if $log_info.payment_info.pay_name eq '银行汇款/转帐'}{$lang.label_topup_account}{else}{$lang.label_deposit_account}{/if}：</div>
+                                <div class="label_value">
+                                    {$log_info.amount}
+                                </div>
+                            </div>
+                            {if $act_type eq 'account_log' && $log_info.deposit_mode neq 1 || $act_type eq 'detail'}
+                            <div class="item">
+                                <div class="label">{$lang.label_real_name}：</div>
+                                <div class="label_value">
+                                    {$real.real_name}
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.label_self_num}：</div>
+                                <div class="label_value">
+                                    {$real.self_num}
+                                </div>
+                            </div>		
+                            {if $log_info.payment_info.pay_name eq '银行汇款/转帐'}						
+                            <div class="item">
+                                <div class="label">{$lang.label_pay_type}：</div>
+                                <div class="label_value">
+                                    {$log_info.payment_info.pay_name}
+                                </div>
+                            </div>	
+                            {else}
+                            <div class="item">
+                                <div class="label">{$lang.label_bank_name}：</div>
+                                <div class="label_value">
+                                    {$real.bank_name}
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.label_bank_card}：</div>
+                                <div class="label_value">
+                                    {$real.bank_card}
+                                </div>
+                            </div>
+                            {/if}
+                            <div class="item">
+                                <div class="label">{$lang.label_bank_mobile}：</div>
+                                <div class="label_value">
+                                    {$real.bank_mobile}
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="label">{$lang.account_status}：</div>
+                                <div class="label_value">
+                                    {$lang.review_status.$real.review_status}
+                                    {if $real.review_status eq 2}
+                                    <div class="notic">{$lang.explain}：{$real.review_content}</div>
+                                    {/if}
+                                </div>
+                            </div>
+                            {/if}
+                            {if $act_type eq 'account_log'}
+                            <div class="item">
+                                <div class="label">{$lang.label_deposit_mode}：</div>
+                                <div class="label_value">
+                                    {if $log_info.deposit_mode}
+                                        {$lang.label_user_balance}
+                                    {else}
+                                        {$lang.label_offline_money}
+                                    {/if}
+                                </div>
+                            </div>
+                            {/if}
+                            {/if}
+                            {if $log_info.seller_note}
+                            <div class="item">
+                                <div class="label">{$lang.apply_explain}：</div>
+                                <div class="label_value">
+                                    {$log_info.seller_note}
+                                </div>
+                            </div>
+                            {/if}
+                            <div class="item">
+                                <div class="label">{$lang.require_field}{$lang.reply}：</div>
+                                <div class="label_value">
+                                    {if $log_info.admin_note}
+                                        {$log_info.admin_note}
+                                    {else}
+                                        <textarea name="log_reply" cols="60" rows="5" id="log_reply" class="textarea"></textarea>
+                                    {/if}
+                                    <div class="form_prompt"></div>
+                                </div>
+                            </div>
+                            {if $log_info.log_type neq 5}
+                                {if $log_info.payment_info.pay_name eq '银行汇款/转帐'}				
+                                <div class="item">
+                                    <div class="label">{$lang.transfer_certificate}：</div>
+                                    <div class="label_value">{if $log_info.certificate_img}<a href="../{$log_info.certificate_img}" target="_blank">{$lang.check}</a>{else}{$lang.no_wu}{/if}</div>
+                                </div>
+                                {else}
+                                    {if $act_type eq 'account_log' && $log_info.deposit_mode neq 1 || $act_type eq 'detail'}
+                                    <div class="item">
+                                        <div class="label">{$lang.transfer_certificate}：</div>
+                                        <div class="label_value">
+                                            {if $log_info.certificate_img || $log_info.is_paid neq 0}
+                                                {if $log_info.certificate_img}<a href="../{$log_info.certificate_img}" target="_blank">{$lang.check}</a>{else}{$lang.no_wu}{/if}
+                                            {else}
+                                            <div class="type-file-box">
+                                                <input type="button" name="button" id="button" class="type-file-button" value="">
+                                                <input type="file" class="type-file-file" id="certificate_img" name="certificate_img" size="30" data-state="imgfile" hidefocus="true" value="">
+                                                <input type="text" name="textfile" class="type-file-text" id="textfield" readonly>
+                                            </div>
+                                            {/if}
+                                        </div>
+                                    </div>
+                                    {/if}
+                                {/if}
+                            {/if}
+                            <div class="item">
+                                <div class="label">{$lang.require_field}{$lang.status}：</div>
+                                {if $log_info.is_paid eq 1}
+                                <div class="label_value">
+                                    <font class="red">{$lang.off_stocks}</font>
+                                </div>
+                                {elseif $log_info.is_paid eq 2 && $log_info.log_type eq 5}
+                                <div class="label_value">
+                                    <font class="red">{$lang.refuse_apply_for}</font>
+                                </div>
+                                {else}
+                                <div class="label_value">
+                                    {if $log_info.is_paid eq 0}
+                                        {if $log_info.log_type neq 5}
+                                        <div class="checkbox_items">
+                                            <div class="checkbox_item">
+                                                <input type="radio" name="log_status" value="0" class="ui-radio" id="log_status0"  checked />
+                                                <label class="ui-radio-label" for="log_status0">{$lang.stay_dispose}</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                                <input type="radio" name="log_status" value="1" class="ui-radio" id="log_status1" />
+                                                <label class="ui-radio-label" for="log_status1">{$lang.off_stocks}</label>
+                                            </div>
+                                        </div>
+                                        {else}
+                                        <div class="checkbox_items">
+                                             <div class="checkbox_item">
+                                                <input type="radio" name="log_status" value="0" class="ui-radio" id="log_status0" checked />
+                                                <label class="ui-radio-label" for="log_status0">{$lang.stay_dispose}</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                                <input type="radio" name="log_status" value="2" class="ui-radio" id="log_status2" />
+                                                <label class="ui-radio-label" for="log_status2">{$lang.refuse}</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                                <input type="radio" name="log_status" value="1" class="ui-radio" id="log_status1" />
+                                                <label class="ui-radio-label" for="log_status1">{$lang.agree}</label>
+                                            </div>
+                                        </div>
+                                        {/if}
+                                    {else}
+                                        {if $log_info.log_type neq 5}
+                                            {if $log_info.is_paid eq 1}
+                                                {$lang.off_stocks}
+                                            {else}
+                                                {$lang.stay_dispose}
+                                            {/if}
+                                        {else}
+                                            {if $log_info.is_paid eq 1}
+                                                {$lang.agree}
+                                            {elseif $log_info.is_paid eq 2}    
+                                                {$lang.refuse}
+                                            {else}
+                                                {$lang.stay_dispose}
+                                            {/if}
+                                        {/if}
+                                    {/if}	
+                                </div>
+                                {/if}
+                            </div>
+                            {if !$log_info.is_paid}
+                            <div class="item">
+                                <div class="label">&nbsp;</div>
+                                <div class="label_value info_btn">
+                                    <input type="submit" value="{$lang.button_submit}" class="button" id="submitBtn" />
+                                    <input type="reset" value="{$lang.button_reset}" class="button button_reset" />
+                                    <input type="hidden" name="act" value="{$form_action}" />
+                                    {if $act_type eq 'account_log'}
+                                    <input type="hidden" name="act_type" value="account_log" />
+                                    {/if}
+                                    <input type="hidden" name="log_id" value="{$log_id}" />
+                                </div>
+                            </div>
+                            {/if}		
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/pagefooter.lbi'}
+<script type="text/javascript">
+$(function(){
+    //表单验证
+	$("#submitBtn").click(function(){
+		if($("#submitForm").valid()){
+			//防止表单重复提交
+			if(checkSubmit() == true){
+				$(this).parents("form").submit();
+			}else{
+				return false;
+			}
+		}
+	});
+	
+    {if $log_info.log_type neq 5}
+    $('#submitForm').validate({
+        errorPlacement:function(error, element){
+            var error_div = element.parents('div.label_value').find('div.form_prompt');
+            element.parents('div.label_value').find(".notic").hide();
+            error_div.append(error);
+        },
+        rules:{
+            log_reply :{
+                required : true
+            }
+        },
+        messages:{
+            log_reply:{
+                 required : '<i class="icon icon-exclamation-sign"></i>'+select_reply_content
+            }
+        }			
+    });
+    {else}
+    $('#submitForm').validate({
+        errorPlacement:function(error, element){
+            var error_div = element.parents('div.label_value').find('div.form_prompt');
+            element.parents('div.label_value').find(".notic").hide();
+            error_div.append(error);
+        },
+        rules:{
+            log_reply :{
+                required : true
+            }
+        },
+        messages:{
+            log_reply:{
+                 required : '<i class="icon icon-exclamation-sign"></i>'+select_reply_content
+            }
+        }			
+    });
+    {/if}
+});
+</script>
+</body>
+</html>

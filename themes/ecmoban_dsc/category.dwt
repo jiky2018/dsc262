@@ -1,0 +1,356 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<link rel="icon" href="animated_favicon.gif" type="image/gif" />
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/base.css" />
+<link href="{$ecs_css_path}" rel="stylesheet" type="text/css" />
+<!-- {if $cat_style} -->
+<link href="{$cat_style}" rel="stylesheet" type="text/css" />
+<!-- {/if} -->
+<link href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/select.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/quickLinks.css" />
+<link rel="alternate" type="application/rss+xml" title="RSS|{$page_title}" href="{$feed_url}" />
+<link rel="stylesheet" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/purebox.css">
+<link rel="stylesheet" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/perfect-scrollbar/perfect-scrollbar.min.css">
+{* 包含脚本文件 *}
+{insert_scripts files='jquery-1.9.1.min.js,jquery.json.js,transport_jquery.js,cart_common.js,cart_quick_links.js'}
+{insert_scripts files='common.js,global.js,utils.js,compare.js,jd_choose.js,warehouse.js,parabola.js'}
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/sc_common.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.tabso_yeso.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.yomi.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/rotate3di.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/scroll_city.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/notLogin.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/asyLoadfloor.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+
+<style>.suspension{ display:none;}</style>
+<!-- #BeginLibraryItem "/library/js_languages.lbi" --><!-- #EndLibraryItem -->
+</head>
+
+<body>
+<!-- #BeginLibraryItem "/library/page_header_w1390.lbi" --><!-- #EndLibraryItem -->
+
+<!-- #BeginLibraryItem "/library/category_recommend_hot.lbi" --><!-- #EndLibraryItem -->
+
+{* DSC 提醒您：动态载入category_top_ad.lbi，显示首页分类小广告 *}{insert name='get_adv_child' ad_arr=$category_top_ad id=$cate_info.cat_id}
+
+<div class="ecsc-breadcrumb w1390">
+    <!-- #BeginLibraryItem "/library/ur_here.lbi" --><!-- #EndLibraryItem -->
+    <div class="pre-num">{$lang.total}{$pager.record_count}{$lang.jian_goods}</div>
+</div>
+<div id="filter">
+    <div class="filter-section-wrapper mt-component-2 w1390">
+		<!-- #BeginLibraryItem "/library/category_screening.lbi" --><!-- #EndLibraryItem -->
+    </div>
+    
+</div>
+<div id="content" class="w1390">
+		<!-- TemplateBeginEditable name="商品列表" -->
+<!-- #BeginLibraryItem "/library/goods_list.lbi" -->
+
+
+<!-- {if $category > 0} -->
+<form name="compareForm" action="compare.php" method="post" onSubmit="return compareGoods(this);" class="goodslistForm">
+<!-- {/if} -->
+<div class="goods-list">
+	{if $goods_list}
+    <ul class="gl-warp">
+    	<!--{foreach from=$goods_list item=goods }-->
+        <!-- {if $goods.goods_id} -->
+        <li class="gl-item">
+            <div class="gl-i-wrap">
+                <div class="p-img">
+                    <a href="{$goods.url}" target="_blank"><img src="{$goods.goods_thumb}" width="220" height="220"/></a>
+                    <div class="p-btns">
+                    	{if $goods.prod eq 1}
+                            {if $goods.goods_number > 0}
+                                <a onClick="javascript:addToCart({$goods.goods_id},0,event,this);" class="addCartBtn" rev="{$goods.goods_thumb}" data-dialog="addCart_dialog" data-id="" data-divid="addCartLog" data-url="" data-title="请选择属性">
+                                    <i class="icon-shopping-cart"></i>
+                                   {$lang.add_to_cart}
+                                </a>
+                            {else}
+                                <a href="javascript:;">
+                                    <i class="icon-shopping-cart"></i>
+                                    {$lang.have_no_goods}
+                                </a>
+                            {/if}
+                        {else}
+                        <a onClick="javascript:addToCart({$goods.goods_id},0,event,this);" class="addCartBtn" rev="{$goods.goods_thumb}">
+                            <i class="icon-shopping-cart"></i>
+                            {$lang.add_to_cart}
+                        </a>
+                        {/if}
+                        <div class="red_bg"></div>
+                    </div>
+                    <div class="{if $goods.is_new == 1}new_picon pi1{elseif $goods.is_hot == 1}new_picon pi2{elseif $goods.is_best == 1}new_picon pi3{/if}"></div>
+                </div>
+                <div class="p-price">
+                    <strong>
+                    	{if $goods.promote_price neq ''}
+                            {$goods.promote_price}
+                        {else}
+                            {$goods.shop_price}
+                        {/if}
+                    </strong>
+                </div>
+                <div class="p-num">{$lang.sales_volume}：{$goods.sales_volume}</div>
+                <div class="p-name"><a href="{$goods.url}" title="{$goods.name|escape:html}">{$goods.goods_name}</a></div>
+                <div class="p-commit">
+                    <a href="{$goods.store_url}" target="_blank" class="p-brand">{$goods.rz_shopName}</a>
+                    <span class="p-nice"><i class="icon"></i>{$goods.zconments.goodReview}%</span>
+                    <span class="p-reply"><i class="icon"></i>{$goods.review_count}</span>
+                </div>
+                <div class="p-operation">
+                    <a href="javascript:;" id="compareLink"><input id="{$goods.goods_id}" type="checkbox" onClick="Compare.add(this, {$goods.goods_id},'{$goods.goods_name|escape:"html"}','{$goods.type}', '{$goods.goods_thumb}', '{$goods.shop_price}', '{$goods.market_price}')"/><label for="{$goods.goods_id}">{$lang.compare}</label></a>
+                    <a href="javascript:collect({$goods.goods_id});" class="choose-btn-coll {if $goods.is_collect}selected{/if}"><b></b>{$lang.collect}</a>
+                    {if $goods.kf_type eq 1}
+                    <a href="http://www.taobao.com/webww/ww.php?ver=3&touid={$goods.kf_ww}&siteid=cntaobao&status=2&charset=utf-8" target="_blank" class="custom"><i class="icon"></i></a>
+                    {else}
+                    <a href="http://wpa.qq.com/msgrd?v=3&uin={$goods.kf_qq}&site=qq&menu=yes" target="_blank" class="custom"><i class="icon"></i></a>
+                    {/if}
+                </div>
+            </div>
+        </li>
+        <!-- {/if} --> 
+        <!--{/foreach}--> 
+    </ul>
+    {else}
+    <div style="color:#f60; font-size:16px; font-weight:bold; text-align:center;">{$lang.information_null}</div>
+    {/if}
+</div>
+<!-- {if $category > 0} -->
+</form>
+<!-- {/if} -->
+<div id="flyItem" class="fly_item"><img src="" width="40" height="40"></div>
+<input type="hidden" value="{$region_id}" id="region_id" name="region_id">
+<input type="hidden" value="{$area_id}" id="area_id" name="area_id">
+
+<script type="Text/Javascript" language="JavaScript">
+<!--
+{literal}
+function selectPage(sel)
+{
+  sel.form.submit();
+}
+{/literal}
+//-->
+</script> 
+<script type="text/javascript">
+window.onload = function()
+{
+  Compare.init();
+  fixpng();
+}
+{foreach from=$lang.compare_js item=item key=key}
+{if $key neq 'button_compare'}
+var {$key} = "{$item}";
+{else}
+var button_compare = '';
+{/if}
+{/foreach}
+var compare_no_goods = "{$lang.compare_no_goods}";
+var btn_buy = "{$lang.btn_buy}";
+var is_cancel = "{$lang.is_cancel}";
+var select_spe = "{$lang.select_spe}";
+</script>
+ <!-- #EndLibraryItem -->
+<!-- TemplateEndEditable --> 
+{if !$category_load_type}
+<!-- TemplateBeginEditable name="列表分页" -->
+<!-- #BeginLibraryItem "/library/pages.lbi" -->
+
+
+<!-- {if $pager.page_count > 1} -->
+<div class="tc">
+    <form name="selectPageForm" action="{$smarty.server.PHP_SELF}" method="get">
+        <!-- {if $pager.styleid eq 0 } --> 
+        <div id="pager">
+  {$lang.pager_1}{$pager.record_count}{$lang.pager_2}{$lang.pager_3}{$pager.page_count}{$lang.pager_4} <span> <a href="{$pager.page_first}">{$lang.page_first}</a> <a href="{$pager.page_prev}">{$lang.page_prev}</a> <a href="{$pager.page_next}">{$lang.page_next}</a> <a href="{$pager.page_last}">{$lang.page_last}</a> </span>
+    <!--{foreach from=$pager.search key=key item=item}-->
+      {if $key eq 'keywords'}
+          <input type="hidden" name="{$key}" value="{$item|escape:decode_url}" />
+        {else}
+          <input type="hidden" name="{$key}" value="{$item}" />
+      {/if}
+    <!--{/foreach}-->
+    <select name="page" id="page" onchange="selectPage(this)">
+    {html_options options=$pager.array selected=$pager.page}
+    </select>
+        </div>
+        
+        <!--翻页 start-->
+		<!--{else}-->
+            <div class="pages" id="pager">
+                <ul>
+                    <!-- {if $pager.page_kbd} -->
+                    <!--{foreach from=$pager.search key=key item=item}-->
+                        {if $key eq 'keywords'}
+                        <input type="hidden" name="{$key}" value="{$item|escape:decode_url}" />
+                        {else}
+                        <input type="hidden" name="{$key}" value="{$item}" />
+                        {/if}
+                    <!--{/foreach}--> 
+                    <!-- {/if} -->
+                    <!-- {if $pager.page_first} --><li style="display:none;"><a href="{$pager.page_first}"><span>首页</span></a></li><!-- {/if} -->
+                    <li class="previous"><a href="{if $pager.page_prev}{$pager.page_prev}{else}#none{/if}"><i><<</i>上一页</a></li>
+                    
+                        <!-- {if $pager.page_count neq 1} -->
+                        <!--{foreach from=$pager.page_number key=key item=item}-->
+                        <!-- {if $pager.page eq $key} -->
+                        <li class="current"><a href="#none">{$key}</a></li>
+                        <!-- {else} -->
+                        <li><a href="{$item}">{$key}</a></li>
+                        <!-- {/if} -->
+                        <!--{/foreach}-->
+                        <!-- {/if} -->
+                   
+                    <li class="nextious"><a href="{if $pager.page_next}{$pager.page_next}{else}#none{/if}">下一页<i>>></i></a></li>
+                    <!-- {if $pager.page_last} --><li style="display:none"><a class="last" href="{$pager.page_last}"><span>末页</span></a></li><!-- {/if} -->
+                </ul>
+            </div>
+        <!-- {/if} -->
+    </form>
+</div>
+<!-- {/if} -->
+
+<script type="Text/Javascript" language="JavaScript">
+<!--
+{literal}
+function selectPage(sel)
+{
+  sel.form.submit();
+}
+{/literal}
+//-->
+</script>
+
+ <!-- #EndLibraryItem -->
+<!-- TemplateEndEditable -->
+{/if}
+</div>
+<div class="guess-love goods-list-love w1390">
+    <div class="ec-title"><h3>{$lang.guess_love}</h3></div>
+    <div class="goods-list">
+        <ul class="gl-warp">
+            <!--{foreach from=$guess_goods item=goods}-->
+            <li class="gl-item">
+                <div class="gl-i-wrap">
+                    <div class="p-img">
+                        <a href="{$goods.url}" target="_blank"><img src="{$goods.goods_thumb}" width="200" height="200"></a>
+                    </div>
+                    <div class="p-name"><a href="{$goods.url}" target="_blank" title="{$goods.goods_name}">{$goods.short_name}</a></div>
+                    <div class="p-price">
+                    	{if $goods.promote_price neq ''}
+                            {$goods.promote_price}
+                        {else}
+                            {$goods.shop_price}
+                        {/if}
+                    </div>
+                    <div class="p-num">{$lang.sale_amount}：{$goods.sales_volume}</div>
+                    <div class="p-commit"><span class="p-nice"><i class="icon"></i><span class="nice-stars">{$goods.comment_percent}%</span></span></div>
+                </div>
+            </li>
+            <!--{/foreach}-->
+        </ul>
+    </div>
+</div>
+
+<!-- TemplateBeginEditable name="商品浏览历史" -->
+<!-- TemplateEndEditable --> 
+
+<!-- @authro guan start	添加对比文件 start -->	 
+<!-- #BeginLibraryItem "/library/duibi.lbi" --><!-- #EndLibraryItem -->
+<!-- @authro guan start	添加对比文件 end -->
+
+{* DSC 提醒您：动态载入user_menu_position.lbi，显示首页分类小广告 *}{insert name='user_menu_position'} 
+
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+<input name="script_name" value="{$script_name}" type="hidden" />
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.purebox.js"></script>
+<script type="text/javascript">
+$(function(){
+	//价格筛选提交
+	$('.ui-btn-submit').click(function(){
+		var min_price = Number($(".price-min").val());
+		var max_price = Number($(".price-max").val());
+		
+		if(min_price == '' && max_price == ''){
+			alert('{$lang.screen_price}');
+			return false;
+		}else if(min_price == ''){
+			alert('{$lang.screen_price_left}');
+			return false;
+		}else if(max_price == ''){
+			alert('{$lang.screen_price_right}');
+			return false;
+		}else if(min_price > max_price || min_price == max_price){
+			alert('{$lang.screen_price_dy}');
+			return false;
+		}
+		$("form[name='listform']").submit();
+	});
+	
+	$('.ui-btn-clear').click(function(){
+		$("input[name='price_min']").val('');
+		$("input[name='price_max']").val('');
+	});
+	
+	$(".zimu_list").hover(function(){
+		$(".zimu_list").perfectScrollbar();
+	});
+	
+	$(".wrap_brand").hover(function(){
+		$(".extend .wrap_brand").perfectScrollbar();
+	});
+});
+
+function selectStoreTab(a){
+	var li =$(".tab").find("li").eq(a);
+	if(!li.hasClass("curr")){
+		li.addClass("curr").siblings().removeClass("curr");
+	}
+	$("#stock_list").find(".mc").eq(a).removeClass("hide").siblings(".mc").addClass("hide");
+}
+
+$(".hotsale").slide({mainCell:".bd ul",effect:"left",pnLoop:false,autoPlay:false,autoPage:true,scroll:1,vis:4});
+$(".share-content").slide({mainCell:".bd ul",effect:"left",pnLoop:false,autoPlay:false,autoPage:true,scroll:1,vis:7});
+
+//异步加载更多商品 by wu start	
+{if $category_load_type}
+	var query_string = '{$query_string}';
+	$.goodsLoad('.goods_network_list .goods-list','.gl-item','.goods-spread',query_string,0);
+{/if}
+//异步加载更多商品 by wu end
+
+//商品列表页 商品小图轮播 图片数量大于6个
+sildeImg(0);
+
+$(function(){
+	var obj = $("#filter-sortbar .styles").find(".item");
+	var imtes = $(".category_left");
+	obj.click(function(){
+		var index = $(this).index();
+		$(this).addClass("current").siblings().removeClass("current");
+		imtes.find(".car_goods_list").eq(index).show().siblings(".car_goods_list").hide();
+		//需要开启异步加载
+		{if $category_load_type}
+			if(index == 1){
+				$.goodsLoad('.goods_switch_list .goods-list','.item','.goods-spread',query_string,1);
+			}
+		{/if}
+	});
+});
+</script>
+</body>
+</html>

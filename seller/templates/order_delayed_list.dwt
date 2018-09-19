@@ -1,0 +1,166 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}					
+                <div class="search-info">
+                    <div class="search-form">
+                        <form action="javascript:searchUser()" name="searchForm">
+                            <div class="search-key">
+                                <div class="imitate_select select_w145">
+                                    <div class="cite">请选择...</div>
+                                    <ul class="ps-container" style="display: none;">
+                                        <li><a href="javascript:;" data-value="-1" class="ftx-01">全部</a></li>
+                                        <li><a href="javascript:;" data-value="0" class="ftx-01">未审核</a></li>
+                                        <li><a href="javascript:;" data-value="1" class="ftx-01">审核通过</a></li>
+                                        <li><a href="javascript:;" data-value="2" class="ftx-01">审核未通过</a></li>
+                                    <input name="review_status" type="hidden" value="-1">
+                                </div>
+                                <input type="text" name="keyword" class="text text_2" placeholder="会员名称" />
+                                <input type="submit" class="submit" value="{$lang.button_search}" />
+                            </div>
+                        </form>
+                    </div>
+                </div>					
+                <form method="POST" action="" name="listForm" onsubmit="return confirmSubmit()">
+                <!-- start comment list -->
+                <div class="list-div" id="listDiv">
+                {/if}
+                <table class="ecsc-default-table">
+                    <thead>
+                        <tr>
+                            <th width="3%" class="sign"><input type="checkbox" id="tfoot-all" name="checkboxes[]" class="ui-checkbox" onclick='listTable.selectAll(this, "checkboxes")' autocomplete="off" /><label for="tfoot-all" class="ui-label"></label></th>
+                            <th width="30%">会员名称</th>
+                            <th width="15%">订单号</th>
+                            <th width="25%">延期时间</th>
+                            <th width="10%">审核人</th>
+                            <th width="15%">审核状态</th>
+                        </tr>
+                  </thead>
+                  <tbody>
+                   {foreach from=$order_delay_list item=order_delay_list}
+                  <tr class="bd-line">
+                      <td>
+                          
+                          <div class="checkbox-info">
+                              <input type="checkbox" class="ui-checkbox" value="{$order_delay_list.delayed_id}" id="checkbox_{$order_delay_list.delayed_id}" name="checkboxes[]" autocomplete="off" /><label for="checkbox_{$order_delay_list.delayed_id}" class="ui-label"></label>
+                          </div>
+                      </td>
+                      <td>{$order_delay_list.user_name|escape}</td>
+                      <td>{$order_delay_list.order_sn}</td>
+                      <td>
+                          {if $order_delay_list.review_status}
+                          	<p class="center">{$order_delay_list.apply_day}</p>
+                          {else}
+                          	<input type="text" name="commission_rate" class="text w40" style=" position:relative; left:38%; text-align:center" value="{$order_delay_list.apply_day}" onkeyup="listTable.editInput(this, 'edit_apply_day', '{$order_delay_list.delayed_id}')">
+                          {/if}
+                      </td>
+                      <td>{$order_delay_list.review_admin_user}</td>
+                      <td>{$order_delay_list.review_status_info}</td>
+                  </tr>
+                  {foreachelse}
+                  <tr><td class="no-records" colspan="8">{$lang.no_records}</td></tr>
+                  {/foreach}
+                  </tbody>
+                  <tfoot>
+                      	<tr>
+                        	<td colspan="20" class="td_border">
+                                <div class="tfoot_btninfo">
+                                    <div id="type" class="imitate_select select_w170">
+                                        <div class="cite">请选择...</div>
+                                        <ul>
+                                            <li><a href="javascript:;" data-value="" class="ftx-01">请选择...</a></li>
+                                            <li><a href="javascript:;" data-value="batch_remove" class="ftx-01">删除</a></li>
+                                            <li><a href="javascript:;" data-value="review_to" class="ftx-01">审核</a></li>
+                                        </ul>
+                                        <input name="type" type="hidden" value="" id="type_val" autocomplete="off" />
+                                    </div>
+                                    <div id="review_status" class="imitate_select select_w170" style="display:none">
+                                        <div class="cite">请选择...</div>
+                                        <ul>
+                                            <li><a href="javascript:;" data-value="" class="ftx-01">请选择...</a></li>
+                                            <li><a href="javascript:;" data-value="1" class="ftx-01">审核通过</a></li>
+                                            <li><a href="javascript:;" data-value="2" class="ftx-01">审核未通过</a></li>
+                                        </ul>
+                                        <input name="review_status" type="hidden" value="" id="review_status_val" autocomplete="off" />
+                                    </div>
+                                    <input type="hidden" value="batch" name="act">
+                                    <input name="act" type="hidden" value="batch" />
+                                    <input name="remove" type="submit" id="btnSubmit" ectype="btnSubmit" value="确定" class="sc-btn btn_disabled" disabled />
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="20">{include file="page.dwt"}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+
+                {if $full_page}
+                </div>
+                <!-- end comment list -->
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript" src="../js/jquery.picTip.js"></script>
+<script type="text/javascript" language="JavaScript">
+<!--
+  listTable.recordCount = {$record_count};
+  listTable.pageCount = {$page_count};
+  {foreach from=$filter item=item key=key}
+  listTable.filter.{$key} = '{$item}';
+  {/foreach}
+$.divselect("#type","#type_val",function(obj){
+    var val = obj.attr("data-value");
+    if(val == 'review_to'){
+        $("#review_status").show();
+    }else{
+        $("#review_status").hide();
+    }
+});
+/**
+ * 搜索用户
+ */
+function searchUser()
+{
+    listTable.filter['keywords'] = Utils.trim(document.forms['searchForm'].elements['keyword'].value);
+    listTable.filter['review_status'] = Utils.trim(document.forms['searchForm'].elements['review_status'].value);
+    listTable.filter['page'] = 1;
+    listTable.loadList();
+}    
+  function confirmSubmit(frm, ext)
+{
+    if (frm.elements['type'].value == 'trash')
+    {
+        return confirm('你确定要删除所选的会员实名信息吗？');
+    }
+    else if (frm.elements['type'].value == '')
+    {
+        return false;
+    }
+    else
+    {
+        if(frm.elements['review_status'].value == ''){
+            alert("请选择操作状态");
+            return false;
+        }else{
+            return true;
+        }
+    }
+}
+</script>
+</body>
+</html>
+{/if}

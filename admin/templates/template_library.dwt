@@ -1,0 +1,131 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+		<div class="title">{$lang.12_template} - {$lang.library}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.library.0}</li>
+                    <li>{$lang.operation_prompt_content.library.1}</li>
+                </ul>
+            </div>
+        	<div class="flexilist">
+                <div class="common-content">
+                <form method="post" onsubmit="return false">
+                    <div class="form-div">
+                        <label class="fl">{$lang.select_library}</label>
+                        <div id="selLib" class="imitate_select select_w320" rank="1">
+                            <div class="cite">{$lang.select_cat}</div>
+                            <ul>
+                                {foreach from=$libraries item=vo key=key}
+                                <li><a href="javascript:;" data-value="{$key}" class="ftx-01">{$vo}</a></li>
+                                {/foreach}
+                            </ul>
+                            <input name="catFirst" type="hidden" value="0" id="selLib_val">
+                        </div>
+                    </div>
+                    
+                    <div class="main-div mt20">
+                        <div class="libContent"><textarea id="libContent" rows="20" class="textarea">{$library_html|escape:html}</textarea></div>
+                        <div class="info_btn mt20">
+                            <input type="button" value="{$lang.button_submit}" class="button" onclick="updateLibrary()" />
+                            <input type="button" value="{$lang.button_restore}" class="button button_restore" onclick="restoreLibrary()" />
+                        </div>
+                    </div>
+                </form>
+                </div>
+			</div>
+        </div>
+	</div>        
+    {include file ='library/pagefooter.lbi'}
+    {literal}
+    <script type="text/javascript">
+    $(document).on('click','.ftx-01',function(){
+        var currLib = $(this).data('value');
+        $('#selLib_val').val(currLib);
+        loadLibrary(currLib);
+    });
+    
+    var currLibrary = "{$curr_library}";
+    var content = '';
+    
+    /**
+     * 载入库项目内容
+     */
+    function loadLibrary(currLib)
+    {
+        curContent = document.getElementById('libContent').value;
+    
+        if (content != curContent && content != '')
+        {
+            if (!confirm(save_confirm))
+            {
+                return;
+            }
+        }
+    
+        Ajax.call('template.php?is_ajax=1&act=load_library', 'lib='+ currLib, loadLibraryResponse, "GET", "JSON");
+    }
+    
+    /**
+     * 还原库项目内容
+     */
+    function restoreLibrary()
+    {
+        selLib  = document.getElementById('selLib');
+        currLib = selLib.options[selLib.selectedIndex].value;
+    
+        Ajax.call('template.php?is_ajax=1&act=restore_library', "lib="+currLib, loadLibraryResponse, "GET", "JSON");
+    }
+    
+    /**
+     * 处理载入的反馈信息
+     */
+    function loadLibraryResponse(result)
+    {
+        if (result.error == 0)
+        {
+            document.getElementById('libContent').value=result.content;
+        }
+    
+        if (result.message.length > 0)
+        {
+          alert(result.message);
+        }
+    }
+    
+    /**
+     * 更新库项目内容
+     */
+    function updateLibrary()
+    {
+        currLib = $('#selLib_val').val();
+        content = document.getElementById('libContent').value;
+    
+        if (Utils.trim(content) == "")
+        {
+            alert(empty_content);
+            return;
+        }
+        Ajax.call('template.php?act=update_library&is_ajax=1', 'lib=' + currLib + "&html=" + encodeURIComponent(content), updateLibraryResponse, "POST", "JSON");
+    }
+    
+    /**
+     * 处理更新的反馈信息
+     */
+    function updateLibraryResponse(result)
+    {
+      if (result.message.length > 0)
+      {
+        alert(result.message);
+      }
+    }
+    
+    </script>
+    {/literal}
+</body>
+</html>

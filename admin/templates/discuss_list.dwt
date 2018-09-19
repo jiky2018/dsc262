@@ -1,0 +1,150 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.goods_alt} - {$ur_here}</div>
+        <div class="content">		
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.list.0}</li>
+                    <li>{$lang.operation_prompt_content.list.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-head">
+                    <div class="fl">
+                    	<a href="discuss_circle.php?act=add"><div class="fbutton"><div class="add" title="添加主题"><span><i class="icon icon-plus"></i>添加主题</span></div></div></a>
+                    </div>				
+                    <div class="refresh">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+					<div class="search">
+                    	<form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+                    	<div class="input">
+                        	<input type="text" name="keywords" class="text nofocus" placeholder="关键字" autocomplete="off">
+							<input type="submit" class="btn" name="secrch_btn" ectype="secrch_btn" value="" />
+                        </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="common-content">
+					<form method="POST" action="discuss_circle.php?act=batch_drop" name="listForm" onsubmit="return confirm_bath()">
+                	<div class="list-div" id="listDiv">
+                    	<div class="flexigrid ht_goods_list">
+						{/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                	<th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars"></label></div></th>
+                                	<th width="5%"><div class="tDiv">{$lang.record_id}</div></th>
+                                    <th width="19%"><div class="tDiv">{$lang.discuss_title}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.user_name}</div></th>
+                                    <th width="7%"><div class="tDiv">{$lang.discuss_type}</div></th>
+                                    <th width="7%"><div class="tDiv">{$lang.goods_steps_name}</div></th>
+                                    <th width="6%"><div class="tDiv">{$lang.adopt_status}</div></th>
+                                    <th width="20%"><div class="tDiv">{$lang.discuss_goods}</div></th>
+                                    <th width="9%"><div class="tDiv">{$lang.discuss_time}</div></th>
+                                    <th width="14%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+								{foreach from=$discuss_list item=discuss}
+                            	<tr>
+                                    <td class="sign"><div class="tDiv">
+										<input type="checkbox" name="checkboxes[]" value="{$discuss.dis_id}" class="checkbox" id="checkbox_{$discuss.dis_id}" />
+										<label for="checkbox_{$discuss.dis_id}" class="checkbox_stars"></label>
+									</div></td>
+                                    <td><div class="tDiv">{$discuss.dis_id}</div></td>
+									<td><div class="tDiv">{$discuss.dis_title}</div></td>
+									<td><div class="tDiv">{if $discuss.user_name}{$discuss.user_name}{else}{$lang.anonymous}{/if}</div></td>
+									<td><div class="tDiv">{if $discuss.dis_type eq 1}{$lang.forum.1}{elseif $discuss.dis_type eq 2}{$lang.forum.2}{else}{$lang.forum.3}{/if}</div></td>
+									<td><div class="tDiv">{$discuss.shop_name}</div></td>
+                                    <td><div class="tDiv{if $discuss.review_status eq 2} red{elseif $discuss.review_status eq 3} blue{/if}" title="{$discuss.review_content}">{$discuss.lang_review_status}</div></td>
+                                    <td><div class="tDiv"><a href="../goods.php?id={$discuss.goods_id}" target="_blank">{$discuss.goods_name}</a></div></td>                       
+                                    <td><div class="tDiv">{$discuss.add_time}</div></td>                       
+                                    <td class="handle">
+                                        <div class="tDiv ht_tdiv">
+                                            <a href="discuss_circle.php?act=reply&amp;id={$discuss.dis_id}" class="btn_see"><i class="sc_icon sc_icon_see"></i>查看</a>
+                                            <a href="discuss_circle.php?act=user_reply&amp;id={$discuss.dis_id}" class="btn_edit"><i class="icon icon-edit"></i>回复</a>
+                                            <a href="javascript:" onclick="listTable.remove({$discuss.dis_id}, '{$lang.drop_confirm}')" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>
+                                        </div>
+                                    </td>
+                                </tr>
+								{foreachelse}
+								<tr><td class="no-records"  colspan="20">{$lang.no_records}</td></tr>								
+								{/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                	<td colspan="12">
+                                        <div class="tDiv">
+                                            <div class="tfoot_btninfo">
+                                                <div class="shenhe">
+                                                    <div id="" class="imitate_select select_w120">
+                                                        <div class="cite">{$lang.please_select}</div>
+                                                        <ul>
+                                                            <li><a href="javascript:;" data-value="remove" class="ftx-01">{$lang.drop_select}</a></li>
+                                                        </ul>
+                                                        <input name="sel_action" type="hidden" value="remove" id="">
+                                                    </div>
+                                                    <input type="submit" name="drop" id="btnSubmit" value="{$lang.button_submit}" class="btn btn_disabled" disabled="true" ectype="btnSubmit" />
+                                                </div>
+                                            </div>
+                                            <div class="list-page">
+                                               {include file="library/page.lbi"}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+						{if $full_page}
+                        </div>
+                    </div>
+					</form>
+                </div>
+            </div>
+		</div>
+	</div>
+	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+	cfm = new Object();
+	cfm['allow'] = '{$lang.cfm_allow}';
+	cfm['remove'] = '{$lang.cfm_remove}';
+	cfm['deny'] = '{$lang.cfm_deny}';
+	
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+	
+	{literal}
+	function searchComment()
+	{
+		var keyword = Utils.trim(document.forms['searchForm'].elements['keyword'].value);
+		if(keyword.length > 0){
+			listTable.filter['keywords'] = keyword;
+			listTable.filter.page = 1;
+			listTable.loadList();
+		}else{
+			document.forms['searchForm'].elements['keyword'].focus();
+		}
+	}
+	{/literal}
+	
+	function confirm_bath()
+	{
+		var action = document.forms['listForm'].elements['sel_action'].value;
+		
+		return confirm(cfm[action]);
+	}
+	</script>
+</body>
+</html>
+{/if}

@@ -1,0 +1,166 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>{$lang.goods_alt} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.import.0}</li>
+                    <li>{$lang.operation_prompt_content.import.1}</li>
+                </ul>
+            </div>        
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+                        <form action="goods_lib.php" method="post" name="theForm" enctype="multipart/form-data" id="discuss_circle_form">
+                            <div class="switch_info">
+                                <div class="item">
+                                    <div class="label">{$lang.select_seller}：</div>
+                                    <div class="label_value">
+										<div class="selection_select">
+											<div class="selection">
+												<input type="text" name="user_name" id="user_name" class="text w140 valid" autocomplete="off" value="" readonly>
+												<input type="hidden" name="user_id" id="user_id" value="">
+											</div>
+											<div class="select-container" style="display:none;">
+												<div class="select-top2">
+													<div class="s_search"><input name="shopName" id="shopName" type="text" class="s_text" placeholder="{$lang.search_key}"><a href="javascript:void(0);" onclick="get_search_shopname()" class="btn-mini"><i class="icon icon-search"></i></a></div>
+												</div>
+												<div class="select-list2" id="shop_list">
+													<ul >
+													{foreach from=$seller_list item=list}
+														{if $list.shop_name}
+														<li data-name="{$list.shop_name}" data-id="{$list.user_id}">{$list.shop_name}</li>
+														{/if}
+													{/foreach}
+													</ul>
+												</div>
+											</div>
+											<div class="form_prompt"></div>
+										</div>
+                                    </div>
+                                </div>								
+                                <div class="item">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="label_value info_btn">
+										<input name="submit" type="submit" value="{$lang.confirm_import}" class="button" id="submitBtn">
+										<input type="hidden" name="act" value="import_action">
+                                    </div>
+                                </div>								
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+    </div>
+ 	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+	function add_integ(obj, act, id, goods_id, user_id)
+	{
+		var integ = document.getElementById('add_integration').value;
+		location.href='comment_manage.php?act=single_check&check=' + act + '&id=' + id + '&integ=' + integ + '&goods_id=' + goods_id + '&user_id=' + user_id;
+	}
+
+	function searchGoods()
+	{
+	  var filter = new Object;
+	  filter.keyword  = document.forms['theForm'].elements['keyword'].value;
+
+	  Ajax.call('tag_manage.php?is_ajax=1&act=search_goods', filter, searchGoodsResponse, 'GET', 'JSON');
+	}
+
+	function searchGoodsResponse(result)
+	{
+	  if (result.error == '1' && result.message != '')
+	  {
+		alert(result.message);
+		return;
+	  }
+
+	  $('#goods_id').find('li').remove();
+	  
+	  var goods = result.content;
+	  
+	  if(goods){
+		  for (i=0; i<goods.length;i++){
+			  $('#goods_id').find('ul').append('<li><a href="javascript:;" data-value="'+goods[i].goods_id+'" class="ftx-01">'+goods[i].goods_name+'</a></li>');
+		  }
+	  }
+
+	  return;
+	}
+
+	/**
+	 * 新增一个图片
+	 */
+	function addImg(obj)
+	{
+		var src  = obj.parentNode.parentNode;
+		var idx  = rowindex(src);
+		var tbl  = document.getElementById('gallery-table');
+		var tr = tbl.getElementsByTagName('tr');
+
+		if(tr.length == 10)
+		{
+			alert("{$lang.max_ten_img}");
+			return false;
+		}
+		
+		var row  = tbl.insertRow(idx + 1);
+		var cell = row.insertCell(-1);
+		cell.innerHTML = src.cells[0].innerHTML.replace(/(.*)(addImg)(.*)(\[)(\+)/i, "$1removeImg$3$4-");
+	}
+
+	/**
+	 * 删除图片上传
+	 */
+	function removeImg(obj)
+	{
+		var row = rowindex(obj.parentNode.parentNode);
+		var tbl = document.getElementById('gallery-table');
+
+		tbl.deleteRow(row);
+	}
+
+	/**
+	 * 删除图片
+	 */
+	function dropImg(imgId)
+	{
+	  Ajax.call('goods.php?is_ajax=1&act=drop_image', "img_id="+imgId, dropImgResponse, "GET", "JSON");
+	}
+
+	function dropImgResponse(result)
+	{
+		if (result.error == 0)
+		{
+			document.getElementById('gallery_' + result.content).style.display = 'none';
+		}
+	}
+	
+	/**
+	 * 查询店铺名称
+	 */
+	function get_search_shopname(){
+		var shop_name = $("#shopName").val();
+		Ajax.call('goods_lib.php?is_ajax=1&act=get_shopname', "shop_name="+shop_name, shopNameResponse, "GET", "JSON");
+	}
+
+	function shopNameResponse(result)
+	{
+	  if (result.error == 0)
+	  {
+		  document.getElementById('shop_list').innerHTML = result.content;
+		  $(".select-list2").perfectScrollbar("destroy");
+		  $(".select-list2").perfectScrollbar();
+	  }
+	}
+		
+	</script>
+</body>
+</html>

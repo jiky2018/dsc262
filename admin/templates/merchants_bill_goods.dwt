@@ -1,0 +1,117 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="javascript:window.history.go(-1);" class="s-back"></a>{$lang.seller} - {$ur_here}</div>
+        <div class="content">
+        	{include file="library/commission_tab.lbi"}
+            <div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.bill_goods.0}</li>
+                    <li class="red">{$lang.operation_prompt_content.bill_goods.1}</li>
+                    <li class="red">{$lang.operation_prompt_content.bill_goods.2}</li>
+                    <li class="red">{$lang.operation_prompt_content.bill_goods.3}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                	<div class="list-div"  id="listDiv" >
+						{/if}
+						<form method="post" action="" name="listForm" onsubmit="return confirm('{$lang.batch_confirm_settlement}');">
+                    	<table cellpadding="1" cellspacing="1">
+                        	<thead>
+                            	<tr>
+                                	<th width="3%" class="sign">
+                                        <div class="tDiv">
+                                        	<input type="checkbox" name="all_list" class="checkbox" id="all_list" />
+                                        	<label for="all_list" class="checkbox_stars"></label>
+                                        </div>
+                                    </th>
+                                    <th><div class="tDiv">{$lang.record_id}<div></th>
+                                    <th><div class="tDiv">{$lang.goods_sn}</div></th>
+                                    <th width="35%"><div class="tDiv">{$lang.goods_name}</div></th>
+                                    <th><div class="tDiv">{$lang.category_name}</div></th>
+                                    {if $filter.commission_model eq 1}
+                                    <th><div class="tDiv">{$lang.commission_rate}</div></th>
+                                    {/if}
+                                    <th><div class="tDiv">{$lang.goods_price}</div></th>
+                                    <th><div class="tDiv">{$lang.goods_number}</div></th>
+                                    {if $is_dir}
+                                    <th><div class="tDiv">{$lang.drp_money}</div></th>
+                                    {/if}
+                                </tr>
+                            </thead>
+                            <tbody>
+								{foreach from=$goods_list item=goods name=noorder}
+								<tr>
+                                    <td class="sign">
+                                        <div class="tDiv">
+                                            <input type="checkbox" name="checkboxes[]" value="{$goods.rec_id}" class="checkbox" id="checkbox_{$goods.rec_id}" />
+                                            <label for="checkbox_{$goods.rec_id}" class="checkbox_stars"></label>
+                                        </div>
+                                    </td>
+                                    <td><div class="tDiv">{$goods.rec_id}</div></td>
+                                    <td><div class="tDiv">{$goods.goods_id}</div></td>
+                                    <td>
+                                    	<div class="tDiv">
+                                        	<p>{$goods.goods_name}{if $goods.is_return}<em class="red">【{$lang.return_goods}】</em>{/if}</p>
+                                            
+                                            {if $goods.commission_rate}
+                                            <p><em style="color:#31b4e1;">【{$lang.goods_alt}】：{$goods.commission_rate}%</em></p>
+                                            {/if}
+                                        </div>
+                                    </td>
+                                    <td><div class="tDiv">{$goods.cat_name}</div></td>
+                                    {if $filter.commission_model eq 1}
+                                    <td><div class="tDiv red">{$goods.proportion}%</div></td>
+                                    {/if}
+                                    <td><div class="tDiv">{$goods.goods_price}</div></td>
+                                    <td><div class="tDiv">{$goods.goods_number}</div></td>
+                                    {if $is_dir}
+                                    <td><div class="tDiv">{$goods.drp_money}</div></td>
+                                    {/if}
+								</tr>
+								{foreachelse}
+								<tr><td class="no-records" colspan="16">{$lang.no_records}</td></tr>
+								{/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="16">
+                                        <div class="tDiv">
+                                            <div class="tfoot_btninfo">
+                                                &nbsp;
+                                            </div>
+                                            <div class="list-page">
+                                                {include file="library/page.lbi"}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+						</form>
+						{if $full_page}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+ 	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+	//分页传值
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+	listTable.query = "bill_goods_query";
+
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+    </script>
+</body>
+</html>
+{/if}

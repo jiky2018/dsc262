@@ -1,0 +1,336 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<link rel="icon" href="animated_favicon.gif" type="image/gif" />
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/base.css" />
+<link href="{$ecs_css_path}" rel="stylesheet" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS|{$page_title}" href="{$feed_url}" />
+<link rel="stylesheet" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/purebox.css">
+{* 包含脚本文件 *}
+{insert_scripts files='jquery-1.9.1.min.js,jquery.json.js,transport_jquery.js'}
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/sc_common.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/rotate3di.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/scroll_city.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/notLogin.js"></script>
+<!-- #BeginLibraryItem "/library/js_languages.lbi" --><!-- #EndLibraryItem -->
+<style type="text/css">
+
+#discuss .quote {
+    margin-bottom: 10px;
+    width: 510px;
+}
+
+#discuss .quote fieldset {
+    border: 1px solid #dedede;
+    color: #999;
+    font-size: 12px;
+    line-height: 18px;
+    padding: 2px 0 8px;
+    width:500px;
+    word-wrap: break-word;
+}
+
+#discuss .quote legend {
+    color: #999;
+    margin-left: 5px;
+    padding: 0 4px;
+}
+
+#discuss .quote .quote_content {
+    margin-left: 5px;
+    padding: 0 5px;
+    width: 580px;
+}
+
+.editor-quote .quote {
+    background-color: #fff;
+    border: 1px solid #d0e4c2;
+    font-size: 12px;
+    line-height: 18px;
+    margin: 5px;
+    padding: 6px 11px;
+    position: relative;
+    width: 525px;
+    word-wrap: break-word;
+}
+
+.editor-quote .quote_title {
+    color: #989898;
+    height: 22px;
+}
+
+.editor-quote .quote .close {
+    background:url(images/i20130422A.png);
+    cursor: pointer;
+    font-size: 0;
+    height: 8px;
+    overflow: hidden;
+    position: absolute;
+    right: 8px;
+    text-decoration: none;
+    top: 40%;
+    width: 8px;
+}
+
+#discuss .floor {
+    color: #999;
+    position: absolute;
+    right: 20px;
+    top: -15px;
+}
+</style>
+</head>
+
+<body>
+<!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
+<div class="ecsc-breadcrumb w1200">
+    <!-- #BeginLibraryItem "/library/ur_here.lbi" --><!-- #EndLibraryItem -->
+</div>
+<div class="Main">
+    <!-- #BeginLibraryItem "/library/discuss_left.lbi" --><!-- #EndLibraryItem -->
+    <div class="right">
+        <div class="View_Mode">
+            <h1>
+            	{if $discuss.dis_type eq 1}
+                [讨论帖]
+                {elseif $discuss.dis_type eq 2}
+                [问答帖]
+                {elseif $discuss.dis_type eq 3}
+                [圈子帖]
+                {/if}
+            	{$discuss.dis_title}
+            </h1>
+            <div class="partake-new">
+                <div id="bdshare" class="bdshare_t bds_tools get-codes-bdshare">
+                    <span style="padding-top:6px;color:#999999">{$lang.Share_to}：</span>
+                    <a class="bds_qzone" title="{$lang.Share_to_QQ}" href="#"></a>
+                    <a class="bds_tsina" title="{$lang.Share_to_xinlang}" href="#"></a>
+                    <a class="bds_tqq" title="{$lang.Share_to_tenxun}" href="#"></a>
+                    <a class="bds_renren" title="{$lang.Share_to_renren}" href="#"></a>
+                    <a class="bds_t163" title="{$lang.Share_to_wangyi}" href="#"></a>
+                    <span class="bds_more">{$lang.more}</span>
+                </div>
+            </div>
+        </div>
+        <div class="replylist">
+            <div class="user">
+                <div class="u-icon">
+                	<a href="user.php"><img src="{if $user_picture}{$user_picture}{else}themes/<?php echo $GLOBALS['_CFG']['template']; ?>/images/touxiang.jpg{/if}" width="85" height="85" /></a>
+                </div>
+                <div class="u-name"><a href="user.php">{if $discuss.nick_name}{$discuss.nick_name}{else}{$ang.anonymous}{/if}</a></div>
+            </div>
+            <div class="cont">
+                <div class="i-item">
+                	{$discuss.dis_text}
+                </div>
+                {if $img_list}
+                <div id="preview">
+                    <div class="jqzoom">
+                    	{foreach from=$img_list item=img key=key}
+                        {if $key eq 0}
+                        <div class="o-img"><img src="{$img.comment_img}" class="spec-n1" width="520" /></div>
+                        {/if}
+                        {/foreach}
+                    </div>
+                    <div class="spec">
+                    	{foreach from=$img_list item=img key=key}
+                        <div class="spec-item {if $key eq 0}current{/if}"><img src="{$img.comment_img}" width="96" height="96" /></div>
+                        {/foreach}
+                    </div>
+                </div>
+                {/if}
+                <div class="item-info">
+                    <div class="fl"><a href="#reply" class="reply_parent huifu" dis_id="{$discuss.dis_id}" quote_id="{$discuss.dis_id}" userID="{$discuss.user_id}" userName="{$discuss.nick_name}" data="{$discuss.dis_text}">{$lang.reply_comment}</a></div>
+                    <div class="fl ftx-03">{$lang.Published_in}{$discuss.add_time}</div>
+                </div>
+            </div>
+        </div>
+        {foreach from=$reply_discuss.list item=list key=key name=noreply}
+        <div class="replylist" id="discuss">
+            <div class="user">
+                <div class="u-icon"><a href="user.php"><img src="{if $list.user_picture}{$list.user_picture}{else}themes/<?php echo $GLOBALS['_CFG']['template']; ?>/images/touxiang.jpg{/if}" width="85" height="85" /></a></div>
+                <div class="u-name"><a href="user.php">{$list.nick_name}</a></div>
+            </div>
+            <div class="cont">
+            	{if $list.quote}
+            	<div>
+                	<blockquote class="quote">
+                    	<fieldset><legend>{$lang.Quote}&nbsp;{$list.quote.nick_name}&nbsp;</legend>
+                        <div class="quote_content"> 
+                     		{$list.quote.dis_text}
+                    	</div>
+                    	</fieldset>
+                    </blockquote>
+                </div>
+                {/if}
+                <div class="i-item">
+                	{$list.dis_text}
+                </div>
+                <div class="item-info">
+                    <div class="fl"><a href="#reply" class="reply_parent huifu" dis_id="{$discuss.dis_id}" quote_id="{$list.dis_id}" userID="{$list.user_id}" userName="{$list.nick_name}" data="{$list.dis_text}">回复</a></div>
+                    <div class="fl ftx-03">{$lang.Published_in}{$list.add_time}</div>
+                </div>
+                <div class="floor" style="display:none">{$smarty.foreach.noreply.iteration}{$lang.lou}</div>
+            </div>
+        </div>
+        {/foreach}
+        
+        {if $reply_discuss.record_count gt $reply_discuss.size}
+        <div class="pages26">
+        	<div class="pages">
+            	<div class="pages-it">
+                	{$reply_discuss.pager}
+                </div>
+            </div>
+        </div>
+        {/if}
+        <div class="reply" id="reply">
+            <h2>{$lang.Post_reply}</h2>
+            <div class="item">
+                <div class="cont" style="width:943px; border:1px solid #ddd;">
+                	<div class="editor-quote fl" id="editor-quote" style="display: none;">
+                        <blockquote class="quote"><a onclick="closeQuote();" class="close" title="删除引用">X</a>
+                            <input type="hidden" id="dis_id" name="dis_id" value="{$discuss.dis_id}">
+                            <input type="hidden" id="quote_id" name="quote_id" value="">
+                            <input type="hidden" id="nick_user" name="nick_user" value="{$discuss.user_id}">
+                            <div id="quoteTitle" class="quote_title">{$lang.Quote}&#12288; <em class="userName"></em> </div>
+                            <div id="quoteContent" class="quote_content"> {$lang.reply_desc}</div>
+                        </blockquote>
+                    </div>
+                    <div class="reply_textarea fl" style="width:943px;">
+                    	<textarea id="reply_content" style="width:933px;"></textarea>
+                    </div>    
+                </div>
+            </div>
+            <div class="item">
+                <a href="javascript:void(0);" class="btn">{$lang.publish}</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.purebox.js"></script>
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+<script type="text/javascript">
+$(function(){
+	$('.editor-quote').hide();
+	$("#preview").find(".spec-item").click(function(){
+        var url = $(this).children().prop("src");
+        $(this).addClass("current").siblings().removeClass("current");
+        $(".spec-n1").attr('src',url);
+    });
+	
+	$('.reply_parent').click(function(){
+		var T = $(this);
+		$("#dis_id").val(T.attr('dis_id'));
+		$("#quote_id").val(T.attr('quote_id'));
+		$("#nick_user").val(T.attr('userID'));
+		$("#quoteContent").html(T.attr('data'));
+		$(".userName").html(T.attr('userName'));
+		$('.editor-quote').show();
+	});
+	
+	$('#reply .btn').click(function(){
+		var dis_id = $("#dis_id").val();
+		var quote_id = $("#quote_id").val();
+		var nick_user = $("#nick_user").val();
+		var reply_content = $("#reply_content").val();
+		onsubmit_comm(dis_id, quote_id, reply_content, nick_user);
+	});
+});
+
+function closeQuote(){
+	$("#dis_id").val({$discuss.dis_id});
+	$("#quote_id").val('');
+	$("#nick_userId").val({$discuss.user_id});
+	$("#quoteContent").html('');
+	$(".userName").html('');
+	$('.editor-quote').hide();
+}
+
+function onsubmit_comm(id,quote_id,content,nick_user)
+{
+    if(content == '')
+    {
+		var divId = 'discuss_show_add';
+		var content = '<div id="discuss_show_add">' + 
+							'<div class="tip-box icon-box">' +
+								'<span class="warn-icon m-icon"></span>' + 
+								'<div class="item-fore">' +
+									'<h3 class="rem ftx-04">'+json_languages.reply_desc_one+'</h3>' +
+								'</div>' +
+							'</div>' +
+						'</div>';
+		pb({
+			id:divId,
+			title:json_languages.title,
+			width:455,
+			height:58,
+			content:content, 	//调取内容
+			drag:false,
+			foot:false
+		});
+		
+		return false;
+    }
+
+    Ajax.call('single_sun.php?act=check_comm', 'dis_id=' + id + '&quote_id=' + quote_id + '&comment_content=' + content + '&nick_user=' + nick_user, get_reply_comm, 'GET', 'JSON');
+}
+
+function get_reply_comm(res)
+{
+    if(res.error == 1)
+    {
+		var divId = 'discuss_show_add';
+		var content = '<div id="discuss_show_add">' + 
+							'<div class="tip-box icon-box">' +
+								'<span class="warn-icon m-icon"></span>' + 
+								'<div class="item-fore">' +
+									'<h3 class="rem ftx-04">' + res.err_msg + '</h3>' +
+								'</div>' +
+							'</div>' +
+						'</div>';
+		pb({
+			id:divId,
+			title:json_languages.title,
+			width:455,
+			height:58,
+			ok_title:json_languages.determine, 	//按钮名称
+			content:content, 	//调取内容
+			drag:false,
+			cl_cBtn: false,
+			foot:true,
+			onOk:function(){
+				location.reload();
+			}
+		});
+		
+		$('#' + divId + ' .pb-x').hide();
+		$('#' + divId + ' .pb-ft .pb-ok').addClass('color_df3134');	
+		
+		return false;
+    }else if(res.error == 2){
+		var back_url = "single_sun.php?act=discuss_show&did=" + res.dis_id;
+		$.notLogin("get_ajax_content.php?act=get_login_dialog",back_url);
+		return false;			
+	}else{
+		location.reload();
+	}
+}
+</script>
+
+<script type="text/javascript" id="bdshare_js" data="type=tools&amp;uid=692785" ></script>
+<script type="text/javascript" id="bdshell_js"></script>
+<script type="text/javascript">
+	document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + new Date().getHours();
+</script>
+</body>
+</html>

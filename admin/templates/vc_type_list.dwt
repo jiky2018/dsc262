@@ -1,0 +1,131 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.promotion} - {$ur_here}</div>
+        <div class="content">
+        	<div class="tabs_info">
+            	<ul>
+                    <li class="curr"><a href="value_card.php?act=list">{$lang.vc_type_list}</a></li>
+					<li><a href="value_card.php?act=vc_list">{$lang.value_card_list}</a></li>
+					<li><a href="pay_card.php?act=list">{$lang.pc_type_list}</a></li>
+                    <li><a href="pay_card.php?act=pc_list">{$lang.pay_card_list}</a></li>
+				</ul>
+            </div>	
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit">
+					<i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span>
+                    {if $open eq 1}
+                    <div class="view-case">
+                    	<div class="view-case-tit"><i></i>{$lang.view_tutorials}</div>
+                        <div class="view-case-info">
+                        	<a href="http://help.ecmoban.com/article-6549.html" target="_blank">{$lang.tutorials_bonus_list_one}</a>
+                        </div>
+                    </div>			
+                    {/if}				
+				</div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.list.0}</li>
+                    <li>{$lang.operation_prompt_content.list.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<div class="common-head">
+                	<div class="fl">
+						<a href="{$action_link.href}"><div class="fbutton"><div class="add" title="{$action_link.text}"><span><i class="icon icon-plus"></i>{$action_link.text}</span></div></div></a>
+					</div>
+                    <div class="refresh">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+                </div>
+                <div class="common-content">
+				<form method="post" action="" name="listForm">
+                	<div class="list-div" id="listDiv" >
+						{/if}
+                    	<table cellpadding="1" cellspacing="1" >
+                        	<thead>
+                            	<tr>
+									<th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars"></label></div></th>
+                                    <th width="5%"><div class="tDiv">{$lang.record_id}</div></th>
+                                	<th width="10%"><div class="tDiv">{$lang.vc_name}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.vc_value}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.vc_dis}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.use_condition}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.indate}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.send_amount}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.use_amount}</div></th>
+									<th width="5%"><div class="tDiv">{$lang.is_rec}</div></th>
+                                    <th width="20%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+						    {foreach from=$value_card_list item=list}
+                            	<tr>
+									<td class="sign">
+                                        <div class="tDiv">
+                                            <input type="checkbox" name="checkboxes[]" value="{$list.id}" class="checkbox" id="checkbox_{$list.id}" />
+                                            <label for="checkbox_{$list.id}" class="checkbox_stars"></label>
+                                        </div>
+                                    </td>
+                                    <td><div class="tDiv">{$list.id}</div></td>
+                                	<td><div class="tDiv">{$list.name}</div></td>
+                                	<td><div class="tDiv red">{$list.vc_value}</div></td>
+                                    <td><div class="tDiv">{$list.vc_dis}</div></td>
+                                    <td><div class="tDiv">{$list.use_condition}</div></td>
+									<td><div class="tDiv">{$list.vc_indate}</div></td>		
+									<td><div class="tDiv">{$list.send_amount}</div></td>		
+                                    <td><div class="tDiv">{$list.use_amount}</div></td>
+									<td><div class="tDiv"><img src="images/{if $list.is_rec}yes{else}no{/if}.png" class="pl3" /></div></td>							
+                                    <td class="handle">
+										<div class="tDiv a3">
+											<a href="value_card.php?act=send&id={$list.id}" title="{$lang.view_detail}" class="btn_region"><i class="icon icon-screenshot"></i>{$lang.send}</a>
+											<a href="value_card.php?act=vc_list&tid={$list.id}" title="{$lang.view_detail}" class="btn_see"><i class="sc_icon sc_icon_see"></i>{$lang.view}</a>
+											<a href="value_card.php?act=vc_type_edit&id={$list.id}" title="{$lang.edit}" class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>
+											<a href="javascript:;" onclick="listTable.remove({$list.id}, '{$lang.drop_confirm}')" title="{$lang.remove}" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>									
+										</div>
+									</td>
+                                </tr>
+							{foreachelse}
+							<tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+							{/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="12">
+										<div class="tfoot_btninfo">
+											<div class="shenhe">
+												<input type="submit" name="drop" id="btnSubmit" value="{$lang.drop}" class="btn btn_disabled" disabled="true" ectype="btnSubmit" />
+												<input type="hidden" name="act" value="batch_remove" />
+											</div>										
+										</div>
+                                    	<div class="list-page">
+											{include file="library/page.lbi"}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+						{if $full_page}
+                    </div>
+				</form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+    //分页传值
+    listTable.recordCount = {$record_count|default:0};
+    listTable.pageCount = {$page_count|default:1};
+
+    {foreach from=$filter item=item key=key}
+    listTable.filter.{$key} = '{$item}';
+    {/foreach}
+    </script>
+</body>
+</html>
+{/if}

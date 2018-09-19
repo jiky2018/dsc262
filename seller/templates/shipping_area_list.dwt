@@ -1,0 +1,70 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+		{include file ='library/seller_menu_left.lbi'}
+		<div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+				{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                {/if}
+                <form method="post" action="shipping_area.php" name="listForm" onsubmit="return confirm('{$lang.remove_confirm}')">
+                <div class="list-div" id="listDiv">
+                <table id='listTable' class="ecsc-default-table mt20">
+                  <thead>
+                  <tr>
+                    <th width="10%"><div class="first_all"><input type="checkbox" onclick="listTable.selectAll(this, 'checkboxes')" class="ui-checkbox" id="all" /><label for="all" class="ui-label">{$lang.record_id}</label></div></th>
+                    <th width="39%">{$lang.shipping_area_name}</th>
+                    <th width="39%">{$lang.shipping_area_regions}</th>
+                    <th width="12%">{$lang.handler}</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {foreach from=$areas item=area}
+                  <tr>
+                    <td class="first_td_checkbox">
+                        <div class="first_all">
+                            <input type="checkbox" name="checkboxes[]" value="{$area.shipping_area_id}" class="ui-checkbox" id="checkbox_{$area.shipping_area_id}" /><label for="checkbox_{$area.shipping_area_id}" class="ui-label">{$area.shipping_area_id}</label>
+                        </div>
+                    </td>
+                    <td class="first-cell">
+                      <span onclick="listTable.edit(this, 'edit_area', '{$area.shipping_area_id}'); return false;">{$area.shipping_area_name|escape:"html"}</span>
+                    </td>
+                    <td>{$area.shipping_area_regions}</td>
+                    <td class="ecsc-table-handle tr">
+                        <span><a href="shipping_area.php?act=edit&id={$area.shipping_area_id}" title="{$lang.edit}" class="btn-green"><i class="icon icon-edit"></i><p>{$lang.edit}</p></a></span>
+                        <span><a href="javascript:;" onclick="listTable.remove({$area.shipping_area_id}, '{$lang.remove_confirm}', 'remove_area')" class="btn-red" title="{$lang.drop}"><i class="icon icon-trash"></i><p>{$lang.drop}</p></a></span>
+                    </td>
+                  </tr>
+                  {foreachelse}
+                  <tr><td class="no-records" colspan="11">{$lang.no_records}</td></tr>
+                  {/foreach}
+                  </tbody>
+                  <tfoot>
+                  <tr>
+                    <td colspan="5" class="td_border">
+                      <div class="shenhe">
+                          <input type="hidden" name="act" value="multi_remove" />
+                          <input type="hidden" name="shipping" value="{$smarty.get.shipping}" />
+                          <input type="submit" value="{$lang.remove}" disabled="true" id="btnSubmit" class="sc-btn btn_disabled" />
+                      </div>
+                    </td>
+                  </tr>
+                  </tfoot>
+                </table>
+                {if $full_page}
+                </div>
+                </form>
+        	</div>
+    	</div>
+	</div>
+</div>
+{include file ='library/seller_footer.lbi'}
+</body>
+</html>
+{/if}

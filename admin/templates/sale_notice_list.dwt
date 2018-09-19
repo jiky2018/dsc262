@@ -1,0 +1,179 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.goods_alt} - {$ur_here}</div>
+        <div class="content">
+            {include file="library/common_tabs_info.lbi"} 
+        	<div class="explanation m10" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.list.0}</li>
+                	<li>{$lang.operation_prompt_content.list.1}</li>
+                </ul>
+            </div>            
+        	<div class="tabs_info">
+            	<ul>
+                    <li {if $menu_select.current eq 'sale_notice'}class="curr"{/if}><a href="sale_notice.php?act=list{$seller_list}">{$lang.sale_notice}</a></li>
+                    <li {if $menu_select.current eq 'notice_logs'}class="curr"{/if}><a href="notice_logs.php?act=list{$seller_list}">{$lang.notice_logs}</a></li>
+                </ul>
+            </div>			
+            <div class="flexilist">
+                <div class="common-head">
+                    <div class="refresh ml0">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+					<div class="search">
+                    	<form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+						<div class="select">
+							<div class="fl">{$lang.send_out_state}：</div>
+							<div id="" class="imitate_select select_w170">
+								<div class="cite">{$lang.please_select}</div>
+								<ul>
+									<li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.please_select}</a></li>
+									<li><a href="javascript:;" data-value="2" class="ftx-01">{$lang.not_send_out}</a></li>
+									<li><a href="javascript:;" data-value="1" class="ftx-01">{$lang.already_send_out}</a></li>
+									<li><a href="javascript:;" data-value="3" class="ftx-01">{$lang.sys_send_out_fail}</a></li>
+								</ul>
+								<input name="send_status" type="hidden" value="0" id="">
+							</div>						
+						</div>				
+                    	<div class="input">
+                        	<input type="text" name="keywords" class="text nofocus" placeholder="{$lang.customer_email}" autocomplete="off">
+							<input type="submit" class="btn" name="secrch_btn" ectype="secrch_btn" value="" />
+                        </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="common-content">
+					<form method="POST" action="sale_notice.php?act=batch_drop" name="listForm" onsubmit="return confirm_bath()">
+                	<div class="list-div" id="listDiv">
+						{/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                	<th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars"></label></div></th>
+                                	<th width="5%"><div class="tDiv">{$lang.record_id}</div></th>
+                                    <th width="8%"><div class="tDiv">{$lang.user_name}</div></th>
+                                    <th width="25%"><div class="tDiv">{$lang.goods_name}</div></th>
+                                    <th width="8%"><div class="tDiv">{$lang.goods_steps_name}</div></th>
+                                    <th width="8%"><div class="tDiv">{$lang.phone_and_email}</div></th>
+                                    <th width="5%"><div class="tDiv">{$lang.goods_present_price}</div></th>
+                                    <th width="5%"><div class="tDiv">{$lang.expect_price}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.apply_time}</div></th>
+                                    <th width="7%"><div class="tDiv">{$lang.send_out_state}</div></th>
+                                    <th width="5%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+								{foreach from=$notice_list item=list}
+                            	<tr>
+                                    <td class="sign">
+                                        <div class="tDiv">
+                                            <input type="checkbox" name="checkboxes[]" value="{$list.id}" class="checkbox" id="checkbox_{$list.id}" />
+                                            <label for="checkbox_{$list.id}" class="checkbox_stars"></label>
+                                        </div>
+                                    </td>
+                                    <td><div class="tDiv">{$list.id}</div></td>
+									<td><div class="tDiv">{$list.user_name}</div></td>
+									<td><div class="tDiv"><a href="{$list.goods_link}" target="_blank">{$list.goods_name}</a></div></td>
+									<td><div class="tDiv"><font style="color:#F00">{$list.shop_name}</font></div></td>
+									<td>
+                                    <div class="tDiv">
+                                    	<p>{$list.cellphone}</p>
+                                        <p>{$list.email}</p>
+                                    </div>
+                                    </td>
+                                    <td><div class="tDiv">{$list.shop_price}</div></td>
+                                    <td><div class="tDiv">{$list.hopeDiscount}</div></td>
+                                    <td><div class="tDiv">{$list.add_time}</div></td>
+                                    <td><div class="tDiv">{$list.status}</div></td>                            
+                                    <td class="handle">
+                                        <div class="tDiv a1">
+                                            <a href="sale_notice.php?act=view&amp;id={$list.id}" class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>								
+                                        </div>
+                                    </td>
+                                </tr>
+								{foreachelse}
+								<tr><td class="no-records"  colspan="20">{$lang.no_records}</td></tr>								
+								{/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                	<td colspan="12">
+                                        <div class="tDiv">
+                                            <div class="tfoot_btninfo">
+                                              <div class="shenhe">
+                                                <div id="" class="imitate_select select_w120">
+                                                    <div class="cite">{$lang.please_select}</div>
+                                                    <ul>
+                                                        <li><a href="javascript:;" data-value="remove" class="ftx-01">{$lang.drop}</a></li>
+                                                    </ul>
+                                                    <input name="sel_action" type="hidden" value="remove" id="">
+                                                </div>
+                                                  <input type="hidden" name="act" value="batch" />
+                                                  <input type="submit" name="drop" id="btnSubmit" value="{$lang.button_submit}" class="btn btn_disabled" disabled="true" ectype="btnSubmit" />
+                                              </div>
+                                            </div>
+                                            <div class="list-page">
+                                               {include file="library/page.lbi"}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+						{if $full_page}
+                    </div>
+					</form>
+                </div>
+            </div>
+		</div>
+	</div>
+ 	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript" language="JavaScript">
+	  listTable.recordCount = {$record_count|default:0};
+	  listTable.pageCount = {$page_count|default:1};
+	  cfm = new Object();
+	  cfm['allow'] = '{$lang.cfm_allow}';
+	  cfm['remove'] = '{$lang.cfm_remove}';
+	  cfm['deny'] = '{$lang.cfm_deny}';
+
+	  {foreach from=$filter item=item key=key}
+	  listTable.filter.{$key} = '{$item}';
+	  {/foreach}
+	  /**
+	   * 搜索评论
+	   */
+	  function searchComment()
+	  {
+		  var keyword = Utils.trim(document.forms['searchForm'].elements['keyword'].value);
+		  var send_status = document.forms['searchForm'].elements['send_status'].value;
+		  if (keyword.length > 0 ||　send_status)
+		  {
+			listTable.filter['keywords'] = keyword;
+			listTable.filter['send_status'] = send_status;
+			listTable.filter.page = 1;
+			listTable.loadList();
+		  }
+		  else
+		  {
+			  document.forms['searchForm'].elements['keyword'].focus();
+		  }
+	  }
+	  {/literal}
+
+	  function confirm_bath()
+	  {
+		var action = document.forms['listForm'].elements['sel_action'].value;
+
+		return confirm(cfm[action]);
+	  }
+	</script>
+</body>
+</html>
+{/if}

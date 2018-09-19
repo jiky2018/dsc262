@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+        <div class="content">
+            <div class="flexilist">
+			<form name="theForm" method="get" action="order.php" onsubmit="return check()">
+                <div class="common-content">
+                    <div class="mian-info">
+						<div class="switch_info">
+                            <div class="items">
+                                <div class="item">
+                                    <div class="label">{$lang.label_refund_amount}</div>
+                                    <div class="label_value">
+                                        {$formated_refund_amount}
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.label_handle_refund}</div>
+                                    <div class="label_value">
+                                        <div class="checkbox-items">
+                                            {if !$anonymous}
+                                            <div class="chekbox-item">
+                                                <input type="radio" name="refund" value="1" id="refund_radio_1" autocomplete="off" class="ui-radio" checked />
+                                                <label for="refund_radio_1" class="ui-radio-label">{$lang.return_user_money}</label>
+                                            </div>
+                                            {/if}
+                                            <div class="chekbox-item">
+                                                <input type="radio" name="refund" value="2" id="refund_radio_2" autocomplete="off" class="ui-radio" />
+                                                <label for="refund_radio_2" class="ui-radio-label">{$lang.return_user_line}</label>
+                                            </div>
+                                            <div class="chekbox-item">
+                                                <input type="radio" name="refund" value="3" id="refund_radio_3" autocomplete="off" class="ui-radio" />
+                                                <label for="refund_radio_3" class="ui-radio-label">{$lang.not_handle}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">{$lang.label_refund_note}</div>
+                                    <div class="label_value">
+                                    	<textarea name="refund_note" cols="60" rows="3" id="refund_note" class="textarea fl">{$refund_note}</textarea>
+                                    </div>
+								</div>
+                                <div class="item">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="label_value info_btn">
+                                        <input type="submit" name="submit" value="{$lang.button_submit}" class="button" />
+                                        <input type="button" name="back" value="{$lang.back}" class="button" onclick="history.back()" />
+                                        <input type="hidden" name="order_id" value="{$order_id}" />
+                                        <input type="hidden" name="func" value="refund" />
+                                        <input type="hidden" name="act" value="process" />
+                                        <input type="hidden" name="refund_amount" value="{$refund_amount}" />
+                                    </div>
+                                </div>
+                            </div>
+                    	</div>
+                    </div>
+                </div>
+			</form>
+            </div>
+		</div>
+	</div>
+	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+	function check(){
+		var selected = false;
+		
+		for (var i = 0; i < document.forms['theForm'].elements.length; i++)
+		{
+			ele = document.forms['theForm'].elements[i];
+			if (ele.tagName == 'INPUT' && ele.name == 'refund' && ele.checked)
+			{
+				selected = true;
+				break;
+			}
+		}
+		
+		if (!selected)
+		{
+			alert(pls_select_refund);
+			return false;
+		}
+		return true;
+	}
+	</script>
+</body>
+</html>

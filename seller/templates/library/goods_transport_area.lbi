@@ -1,0 +1,35 @@
+{if $transport_area}
+<table class="ecsc-default-table ecsc-table-seller mb10">
+	<tr>
+		<td width="50%" class="tl">运送到</td>
+		<td width="20%" class="tc">运费（元）</td>
+		<td width="30%" class="tc">操作</td>
+	</tr>
+	{foreach from=$transport_area item=area}
+	<tr>
+		<td width="50%" class="tl">
+			{if $area.area_map}
+			{foreach from=$area.area_map item=map}
+			<p><strong>{$map.top_area}：</strong>{$map.area_list}</p>
+			{/foreach}
+			{else}
+			未指定地区
+			{/if}		
+		</td>
+		<td width="20%">
+			<input type="hidden" name="id" value="{$area.id}" />
+			<input type="text" name="sprice[{$area.id}]" class="text w80 tc fn" onblur="insertfee(this.value,{$area.id});" autocomplete="off" value="{$area.sprice}" />
+		</td>
+		<td width="30%" align="center">
+			<input type="button" value="编辑" class="sc-btn btn30 sc-blueBg-btn fn mr10" data-role="edit_area" ectype="edit_area">
+			<input type="button" value="删除" class="sc-btn btn30 sc-blueBg-btn fn mr0" data-role="drop_area" ectype="drop_area">
+		</td>
+	</tr>
+	{/foreach}
+</table>
+<script type="text/javascript">
+function insertfee(fee,id){
+	Ajax.call('goods_transport.php','act=edit_area_fee&fee='+fee+'&id='+id,'','POST','JSON');
+}
+</script>
+{/if}

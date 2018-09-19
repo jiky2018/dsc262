@@ -1,0 +1,212 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable --><!-- TemplateBeginEditable name="head" --><!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<link rel="icon" href="animated_favicon.gif" type="image/gif" />
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/base.css" />
+<link href="{$ecs_css_path}" rel="stylesheet" type="text/css" />
+<link href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/select.css" rel="stylesheet" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS|{$page_title}" href="{$feed_url}" />
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/quickLinks.css" />
+<link rel="stylesheet" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/purebox.css">
+{* 包含脚本文件 *}
+{insert_scripts files='jquery-1.9.1.min.js,jquery.json.js,transport_jquery.js'}
+{insert_scripts files='common.js,global.js,utils.js,compare.js,cart_common.js,cart_quick_links.js'}
+
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/sc_common.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.tabso_yeso.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.yomi.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/rotate3di.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/scroll_city.js"></script>
+<!-- #BeginLibraryItem "/library/js_languages.lbi" --><!-- #EndLibraryItem -->
+</head>
+
+<body>
+<!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
+<div class="ecsc-4adv">
+	<div class="ecsc-4adv-content w1200">
+		<div class="ms">
+		{insert name='ads' id=117 num=4}
+		</div>
+	</div>
+</div>
+
+<div id="content">
+	<div class="lazy-ecsc-warp w1200">
+		<div class="ecsc-street-nav">
+			<ul id="brand_cat">
+			{foreach from=$brand_cat item=cat key=k name=foo}
+			<!--{if $smarty.foreach.foo.iteration < 2}-->
+				<li data-catid="{$k}" class="current"><a href="javascript:void(0);" title="{$cat.oldname}">{$cat.oldname}</a></li>
+			<!--{else}-->
+				<li data-catid="{$k}"><a href="javascript:void(0);" title="{$cat.oldname}">{$cat.oldname}</a></li>
+			<!--{/if}-->
+			{/foreach}
+			</ul>
+		</div>
+	</div>
+</div>
+
+{if $brand_cat}
+<div class="w1200 floor" id="floor_loading" style="padding:120px 0px;">
+    <div style="width:189px; height:150px; margin:auto;"><img src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/images/loading.gif"></div>
+</div>
+{/if}
+{* DSC 提醒您：动态载入user_menu_position.lbi，显示首页分类小广告 *}{insert name='user_menu_position'}
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.purebox.js"></script>
+
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+<script>
+	$(function(){
+		function streeBrand(){
+			$(".street-brand-list").each(function() {
+				var length = $(this).find("li").length;
+				if(length>20){
+					$(this).next().show();
+				}else{
+					$(this).next().hide();
+				}
+			});
+			$(".street-brand-more").click(function(){
+				if($(this).hasClass("down")){
+					$(this).removeClass("down");
+					$(this).prev().css({'height':100});
+					$(this).find("span").html("<i class='icon'></i>{$lang.more}");
+				}else{
+					$(this).addClass("down");
+					$(this).prev().css({'height':'auto'});
+					$(this).find("span").html("<i class='icon'></i>{$lang.stop}");
+				}
+			});
+		}
+		streeBrand();
+		
+		//by wang start异步加载信息
+		var load_brand_num=0;
+		var execute=true;
+		var $minUl = $(".lazy-ecsc-warp");
+		var nav = $(".ecsc-street-nav");
+		var winHeight = nav.height();
+		var wrapHeight = $minUl.height();
+		var wrapTop = $minUl.offset().top;
+		var items =$("#brand_cat").find('li');
+		
+		function load_brands(key)
+		{
+			if(items.length>key){
+				var cat_key = items.eq(key).data('catid');
+				execute = true;
+			}else{
+				execute = false;
+			}
+			
+			if(execute&&key<items.length)
+			{
+				$.ajax({
+				   type: "POST",
+				   url: "brand.php",
+				   data: "step=load_brands&cat_key=" + cat_key + "&rome_key=" + load_brand_num,
+				   dataType:'json',
+				   success: function(data){
+					   $("#floor_loading").hide();
+					   load_brand_response(data);
+				   },
+				   beforeSend : function(){
+					   $("#floor_loading").show();
+				   }
+				});
+				execute=false;
+			}	
+		}
+		
+		function load_brand_response(result)
+		{
+			if(!result.error)
+			{
+				$minUl.append(result.content);
+				tabs();
+				execute=true;
+				nav.find("li").eq(load_brand_num).animate({"opacity":1})
+				if(load_brand_num<=2)
+				{
+					load_brand_num+=1;
+					load_brands(load_brand_num);
+				}
+				else
+				{
+					load_brand_num+=1;	
+				}
+			}
+		}
+		
+		load_brands(load_brand_num); //默认显示品牌
+		
+		$(window).on("scroll",function(){
+			var scrollTop = $(window).scrollTop();
+			var listItem = $minUl.find(".ecsc-street-wrap");
+			var tabs = $(".ecsc-street-nav");
+			if(scrollTop >= 368){
+				tabs.css({'top':0,'position':'fixed'});
+			}else{
+				tabs.css({'top':0,'position':'absolute'});
+			}
+			
+			if(scrollTop > wrapHeight-200){
+
+				if(execute)
+				{
+					load_brands(load_brand_num);
+					execute=false;
+				}
+				var wrapHeight2 = $minUl.height();
+			}
+			if(scrollTop>wrapHeight2-200){
+				winHeight = nav.height();
+				tabs.css({'position':'absolute','top':wrapHeight2-winHeight-20});
+			}
+			for(var i=0;i<listItem.length;i++){
+				var listItemTop = parseInt(listItem.eq(i).offset().top);
+				if(scrollTop >= listItemTop-200){
+					tabs.find("li").eq(i).addClass("current").siblings().removeClass("current");
+				}
+				
+				if(scrollTop+$(window).height()>=$("body").height()){
+					tabs.find("li").eq(listItem.length-1).addClass("current").siblings().removeClass("current");
+				}
+			}
+		})
+		
+		function streeScroll(){
+			$(".ecsc-street-nav").find("li").click(function(){
+				var index = $(this).index();
+				var $item = $(this).parents(".lazy-ecsc-warp").find(".ecsc-street-wrap").eq(index);
+				var top = parseInt($item.offset().top);
+				$("body,html").stop().animate({scrollTop:top-200});
+			});
+		}
+		streeScroll();
+		
+		function tabs(){
+			var li = $(".street-tab").find("li");
+			var index = 0;
+			var floors ='';
+			li.hover(function(){
+				$(this).siblings().removeClass("on");
+				$(this).addClass("on");
+				index = $(this).index();
+				floors = $(this).parents(".ecsc-street-floor");
+				floors.find(".item").hide();
+				floors.find(".item").eq(index).show();
+			})
+		}
+	});
+</script>
+</body>
+</html>

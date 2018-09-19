@@ -1,0 +1,271 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<meta name="Description" content="{$description}" />
+{if $auto_redirect}
+<meta http-equiv="refresh" content="3;URL={$message.href}" />
+{/if}
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable --><!-- TemplateBeginEditable name="head" --><!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<link rel="icon" href="animated_favicon.gif" type="image/gif" />
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/base.css" />
+<link href="{$ecs_css_path}" rel="stylesheet" type="text/css" />
+<link href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/select.css" rel="stylesheet" type="text/css" />
+<link href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/css/store_street.css" rel="stylesheet" type="text/css" />
+<link href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/css/common.css" rel="stylesheet" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS|{$page_title}" href="{$feed_url}" />
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/quickLinks.css" />
+<link rel="stylesheet" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/purebox.css">
+{* 包含脚本文件 *}
+{insert_scripts files='jquery-1.9.1.min.js,jquery.json.js,transport_jquery.js'}
+{insert_scripts files='common.js,global.js,utils.js,compare.js,cart_common.js,cart_quick_links.js'}
+
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/sc_common.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.tabso_yeso.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.yomi.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/rotate3di.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/scroll_city.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/notLogin.js"></script>
+<!-- #BeginLibraryItem "/library/js_languages.lbi" --><!-- #EndLibraryItem -->
+</head>
+<body>
+<!-- #BeginLibraryItem "/library/page_header.lbi" --><!-- #EndLibraryItem -->
+<!--当前位置 start-->
+<div class="w1200">
+ <div class="nch-breadcrumb-layout">
+	<div class="nch-breadcrumb wrapper" id="ur_here">
+         <div id="ur_here">
+          <!-- #BeginLibraryItem "/library/ur_here.lbi" --><!-- #EndLibraryItem -->
+         </div>
+    </div>
+ </div>       
+</div>
+<!--当前位置 end-->
+<div id="filter" class="w1200">
+	<div class="street-filter-wapper">
+    	<!--{if $categories_pro}-->
+        <div class="filter_classify">
+            <div class="s-line">
+                <div class="sl-key">{$lang.category}：</div>
+                <div class="sl-value">
+                	<ul class="sl-v-list">
+                    <li style="width:80px;"><a href="store_street.php" class="a_span a_span1">{$lang.all_attribute}</a></li>
+                    <!--{foreach from=$categories_pro item=cat}-->
+                    <li><a href="javascript:void(0);" onclick="get_store_street_area({$cat.cat_id}, 'search_cat', 6)">{$cat.cat_alias_name}</a></li>
+                    <!--{/foreach}-->
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!--{/if}-->
+        <!--{if $province_list}-->
+        <div class="filter_classify">
+            <div class="s-line">
+                <div class="sl-key">{$lang.province}：</div>
+                <div class="sl-value">
+                	<ul class="sl-v-list">
+                    <li {if !$store_province}class="curr"{/if}><a href="store_street.php" class="a_span a_span1">{$lang.all_attribute}</a></li>
+                    <!--{foreach from=$province_list item=province}-->
+                    <li {if $province.region_id eq $store_province}class="curr"{/if}><a href="javascript:void(0);" onclick="get_store_street_area({$province.region_id}, 'search_city', 1);" >{$province.region_name}</a></li>
+                    <!--{/foreach}-->
+                    </ul>
+                </div>
+            </div>
+        </div> 
+        <div class="filter_classify" id="store_city"></div> 
+        <div class="filter_classify" id="store_district"></div> 
+        <!--{/if}-->
+    </div>
+</div>
+<input name="store_user" id="res_store_user" value="" type="hidden" />
+<input name="store_province" id="res_store_province" value="" type="hidden" />
+<input name="store_city" id="res_store_city" value="" type="hidden" />
+<input name="store_district" id="res_store_district" value="" type="hidden" />
+<div class="street-filter-sort">
+    <div class="filter-sortbar">
+        <div class="button-strip">
+            <span>{$lang.sort_order_street}：</span>
+            <li class="current"><a href="javascript:void(0);" class="seller_sort" data-sort='shop_id' data-order='DESC'>{$lang.default}</a></li>
+            <li><a href="javascript:void(0);" class="seller_sort" data-sort='sort_order' data-order='DESC'>{$lang.index_hot}<b></b></a></li>
+            <li><a href="javascript:void(0);" class="seller_sort" data-sort='sales_volume' data-order='DESC'>{$lang.sales_volume}<b></b></a></li>
+            <li><a href="javascript:void(0);" class="seller_sort" data-sort='goods_number' data-order='DESC'>{$lang.score_street}<b></b></a></li>
+        </div>
+    </div>
+</div>
+
+<div class="sellerlist" id="store_shop_list">
+	{if $store_shop_list}
+    <div class="sellerlist clearfix">
+        <ul class="sellerul">
+            {foreach from=$store_shop_list item=shop}
+    
+            <li>
+                <div class="p-img">
+                    <a href="{$shop.shop_url}" target="_blank"><img src="{$shop.street_thumb}" width="386" height="188" /></a>
+                </div>
+                <div class="p-info">
+                    <div class="pleft">
+                        <img src="{$shop.brand_thumb}" alt="{$shop.shopName}" />
+                        <div class="title">
+                            <h3 class="name">{$shop.shopName}</h3>
+                            <span class="desc">{$shop.street_desc}</span>
+                        </div>
+                    </div>
+                </div>
+                {if $shop.grade_img}<div class="store_grade_img"><img src="{$shop.grade_img}" title="{$shop.grade_name}" width="30"/></div>{/if}
+            </li>
+            {/foreach}
+        </ul>
+    </div> 
+    {/if}
+    
+    {if $count > $size}
+    <div class="sellerlist">
+        <div class="pages">
+        {$pager}
+        </div>
+    </div>
+    {/if}
+</div>
+
+{if $store_best_list}
+<div class="block clearfix">
+	<div class="nch-container wrapper">
+        <div class="block mt20">
+            <div class="hotsale">
+                <h1><span class="Left">{$lang.recommend_hot_goods}</span></h1>
+                <div class="hot_goods">
+                    <div class="hot_goods_bg">
+                    	{foreach from=$store_best_list item=goods}
+                        <dl>
+                            <dt><a href="{$goods.goods_url}" target="_blank"><img src="{$goods.goods_thumb}"/></a></dt>
+                            <dd><span class=" fs16 fc_red fwb mr10">{$goods.shop_price}</span><em class="d_lt fc_grey">{$goods.market_price}</em></dd>
+                            <dd class="goodsName"><a href="{$goods.url}" target="_blank" title="{$goods.goods_name}">{$goods.goods_name}</a></dd>
+                            <dd class=""><a href="{$goods.shop_url}" class="d_u" target="_blank">{$goods.shop_name}</a></dd>
+                            <dd class="top_boder"><span class="Left">{$lang.Monthly_closing}<em class="ftx-01">{$goods.sales_volume}{$lang.pen}</em></span><span class="Right">{$lang.comments_rank}<em class="fc_blue">{$goods.cmt_count}</em></span></dd>
+                        </dl>
+                        {/foreach}
+                    </div>
+                </div>
+            </div>
+        </div>    
+    </div>
+</div>   
+{/if} 
+<div class="block mt20"></div>
+<div class="block mt20"></div>
+<div class="block mt20"></div>
+<!-- #BeginLibraryItem "/library/page_footer.lbi" --><!-- #EndLibraryItem -->
+{* DSC 提醒您：动态载入user_menu_position.lbi，显示首页分类小广告 *}{insert name='user_menu_position'}
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.purebox.js"></script>
+<input name="area_list" value="" type="hidden" />
+</body>
+
+<script type="text/javascript">
+
+$(function(){
+	
+	$("#res_store_user").val('');
+	$("#res_store_province").val('');
+	$("#res_store_city").val('');
+	$("#res_store_district").val('');
+	
+	var orderName='ASC';
+	$('.seller_sort').click(function(){
+		
+		var T = $(this);
+		var sortName = T.data('sort');
+		$(".seller_sort b").css('background-position','0px -11px');
+		if(orderName=='ASC')
+		{
+			orderName='DESC';
+			T.children('b').css('background-position','-7px -11px');
+		}
+		else
+		{
+			orderName='ASC';
+			T.children('b').css('background-position','-14px -11px');
+		}
+
+		T.parent('li').addClass('current').siblings().removeClass('current');
+		
+		
+		var area_list = $("input[name='area_list']").val();
+		var strText = area_list + "|" + "sort-" + sortName + "|" + "order-" + orderName;
+		store_shop_gotoPage(1, strText, 0);
+	});
+});
+
+function get_store_street_area(val, search_type, region_type){
+  
+  var store_user = $("#res_store_user").val();
+  var store_province = $("#res_store_province").val();
+  var store_city = $("#res_store_city").val();
+  var store_district = $("#res_store_district").val();
+	
+  var area        	= new Object();
+  area.region_id   	= val;
+  area.region_type  = region_type;
+  area.store_user  = store_user;
+  area.store_province  = store_province;
+  area.store_city  = store_city;
+  area.store_district  = store_district;
+
+
+  Ajax.call('store_street.php?act=' + search_type, 'area=' + $.toJSON(area), get_areaResponse, 'POST', 'JSON'); //兼容jQuery by mike
+}
+
+function get_areaResponse(result){
+	
+	var store_user=province=city=district='';
+	
+	if(result.error == 0){
+		if(result.region_type == 2){
+			$('#store_city').html(result.content);
+			$('#store_district').html('');
+		}else if(result.region_type == 3){
+			$('#store_district').html(result.content);
+		}
+	}
+	
+	if(result.store_province){
+		province = result.store_province;
+	}
+	
+	if(result.store_city){
+		city = result.store_city;
+	}
+	
+	if(result.store_district){
+		district = result.store_district;
+	}
+	
+	if(result.store_user){
+		store_user = result.store_user;
+	}
+	
+	$("#res_store_user").val(store_user);
+	$("#res_store_province").val(province);
+	$("#res_store_city").val(city);
+	$("#res_store_district").val(district);
+	
+	$('.seller_sort').parent('li').first().addClass('current').siblings().removeClass('current');
+	$("input[name='area_list']").val(result.id);
+	store_shop_gotoPage(1, result.id, 0);
+	slClick();
+}
+function slClick(){
+	$(".sl-value li").find("a").click(function(){
+		$(this).parent().addClass("curr").siblings().removeClass("curr");
+	})
+}
+slClick();
+</script>
+
+</html>

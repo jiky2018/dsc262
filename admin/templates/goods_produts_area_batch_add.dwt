@@ -1,0 +1,150 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+  
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="brand.php?act=list" class="s-back">{$lang.back}</a>{$lang.goods_alt} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                {$lang.use_help}
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+						<div class="list-div">
+						{$lang.current_modification_data}{$record_count|default:0}{$lang.tiao}
+						</div>
+						<div style=" width:100px; height:10px; clear:both; overflow:hidden;"></div>
+						<div class="list-div">
+						<table id="listTable">
+							<tr>     
+                            	{foreach from=$attr_names item=vo}
+                            	<th><div class="tDiv">{$vo}</div></th>
+                                {/foreach}
+                                <th><div class="tDiv">{$lang.upload_product.goods_id}</div></th>
+                                <th><div class="tDiv">{$lang.upload_product.area_id}</div></th>
+                                <th><div class="tDiv">{$lang.upload_product.city_id}</div></th>
+                                {if $cfg.add_shop_price eq 0}
+								<th><div class="tDiv">{$lang.market_price}</div></th>
+                                {/if}
+								<th><div class="tDiv">{$lang.product_price}</div></th>
+                                {if $cfg.add_shop_price eq 0}
+                                <th><div class="tDiv">{$lang.promote_price}</div></th>
+                                {/if}
+								<th><div class="tDiv">{$lang.product_number}</div></th>
+                                <th><div class="tDiv">{$lang.product_warn_number}</div></th>
+                                <th><div class="tDiv">{$lang.product_sn}</div></th>
+                                <th><div class="tDiv">{$lang.bar_code}</div></th>
+                                <th><div class="tDiv">{$lang.state}</div></th>
+							</tr>
+						</table>
+						</div>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+	{include file ='library/pagefooter.lbi'}
+    {insert_scripts files="jquery.purebox.js"}
+    <script type="text/javascript">
+		$(function(){
+			start({$page});
+			ajax_title();
+		});
+		function start(page)
+		{
+			{if $smarty.get.act != 'add'}
+			Ajax.call('goods_produts_area_batch.php?act=ajax_insert', 'page=' + page, start_response, 'POST', 'JSON');
+			{/if}
+		}
+		
+		/**
+		 * 处理反馈信息
+		 * @param: result
+		 * @return
+		 */
+		function start_response(result)
+		{
+			if(result.list){
+				var attr_value;
+				var tbl = document.getElementById("listTable"); //获取表格对象
+				var row = tbl.insertRow(-1);
+				var attr_arr = result.list.goods_attr_name.split('|');
+				var attr_num=attr_arr.length;
+				var num = 0;
+				
+				for(var i=0;i<attr_num;i++){
+					cell = row.insertCell(i);
+					
+					attr_value = attr_arr[i].split('-');
+					cell.innerHTML = "<div class='tDiv'>"+attr_value[0]+"</div>";
+				}
+				
+				if(!result.list.product_sn){
+					result.list.product_sn = "（空）";
+				}
+				
+				if(!result.list.bar_code){
+					result.list.bar_code = "（空）";
+				}
+				
+				cell = row.insertCell(attr_num);
+				
+				{if $cfg.add_shop_price eq 0}
+				cell.innerHTML = "<div class='tDiv'>"+result.list.goods_id+"</div>";
+				cell = row.insertCell(attr_num+1);
+				cell.innerHTML = "<div class='tDiv'>"+result.list.area_id+"</div>";
+				cell = row.insertCell(attr_num+2);
+				cell.innerHTML = "<div class='tDiv'>"+result.list.city_id+"</div>";
+				cell = row.insertCell(attr_num+3);
+				cell.innerHTML = "<div class='tDiv'>"+result.list.product_market_price+"</div>";
+				cell = row.insertCell(attr_num+4);
+				cell.innerHTML = "<div class='tDiv'>"+result.list.product_price+"</div>";
+				cell = row.insertCell(attr_num+5);
+				cell.innerHTML = "<div class='tDiv'>"+result.list.product_promote_price+"</div>";
+				cell = row.insertCell(attr_num+6);
+				cell.innerHTML = "<div class='tDiv'>"+result.list.product_number+"</div>";
+				cell = row.insertCell(attr_num+7);
+				cell.innerHTML = "<div class='tDiv'>"+result.list.product_warn_number+"</div>";
+				cell = row.insertCell(attr_num+8);
+				cell.innerHTML = "<div class='tDiv'>"+result.list.product_sn+"</div>";
+				cell = row.insertCell(attr_num+9);
+				cell.innerHTML = "<div class='tDiv'>"+result.list.bar_code+"</div>";
+				cell = row.insertCell(attr_num+10);
+				cell.innerHTML = "<div class='tDiv'>"+result.status_lang+"</div>";
+				{else}
+				cell.innerHTML = "<div class='tDiv'>"+result.list.goods_id+"</div>";
+				cell = row.insertCell(attr_num+1);
+				cell.innerHTML = "<div class='tDiv'>"+result.list.area_id+"</div>";
+				cell = row.insertCell(attr_num+2);
+				cell.innerHTML = "<div class='tDiv'>"+result.list.city_id+"</div>";
+				cell = row.insertCell(attr_num+3);
+				cell.innerHTML = "<div class='tDiv'>"+result.list.product_price+"</div>";
+				cell = row.insertCell(attr_num+4);
+				cell.innerHTML = "<div class='tDiv'>"+result.list.product_number+"</div>";
+				cell = row.insertCell(attr_num+5);
+				cell.innerHTML = "<div class='tDiv'>"+result.list.product_warn_number+"</div>";
+				cell = row.insertCell(attr_num+6);
+				cell.innerHTML = "<div class='tDiv'>"+result.list.product_sn+"</div>";
+				cell = row.insertCell(attr_num+7);
+				cell.innerHTML = "<div class='tDiv'>"+result.list.bar_code+"</div>";
+				cell = row.insertCell(attr_num+8);
+				cell.innerHTML = "<div class='tDiv'>"+result.status_lang+"</div>";
+				{/if}
+				if(result.is_stop == 1){
+                    start(result.page);
+                }	
+			}
+			
+			if(result.is_stop == 0){
+				$("#title_name").addClass("red");
+				$("#title_name").html(title_name_one);
+			}else{
+				$("#title_name").html(title_name_two);
+			}
+		}
+    </script>
+</body>
+</html>

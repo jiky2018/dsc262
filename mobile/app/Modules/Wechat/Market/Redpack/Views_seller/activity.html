@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+		<title>{$page_title}</title>
+        <meta http-equiv="pragma" content="no-cache">
+        <meta http-equiv="cache-control" content="no-cache">
+        <meta http-equiv="expires" content="0">
+        <script type="text/javascript">var ROOT_URL = '__ROOT__/';</script>
+        <script src="__PUBLIC__/vendor/common/jquery.min.js"></script>
+        <script src="__PUBLIC__/vendor/layer/layer.js"></script>
+
+        <link rel="stylesheet" href="{$plugin_themes}/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="{$plugin_themes}/css/sweet-alert.css" />
+        <link rel="stylesheet" href="{$plugin_themes}/css/main.css" />
+        <style>
+            body{
+                background:url({if $info['background']}{$info['background']}{else}{$plugin_themes}/images/bg.jpg{/if}) no-repeat;
+                background-size:100% 100%;
+            }
+        </style>
+
+        {include file="jssdk"}
+	</head>
+<body>
+<div id="content">
+    <footer>
+        <div class="suport">
+            <p>{$info['support']}</p>
+        </div>
+    </footer>
+    <div class="global-nav">
+        <div class="global-nav-wrap">
+            <div class="global-nav-item">
+                <a href="#" id="comment" class="global-nav-link">
+                    <i class="fa fa-fw fa-info fa-2x "></i>
+                    <div class="global-nav-tip">活动说明</div>
+                </a>
+            </div>
+            <div class="global-nav-item">
+                <a href="#" id="observer" class="global-nav-link">
+                    <i class="fa fa-fw fa-user-plus fa-2x"></i>
+                    <div class="global-nav-tip">关注微信公众号</div>
+                </a>
+            </div>
+            <div class="global-nav-item">
+                <a href="{if $flag == null || $flag == ''}{$shake_url}{else}#{/if}" id="shake" class="global-nav-link">
+                    <i class="fa fa-fw fa-hand-o-up fa-2x"></i>
+                    <div class="global-nav-tip">摇一摇</div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{$plugin_themes}/js/sweet-alert.min.js"></script>
+<script type="text/javascript">
+    $(function(){
+        // 判断微信浏览器
+        var ISWeixin = !!navigator.userAgent.match(/MicroMessenger/i); //wp手机无法判断
+        if(!ISWeixin){
+            var rd_url = location.href.split('#')[0];  // remove hash
+            var oauth_url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri='+encodeURIComponent(rd_url) + '&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect';
+            location.href = oauth_url;
+            return false;
+        }
+
+        // 活动说明
+        $("#comment").click(function(){
+            var comment = "{$info['description']}";
+            sweetAlert(comment);
+
+        });
+        // 关注公众号
+        $("#observer").click(function(){
+            var wechat_img = "__PUBLIC__/img/ewm.png";
+            var text = "扫描或长按识别关注微信二维码";
+            swal({title: "", text: text, imageUrl: wechat_img , imageSize : "180x180"});
+        });
+        // 摇一摇
+        $("#shake").click(function(){
+            var flag = "{$flag}";
+            if(flag !== null && flag !== ''){
+                swal({title: "",text: flag,   imageUrl: '{$plugin_themes}/images/thumbs-up.jpg' });
+                return false;
+            }
+        });
+
+    });
+</script>
+</body>
+</html>

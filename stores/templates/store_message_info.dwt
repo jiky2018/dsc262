@@ -1,0 +1,157 @@
+<!doctype html>
+<html>
+{include file='pageheader.dwt'}
+<div class="content">
+	<div class="title">{$page_title}</div>
+        <div class="common-head">
+    	<a href="{$action_link.href}" class="btn btn30 blue_btn ml0" ectype="addAssistant">{$action_link.text}</a>
+    </div>
+    <div class="explanation mt20" id="explanation">
+        <i class="sc_icon"></i>
+        <ul>
+            <li>标识“*”的选项为必填项，其余为选填项。</li>
+            <li>请填写正确无误的门店地址和电话信息，以免顾客线下提货时找不到门店。</li>
+            <li>门店图片请上传清晰无误的实景照片，利于顾客方便认出门店。</li>
+        </ul>
+    </div>
+    <div class="mian-info mt20">
+        <form method="post" action="store_assistant.php" name="theForm" id="store_assistant" enctype="multipart/form-data">
+        	<div class="item">
+            	<div class="label">{$lang.require_field}{$lang.store_name}：</div>
+                <div class="value">
+                    <input type="text" name="stores_name" maxlength="60" size="30" value='{$offline_store.stores_name}' class="text" />
+                    <div class="form_prompt"></div>
+                </div>
+            </div>
+            <div class="item">
+            	<div class="label">{$lang.area_info}：</div>
+                <div class="value">
+                    <div id="dlcountry" class="ui-dropdown smartdropdown alien">
+                        <input type="hidden" value="{$offline_store.country}" name="country" id="selcountry">
+                        <div class="txt">国家</div>
+                        <i class="down u-dropdown-icon"></i>
+                        <div class="options clearfix" style="max-height:300px;">
+                            <span class="liv" data-text="选择国家.." data-type="0"  data-value="0">选择国家..</span>
+                            {foreach from=$countries item=list}
+                            <span class="liv" data-text="{$list.region_name}" data-type="1"  data-value="{$list.region_id}">{$list.region_name}</span>
+                            {/foreach}
+                        </div>
+                    </div>
+                    <div id="dlProvinces" class="ui-dropdown smartdropdown alien">
+                        <input type="hidden" value="{$offline_store.province}" name="province" id="selProvinces">
+                        <div class="txt">省/直辖市</div>
+                        <i class="down u-dropdown-icon"></i>
+                        <div class="options clearfix" style="max-height:300px;">
+                            {foreach from=$provinces item=list}
+                            <span class="liv" data-text="{$list.region_name}" data-type="2"  data-value="{$list.region_id}">{$list.region_name}</span>
+                            {/foreach}
+                        </div>
+                    </div>
+                    <div id="dlCity" class="ui-dropdown smartdropdown alien">
+                        <input type="hidden" value="{$offline_store.city}" name="city" id="selCities">
+                        <div class="txt">市</div>
+                        <i class="down u-dropdown-icon"></i>
+                        <div class="options clearfix" style="max-height:300px;">
+                            {foreach from=$cities item=list}
+                            <span class="liv" data-text="{$list.region_name}" data-type="3"  data-value="{$list.region_id}">{$list.region_name}</span>
+                            {/foreach}
+                        </div>
+                    </div>
+                    <div id="dlRegion" class="ui-dropdown smartdropdown alien">
+                        <input type="hidden" value="{$offline_store.district}" name="district" id="selDistricts">
+                        <div class="txt">区/县</div>
+                        <i class="down u-dropdown-icon"></i>
+                        <div class="options clearfix" style="max-height:300px;">
+                            {foreach from=$districts item=list}
+                            <span class="liv" data-text="{$list.region_name}" data-type="4"  data-value="{$list.region_id}">{$list.region_name}</span>
+                            {/foreach}
+                        </div>
+                    </div>
+                    <div class="form_prompt"></div>
+                </div>
+            </div>
+            <div class="item">
+            	<div class="label">{$lang.require_field}&nbsp;{$lang.stores_address}：</div>
+                <div class="value">
+                        <input type="text" class="text" name="stores_address" maxlength="60" size = "30" value="{$offline_store.stores_address}" />
+                        <p class="notic">{$lang.stores_address_dsc}</p>
+                        <div class="form_prompt"></div>
+                </div>
+            </div>
+             <div class="item">
+            	<div class="label">{$lang.require_field}&nbsp;{$lang.stores_tel}：</div>
+                <div class="value">
+                        <input type="text" class="text" name="stores_tel" maxlength="60" size = "30" value="{$offline_store.stores_tel}" />
+                        <p class="notic">{$lang.stores_tel_dsc}</p>
+                </div>
+            </div>
+            <div class="item">
+            	<div class="label">{$lang.require_field}&nbsp;{$lang.stores_opening_hours}：</div>
+                <div class="value">
+                        <input type="text" class="text" name="stores_opening_hours" maxlength="60" size = "30" value="{$offline_store.stores_opening_hours}" />
+                        <p class="notic">{$lang.stores_opening_hours_dsc}</p>
+                        <div class="form_prompt"></div>
+                </div>
+            </div>
+            <div class="item">
+            	<div class="label">{$lang.stores_traffic_line}：</div>
+                <div class="value">
+                        <textarea class="textarea" maxlength="50" rows="2" name="stores_traffic_line">{$offline_store.stores_traffic_line}</textarea>
+                        <p class="notic">{$lang.stores_traffic_line_dsc}</p>
+                </div>
+            </div>
+			<input type="hidden" name='act' value="message_update" />
+			<!--<input type="hidden" name="file_url" value="{$offline_store.stores_img}" />-->			
+		</form>
+            <div class="item">
+                <div class="label">{$lang.stores_img}：</div>
+                <div class="value">
+                    <div class="type-file-box">
+						<form  action="index.php" id="storeForm" method="post"  enctype="multipart/form-data"  runat="server" >
+							<input type="button" name="button" id="button" class="type-file-button" value="" />
+							<input type="file" class="type-file-file" id="stores_img" name="stores_img" data-state="imgfile" size="30" hidefocus="true"/>
+						</form>
+                        {if $offline_store.stores_img}
+                        <span class="show">
+                            <a href="../{$offline_store.stores_img|escape}" target="_blank" class="nyroModal"><i class="icon icon-picture" onmouseover="toolTip('<img src=../{$offline_store.stores_img|escape}>')" onmouseout="toolTip()"></i></a>
+                        </span>
+                        {/if}
+                    </div>
+                    <div class="notic">{$lang.stores_img_dsc}</div>
+                </div>
+            </div>	
+            <div class="item">
+            	<div class="label">&nbsp;</div>
+                <div class="value item_btn">
+                    <input type="button" class="btn blue_btn btn35 w100" id="submitBtn" onClick="send_form_data('#store_assistant');" value="{$lang.button_submit}"/>
+                </div>
+            </div>
+    </div>
+</div>
+<script type="text/javascript" src="js/region.js"></script>
+<script type="text/javascript" src="js/jquery.picTip.js"></script>
+<script>
+    $.levelLink();//地区三级联动
+	//表单验证
+		
+	//ajax上传图片
+	$("#stores_img").change(function(){
+		var actionUrl = "index.php?act=upload_stores_img";
+		$("#storeForm").ajaxSubmit({
+			type: "POST",
+			dataType: "json",
+			url: actionUrl,
+			data: { "action": "TemporaryImage" },
+			success: function (data) {
+				if (data.error == "0") {
+				   alert(data.massege);
+				} else if (data.error == "1") {
+				   $(".nyroModal").attr("href", data.content);
+				   $(".icon-picture").attr("onmouseover", "toolTip('<img src="+data.content+">')");
+				}
+			},
+			async: true  
+		 });		
+	})
+</script>
+{include file='pagefooter.dwt'}

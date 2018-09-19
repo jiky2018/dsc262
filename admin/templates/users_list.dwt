@@ -1,0 +1,314 @@
+<!doctype html>
+{if $full_page}
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.08_members} - {$ur_here}</div>
+        <div class="content">
+        	{include file="library/users_tab.lbi"}
+        	<div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.list.0}</li>
+                    <li>{$lang.operation_prompt_content.list.1}</li>
+                    <li>{$lang.operation_prompt_content.list.2}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<div class="common-head">
+                    <div class="fl">
+                        <a href="{$action_link2.href}"><div class="fbutton"><div class="csv" title="{$action_link2.text}"><span><i class="icon icon-download-alt"></i>{$action_link2.text}</span></div></div></a>
+                        <a href="{$action_link.href}"><div class="fbutton"><div class="add" title="{$action_link.text}"><span><i class="icon icon-plus"></i>{$action_link.text}</span></div></div></a>
+                    </div>
+                    
+                   	<div class="refresh">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+                    
+                    <div class="search">
+                    	<form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+                        <div class="input">
+                            <input type="text" name="keywords" class="text nofocus" placeholder="{$lang.label_user_name}" autocomplete="off" />
+                            <input type="submit" class="btn" name="secrch_btn" ectype="secrch_btn" value="" />
+                        </div>
+                        </form>
+                    </div>
+                    
+                </div>
+                <div class="common-content">
+                    <form method="POST" action="" name="listForm" onsubmit="return confirm_bath()">
+                	<div class="list-div"  id="listDiv">
+                        {/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                    <th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars"></label></div></th>
+                                    <th width="5%"><div class="tDiv"><a href="javascript:listTable.sort('user_id'); ">{$lang.record_id}</a>{$sort_user_id}</div></th>
+                                    <th width="10%"><div class="tDiv"><a href="javascript:listTable.sort('user_name'); ">{$lang.username}</a>{$sort_user_name}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.nick_name}</div></th>
+                                    <th width="8%"><div class="tDiv">{$lang.goods_steps_name}</div></th>
+                                    <th width="8%"><div class="tDiv">{$lang.email_phone}</div></th>
+                                    <th width="8%"><div class="tDiv">{$lang.reg_date}</div></th>
+                                    <th width="8%"><div class="tDiv">账户</div></th>
+                                    <th width="6%"><div class="tDiv">{$lang.rank_points}</div></th>
+                                    <th width="6%"><div class="tDiv">{$lang.is_validated}</div></th>
+                                    <th width="12%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {foreach from=$user_list item=list}
+                            	<tr>
+                                	<td class="sign"><div class="tDiv"><input type="checkbox" name="checkboxes[]" value="{$list.user_id}" class="checkbox" id="checkbox_{$list.user_id}" /><label for="checkbox_{$list.user_id}" class="checkbox_stars"></label></div></td>
+                                    <td><div class="tDiv">{$list.user_id}</div></td>
+                                	<td><div class="tDiv">{$list.user_name}</div></td>
+                                    <td><div class="tDiv">{$list.nick_name}</div></td>
+                                    <td><div class="tDiv">{if $list.ru_name}<font class="red">{$list.ru_name}</font>{else}<font class="blue3">{$lang.mall_user}</font>{/if}</div></td>
+                                    <td><div class="tDiv">{if $list.mobile_phone}{$list.mobile_phone}{else}{$lang.not_phone}{/if}<br>{if $list.email}{$list.email}{else}{$lang.not_email}{/if}</div></td>
+                                    <td><div class="tDiv">{$list.reg_time}</div></td>
+                                    <td>
+                                        <div class="tDiv">
+                                            <p>{$lang.user_money}：{$list.user_money}</p>
+                                            <p>{$lang.pay_points}：{$list.pay_points}</p>
+                                        </div>
+                                    </td>
+                                    <td><div class="tDiv">{$list.rank_points}<br />{if $list.rank_name}{$list.rank_name}{$lang.user}{else}<span class="red">{$lang.not_rank}</span>{/if}</div></td>
+                                    <td>
+                                    	<div class="tDiv">
+                                    		<div class="switch {if $list.is_validated}active{/if}" title="{if $list.is_validated}{$lang.yes}{else}{$lang.no}{/if}" onclick="listTable.switchBt(this, 'toggle_is_validated', {$list.user_id})">
+                                            	<div class="circle"></div>
+                                    		</div>
+                                            <input type="hidden" value="0" name="">
+                                        </div>
+                                    </td>
+                                    <td class="handle">
+                                    	<div class="tDiv a2">
+                                            <a href="users.php?act=edit&id={$list.user_id}" class="btn_see"><i class="sc_icon sc_icon_see"></i>{$lang.view}</a>
+                                            <a href="users.php?act=users_log&id={$list.user_id}" class="btn_see"><i class="sc_icon sc_icon_see"></i>{$lang.log}</a>
+                                            <a href="javascript:confirm_redirect('{if $user.user_money ne 0}{$lang.still_accounts}{/if}{$lang.remove_confirm}', 'users.php?act=remove&id={$list.user_id}')" title="{$lang.remove}" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {foreachelse}
+                                    <tr><td class="no-records" colspan="12">{$lang.no_records}</td></tr>
+                                {/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="12">
+                                        <div class="tDiv">
+                                            <div class="tfoot_btninfo">
+                                                <input type="hidden" name="act" value="batch_remove" />
+                                                <input type="submit" value="{$lang.drop}" name="remove" ectype="btnSubmit" class="btn btn_disabled" disabled="">
+                                            </div>
+                                            <div class="list-page">
+                                                {include file="library/page.lbi"}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        {if $full_page}
+                    </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="gj_search">
+                <div class="search-gao-list" id="searchBarOpen">
+                    <i class="icon icon-zoom-in"></i>{$lang.advanced_search}
+                </div>
+                <div class="search-gao-bar">
+                    <div class="handle-btn" id="searchBarClose"><i class="icon icon-zoom-out"></i>{$lang.pack_up}</div>
+                    <div class="title"><h3>{$lang.advanced_search}</h3></div>
+                    <form method="get" name="formSearch_senior" action="javascript:searchUser()">
+                        <div class="searchContent">
+                            <div class="layout-box">
+                                <dl>
+                                    <dt>{$lang.user_and_nick}</dt>
+                                    <dd><input type="text" value="" name="keyword" class="s-input-txt" autocomplete="off" /></dd>
+                                </dl>
+                                <dl>
+                                    <dt>{$lang.label_pay_point}</dt>
+                                    <dd><input type="text" value="" name="pay_points_lt"  class="s-input-txt-2" autocomplete="off" /><div class="bool">&nbsp;&nbsp;~&nbsp;&nbsp;</div><input type="text" value="" name="pay_points_gt"  class="s-input-txt-2"></dd>
+                                </dl>
+                                <dl>
+                                    <dt>{$lang.mobile_phone}</dt>
+                                    <dd><input type="text" value="" name="mobile_phone" class="s-input-txt" autocomplete="off" /></dd>
+                                </dl>
+                                <dl>
+                                    <dt>{$lang.email}</dt>
+                                    <dd><input type="text" value="" name="email" class="s-input-txt" autocomplete="off" /></dd>
+                                </dl>
+                                <dl>
+                                    <dt>{$lang.label_rank_name}</dt>
+                                    <dd>
+                                        <div  class="select_w145 imitate_select">
+                                            <div class="cite">{$lang.please_select}</div>
+                                            <ul>
+                                               <li><a href="javascript:;" data-value="0">{$lang.all_option}</a></li>
+                                               {foreach from=$user_ranks item=user_ranks key=k}
+                                               <li><a href="javascript:;" data-value="{$k}">{$user_ranks}</a></li>
+                                               {/foreach}
+                                            </ul>
+                                            <input name="user_rank" type="hidden" value="0">
+                                        </div>
+                                    </dd>
+                                </dl>
+                                <dl>
+                                    <dt>{$lang.steps_shop_name}</dt>
+                                    <dd>
+                                        <div id="shop_name_select" class="select_w145 imitate_select">
+                                            <div class="cite">{$lang.please_select}</div>
+                                            <ul>
+                                               <li><a href="javascript:;" data-value="0">{$lang.select_please}</a></li>
+                                               <li><a href="javascript:;" data-value="1">{$lang.s_shop_name}</a></li>
+                                               <li><a href="javascript:;" data-value="2">{$lang.s_qw_shop_name}</a></li>
+                                               <li><a href="javascript:;" data-value="3">{$lang.s_brand_type}</a></li>
+                                            </ul>
+                                            <input name="store_search" type="hidden" value="0" id="shop_name_val">
+                                        </div>
+                                    </dd>
+                                </dl>
+                                <dl style="display:none" id="merchant_box">
+                                    <dd>
+                                        <div class="select_w145 imitate_select">
+                                            <div class="cite">{$lang.please_select}</div>
+                                            <ul>
+                                               <li><a href="javascript:;" data-value="0">{$lang.please_select}</a></li>
+                                               {foreach from=$store_list item=store}
+                                               <li><a href="javascript:;" data-value="{$store.ru_id}">{$store.store_name}</a></li>
+                                               {/foreach}
+                                            </ul>
+                                            <input name="merchant_id" type="hidden" value="0" >
+                                        </div>
+                                    </dd>
+                                </dl>
+                                <dl id="store_keyword" style="display:none">
+                                    <dd><input type="text" value="" name="store_keyword" class="s-input-txt" autocomplete="off" /></dd>
+                                </dl>
+                                <dl style="display:none" id="store_type">
+                                    <dd>
+                                        <div class="select_w145 imitate_select">
+                                            <div class="cite">{$lang.please_select}</div>
+                                            <ul>
+                                               <li><a href="javascript:;" data-value="0">{$lang.steps_shop_type}</a></li>
+                                               <li><a href="javascript:;" data-value="{$lang.flagship_store}">{$lang.flagship_store}</a></li>
+                                               <li><a href="javascript:;" data-value="{$lang.exclusive_shop}">{$lang.exclusive_shop}</a></li>
+                                               <li><a href="javascript:;" data-value="{$lang.franchised_store}">{$lang.franchised_store}</a></li>
+                                               <li><a href="javascript:;" data-value="{$lang.shop_store}">{$lang.shop_store}</a></li>
+                                            </ul>
+                                            <input name="store_type" type="hidden" value="0" >
+                                        </div>
+                                    </dd>
+                                </dl>
+                                <dl class="bot_btn">
+                                    <dd>
+                                       <input type="submit" class="btn red_btn" name="tj_search" value="{$lang.button_inquire}" /><input type="reset" class="btn btn_reset" name="reset" value="{$lang.button_reset_alt}" />
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    {include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+    listTable.recordCount = {$record_count|default:0};
+    listTable.pageCount = {$page_count|default:1};
+    
+    {foreach from=$filter item=item key=key}
+    listTable.filter.{$key} = '{$item}';
+    {/foreach}
+    
+    //列表导航栏设置下路选项
+    $(".ps-container").perfectScrollbar();
+    
+    //高级搜索
+    $.divselect("#divselect","#quesetion");
+    
+    $.divselect("#shop_name_select","#shop_name_val",function(obj){
+        var val = obj.attr("data-value");
+        get_store_search(val);
+    });
+	
+    function get_store_search(val){
+        if(val == 1){
+			$("#merchant_box").css("display",'');
+			$("#store_keyword").css("display",'none');
+			$("#store_type").css("display",'none');
+        }else if(val == 2){
+			$("#merchant_box").css("display",'none');
+			$("#store_keyword").css("display",'');
+			$("#store_type").css("display",'none');
+        }else if(val == 3){
+			$("#merchant_box").css("display",'none');
+			$("#store_keyword").css("display",'');
+			$("#store_type").css("display",'');
+        }else{
+			$("#merchant_box").css("display",'none');
+			$("#store_keyword").css("display",'none');
+			$("#store_type").css("display",'none');
+        }
+    }
+	
+    //导出会员
+    function download_userlist()
+    {
+		var args = '';
+		for (var i in listTable.filter)
+		{
+			if(typeof(listTable.filter[i]) != "function" && typeof(listTable.filter[i]) != "undefined"){
+				args += "&" + i + "=" + encodeURIComponent(listTable.filter[i]);
+			}
+		}
+		
+		location.href = "users.php?act=export" + args;
+    }
+    
+    function confirm_bath(){
+		userItems = $("input[name='checkboxes[]']");
+		
+		cfm = '{$lang.list_remove_confirm}';
+		
+		for (i=0; userItems[i]; i++){
+			if (userItems[i].checked && userItems[i].notice == 1){
+				cfm = '{$lang.list_still_accounts}' + '{$lang.list_remove_confirm}';
+				break;
+			}
+		}
+		
+		return confirm(cfm);
+    }
+    
+    /**
+     * 搜索用户
+     */
+    function searchUser(){
+        var frm = $("form[name='formSearch_senior']");
+        listTable.filter['store_search'] = Utils.trim(frm.find("input[name='store_search']").val());
+        listTable.filter['merchant_id'] = Utils.trim(frm.find("input[name='merchant_id']").val());
+        listTable.filter['store_keyword'] = Utils.trim(frm.find("input[name='store_keyword']").val());
+        listTable.filter['store_type'] = Utils.trim(frm.find("input[name='store_type']").val());
+    
+        listTable.filter['keywords'] = Utils.trim(frm.find("input[name='keyword']").val());
+        listTable.filter['mobile_phone'] = Utils.trim(frm.find("input[name='mobile_phone']").val());
+        listTable.filter['email'] = Utils.trim(frm.find("input[name='email']").val());
+        listTable.filter['rank'] = frm.find("input[name='user_rank']").val();
+        listTable.filter['pay_points_gt'] = Utils.trim(frm.find("input[name='pay_points_gt']").val());
+        listTable.filter['pay_points_lt'] = Utils.trim(frm.find("input[name='pay_points_lt']").val());
+        listTable.filter['page'] = 1;
+        listTable.loadList();
+    }
+    
+    $.gjSearch("-240px");  //高级搜索
+	</script>
+{/if}
+</body>
+</html>

@@ -1,0 +1,195 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.seller} - {$ur_here}</div>
+        <div class="content">
+        	{include file ='library/seller_tab.lbi'}
+        	<div class="explanation" id="explanation">
+                <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.list.0}</li>
+                    <li>{$lang.operation_prompt_content.list.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<div class="common-head">
+                    <div class="search">
+                    	<form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+                        <div class="input">
+                            <input type="text" name="apply_sn" class="text nofocus" placeholder="{$lang.apply_sn}" autocomplete="off" />
+                            <input type="submit" class="btn" name="secrch_btn" ectype="secrch_btn" value="" />
+                        </div>
+                        </form>
+                    </div>
+					<div class="fl">
+						<a href="{$action_link.href}"><div class="fbutton"><div class="csv" title="{$action_link.text}"><span><i class="icon icon icon-download-alt"></i>{$action_link.text}</span></div></div></a>
+					</div>
+                </div>
+                <div class="common-content">
+                	<div class="list-div" id="listDiv" >
+						{/if}
+                    	<table cellpadding="1" cellspacing="1">
+                        	<thead>
+                            	<tr>
+                                	<th width="10%"><div class="tDiv">{$lang.apply_sn}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.shop_name}</div></th>
+									<th width="7%"><div class="tDiv">{$lang.grade_name}</div></th>
+                                    <th width="7%"><div class="tDiv">{$lang.total_amount}</div></th>
+                                    <th width="7%"><div class="tDiv">{$lang.refund_price}</div></th>
+                                    <th width="7%"><div class="tDiv">{$lang.payable_amount}</div></th>
+                                    <th width="6%"><div class="tDiv">{$lang.back_price}</div></th>
+                                    <th width="6%"><div class="tDiv">{$lang.pay}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.add_time}</div></th>
+                                    <th width="10%"><div class="tDiv">{$lang.apply_status}</div></th>
+                                    <th width="12%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+							    {foreach from=$apply_list item=list}
+								<tr>
+								<td><div class="tDiv">{$list.apply_sn|escape:html}</div></td>
+								<td><div class="tDiv">{$list.shop_name|escape:html}{if $list.valid eq 1}&nbsp;&nbsp;<image src="images/yes.png" title="有效等级申请标识"/>{/if}</div></td>
+								<td><div class="tDiv">{$list.grade_name|escape:html}</div></td>	
+								<td><div class="tDiv">{$list.total_amount|escape:html}</div></td>
+								<td><div class="tDiv">{$list.refund_price}</div></td>
+							    <td><div class="tDiv">{$list.payable_amount}</div></td>
+								<td><div class="tDiv">{$list.back_price}</div></td>
+								<td><div class="tDiv">{$list.pay_name}</div></td>
+							    <td><div class="tDiv">{$list.add_time}</div></td>
+								<td><div class="tDiv">{$list.status_paid},{$list.status_apply}</div></td>  
+							    <td class="handle">
+                                    <div class="tDiv a2">
+                                        <a href="seller_apply.php?act=info&apply_id={$list.apply_id}&grade_id={$list.grade_id}" title="{$lang.view_detail}" class="btn_see" ><i class="sc_icon sc_icon_see"></i>{$lang.view}</a>
+                                        {if $list.apply_status eq 3 || $pre_admin eq 0}
+                                        <a href="javascript:;" onclick="listTable.remove({$list.apply_id}, '{$lang.drop_confirm}')" title="{$lang.remove}" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>	
+                                        {/if}
+                                    </div>
+								</td>
+								</tr>
+								{foreachelse}
+								<tr><td class="no-records"  align="center" colspan="11">{$lang.no_records}</td></tr>
+								{/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="12">
+                                    	<div class="list-page">
+                                            {include file="library/page.lbi"}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+						{if $full_page}
+                    </div>
+                </div>
+            </div>
+            <div class="gj_search">
+                <div class="search-gao-list" id="searchBarOpen">
+                    <i class="icon icon-zoom-in"></i>{$lang.advanced_search}
+                </div>
+                <div class="search-gao-bar">
+                    <div class="handle-btn" id="searchBarClose"><i class="icon icon-zoom-out"></i>{$lang.pack_up}</div>
+                    <div class="title"><h3>{$lang.advanced_search}</h3></div>
+                    <form method="get" name="formSearch_senior" action="javascript:searchOrder()">
+                        <div class="searchContent">
+                            <div class="layout-box">
+                                <dl>
+                                    <dt>{$lang.apply_sn}</dt>
+                                    <dd><input type="text" value="" name="apply_sn" class="s-input-txt" autocomplete="off" /></dd>
+                                </dl>
+                                <dl>
+                                    <dt>{$lang.grade_name}</dt>
+                                    <dd><input type="text" value="" name="grade_name" class="s-input-txt" autocomplete="off" /></dd>
+                                </dl>
+                                <dl>
+                                    <dt>{$lang.pay_starts|escape}</dt>
+                                    <dd>
+                                        <div  class="select_w145 imitate_select">
+                                            <div class="cite">{$lang.select_please}</div>
+                                            <ul>
+                                               <li><a href="javascript:;" data-value="-1">{$lang.select_please}</a></li>
+                                               <li><a href="javascript:;" data-value="0">{$lang.no_pay}</a></li>
+                                               <li><a href="javascript:;" data-value="1">{$lang.is_pay}</a></li>
+                                            </ul>
+                                            <input name="pay_starts" type="hidden" value="-1">
+                                        </div>
+                                    </dd>
+                                </dl>
+                               <dl>
+                                    <dt>{$lang.apply_status|escape}</dt>
+                                    <dd>
+                                        <div  class="select_w145 imitate_select">
+                                            <div class="cite">{$lang.select_please}</div>
+                                            <ul>
+                                               <li><a href="javascript:;" data-value="-1">{$lang.select_please}</a></li>
+                                               <li><a href="javascript:;" data-value="0">{$lang.is_confirm.0}</a></li>
+                                               <li><a href="javascript:;" data-value="1">{$lang.is_confirm.1}</a></li>
+                                               <li><a href="javascript:;" data-value="2">{$lang.is_confirm.2}</a></li>
+                                               <li><a href="javascript:;" data-value="3">{$lang.is_confirm.3}</a></li>
+                                            </ul>
+                                            <input name="apply_starts" type="hidden" value="-1">
+                                        </div>
+                                    </dd>
+                                </dl>
+                                <dl>
+                                    <dt>{$lang.effective_grade_apply}</dt>
+                                    <dd>
+                                        <div  class="select_w145 imitate_select">
+                                            <div class="cite">{$lang.select_please}</div>
+                                            <ul>
+                                               <li><a href="javascript:;" data-value="-1">{$lang.select_please}</a></li>
+                                               <li><a href="javascript:;" data-value="0">{$lang.invalid}</a></li>
+                                               <li><a href="javascript:;" data-value="1">{$lang.effective}</a></li>
+                                            </ul>
+                                            <input name="valid" type="hidden" value="-1">
+                                        </div>
+                                    </dd>
+                                </dl>
+                                <dl class="bot_btn">
+                                    <dd>
+                                       <input type="submit" class="btn red_btn" name="tj_search" value="{$lang.button_inquire}" /><input type="reset" class="btn btn_reset" name="reset" value="{$lang.button_reset_alt}" />
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">	
+	//分页传值
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+
+    /**
+     * 搜索订单
+     */
+    function searchOrder()
+    {
+        var frm = $("form[name='formSearch_senior']");
+        listTable.filter['apply_sn'] = Utils.trim(frm.find("input[name='apply_sn']").val());
+        listTable.filter['grade_name'] = Utils.trim(frm.find("input[name='grade_name']").val());
+        listTable.filter['pay_starts'] = Utils.trim(frm.find("input[name='pay_starts']").val());
+        listTable.filter['apply_starts'] = Utils.trim(frm.find("input[name='apply_starts']").val());
+        listTable.filter['valid'] = frm.find("input[name='valid']").val();
+        listTable.filter['page'] = 1;
+        listTable.loadList();
+    };
+	
+	//高级搜索
+	$.gjSearch("-240px");
+	</script>
+</body>
+</html>
+{/if}

@@ -1,0 +1,158 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="format-detection" content="telephone=no"/>
+	<title>刮刮卡</title>
+    <link href="__PUBLIC__/assets/wechat/ggk/css/activity-style.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="__PUBLIC__/vendor/common/jquery.min.js"></script>
+	<script type="text/javascript" src="__PUBLIC__/assets/wechat/ggk/js/wScratchPad.js"></script>
+
+	{include file="jssdk"}
+</head>
+<body data-role="page" class="activity-scratch-card-winning">
+	<div class="main">
+		<div class="cover">
+            <img src="__PUBLIC__/assets/wechat/ggk/images/activity-scratch-card-bannerbg.png">
+			<div id="prize">谢谢参与</div>
+			<div id="scratchpad"></div>
+		</div>
+		<div class="content">
+			<div class="boxcontent boxwhite">
+				<div class="box">
+					<div class="title-brown">奖项设置</div>
+					<div class="Detail">
+						{foreach $data['prize'] as $v}
+                        <p>{$v['prize_level']}：{$v['prize_name']}，共<span class="total">{$v['prize_count']}</span>份。</p>
+                        {/foreach}
+					</div>
+				</div>
+			</div>
+			<div class="boxcontent boxwhite">
+				<div class="box">
+					<div class="title-brown">我的中奖记录</div>
+					<div class="Detail">
+		                {if !empty($list_oneself)}
+	                    <p>{$list_oneself[0]['nickname']} 获得奖品 ：{$list_oneself[0]['prize_name']}</p>
+	                    <p class="edit_message"><a href="{$list_oneself[0]['winner_url']}" > ==点击完善联系信息== </a></p>
+				        {else}
+		                <p>暂无获奖记录</p>
+		                {/if}
+					</div>
+				</div>
+			</div>
+			<div class="boxcontent boxwhite">
+				<div class="box">
+					<div class="title-brown">活动说明</div>
+					<div class="Detail">
+						<p>剩余抽奖次数：<span id="num">{$data['prize_num']}</span></p>
+						<p>{$data.description}</p>
+					</div>
+				</div>
+			</div>
+			<div class="boxcontent boxwhite">
+				<div class="box">
+					<div class="title-brown">中奖记录</div>
+					<div class="Detail">
+		                {if !empty($list)}
+		                {foreach $list as $val}
+				        <p>{$val['nickname']} 获得奖品 ：{$val['prize_name']}</p>
+				        {/foreach}
+		                {else}
+		                <p>暂无获奖记录</p>
+		                {/if}
+					</div>
+				</div>
+			</div>
+		</div>
+		<div style="clear:both;">
+		</div>
+	</div>
+</body>
+</html>
+<script type="text/javascript">
+	$(function() {
+		var ISWeixin = !!navigator.userAgent.match(/MicroMessenger/i); //wp手机无法判断
+        if(!ISWeixin){
+            var rd_url = location.href.split('#')[0];  // remove hash
+            var oauth_url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri='+encodeURIComponent(rd_url) + '&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect';
+            location.href = oauth_url;
+            return false;
+        }
+		var isLucky = false, level = "谢谢参与";
+		$.getJSON("{url('wechat/index/plugin_action', array('name'=>'ggk','ru_id' => $ru_id))}", {act: 'draw'}, function(result){
+			if(result.status == 2){
+				$("#scratchpad").wScratchPad('enabled');
+				alert(result.msg);
+				return false;
+			} else if (result.status == 1) {
+				isLucky = true;
+				level = result.level;
+				$("#prize").html(level);
+			}
+			$("#scratchpad").css("background", "none");
+			$("#scratchpad").wScratchPad({
+				width: 150,
+				height: 40,
+				color: "#a9a9a7",  //覆盖的刮刮层的颜色
+				scratchDown: function(e, percent) {
+					e.preventDefault();
+					$(this.canvas).css('margin-right', $(this.canvas).css('margin-right') == "0px" ? "1px" : "0px");
+				},
+				scratchMove: function(e, percent){
+					e.preventDefault();
+					$(this.canvas).css('margin-right', $(this.canvas).css('margin-right') == "0px" ? "1px" : "0px");
+				},
+				scratchUp: function(e, percent){
+					e.preventDefault();
+					$(this.canvas).css('margin-right', $(this.canvas).css('margin-right') == "0px" ? "1px" : "0px");
+					if(percent >= 1.5){
+						$("#scratchpad").wScratchPad('clear');
+						$.getJSON("{url('wechat/index/plugin_action', array('name'=>'ggk','ru_id' => $ru_id))}", {act:'do', prize_type:result.prize_type, prize_name:result.msg, prize_level:result.level}, function(data){
+							if(result.num >= 0){
+								$("#num").html(result.num);
+							}
+							$("#scratchpad").wScratchPad('enabled');
+							$("#scratchpad").css("background", "#a9a9a7");
+							if (data.status == 1) {
+								var msg = "恭喜中了" + result.level + "\r\n" + "快去领奖吧";
+								if(data.link && confirm(msg)){
+									location.href = data.link;
+	                        		return false;
+								} else {
+									reload();
+									return false;
+								}
+							} else if (data.status == 0) {
+								if(confirm(result.msg + "\r\n再来一次")){
+									reload();
+									return false;
+								} else {
+									reload();
+									return false;
+								}
+							}
+						});
+					}
+				}
+			});
+		});
+	});
+
+    // 兼容微信安卓下 不刷新的问题
+    function reload(){
+        var url = location.href;
+        var name = 'random';
+        // 过滤重复参数
+        var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) {
+            url = url.replace(r[0], '');
+        }
+        location.href = url+"&random=" + Math.floor(Math.random()*100000000);
+    }
+
+</script>

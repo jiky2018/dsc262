@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="javascript:;" ectype="goback" class="s-back"></a>{$lang.privilege} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.allot.0}</li>
+                    <li>{$lang.operation_prompt_content.allot.1}</li>
+                    <li>{$lang.operation_prompt_content.allot.2}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+                        {if $priv_ru eq 1}
+                        <form method="POST" action="privilege.php" name="theFrom" id="privilege_frm">
+                        {else}
+                        <form method="POST" action="privilege_seller.php" name="theFrom" id="privilege_frm">
+                        {/if}
+                    	<div class="switch_info business_info" style="background:none;">
+                            {foreach from=$priv_arr item=priv}
+                            {if $priv.priv}
+                            <div class="step">
+                            	<div class="tit">
+                                    <div class="checkbox_items">
+                                    	<div class="checkbox_item">
+                                            <input type="checkbox" name="chkGroup" value="checkbox" class="ui-checkbox" id="chkGroup_{$priv.action_id}" />
+                                            <label for="chkGroup_{$priv.action_id}" class="ui-label blod">{$lang[$priv.action_code]}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="qx_items">
+                                	<div class="qx_item">
+                                        <div class="checkbox_items">
+                                            {foreach from=$priv.priv key=priv_list item=list}
+                                            <div class="checkbox_item">
+                                                <input type="checkbox" value="{$priv_list}" name="action_code[]" class="ui-checkbox" id="{$priv_list}_{$priv.action_id}" date="{$priv.action_code}" {if $list.cando eq 1} checked="true" {/if} title="{$list.relevance}"/>
+                                                <label for="{$priv_list}_{$priv.action_id}" class="ui-label">{$lang[$list.action_code]}</label>
+                                            </div>
+                                            {/foreach}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {/if}
+                            {/foreach}
+                            <div class="steplast">
+                            	<div class="checkbox_items">
+                                	<div class="checkbox_item">
+                                    	<input type="checkbox" name="checkall" value="checkbox" class="ui-checkbox" id="checkall" />
+                                        <label for="checkall" class="ui-label">{$lang.check_all}</label>
+                                    </div>
+                                </div>
+                                <div class="info_btn">
+                                    <input type="submit" value="{$lang.button_save}" class="button">
+                                    <input type="hidden"   name="id"    value="{$user_id}" />
+                                    <input type="hidden" name="token" value="{$token}" />
+                                    <input type="hidden"   name="act"   value="{$form_act}" />
+                                </div>
+                            </div>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {include file ='library/pagefooter.lbi'}
+    <script language="javascript">
+        $("#checkall").click(function(){
+			var checkbox = $(this).parents(".switch_info").find('input:checkbox[type="checkbox"]');
+			if($(this).prop("checked") == true){
+				checkbox.prop("checked",true);
+			}else{
+				checkbox.prop("checked",false);
+			}
+        });
+		
+		$("input[name='chkGroup']").click(function(){
+			var checkbox = $(this).parents(".tit").next(".qx_items").find('input:checkbox[type="checkbox"]');
+			if($(this).prop("checked") == true){
+				checkbox.prop("checked",true);
+			}else{
+				checkbox.prop("checked",false);
+			}
+		});
+		
+		$("input[name='action_code[]']").click(function(){    
+			var qx_items = $(this).parents(".qx_items");
+			var length = qx_items.find("input[name='action_code[]']").length;
+			var length2 =  qx_items.find("input[name='action_code[]']:checked").length;
+			if(length == length2){
+				qx_items.prev().find("input[name='chkGroup']").prop("checked",true);
+			}else{
+				qx_items.prev().find("input[name='chkGroup']").prop("checked",false);
+			}
+        });
+		
+		$(".qx_items").each(function(index, element) {
+            var length = $(this).find("input[name='action_code[]']").length;
+			var length2 = $(this).find("input[name='action_code[]']:checked").length;
+			
+			if(length == length2){
+				$(this).prev().find("input[name='chkGroup']").prop("checked",true);
+			}else{
+				$(this).prev().find("input[name='chkGroup']").prop("checked",false);
+			}
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,169 @@
+{if $full_page}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+{include file ='library/seller_html_head.lbi'}
+</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+				{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="search-info">
+                    <div class="search-form">
+                        <form action="javascript:searchUser()" name="searchForm">
+                            <div class="imitate_select select_w145">
+                                <div class="cite">{$lang.label_out_up}</div>
+                                <ul>
+                                    <li><a href="javascript:;" data-value="0" class="ftx-01">请选择</a></li>
+                                    <li><a href="javascript:;" data-value="3" class="ftx-01">{$lang.label_account_up}</a></li>
+                                    <li><a href="javascript:;" data-value="4" class="ftx-01">{$lang.label_account_out}</a></li>
+                                </ul>
+                                <input name="out_up" type="hidden" />
+                            </div>
+                            <div class="imitate_select select_w145">
+                                <div class="cite">{$lang.label_log_type}</div>
+                                <ul>
+                                    <li><a href="javascript:;" data-value="0" class="ftx-01">请选择</a></li>
+                                    <li><a href="javascript:;" data-value="2" class="ftx-01">结算</a></li>
+                                    <li><a href="javascript:;" data-value="3" class="ftx-01">充值</a></li>
+                                    <li><a href="javascript:;" data-value="4" class="ftx-01">提现</a></li>
+                                    <li><a href="javascript:;" data-value="5" class="ftx-01">解冻</a></li>
+                                </ul>
+                                <input name="log_type" type="hidden" />
+                            </div>
+                            <div class="imitate_select select_w145">
+                                <div class="cite">{$lang.handler}</div>
+                                <ul>
+                                    <li><a href="javascript:;" data-value="0" class="ftx-01">请选择</a></li>
+                                    <li><a href="javascript:;" data-value="1" class="ftx-01">{$lang.off_stocks}</a></li>
+                                    <li><a href="javascript:;" data-value="2" class="ftx-01">{$lang.stay_dispose}</a></li>
+                                </ul>
+                                <input name="handler" type="hidden" />
+                            </div>
+                            <div class="search-key">
+                                <input name="order_sn" type="text" value="" class="text" placeholder="{$lang.label_order_sn}" />
+                                <input type="submit" class="submit" value="搜索">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                {/if}
+                <div class="list-div mt10" id="listDiv">
+                  <table class="ecsc-default-table">
+                  	<thead>
+                    <tr>
+                      <th width="10%">{$lang.record_id}</th>
+                      <th width="25%">{$lang.label_order_sn}</th>
+                      <th width="13%">{$lang.label_total_fee}</th>
+                      <th width="7%">{$lang.label_out_up}</th>
+                      <th width="15%">{$lang.label_log_type}</th>
+                      <th width="15%">{$lang.label_add_time}</th>
+                      <th width="15%">{$lang.handler}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {foreach from=$log_list item=log name=nolog}
+                    <tr>
+                      <td>{$log.log_id}</td>
+                      <td>
+                      	{if $log.log_type eq 2}
+                        	{$log.order_sn|default:$lang.n_a}
+                        {elseif $log.log_type eq 3}  
+                        	{$log.apply_sn|default:$lang.n_a}
+                        {else $log.log_type eq 4}
+                        	{$lang.n_a}
+                        {/if}
+                      </td>
+                      <td>
+                      	{if $log.log_type eq 5}
+                      		{$log.frozen_money}
+                        {else}
+                        	{$log.amount}
+                        {/if}
+                      </td>
+                      <td>
+                        {if $log.log_type neq 5}
+                            {if $log.log_type eq 4}
+                                {$lang.label_account_out}
+                            {else}  
+                                {$lang.label_account_up}
+                            {/if}
+                        {else}
+                            {$lang.n_a}
+                        {/if}
+                      </td>
+                      <td>
+                        {if $log.log_type eq 2}
+                        	结算
+                        {elseif $log.log_type eq 3}  
+                        	充值<br/>
+                            <em style="color:#ff5256">({$log.payment_info.pay_name})</em>
+                        {elseif $log.log_type eq 4}
+                        	提现    
+                        {elseif $log.log_type eq 5}
+                        冻结资金解冻
+                        {/if}
+                      </td>  
+                      <td>{$log.add_time}</td>  
+                      <td>
+                      {if $log.log_type eq 2 && $log.is_paid eq 1 || $log.log_type eq 3 && $log.is_paid eq 1 || $log.log_type eq 4 && $log.is_paid eq 1}
+                      	{$lang.off_stocks}
+                      {else}
+                      	{if $log.log_type eq 3 && $log.is_paid eq 0 && $log.payment_info.pay_code neq 'bank'}
+                        <a href="merchants_account.php?act=account_manage&act_type=topup_pay&log_id={$log.log_id}">付款</a>
+                        &nbsp;
+                        <a href="merchants_account.php?act=del_pay&submit_act=1&log_id={$log.log_id}">取消</a>
+                        {else}
+                        {$lang.stay_dispose}
+                        {/if}
+                      {/if}
+                      </td>  
+                    </tr>
+                    {foreachelse}
+                    <tr><td class="no-records" colspan="10">{$lang.no_records}</td></tr>
+                    {/foreach}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="10">{include file="page.dwt"}</td>
+                        </tr>
+                    </tfoot>
+                  </table>
+                </div>
+                {if $full_page}
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript">
+listTable.recordCount = {$record_count};
+listTable.pageCount = {$page_count};
+
+{foreach from=$filter item=item key=key}
+listTable.filter.{$key} = '{$item}';
+{/foreach}
+
+/**
+ * 搜索用户
+ */
+function searchUser()
+{
+	listTable.filter['order_sn'] = Utils.trim(document.forms['searchForm'].elements['order_sn'].value);
+	listTable.filter['out_up'] = Utils.trim(document.forms['searchForm'].elements['out_up'].value);
+	listTable.filter['log_type'] = Utils.trim(document.forms['searchForm'].elements['log_type'].value);
+	listTable.filter['handler'] = Utils.trim(document.forms['searchForm'].elements['handler'].value);
+	
+    listTable.filter['page'] = 1;
+    listTable.loadList();
+}
+</script>
+</body>
+</html>
+{/if}

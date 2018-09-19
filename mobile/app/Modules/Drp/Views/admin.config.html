@@ -1,0 +1,109 @@
+{include file="admin_pageheader"}
+
+<div class="wrapper">
+    <div class="title">分销设置</div>
+    <div class="content_tips">
+        <div class="tabs_info">
+            <ul>
+              <li class="curr"><a href="{url('config')}">基本设置</a></li>
+              <li><a href="{url('drp_set_config')}">比例设置</a></li>
+              <li><a href="{url('drp_set_qrcode')}">名片二维码设置</a></li>
+            </ul>
+        </div>
+        <div class="explanation" id="explanation">
+            <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4><span id="explanationZoom" title="收起提示"></span></div>
+            <ul>
+                <li>微分销设置开店流程中的模板提示语，温馨提示，新手必读，提现提示。 </li>
+                <li>微分销佣金提现金额必须大于等于10元才可以进行佣金提现，具体可操作的时间可在下方修改。</li>
+                <li>微分销配置根据需求操作消息推送，购买成为分销商，购买金额，商品分销模式，分销商审核配置信息。</li>
+                <li>微分销自定义整站“分销商”替换设定的分销商名称，自定义“分销”名称替换设定的分销名称。</li>
+            </ul>
+        </div>
+        <div class="flexilist">
+            <div class="main-info">
+            <form method="post" action="{url('config')}" class="form-horizontal" role="form">
+            <div class="switch_info">
+                    {foreach $list as $config}
+                    {if $config.code != 'drp_affiliate'}
+                    <div class="item">
+                        <div class="label-t">{$config.name}</div>
+                        <div class="label_value">
+                            {if $config.type == 'text'}
+                            <input type="text" name="data[{$config.code}]" class="text" value="{$config.value}">
+                            {elseif $config.type == 'textarea'}
+                            <textarea name="data[{$config.code}]" class="textarea" rows="5">{$config.value}</textarea>
+                            {elseif $config.type == 'radio'}
+                                {if $config.code =='count_commission'}
+                                    <div class="type-file-box">
+                                        <div class="checkbox_items">
+                                            <div class="checkbox_item">
+                                                <input type="radio" name="data[{$config.code}]" value="0" {if $config.value == 0}checked{/if}>
+                                                <label  class=" {if $config.value == 0}active{/if}">周</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                                <input type="radio" name="data[{$config.code}]" value="1" {if $config.value == 1}checked{/if}>
+                                                <label class=" {if $config.value == 1}active{/if}">月</label>
+                                            </div>
+                                            <div class="checkbox_item">
+                                                <input type="radio" name="data[{$config.code}]" value="2" {if $config.value == 2}checked{/if}>
+                                                <label class=" {if $config.value == 2}active{/if}">年</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {else}
+                                <div class="type-file-box">
+                                    <div class="checkbox_items">
+                                        <div class="checkbox_item">
+                                            <input type="radio" name="data[{$config.code}]" value="1" {if $config.value == 1}checked{/if}>
+                                            <label  class=" {if $config.value == 1}active{/if}">启用</label>
+                                        </div>
+                                        <div class="checkbox_item">
+                                            <input type="radio" name="data[{$config.code}]" value="0" {if $config.value == 0}checked{/if}>
+                                            <label class=" {if $config.value == 0}active{/if}">禁用</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                {/if}
+                            {/if}
+
+                            <p class="notic">{$config.warning}</p>
+                        </div>
+                    </div>
+                    {/if}
+                    {/foreach}
+                <div class="item">
+                    <div class="label-t">&nbsp;</div>
+                    <div class="lable_value info_btn">
+                        <input type="submit" name="submit" value="确定" class="button btn-danger bg-red" style="margin:0 auto;" /></div>
+                </div>
+            </div>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    $("#explanationZoom").on("click",function(){
+        var explanation = $(this).parents(".explanation");
+        var width = $(".content_tips").width();
+        if($(this).hasClass("shopUp")){
+            $(this).removeClass("shopUp");
+            $(this).attr("title","收起提示");
+            explanation.find(".ex_tit").css("margin-bottom",10);
+            explanation.animate({
+                width:width
+            },300,function(){
+                $(".explanation").find("ul").show();
+            });
+        }else{
+            $(this).addClass("shopUp");
+            $(this).attr("title","提示相关设置操作时应注意的要点");
+            explanation.find(".ex_tit").css("margin-bottom",0);
+            explanation.animate({
+                width:"118"
+            },300);
+            explanation.find("ul").hide();
+        }
+    });
+</script>
+{include file="admin/footer"}

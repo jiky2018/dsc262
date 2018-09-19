@@ -1,0 +1,114 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="bonus.php?act=list" class="s-back">{$lang.back}</a>{$lang.promotion} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>{$lang.operation_prompt_content.view.0}</li>
+                    <li>{$lang.operation_prompt_content.view.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+				<div class="common-head">
+			        <div class="refresh ml0">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+				</div>
+                <div class="common-content">
+					<form method="POST" action="bonus.php?act=batch&bonus_type={$smarty.get.bonus_type}" name="listForm">
+                	<div class="list-div" id="listDiv">
+						{/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                	<th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars"></label></div></th>
+                                    <th width="5%"><div class="tDiv">{$lang.record_id}</div></th>
+									{if $show_bonus_sn}
+                                    <th width="10%"><div class="tDiv">{$lang.bonus_sn}</div></th>
+									<th width="10%"><div class="tDiv">{$lang.bind_password}</div></th>
+								    {/if}
+                                    <th width="15%"><div class="tDiv">{$lang.bonus_type}</div></th>
+                                    <th width="12%"><div class="tDiv">{$lang.order_id}</div></th>
+                                    <th width="12%"><div class="tDiv">{$lang.user_id}</div></th>
+                                    <th width="12%"><div class="tDiv">{$lang.used_time}</div></th>
+									{if $show_mail}
+                                    <th width="10%"><div class="tDiv">{$lang.emailed}</div></th>
+									{/if}
+                                    <th class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+							{foreach from=$bonus_list item=bonus}
+								<tr>
+                                <td class="sign"><div class="tDiv">
+									<input type="checkbox" name="checkboxes[]" value="{$bonus.bonus_id}" class="checkbox" id="checkbox_{$bonus.bonus_id}" />
+									<label for="checkbox_{$bonus.bonus_id}" class="checkbox_stars"></label>
+								</div></td>
+								<td><div class="tDiv">{$bonus.bonus_id}</div></td>
+								{if $show_bonus_sn}
+								<td><div class="tDiv">{$bonus.bonus_sn}</div></td>
+								<td><div class="tDiv">{$bonus.bonus_password}</div></td>
+								{/if}
+								<td><div class="tDiv">{$bonus.type_name}</div></td>
+								<td><div class="tDiv">{$bonus.order_sn|default:$lang.n_a}</div></td>
+								<td><div class="tDiv">{if $bonus.email}<a href="mailto:{$bonus.email}">{$bonus.user_name}</a>{else}{$bonus.user_name|default:$lang.n_a}{/if}</div></td>
+								<td><div class="tDiv">{$bonus.used_time}</div></td>
+								{if $show_mail}
+								<td><div class="tDiv">{$bonus.emailed}</td>
+								{/if}
+								<td align="center"  class="handle">
+									<div class="tDiv">
+										<a href="javascript:;" onclick="listTable.remove({$bonus.bonus_id}, '{$lang.drop_confirm}', 'remove_bonus')" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>
+										{if $show_mail and $bonus.order_id eq 0 and $bonus.email}<a href="bonus.php?act=send_mail&bonus_id={$bonus.bonus_id}" class="btn_region"><i class="icon icon-screenshot"></i>{$lang.send_mail}</a>{/if}
+									</div>
+								</td>
+							{foreachelse}
+								<tr><td class="no-records" align="center" colspan="9">{$lang.no_records}</td></tr>
+							{/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+									<td colspan="12">
+                                        <div class="tDiv">
+                                            <div class="tfoot_btninfo">
+                                              <div class="shenhe">
+                                                <input type="submit" name="drop" id="btnSubmit" value="{$lang.drop}" class="btn btn_disabled" disabled="true" ectype="btnSubmit" />
+                                                {if $show_mail}<input type="submit" name="mail" id="btnSubmit1" value="{$lang.send_mail}" class="btn btn_disabled" disabled="true" ectype="btnSubmit" />{/if}
+                                              </div>										
+                                            </div>
+                                            <div class="list-page">
+                                                {include file="library/page.lbi"}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+						{if $full_page}
+                    </div>
+					</form>
+                </div>
+            </div>
+        </div>
+    </div>
+	<script type="text/javascript">
+	//列表导航栏设置下路选项
+	$(".ps-container").perfectScrollbar();
+            
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+	listTable.query = "query_bonus";
+	
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+    </script>
+</body>
+</html>
+{/if}

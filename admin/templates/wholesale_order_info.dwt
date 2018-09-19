@@ -1,0 +1,428 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="wholesale_order.php?act=list" class="s-back">{$lang.back}</a>供求 - {$ur_here}</div>
+        <div class="content">
+            <div class="flexilist order_info">
+                <form action="order.php?act=operate" method="post" name="theForm">
+                    <div class="common-content">
+                        <!--订单基本信息-->
+                        <div class="step">
+                            <div class="step_title"><i class="ui-step"></i><h3>{$lang.base_info}</h3></div>
+                            <div class="section section3">
+                                <dl>
+                                    <dt>{$lang.label_order_sn}</dt>
+                                    <dd>{$order.order_sn}{if $order.extension_code eq "group_buy"}<a href="group_buy.php?act=edit&id={$order.extension_id}">{$lang.group_buy}</a>{elseif $order.extension_code eq "exchange_goods"}<a href="exchange_goods.php?act=edit&id={$order.extension_id}">{$lang.exchange_goods}</a>{/if}</dd>
+                                </dl>
+                                <dl>
+                                    <dt>{$lang.label_user_name}</dt>
+                                    <dd>{$order.user_name|default:$lang.anonymous}</dd>
+                                </dl>
+                                <dl>
+                                    <dt>{$lang.label_order_time}</dt>
+                                    <dd>{$order.formated_add_time}</dd>
+                                </dl>
+                                <dl>
+                                    <dt>支付状态</dt>
+                                    <dd>{if $order.pay_status eq 0}未支付<a href="#" ectype="pay" class="btn btn25 red_btn" data-order="{$order.order_id}">支付</a>{else}已支付{/if}</dd>
+                                </dl>
+                                {if $order.pay_status eq 1}
+                                <dl>
+                                    <dt>支付时间</dt>
+                                    <dd>{$order.pay_time}</dd>
+                                </dl>
+                                {/if}
+                            </div>
+                        </div>
+                        
+                        <!--订单其他信息-->
+                        <div class="step">
+                            <div class="step_title"><i class="ui-step"></i><h3>{$lang.other_info}{if !$order.child_order}<a href="order.php?act=edit&order_id={$order.order_id}&step=other"><i class="icon icon-edit"></i></a>{/if}</h3></div>
+                            <div class="section{if $order.inv_type} section3{else} section1{/if}">
+                                <dl>
+                                    <dt>发票类型：</dt>
+                                    <dd>{$lang.need_invoice.$order.inv_type}</dd>
+                                </dl>
+								{if $order.inv_type}
+                                <dl>
+                                    <dt>{$lang.label_inv_payee}</dt>
+                                    <dd>{$order.inv_payee}</dd>
+                                </dl>
+                                <dl>
+                                    <dt>纳税人识别号</dt>
+                                    <dd>{$order.tax_id}</dd>								
+                                </dl>
+								{/if}
+                            </div>
+                        </div>
+                        
+                        <!--收货人信息-->
+                        <div class="step">
+                            <div class="step_title"><i class="ui-step"></i><h3>{$lang.consignee_info}{if !$order.child_order}<a href="order.php?act=edit&order_id={$order.order_id}&step=consignee"><i class="icon icon-edit"></i></a>{/if}</h3></div>
+                            <div class="section">
+                                <dl>
+                                    <dt>{$lang.label_consignee}</dt>
+                                    <dd>{$order.consignee|escape}</dd>
+                                </dl>
+                                <dl>
+                                    <dt>{$lang.label_mobile}</dt>
+                                    <dd>{if $order.mobile}{$order.mobile|escape}{else}{$lang.wu}{/if}</dd>
+                                </dl>
+                                <dl>
+                                    <dt>支付方式：</dt>
+                                    <dd>{$order.pay_name}</dd>
+                                </dl>
+                                <dl>
+                                    <dt>{$lang.label_address}</dt>
+                                    <dd>{$order.address|escape}</dd>
+                                </dl>
+                                <dl style="width:33%;">
+                                    <dt>订单备注：</dt>
+                                    <dd title="{$order.postscript|escape}" data-toggle="tooltip">{$order.postscript|escape}</dd>
+                                </dl>
+                            </div>
+                        </div>
+                        
+                        <!--商品信息-->
+                        {if $order.is_zc_order eq 1}
+                        <div class="step">
+                            <div class="step_title"><i class="ui-step"></i><h3>{$lang.zc_goods_info}</h3></div>
+                            <div class="step_info">
+                                <div class="order_goods_fr">
+                                    <table class="table" border="0" cellpadding="0" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th width="20%" class="first">{$lang.zc_project_name}</th>
+                                                <th width="8%">{$lang.start_time}</th>
+                                                <th width="7%">{$lang.end_time}</th>
+                                                <th width="7%">{$lang.zc_project_raise_money}</th>
+                                                <th width="7%">{$lang.zc_goods_price}</th>
+                                                <th width="5%">{$lang.zc_shipping_fee}</th>
+                                                <th width="6%">{$lang.zc_return_time}</th>
+                                                <th width="25%">{$lang.zc_return_content}</th>
+                                                <th width="5%">{$lang.subtotal}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td align="center"><a href="../crowdfunding.php?act=detail&id={$zc_goods_info.pid}" target="_blank">{$zc_goods_info.title}</a></td>
+                                                <td align="center">{$zc_goods_info.start_time}</td>
+                                                <td align="center">{$zc_goods_info.end_time}</td>
+                                                <td align="center">{$zc_goods_info.formated_amount}</td>
+                                                <td align="center">{$zc_goods_info.formated_price}</td>
+                                                <td align="center">{$zc_goods_info.formated_shipping_fee}</td>
+                                                <td align="center">{$zc_goods_info.return_time}</td>
+                                                <td align="center" style="padding:10px;">{$zc_goods_info.content}</td>
+                                                <td align="center">{$zc_goods_info.formated_price}</td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td align="right"><strong>{$lang.label_total}</strong></td>
+                                                <td align="center">{$order.formated_goods_amount}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        {else}
+                        <div class="step">
+                            <div class="step_title"><i class="ui-step"></i><h3>{$lang.goods_info}{if !$order.child_order}<a href="order.php?act=edit&order_id={$order.order_id}&step=goods"><i class="icon icon-edit"></i></a>{/if}</h3></div>
+                            <div class="step_info">
+                                <div class="order_goods_fr">
+                                    <table class="table" border="0" cellpadding="0" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th width="30%" class="first">{$lang.goods_name_brand}</th>
+                                                
+                                                <th width="7%">{$lang.goods_sn}</th>
+                                                
+                                                
+                                                <th width="6%">{$lang.goods_price}</th>
+                                                <th width="5%">{$lang.goods_number}</th>
+                                                <th width="15%">{$lang.goods_attr}</th>
+                                                <th width="5%">{$lang.storage}</th>
+                                                <th width="10%">{$lang.subtotal}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {foreach from=$goods_list item=goods}
+                                            <tr>
+                                                <td>
+                                                    <div class="order_goods_div">
+                                                        <div class="img"><a href="../goods.php?id={$goods.goods_id}" target="_blank"><img src="{$goods.goods_thumb}" width="72" height="72" /></a></div>
+                                                        <div class="name ml10">
+                                                            {if $goods.goods_id gt 0 && $goods.extension_code neq 'package_buy'}
+                                                            <a href="../goods.php?id={$goods.goods_id}" target="_blank">{$goods.goods_name} {if $goods.brand_name}[ {$goods.brand_name} ]{/if}
+                                                            {if $goods.is_gift}{if $goods.goods_price > 0}{$lang.remark_favourable}{else}{$lang.remark_gift}{/if}{/if}
+                                                            {if $goods.parent_id > 0}{$lang.remark_fittings}{/if}</a>
+                                                            {elseif $goods.goods_id gt 0 && $goods.extension_code eq 'package_buy'}
+                                                            <a href="javascript:void(0)" onclick="setSuitShow({$goods.goods_id})">{$goods.goods_name}<span style="color:#FF0000;">{$lang.remark_package}</span></a>
+                                                            <div id="suit_{$goods.goods_id}" style="display:none">
+                                                                {foreach from=$goods.package_goods_list item=package_goods_list}
+                                                                  <a href="../goods.php?id={$package_goods_list.goods_id}" target="_blank">{$package_goods_list.goods_name}</a><br />
+                                                                {/foreach}
+                                                            </div>
+                                                            {/if}
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                
+                                                <td>{$goods.goods_sn}</td>
+                                                
+                                                
+                                                <td>{$goods.formated_goods_price}</td>
+                                                <td>{$goods.goods_number}</td>
+                                                <td>{$goods.goods_attr|nl2br}</td>
+                                                <td>{$goods.storage}</td>
+                                                <td>
+                                                    {$goods.formated_subtotal}
+                                                    {if $goods.dis_amount > 0}
+                                                    <br/>
+                                                    <font class="org">({$lang.ciscount}：{$goods.discount_amount})</font>
+                                                    {/if}
+                                                </td>
+                                            </tr>
+                                            {/foreach}
+                                            <tr>
+                                                <td colspan="7">
+                                                    <div class="order_total_fr">
+                                                        {if $order.total_weight}
+                                                        <strong>{$lang.label_total_weight}</strong>
+                                                        <span class="red">{$order.total_weight}</span>
+                                                        {/if}
+                                                        <strong>{$lang.label_total}</strong>
+                                                        <span class="red">{$order.formated_order_amount}</span>
+														{if $order.formated_cost_amount}
+                                                        <strong>{$lang.label_total_cost}</strong>
+                                                        <span class="red">{$order.formated_cost_amount}</span>
+														{/if}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        {/if}
+                        
+                        <!--费用信息-->
+                        <div class="step order_total">
+                            <div class="step_title"><i class="ui-step"></i><h3>{$lang.fee_info}{if !$order.child_order}<a href="order.php?act=edit&order_id={$order.order_id}&step=money"><i class="icon icon-edit"></i></a>{/if}</h3></div>
+                            <div class="section">
+                                <dl>
+                                    <dt>{$lang.label_goods_amount}</dt>
+                                    <dd>{$order.formated_goods_amount}</dd>
+                                    <dt>{$lang.label_discount}</dt>
+                                    <dd>- {$order.formated_discount}</dd>
+                                </dl>
+                                <dl>
+                                    <dt>{$lang.label_tax}</dt>
+                                    <dd>+ {$order.formated_tax}</dd>
+                                    <dt>{$lang.label_order_amount}</dt>
+                                    <dd class="red">{$order.formated_total_fee}</dd>
+                                </dl>
+                                <dl>
+                                    <dt>{$lang.label_shipping_fee}</dt>
+                                    <dd>+ {$order.formated_shipping_fee}</dd>
+                                    <dt>{$lang.label_money_paid}</dt>
+                                    <dd>- {$order.formated_money_paid}</dd>
+                                </dl>
+                                <dl>
+                                    <dt>{$lang.label_insure_fee}</dt>
+                                    <dd>+ {$order.formated_insure_fee}</dd>
+                                    <dt>{$lang.label_surplus}</dt>
+                                    <dd>- {$order.formated_surplus}</dd>
+                                </dl>
+                                <dl>
+                                    <dt>{$lang.label_pay_fee}</dt>
+                                    <dd>+ {$order.formated_pay_fee}</dd>
+                                    <dt>{$lang.label_integral}</dt>
+                                    <dd>- {$order.formated_integral_money}</dd>
+                                </dl>
+                                <dl>
+                                    <dt>{$lang.label_bonus}</dt>
+                                    <dd>- {$order.formated_bonus}</dd>
+                                    <dt>{$lang.label_coupons}</dt>
+                                    <dd>- {$order.formated_coupons}</dd>
+                                </dl>
+                                <dl>
+                                	<dt>{$lang.label_value_card}</dt>
+                                    <dd>- {$order.formated_value_card}</dd>
+                                    {if $order.order_amount >= 0}
+                                        <dt>{$lang.label_money_dues}</dt>
+                                        <dd class="red">{$order.formated_order_amount}{if $order.formated_cost_amount}（净利润约：{$order.formated_profit_amount}）{/if}</dd>
+                                    {else}
+                                        <dt>{$lang.label_money_refund}</dt>
+                                        <dd class="red">{$order.formated_money_refund}</dd>
+                                        <input name="refund" type="button" class="button" value="{$lang.refund}" onclick="location.href='order.php?act=process&func=load_refund&anonymous={if $order.user_id <= 0}1{else}0{/if}&order_id={$order.order_id}&refund_amount={$order.money_refund}'" />
+                                    {/if}
+                                    {if $order.extension_code eq "group_buy"}
+                                    	<br />{$lang.notice_gb_order_amount}
+                                    {/if}
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+		</div>
+        
+    {if !$operable_list.receive}
+    <form action="order.php?act=operate" method="post" name="theForm" id="operate_form">
+    {include file ='library/order_delivery.lbi'}
+    </form>
+    {/if}
+    {if $user}
+    <div id="topbar" class="hide">
+    	<div class="topbar_info">
+        	<div class="ul">
+          <table width="100%" border="0">
+            <caption><strong>{$lang.buyer_info}</strong></caption>
+            <tr>
+              <td class="label">{$lang.email}：</td>
+              <td><a href="mailto:{$user.email}">{$user.email}</a></td>
+            </tr>
+            <tr>
+              <td class="label">{$lang.user_money}：</td>
+              <td>{$user.formated_user_money}</td>
+            </tr>
+            <tr>
+              <td class="label">{$lang.pay_points}：</td>
+              <td>{$user.pay_points}</td>
+            </tr>
+            <tr>
+              <td class="label">{$lang.rank_points}：</td>
+              <td>{$user.rank_points}</td>
+            </tr>
+            <tr>
+              <td class="label">{$lang.rank_name}：</td>
+              <td>{$user.rank_name}</td>
+            </tr>
+            <tr>
+              <td class="label">{$lang.bonus_count}：</td>
+              <td>{$user.bonus_count}</td>
+            </tr>
+          </table>
+        
+          {foreach from=$address_list item=address}
+          <table width="100%" border="0">
+            <caption><strong>{$lang.consignee}:{$address.consignee|escape}</strong></caption>
+            <tr>
+              <td class="label">{$lang.email}：</td>
+              <td><a href="mailto:{$address.email|escape}">{$address.email|escape}</a></td>
+            </tr>
+            <tr>
+              <td class="label">{$lang.address}：</td>
+              <td>{$address.address|escape}</td>
+            </tr>
+            <tr>
+              <td class="label">{$lang.zipcode}：</td>
+              <td>{$address.zipcode|escape}</td>
+            </tr>
+            <tr>
+              <td class="label">{$lang.tel}：</td>
+              <td>{$address.tel|escape}</td>
+            </tr>
+            <tr>
+              <td class="label">{$lang.mobile}：</td>
+              <td>{$address.mobile|escape}</td>
+            </tr>
+          </table>
+          {/foreach}
+          </div>
+      </div>
+    </div>
+    {/if}
+
+ 	{include file ='library/pagefooter.lbi'}
+	{insert_scripts files="jquery.purebox.js"}
+    
+    {if $order.invoice_no}
+	<script type="text/javascript">
+        if(document.getElementById("shipping_name")){
+            document.getElementById("retData").innerHTML="<center>正在查询物流信息，请稍后...</center>";
+            var expressid = document.getElementById("shipping_name").innerHTML;
+            var expressno = document.getElementById("invoice_no").innerHTML;
+            Ajax.call('../plugins/kuaidi100/kuaidi100_post.php?com='+ expressid+'&nu=' + expressno,'showtest=showtest', function(data){document.getElementById("retData").innerHTML=data;}, 'GET', 'TEXT');	
+        }
+    </script>
+    {/if}
+
+	<script type="text/javascript">
+            $(document).on("click","[ectype='pay']",function(){
+                var order_id = $(this).data('order');
+                if(confirm("确定支付吗？")){
+                     $.jqueryAjax('wholesale_order.php', 'act=pay_order&order_id='+order_id, function(data){
+                         if(data.error == 1){
+                             alert(data.msg);
+                         }else{
+                             location.reload();
+                         }
+                    });
+                }
+            })
+	  
+	  function set_grab_order(order_id)
+	  {
+		$.ajax({
+			type:'get',
+			url:'order.php',
+			data:'is_ajax=1&act=set_grab_order&order_id='+order_id,
+			dataType:'json',
+			success:function(data){
+				pb({
+				 id:'goods_dialog',
+				 title:'设置抢单',
+				 content:data.content,
+				 drag:false,
+				 foot:false
+			  });
+			}
+		})
+	  }
+	  
+	  if($(".step").width() < 1380){
+		var left = -420; 
+	  }
+	  
+	  if(document.getElementById('key_delivery')){
+		  orderLevitate("one_delivery","order_goods_layer",12.5,left);
+	  }
+	  
+	  $(function(){
+		$(document).on("click","#invoice_btn",function(){
+			var val = $(this).prev().val();
+			if(val != ""){
+				$("#operate_form").submit();
+			}else{
+				$(this).prev().addClass("error");
+				return false;
+			}
+		});
+		
+		$("*[data-dialog='userinfo']").click(function(){
+			var content = $("#topbar").html();
+			pb({
+				id:"userInfo",
+				title:"收货人信息",
+				content:content,
+				width:450,
+				foot:false
+			});
+			$("#userInfo .topbar_info").perfectScrollbar();
+		});
+	  });
+	</script>
+</body>
+</html>

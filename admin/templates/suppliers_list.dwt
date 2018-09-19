@@ -1,0 +1,109 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.10_priv_admin} - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>{$lang.operation_prompt_content.info.0}</li>
+                    <li>{$lang.operation_prompt_content.info.1}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+            	<!--商品分类列表-->
+                <div class="common-head">
+                    {if $action_link}
+                    <div class="fl">
+                    	<a href="{$action_link.href}"><div class="fbutton"><div class="add" title="{$action_link.text}"><span><i class="icon icon-plus"></i>{$action_link.text}</span></div></div></a>
+                    </div>
+                    {/if}
+                    <div class="refresh">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div> 
+                </div>
+                <div class="common-content">
+                    <form method="post" action="" name="listForm" onsubmit="return confirm('{$lang.drop_confirm}');">
+                	<div class="list-div" id="listDiv">
+                        {/if}
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                            <thead>
+                                <tr>
+                                    <th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars"></label></div></th>
+                                    <th width="5%"><div class="tDiv"><a href="javascript:listTable.sort('suppliers_id'); ">{$lang.record_id}</div></th>
+                                    <th width="30%"><div class="tDiv"><a href="javascript:listTable.sort('suppliers_name'); ">{$lang.suppliers_name}</a></div></th>
+                                    <th width="30%"><div class="tDiv">{$lang.suppliers_desc}</div></th>
+                                    <th width="12%"><div class="tDiv">{$lang.suppliers_check}</div></th>
+                                    <th width="20" class="handle">{$lang.handler}</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {foreach from=$suppliers_list item=suppliers}
+                            	<tr>
+                                    <td class="sign"><div class="tDiv"><input type="checkbox" name="checkboxes[]" class="checkbox" value="{$suppliers.suppliers_id}" id="checkbox_{$suppliers.suppliers_id}" /><label for="checkbox_{$suppliers.suppliers_id}" class="checkbox_stars"></label></div></td>
+                                    <td><div class="tDiv">{$suppliers.suppliers_id}</div></td>
+                                    <td><div class="tDiv">{$suppliers.suppliers_name|escape:html}</div></td>
+                                    <td><div class="tDiv">{$suppliers.suppliers_desc|nl2br}</div></td>
+                                    <td>
+                                    	<div class="tDiv">
+                                            <div class="switch {if $suppliers.is_check eq 1}active{/if}" title="{if $suppliers.is_check eq 1}{$lang.yes}{else}{$lang.no}{/if}" onclick="listTable.switchBt(this, 'is_check', {$suppliers.suppliers_id})">
+                                            	<div class="circle"></div>
+                                            </div>
+                                            <input type="hidden" value="0" name="">
+                                        </div>
+                                    </td>
+                                    <td class="handle">
+                                        <div class="tDiv a2">
+                                           <a href="suppliers.php?act=edit&id={$suppliers.suppliers_id}" title="{$lang.edit}"  class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>
+                                           <a href="javascript:void(0);" onclick="listTable.remove({$suppliers.suppliers_id}, '{$lang.drop_confirm}')" title="{$lang.remove}" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {foreachelse}
+                                    <tr><td class="no-records" colspan="12">{$lang.no_records}</td></tr>
+                                {/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                    <td colspan="12">
+                                        <div class="tDiv">
+                                            <div class="tfoot_btninfo">
+                                                <input name="act" type="hidden" value="batch" />
+                                            	<input type="submit" name="remove" ectype="btnSubmit" value="{$lang.drop}" class="btn btn_disabled" disabled />
+                                            </div>
+                                            <div class="list-page">
+                                                {include file="library/page.lbi"}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        {if $full_page}
+                    </div>
+                    </form>
+                </div>
+            </div>
+		</div>
+	</div>
+ {include file ='library/pagefooter.lbi'}
+<script type="text/javascript">
+
+listTable.recordCount = {$record_count|default:0};
+listTable.pageCount = {$page_count|default:1};
+
+{foreach from=$filter item=item key=key}
+listTable.filter.{$key} = '{$item}';
+{/foreach}
+    
+$(".ps-container").perfectScrollbar();
+</script>     
+</body>
+</html>
+{/if}

@@ -1,0 +1,207 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="ecsc-form-goods">
+                    <form method="post" action="merchants_brand.php" name="theForm" enctype="multipart/form-data" id="mbrand_form">
+                    <div class="wrapper-list border1">  
+						<dl>
+                        	<dt>{$lang.require_field}&nbsp;{$lang.brand_name_cn}：</dt>
+                            <dd>
+							<input type="text" name="brand_name" maxlength="60" value="{$brand.brand_name}" class="text" />
+							<div class="form_prompt"></div>
+							</dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.require_field}&nbsp;{$lang.brand_name_en}：</dt>
+                            <dd>
+							<input type="text" name="brank_letter" maxlength="60" value="{$brand.bank_name_letter}" class="text" />
+							<div class="form_prompt"></div>
+							</dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.site_url}：</dt>
+                            <dd><input type="text" name="site_url" maxlength="60" size="40" value="{$brand.site_url}" class="text" /></dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.require_field}&nbsp;{$lang.brand_logo}：</dt>
+                            <dd>
+                                <div class="type-file-box">
+                                	<div class="input">
+                                        <input type="text" name="textfile" class="type-file-text" {if $brand.brand_logo}value="../{$brand.brand_logo}"{/if} id="textfield" autocomplete="off" readonly />
+                                        <input type="button" name="button" id="button" class="type-file-button" value="上传..." />
+                                        <input type="file" class="type-file-file" id="ad_img" name="brand_logo" data-state="imgfile" size="30" hidefocus="true" value="" />
+                                    </div>
+                                    {if $brand.brand_logo}
+                                    <span class="show">
+                                        <a href="../{$brand.brand_logo}" target="_blank" class="nyroModal"><i class="icon icon-picture" onmouseover="toolTip('<img src=../{$brand.brand_logo}>')" onmouseout="toolTip()"></i></a>
+                                    </span>
+                                    {/if}
+                                </div>
+                                
+                                <div class="form_prompt"></div>
+                                <div class="notic m20" id="AdCodeFlash">
+                                    {if $brand.brand_logo eq ''}
+                                    {$lang.up_brandlogo}
+                                    {else}
+                                    {$lang.warn_brandlogo}
+                                    {/if}
+                                </div>
+                                
+                            </dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.brand_desc}：</dt>
+                            <dd><textarea  name="brand_desc" cols="60" rows="4" class="textarea">{$brand.brand_desc}</textarea></dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.sort_order}：</dt>
+                            <dd><input type="text" name="sort_order" maxlength="40" size="15" value="{$brand.sort_order}" class="text"/></dd>
+                        </dl>
+                        <dl>
+                        	<dt>{$lang.is_show}：</dt>
+                            <dd>
+                            	<div class="checkbox_items">
+                                    <div class="checkbox_item">
+                                        <input type="radio" name="is_show" value="1" class="ui-radio" id="is_show_1" {if $brand.is_show eq 1}checked="checked"{/if} />
+                                        <label class="ui-radio-label" for="is_show_1">{$lang.yes}</label>
+                                    </div>
+                                    <div class="checkbox_item">
+                                        <input type="radio" name="is_show" value="0" class="ui-radio" id="is_show_0" {if $brand.is_show eq 0}checked="checked"{/if} />
+                                        <label class="ui-radio-label" for="is_show_0">{$lang.no}</label>
+                                    </div>
+                          		</div>
+                          		<div class="notic">{$lang.visibility_notes}</div>
+                            </dd>
+                        </dl>
+						
+						<dl>
+							<dt>{$lang.require_field}&nbsp;{$lang.associated_platform_brands}：</dt>
+							<dd class="relative">
+								<div class="selection">
+									<input type="text" name="" id="brand_name" class="text w120 valid" value="{if $link_brand.brand_name}{$link_brand.brand_name}{else}请选择品牌{/if}" autocomplete="off" readonly data-filter="brand_name" />
+									<input type="hidden" name="link_brand" id="brand_id" value="{$link_brand.brand_id}" data-filter="brand_id" />
+									<input type="hidden" name="ru_id" value="0">
+								</div>
+								<div class="brand-select-container" style="display:none;">
+									{include file="library/filter_brand.lbi"}
+								</div>
+							</dd>
+						</dl>                        
+
+                        <dl style="display:none">
+                        	<dt>{$lang.setup_main_brand}：</dt>
+                            <dd>
+                                {if $major_brand && $major_brand neq $brand.brand_id}
+                                <span class="lh red">{$lang.store_main_brand}</span>
+                                {else}
+                                <div class="checkbox_items">
+                                    <div class="checkbox_item">
+                                        <input type="radio" name="major_business" value="0" class="ui-radio" id="major_business_0" {if $brand.major_business eq 0}checked="checked"{/if} />
+                                        <label class="ui-radio-label" for="major_business_0">{$lang.close}</label>
+                                    </div>
+                                    <div class="checkbox_item">
+                                        <input type="radio" name="major_business" value="1" class="ui-radio" id="major_business_1" {if $brand.major_business eq 1}checked="checked"{/if} />
+                                        <label class="ui-radio-label" for="major_business_1">{$lang.open}</label>
+                                    </div>
+                                </div>
+                                {/if}
+                            </dd>
+                        </dl>
+                        <dl class="button_info">
+                        	<dt>&nbsp;</dt>
+                            <dd>
+                            	<input type="submit" class="sc-btn sc-blueBg-btn btn35" value="{$lang.button_submit}" id="submitBtn"/>
+                                <input type="reset" class="sc-btn btn35 sc-blue-btn" value="{$lang.button_reset}" />
+                                <input type="hidden" name="ubrand" value="{$ubrand}" />
+                                <input type="hidden" name="act" value="{$form_action}" />
+                                <input type="hidden" name="old_brandname" value="{$brand.brand_name}" />
+                                <input type="hidden" name="id" value="{$brand.brand_id}" />
+                                <input type="hidden" name="old_brandlogo" value="{$brand.brand_logo}">
+                            </dd>
+                        </dl>
+                    </div>  
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript" src="../js/jquery.picTip.js"></script>
+<script type="text/javascript">
+$(function(){
+	$('.nyroModal').nyroModal();
+	
+	//表单验证
+	$("#submitBtn").click(function(){
+		if($("#mbrand_form").valid()){
+			$("#mbrand_form").submit();
+		}
+	});
+
+	$('#mbrand_form').validate({
+		errorPlacement:function(error, element){
+			var error_div = element.parents('dl').find('div.form_prompt');
+			//element.parents('dl').find(".notic").hide();
+			error_div.append(error);
+		},
+		rules:{
+			brand_name :{
+				required : true
+			},
+			brank_letter:{
+				required : true
+			},
+			textfile:{
+				required : true
+			},
+			link_brand:{
+				required : true
+			}
+		},
+		messages:{
+			brand_name:{
+				required : '<i class="icon icon-exclamation-sign"></i>请输入中文品牌名称'
+			},
+			brank_letter:{
+				required : '<i class="icon icon-exclamation-sign"></i>请输入英文品牌名称'
+			},
+			textfile:{
+				required : '<i class="icon icon-exclamation-sign"></i>请上传品牌logo'
+			},
+			link_brand:{
+				required : '<i class="icon icon-exclamation-sign"></i>请选择关联品牌'
+			}
+		}			
+	});
+});
+</script>
+<script>
+	$("#brand_name").keyup(function () {    
+   		for (var i = 0; i < $(".li_item").length; i++) {  
+            //模糊匹配，将所有匹配项显示  
+            if ($(".li_item").eq(i).text().substr(0, $("#brand_name").val().length) == $("#brand_name").val()) {  
+                $(".li_item").eq(i).css('display', 'block');  
+            } else{
+				$(".li_item").eq(i).css('display', 'none');  
+			} 
+        }  
+    }); 
+	//项点击  
+    $(".li_item").click(function () {  
+        $("#brand_name").val($(this).text());  
+    }); 
+	
+</script>
+</body>
+</html>

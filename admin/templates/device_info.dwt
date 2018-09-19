@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>移动应用 - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    <li>此页面展示了移动设备的详细信息。</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="list-div" id="listDiv">
+                        <div class="flexigrid ht_goods_list">
+                            <table cellpadding="0" cellspacing="0" border="0">
+                                <thead>
+                                    <tr>
+                                        <th colspan="4"><div class="tDiv">移动设备信息</div></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="sky_id"><div class="tDiv" align="right"><b>用户ID：</b></div></td>
+                                        <td  class="sky_id" colspan="3"><div class="tDiv">暂无   【不是管理员】</div></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="sky_id" width="15%"><div class="tDiv" align="right"><b>设备类型：</b></div></td>
+                                        <td class="sky_id" width="30"><div class="tDiv">{$device_info.device_client}</div></td>
+                                        <td class="sky_id" width="15%"><div class="tDiv" align="right"><b>设备名称：</b></div></td>
+                                        <td class="sky_id" width="50%"><div class="tDiv">{$device_info.device_name}</div></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="sky_id"><div class="tDiv" align="right"><b>操作系统：</b></div></td>
+                                        <td class="sky_id"><div class="tDiv">{$device_info.device_os}</div></td>
+                                        <td class="sky_id"><div class="tDiv" align="right"><b>UDID：</b></div></td>
+                                        <td class="sky_id"><div class="tDiv">{$device_info.device_udid}</div></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="sky_id"><div class="tDiv" align="right"><b>设备别名：</b></div></td>
+                                        <td class="sky_id"><div class="tDiv">{if $device_info.device_alias}{$device_info.device_alias}{else}Empty{/if}</div></td>
+                                        <td class="sky_id"><div class="tDiv" align="right"><b>状态：</b></div></td>
+                                        <td class="sky_id"><div class="tDiv">{if $device_info.in_status}无效{else}有效{/if}</div></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="sky_id"><div class="tDiv" align="right"><b>添加时间：</b></div></td>
+                                        <td class="sky_id"><div class="tDiv">{$device_info.date}</div></td>
+                                        <td class="sky_id"><div class="tDiv" align="right"><b>位置：</b></div></td>
+                                        <td class="sky_id"><div class="tDiv">{$device.location_province}-{$device.location_city}</div></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="sky_id"><div class="tDiv" align="right"><b>DeviceToken：</b></div></td>
+                                        <td class="sky_id" colspan="3"><div class="tDiv">{$device_info.device_token}</div></td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="4">
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+		</div>
+    </div>
+ 	{include file ='library/pagefooter.lbi'}
+    <script type="text/javascript">
+        $.divselect("#cart_div","#cart_div_val",function(obj){
+            var select = obj.parents("#cart_div");
+            var rank = select.attr("rank");
+            var val = obj.data("value");
+            selectCat(rank,val);
+        });
+        $.divselect("#media_type_div","#media_typeval",function(obj){
+            var val = obj.attr("data-value");
+            showMedia(val);
+        });
+		
+		$(function(){
+			//点击查看图片
+			$('.nyroModal').nyroModal();
+			
+			//表单验证
+			$("#submitBtn").click(function(){
+				if($("#mobile_app_form").valid()){
+					$("#mobile_app_form").submit();
+				}
+			});
+		
+			$('#mobile_app_form').validate({
+				errorPlacement:function(error, element){
+					var error_div = element.parents('div.label_value').find('div.form_prompt');
+					element.parents('div.label_value').find(".notic").hide();
+					error_div.append(error);
+				},
+				rules:{
+					ad_name :{
+						required : true
+					}
+				},
+				messages:{
+					ad_name:{
+						 required : '<i class="icon icon-exclamation-sign"></i>'+ad_name_empty
+					}
+				}			
+			});
+		});
+    </script>     
+</body>
+</html>

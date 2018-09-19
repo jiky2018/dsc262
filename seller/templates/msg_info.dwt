@@ -1,0 +1,131 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+				{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                
+                <!--start-->
+                <div class="info_warp bor_border mt20">
+                  <table width="100%">
+                    <tr>
+                      <td style="padding: 0px 20px">
+                        <h3>{$msg.msg_title|escape:"html"}</h3>
+                        <hr size="1" />
+                        <div style="padding:5px 0;">{$msg.msg_content|escape:"html"|nl2br}</div>
+                        {if $msg.message_img}
+                        <div align="right">
+                          <a href="../data/feedbackimg/{$msg.message_img}" target="_bank" width="300" height="400">{$lang.view_upload_file}</a>
+                          <a href="user_msg.php?act=drop_file&id={$msg.msg_id}&file={$msg.message_img}">{$lang.drop}</a>
+                        </div>
+                        {/if}
+                        <div align="right" style="padding:5px 0 10px;">【{if $msg.msg_area eq "1"}{$lang.message_board}{else}{$lang.user_center}{/if}】<a href="mailto:{$msg.user_email}">{$msg.user_name}</a> @ {$msg.msg_time}</div>
+                      </td>
+                    </tr>
+                    {if $msg.msg_area eq "1"}
+                    <tr>
+                      <td align="center" class="pb20">
+                        {if $msg.msg_status eq "0"}
+                        <input type="button" onclick="location.href='user_msg.php?act=check&check=allow&id={$msg.msg_id}'" value="{$lang.allow}" class="button" />
+                        {else}
+                        <input type="button" onclick="location.href='user_msg.php?act=check&check=forbid&id={$msg.msg_id}'" value="{$lang.forbid}" class="button" />
+                        {/if}
+                    </td>
+                    </tr>
+                {/if}
+                  </table>
+                </div>
+
+                {if $msg.reply_id}
+                <div class="info_warp mt10">
+                  <table width="100%">
+                    <tr>
+                      <td style="padding: 0px 20px">
+                        <h3>{$msg.reply_name} {$lang.from} {$msg.reply_time} {$lang.reply}:</h3>
+                        <hr size="1" />
+                        <div style="padding:5px 0;">{$msg.reply_content|escape:"html"|nl2br}</div>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+                {/if}
+
+                {if $send_fail}
+                <ul style="padding:0; margin: 0; list-style-type:none; color: #CC0000;">
+                <li style="border: 1px solid #CC0000; background: #FFFFCC; padding: 10px; margin-bottom: 5px;" >{$lang.mail_send_fail}</li>
+                </ul>
+                {/if}
+
+                <div class="info_warp mt10">
+                <form method="post" action="user_msg.php?act=action" name="theForm"  onsubmit="return validate()">
+                <table width="100%" class="table_item">
+                  <tr>
+                    <td class="label">{$lang.email}：</td>
+                    <td><input name="user_email" id="user_email"  type="text" value="{$msg.reply_email}" class="text text_2"></td>
+                  </tr>
+                  <tr>
+                    <td class="label file_label">{$lang.reply_content}：</td>
+                    <td><textarea name="msg_content" cols="50" rows="4" wrap="VIRTUAL" id="msg_content" class="textarea">{$msg.reply_content}</textarea></td>
+                  </tr>
+                  <tr>
+                    <td class="label">&nbsp;</td>
+                    <td><label><input name="send_email_notice" type="checkbox" class="checkbox" value='1'/><span>{$lang.send_email_notice}</span></label></td>
+                  </tr>
+                  {if $msg.reply_id}
+                  <tr>
+                    <td>&nbsp;</td>
+                    <td>{$lang.have_reply_content}</td>
+                  </tr>
+                  {/if}
+                  <tr class="no-line">
+                    <td class="label">&nbsp;</td>
+                    <td class="pt20 pb20">
+                      <input type="hidden" name="msg_id" value="{$msg.msg_id}">      
+                      <input type="hidden" name="parent_id" value="{$msg.reply_id}">
+                      <input name="submit" value="{$lang.button_submit}" type="submit" class="sc-btn sc-blueBg-btn btn35">
+                      <input type="reset" value="{$lang.button_reset}" class="sc-btn btn35 sc-blue-btn">
+                      {if $msg.reply_id}<input type="submit" name="remail" value="{$lang.remail}" class="sc-btn sc-blueBg-btn btn35">{/if}
+                    </td>
+                  </tr>
+                </table>
+                </form>
+                </div>					
+                <!--end-->
+            </div>
+        </div>
+    </div>
+</div>
+{include file="library/seller_footer.lbi"}
+<!--start-->
+<script type="text/javascript">
+<!--
+{literal}
+
+/**
+ * 检查表单输入的数据
+ */
+function validate()
+{
+    validator = new Validator("theForm");
+    validator.required("msg_content",  no_reply_content);
+    return validator.passed();
+}
+
+onload = function()
+{
+    // 开始检查订单
+    startCheckOrder();
+}
+//-->
+{/literal}
+</script>
+<!--end-->
+</body>
+</html>

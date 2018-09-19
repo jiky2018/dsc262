@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+                {include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                
+                <div class="explanation clear" id="explanation">
+                    <div class="ex_tit"><i class="sc_icon"></i><h4>操作提示</h4></div>
+                    <ul>
+                    	<li>温馨提示：提交操作将会重新审核，请慎重提交确定。</li>
+                    </ul>
+                </div>
+                <div class="ecsc-form-goods">
+                    <form action="gift_gard.php" method="post" name="theForm" enctype="multipart/form-data" id="gift_gard_form">
+                    <div class="wrapper-list border1">
+                    	<dl>
+                        	<dt>{$lang.require_field}&nbsp;{$lang.gift_gard_name}</dt>
+                            <dd>
+							<input type='text' name='type_name' maxlength="30" value="{$bonus_arr.gift_name}" size="20" class="text" />
+							<div class="form_prompt"></div>
+							</dd>
+                        </dl>
+                        <!-- {if $form_act neq 'update'} -->
+                        <dl>
+                        	<dt>{$lang.require_field}&nbsp;{$lang.gift_number}</dt>
+                            <dd>
+								<input name="gift_number" type="text" id="gift_number" value="{$bonus_arr.gift_number}" size="20" class="text" />
+								<div class="form_prompt"></div>
+							</dd>
+                        </dl>
+                        <!-- {else} -->
+                        <dl>
+                        	<dt>{$lang.require_field}&nbsp;{$lang.add_gift_number}</dt>
+                            <dd>
+								<input name="gift_number" type="text" id="gift_number" value="0" size="20" class="text" />
+								<div class="form_prompt"></div>
+							</dd>
+                        </dl>
+                        <!-- {/if} -->
+                        <dl>
+                        	<dt>{$lang.require_field}&nbsp;使用起止时间</dt>
+                            <dd>
+                            	<div class="text_time" id="text_time1">
+                                	<input name="use_start_date" type="text" class="text" id="use_start_date" size="22" value='{$bonus_arr.use_start_date}' readonly="readonly" />
+                                </div>
+                                <span class="bolang">&nbsp;&nbsp;~&nbsp;&nbsp;</span>
+                                <div class="text_time" id="text_time2">
+                                    <input name="use_end_date" type="text" class="text" id="use_end_date" size="22" value='{$bonus_arr.use_end_date}' readonly="readonly" />
+                                </div>
+                                <div class="form_prompt"></div>
+                            </dd>
+                        </dl>
+                        {if $bonus_arr.gift_id}
+                        <dl>
+                            <dt>{$lang.adopt_status}：</dt>
+                            <dd>
+                                <div class="checkbox_items">
+                                    <div class="checkbox_item">
+                                        {if $bonus_arr.review_status eq 1}
+                                            {$lang.not_audited}
+                                        {elseif $bonus_arr.review_status eq 2}
+                                            {$lang.audited_not_adopt}
+                                        {elseif $bonus_arr.review_status eq 3}
+                                            {$lang.audited_yes_adopt}
+                                        {/if}
+                                    </div>
+                                </div>
+                            </dd>
+                        </dl>
+                            {if $bonus_arr.review_status eq 2}
+                            <dl>
+                                <dt>{$lang.adopt_reply}：</dt>
+                                <dd>
+                                    <textarea name="review_content" cols="40" rows="3" class="textarea red" disabled="disabled" style="background:#FFF;">{$bonus_arr.review_content}</textarea>
+                                </dd>
+                            </dl>
+                            {/if}
+                        {/if}
+                        <dl class="button_info">
+                        	<dt>&nbsp;</dt>
+                            <dd>
+                            	<input type="submit" value="{$lang.button_submit}" class="sc-btn sc-blueBg-btn btn35" id="submitBtn" />
+                                <input type="reset" value="{$lang.button_reset}" class="sc-btn btn35 sc-blue-btn" />
+                                <input type="hidden" name="act" value="{$form_act}" />
+                                <input type="hidden" name="type_id" value="{$bonus_arr.gift_id}" />
+                            </dd>
+                        </dl>
+                    </div>  
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript">
+	$(function(){
+		$("#submitBtn").click(function(){
+			if($("#gift_gard_form").valid()){
+				$("#gift_gard_form").submit();
+			}
+		});
+		
+		$('#gift_gard_form').validate({
+			errorPlacement:function(error, element){
+				var error_div = element.parents('dl').find('div.form_prompt');
+				//element.parents('dl').find(".notic").hide();
+				error_div.append(error);
+			},
+			rules : {
+				type_name : {
+					required : true
+				},
+				gift_number : {
+					min : 0
+				},
+				use_start_date :{
+					required : true
+				},
+				use_end_date :{
+					required : true,
+					compareDate:"#use_start_date",
+				}
+			},
+			messages : {
+				type_name : {
+					required : '<i class="icon icon-exclamation-sign"></i>请输入礼品卡名称'
+				},
+				gift_number : {
+					min : '<i class="icon icon-exclamation-sign"></i>请输入发放数量'
+				},
+				use_start_date :{
+					required : '<i class="icon icon-exclamation-sign"></i>'+start_data_notnull
+				},
+				use_end_date :{
+					required : '<i class="icon icon-exclamation-sign"></i>'+end_data_notnull,
+					compareDate:'<i class="icon icon-exclamation-sign"></i>'+data_invalid_gt
+				}
+			},
+			onfocusout:function(element,event){
+				//实时去除结束时间是否大于开始时间验证
+				var name = $(element).attr("name");
+				
+				if(name == "use_end_date"){
+					var endDate = $(element).val();
+					var startDate = $(element).parents("dd").find("input[name='use_start_date']").val();
+					
+					var date1 = new Date(Date.parse(startDate.replace(/-/g, "/")));
+					var date2 = new Date(Date.parse(endDate.replace(/-/g, "/")));
+					
+					if(date1 > date2){
+						$(element).removeClass("error");
+						$(element).parents("dd").find(".form_prompt").html("");
+					}
+				}
+			}
+		});
+	});
+	
+	//日期选择插件调用start sunle
+	var opts1 = {
+		'targetId':'use_start_date',//时间写入对象的id
+		'triggerId':['use_start_date'],//触发事件的对象id
+		'alignId':'use_start_date',//日历对齐对象
+		'format':'-'//时间格式 默认'YYYY-MM-DD HH:MM:SS'
+	},opts2 = {
+		'targetId':'use_end_date',
+		'triggerId':['use_end_date'],
+		'alignId':'use_end_date',
+		'format':'-'
+	}
+	
+	xvDate(opts1);
+	xvDate(opts2);
+	//日期选择插件调用end sunle
+	</script>
+</body>
+</html>

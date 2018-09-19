@@ -1,0 +1,617 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="{$keywords}" />
+<meta name="Description" content="{$description}" />
+<!-- TemplateBeginEditable name="doctitle" -->
+<title>{$page_title}</title>
+<!-- TemplateEndEditable -->
+<!-- TemplateBeginEditable name="head" -->
+<!-- TemplateEndEditable -->
+<link rel="shortcut icon" href="favicon.ico" />
+<link rel="icon" href="animated_favicon.gif" type="image/gif" />
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/base.css" />
+<link rel="stylesheet" type="text/css" href="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/user.css" />
+<link href="{$ecs_css_path}" rel="stylesheet" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="RSS|{$page_title}" href="{$feed_url}" />
+{* 包含脚本文件 *}
+{insert_scripts files='jquery-1.9.1.min.js,jquery.json.js,transport_jquery.js,common.js,user.js,utils.js,./sms/sms.js,user_register.js,jquery.validation.min.js'}
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/sc_common.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/scroll_city.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/jquery.tabso_yeso.js"></script>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/placeholder.js"></script>
+
+<!-- #BeginLibraryItem "/library/js_languages.lbi" --><!-- #EndLibraryItem -->
+<script type="text/javascript">
+/*登录、注册、找回密码js语言包*/
+{foreach from=$lang.js_languages.passport_js item=item key=key}
+var {$key} = "{$item}";
+{/foreach}
+</script>
+</head>
+
+<body>
+<!-- {if $action eq 'login'} -->
+<div class="ecsc-registLogin">
+    <div class="registLogin">
+        <div class="registLogin-header w1200">
+            <a href="./index.php" class="logo">{if $user_login_logo}<img src="{$user_login_logo}" />{/if}</a>
+            {if $user_login_logo}<b style="background:url({$login_logo_pic}) no-repeat;"></b>{/if}
+        </div>
+    </div>
+    <div class="registLogin-layout" style="overflow:visible;">
+        <div class="registLogin-banner">
+			{* DSC 提醒您：动态载入login_banner.lbi，显示首页分类小广告 *}{insert name='get_adv_child' ad_arr=$login_banner}  
+            <div class="hd">
+                <a href="javascript:void(0);" class="icon buy-prev"></a>
+                <a href="javascript:void(0);" class="icon buy-next"></a>
+                <div class="login-wrap">
+                    <div class="login-form">
+                    	<form name="formLogin" action="user.php" method="post" onSubmit="userLogin();return false;">
+                        <div class="mt">
+                            <h1>{$lang.Welcome_login}</h1>
+                            {if $shop_reg_closed neq 1}
+                            <a href="user.php?act=register" class="jump">{$lang.Free_registration}</a>
+                            {/if}
+                        </div>
+                        <div class="mc">
+                        	<div class="msg-wrap">
+                                <div class="msg-error" style="display:none">
+                                    <b></b>{$lang.passport_one}
+                                </div>
+                            </div>
+                            <div class="form">
+                                <div class="item last">
+                                    <div class="item-info">
+                                        <i class="i-name"></i>
+                                        <input type="text" id="loginname" name="username" class="text text-2 " value="" placeholder="{$lang.label_username}" autocomplete="off" />
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="item-info">
+                                        <input type="password"   style="display:none"/>
+                                        <input type="password" id="nloginpwd" name="password" class="text text-2 " value="" placeholder="{$lang.label_password}" autocomplete="off" />
+                                        <i class="i-pass"></i>
+                                    </div>
+                                </div>
+                                <!-- 判断是否启用验证码{if $enabled_captcha} -->
+                                <div class="item">
+                                    <div class="item-info">
+                                    	<i class="i-captcha"></i>
+                                        <input type="text" id="captcha" name="captcha" value="" class="text text-3 text-4" placeholder="{$lang.comment_captcha}" autocomplete="off" />
+										<img src="captcha_verify.php?captcha=is_login&{$rand}" alt="captcha" class="fl ml5" onClick="this.src='captcha_verify.php?captcha=is_login&'+Math.random()" />
+                                    </div>
+                                </div>
+                                <!--{/if}-->
+                                <div class="safe">
+                                    <span>
+                                        <input id="remember" name="remember" type="checkbox" class="jdcheckbox" style="outline: rgb(109, 109, 109) none 0px;">
+                                        <label for="remember">{$lang.remember}</label>
+                                    </span>
+                                </div>
+                                <div class="item">
+                                    <span class="forget-pw-safe"><a href="user.php?act=get_password">{$lang.passportforgot_password}</a></span>
+                                    <input type="hidden" name="dsc_token" value="{$dsc_token|default:0}" autocomplete="off" />
+                                    <input type="hidden" name="act" value="act_login" autocomplete="off" />
+            						<input type="hidden" name="back_act" value="{$back_act}" autocomplete="off" />
+            						<div class="login-btn"><input type="submit" name="submit" id="loginSubmit" value="{$lang.signin_now}" class="btn-entry" /></div>
+                                </div>
+                            </div>
+                            {if $website_list}
+                            <div class="coagent">
+                                <h4>{$lang.Third_party_Lgion}：</h4>
+                                <ul>
+                                	{foreach from=$website_list item=website}
+                                    {if $website.web_type eq 'weixin'}
+                                    <li><a href="wechat_oauth.php?act=login" class="{$website.web_type}"></a></li>
+                                    {else}
+                                    <li><a href="user.php?act=oath&type={$website.web_type}" class="{$website.web_type}"></a></li>
+                                    {/if}
+                                    {/foreach}
+                                </ul>
+                            </div>
+                            {/if}
+                        </div>
+                        </form>
+                    </div>
+                    <div class="qrcode-login">
+                    	<div class="mc">
+                        	<div class="qrcode-desc"><h2>{$lang.jingdong} <span class="ml5">{$lang.code_lgion}</span></h2></div>
+                            <div class="qrcode-error">
+                                <b></b>
+                                <h6>{$lang.lgion_fail}</h6>
+                                {$lang.code_lgion_again}
+                            </div>
+                            <div class="qrcode-main">
+                            	<div class="qrcode-img"><img src="../images/wap_ewm.jpg" width="150" height="150" /></div>
+                                <div class="qrcode-panel">
+                                	<ul>
+                                        <li class="first"><a href="javascript:;">{$lang.Refresh_two_code}</a></li>
+                                        <li><a href="#">{$lang.Use_help}</a></li>
+                                    </ul>
+                                    <div class="qrcode-tips">
+                                        <span>{$lang.code_problem}</span>
+                                        <div class="triangle-border tb-border"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hide">
+                    <a href="javascript:;" class="qrcode-target btn-2qrcode">{$lang.code_lgion_now}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+var length = $(".registLogin-banner .bd").find("li").length;
+if(length>1){
+	$(".registLogin-banner").slide({titCell:".msto",mainCell:".bd ul",effect:"left",pnLoop:false,autoPlay:false,autoPage:true,prevCell:".buy-prev",nextCell:".buy-next"});
+}else{
+	$(".registLogin-banner .hd").find(".icon").hide();
+}
+</script>
+<!-- {/if} -->
+
+<!--{if $action eq 'register'}-->
+<div class="ecsc-registLogin ecsc-register">
+    <div class="registLogin borderBottom1">
+        <div class="registLogin-header w1200">
+            <a href="./index.php" class="logo">{if $user_login_logo}<img src="{$user_login_logo}" />{/if}</a>
+            <b {if $login_logo_pic}style="background:url({$login_logo_pic}) no-repeat;"{/if}></b>
+            <span class="registLogin-header-fr">{$lang.Have_account}<a href="user.php" class="jump">{$lang.login_here}</a></span>
+        </div>
+    </div>
+   <div class="registLogin-layout w1200">
+        <div class="regist-banner">
+        	{insert name='get_adv' logo_name=$regist_banner}  
+        </div>
+        <div class="regist-wrap">
+        	<!--{if $shop_reg_closed neq 1}-->
+            <div class="regist-form" style="overflow:visible;">
+                <div class="mc" style="overflow:visible;">
+                    <div class="form formtwo">
+                        <form action="user.php" method="post" name="formUser">
+                        <div class="item">
+                        	<div class="label">{$lang.username_bind}</div>
+                            <div class="item-info">
+                                <input type="text" id="username" name="username" maxlength="35" class="text" value="" autocomplete="off" />
+                                <i class="i-name"></i>
+                            </div>
+                            <div class="input-tip"></div>
+                            <label id="username_notice_1" class="error"></label>
+                        </div>
+                        
+                        <div class="item" id="phone_yz">
+                        	<div class="label">{$lang.phone_con}</div>
+                            <div class="item-info">
+                                <input type="text" id="mobile_phone" name="mobile_phone" maxlength="20" class="text" value="" autocomplete="off" />
+                                <i class="i-phone"></i>
+                            </div>
+                            <div class="input-tip"></div>
+                            <a href="javascript:void(0);" class="meswitch" ectype="meSwitch" data-type="phone">{$lang.or_login}{$lang.email_yanzheng}</a>
+                        </div>
+                        
+                        <div class="item" id="email_yz" style="display:none;">
+                        	<div class="label">{$lang.email_label}</div>
+                            <div class="item-info">
+                                <input type="text" id="regName" name="email" class="text ignore" value="" autocomplete="off" />
+                                <i class="i-email"></i>
+                            </div>
+                            <div class="input-tip"></div>
+                            <a href="javascript:void(0);" class="meswitch" ectype="meSwitch" data-type="email">{$lang.or_login}{$lang.phone_yanzheng}</a>
+                        </div>
+                        
+                        <div class="item">
+                        	<div class="label">{$lang.bind_password}</div>
+                            <div class="item-info">
+                                <input type="password" style="display:none"/>
+                                <input type="password" id="pwd" name="password" maxlength="30" class="text " value="" autocomplete="off" />
+                                <i class="i-pass"></i>
+                            </div>
+                            <div class="input-tip"></div>
+                        </div>
+                        <div class="item">
+                        	<div class="label">{$lang.bind_password2}</div>
+                            <div class="item-info">
+                                <input type="password"   style="display:none"/>
+                                <input type="password" id="pwdRepeat" name="confirm_password" maxlength="30" class="text " value="" autocomplete="off" />
+                                <i class="i-pass"></i>
+                            </div>
+                            <div class="input-tip"></div>
+                        </div>
+                        
+                        <!-- {foreach from=$extend_info_list item=field} -->
+                        <!-- {if $field.id eq 6} -->
+                        <div class="item" style=" overflow:visible;">
+                        	<div class="label">{$lang.Prompt_problem}</div>
+                            <div class="item-info">
+                                <div id="divselect" class="divselect">
+                                  <div class="cite">{$lang.passwd_question}</div>
+                                  <ul>
+                                     {foreach from=$passwd_questions item=val key=key}
+                                     <li><a href="javascript:;" data-value="{$key}">{$val}</a></li>
+                                     {/foreach}
+                                  </ul>
+                                  <input name="sel_question" type="hidden" value="" id="passwd_quesetion" autocomplete="off" />
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <div class="item hide">
+                        <label class="sel_question error"></label>
+                        </div>
+                        <div class="item">
+                        	<div class="label">{$lang.passwd_answer_useer}</div>
+                            <div class="item-info">
+                                <input type="text" name="passwd_answer" maxlength="20" class="text" value="" placeholder="{$lang.passwd_answer}" autocomplete="off" />
+                            </div>
+                            <div class="input-tip"></div>
+                        </div>
+                        <!-- {else} -->
+                        {if $field.reg_field_name neq '手机'}
+                        <div class="item">
+                        	<div class="label">{$field.reg_field_name}</div>
+                            <div class="item-info">
+                                <input name="extend_field{$field.id}" id="extend_field{$field.id}" onblur="is_extend_field(this.value, {$field.id}, 'formUser');" type="text" maxlength="35" class="text" autocomplete="off" />
+                            </div>    
+                            <label class="extend_field{$field.id} error"></label>
+                            <div class="input-tip"></div>
+                            <input type="hidden" name="extend_field" id="exis_need{$field.id}" value="<!-- {if $field.is_need} -->1<!-- {else} -->0<!-- {/if} -->" autocomplete="off" />
+                        </div>
+                        {/if}
+                        <!-- {/if} -->
+                        <!-- {/foreach} -->
+                        
+                        <!-- {if $enabled_captcha} 判断是否启用验证码-->
+                        <div class="item">
+                        	<div class="label lh37">{$lang.Code_bind}</div>
+                            <div class="item-info">
+                                <input type="text" id="captcha" name="captcha" maxlength="6" class="text text-4" value="" autocomplete="off" />
+                                <img src="captcha_verify.php?captcha=is_register_phone&{$rand}" alt="captcha" id="authcode_img" style="vertical-align: middle;cursor: pointer;" onClick="this.src='captcha_verify.php?captcha=is_register_phone&'+Math.random()" />
+                            </div>
+                            <div class="input-tip"></div>
+                        </div>
+                        <!--{/if}-->
+                        <!-- {if $sms_register} 判断是否启用手机短信验证码-->
+                        <div class="item" id="code_mobile">
+                         	<div class="label lh37">{$lang.bindMobile_code}</div>
+                            <div class="item-info phone_code">
+                                <input type="text" id="sms" name="mobile_code" maxlength="6" class="text text-4" value="" autocomplete="off" />
+                                <a href="javascript:sendSms();" id="zphone" class="sms-btn">{$lang.getMobile_code}</a>
+                            </div>
+                            <div class="input-tip"></div>
+                        </div>
+                        <!--{/if}-->
+                        
+                        <div class="item" id="code_email" style="display:none;">
+                            <div class="label lh37">{$lang.comment_captcha_code}</div>
+                            <div class="item-info">
+                                <input type="text" name="send_code" id="send_code" class="text text-4 ignore" value="" autocomplete="off" />
+                                <a href="javascript:sendChangeEmail();" id="zemail" class="sms-btn">{$lang.get_verification_code}</a>
+                            </div>
+                            <div class="input-tip"></div>
+                        </div>
+                        
+                        <div class="item yd_item">
+                        	<div class="label">&nbsp;</div>
+                        	<div class="item-info">
+                                <input type="checkbox" id="clause2" class="fl agreement" checked="checked" value="1" name="mobileagreement">
+                                <label for="clause2" class="hole">{$lang.agreed_bind}《<a target="_blank" href="{$register_article_id}" class="agreement">{$lang.service_agreement}</a>》</label>
+                            </div>
+                            <div class="input-tip"></div>
+                        </div>
+                        <div class="item">
+                        	<div class="label">&nbsp;</div>
+                            <div class="item-info">
+                                <input type="hidden" name="flag" id="flag" value='register' autocomplete="off" />
+                                <input name="register_type" type="hidden" value="1" autocomplete="off" />
+                                <input type="hidden" name="seccode" id="seccode" value="{$sms_security_code}" autocomplete="off" />
+                                <input name="act" type="hidden" value="act_register" autocomplete="off" />
+                                <input name="register_mode" type="hidden" value="1" autocomplete="off" />
+                                <input id="phone_code_callback" type="hidden" value="" autocomplete="off" />
+                                <input id="phone_captcha_verification" type="hidden" value="" autocomplete="off" />
+                                <input id="phone_verification" type="hidden" value="0" autocomplete="off" />
+                                <input id="email_verification" type="hidden" value="0" autocomplete="off" />
+                                <input id="enabled_captcha" type="hidden" value="{$enabled_captcha}" autocomplete="off" />
+                                
+                                <input type="submit" id="registsubmit" name="Submit" maxlength="8" class="btn-regist" value="{$lang.Agreement_register}"/>
+                            </div>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!--{else}-->
+            <div style="text-align:center; line-height:485px; font-size:14px; font-weight:bold;">{$lang.shop_reg_closed}</div>
+            <!--{/if}-->
+        </div>
+    </div>
+</div>
+<!-- {/if} -->
+
+<!--{if $action eq 'get_password'} -->
+<div class="ecsc-registLogin ecsc-getPassword-list">
+    <div class="registLogin borderBottom1">
+        <div class="registLogin-header w1000">
+            <a href="./index.php" class="logo"><img src="{$user_login_logo}" /></a>
+            <b></b>
+            <span class="registLogin-header-fr">{$lang.Have_account}<a href="user.php" class="jump">{$lang.login_here}</a></span>
+        </div>
+    </div>
+    <div class="registLogin-layout w1000">
+        <div class="regist-banner"><a href="#" target="_blank"><img src="images/regist-banner.jpg" /></a></div>
+        <div class="regist-wrap">
+            <div class="regist-form" ectype="formWarp">
+                <div class="mt">
+                    <ul class="tab" ectype="gpTab">
+                        <li class="curr">{$lang.reset_email_password}</li>
+                        <li>{$lang.reset_phone_password}</li>
+                        <li id="form_getPassword1">{$lang.Regist_problem}</li>
+                    </ul>
+                </div>
+                <div class="mc" ectype="gpContent">
+                    <div class="form formEmail">
+                        <form action="user.php" method="post" name="getEmailPassword" ectype="form">
+                        <div class="item last">
+                            <div class="item-info">
+                                <input name="user_name" type="text" class="text" value="" placeholder="{$lang.username}" autocomplete="off" />
+                                <i class="i-name"></i>
+                            </div>
+                            <div class="input-tip"></div>
+                        </div>
+                        <div class="item">
+                            <div class="item-info">
+                                <input name="email" type="text" class="text" value="" placeholder="{$lang.email_reset}" autocomplete="off" />
+                                <i class="i-email"></i>
+                            </div>
+                            <div class="input-tip"></div>
+                        </div>
+                        <!-- 判断是否启用验证码{if $enabled_captcha} -->
+                        <div class="item">
+                            <div class="item-info">
+                                <i class="i-captcha"></i>
+                                <input type="text" id="captcha" name="captcha" maxlength="6" class="text text-4 captcha_text" value="" placeholder="{$lang.comment_captcha}" autocomplete="off" />
+                                <img src="captcha_verify.php?captcha=is_get_password&{$rand}" alt="captcha" name="img_captcha" class="fl ml5" onClick="this.src='captcha_verify.php?captcha=is_get_password&'+Math.random()" data-key="get_password" />
+                            </div>
+                            <div class="input-tip"></div>
+                        </div>
+                        <!-- {/if} -->
+                        <div class="item">
+                            <div class="item-info">
+                                <input type="hidden" name="act" value="send_pwd_email" autocomplete="off" />
+                                <input type="hidden" id="captcha_verification" name="captcha_verification" value="" autocomplete="off" />
+                                <input id="email_enabled_captcha" type="hidden" value="{$enabled_captcha}" autocomplete="off" />
+                                <input type="submit" name="submit" class="btn-regist" value="{$lang.reset_password}" ectype="submitBtn"/>
+                            </div>
+                        </div>
+                        </form>
+                    </div>
+                    
+                    <div class="form formtwo formPhone" style="display:none;">
+                        <form action="user.php" method="post" name="getPhonePassword" ectype="form">
+                        <div class="msg_ts" id="phone_notice"></div>
+                        <div class="item last">
+                            <div class="item-info">
+                                <input name="user_name" type="text" class="text" value="" placeholder="{$lang.username}" autocomplete="off" />
+                                <i class="i-name"></i>
+                            </div>
+                            <div class="input-tip"></div>
+                        </div>
+                        <div class="item">
+                            <div class="item-info">
+                                <input name="mobile_phone" id="mobile_phone" type="text" class="text" value="" placeholder="{$lang.bind_mobile_regist}" autocomplete="off" />
+                                <i class="i-phone"></i>
+                            </div>
+                            <div class="input-tip" id="phone_notice"></div>
+                        </div>
+                        
+                        <!-- 判断是否启用验证码{if $enabled_captcha} -->
+                        <div class="item">
+                            <div class="item-info">
+                                <i class="i-captcha"></i>
+                                <input type="hidden" name="seKey" value="get_phone_password" />
+                                <input type="text" id="mobile_captcha" name="captcha" maxlength="6" class="text text-4 captcha_text" value="" placeholder="{$lang.comment_captcha}" autocomplete="off" />
+                                <img src="captcha_verify.php?captcha=is_get_phone_password&{$rand}" alt="captcha" name="img_captcha" class="fl ml5" onClick="this.src='captcha_verify.php?captcha=is_get_phone_password&'+Math.random()" data-key="get_phone_password" />
+                            </div>
+                            <div class="input-tip"></div>
+                        </div>
+                        <!-- {/if} -->
+                        
+                        <div class="item">
+                            <div class="item-info phone_code">
+                                <input name="sms_value" id="sms_value" type="hidden" value="sms_find_signin" />
+                                <input type="text" id="sms" name="mobile_code" maxlength="6" class="text text-1 text-4" placeholder="{$lang.msg_mobile_code}" autocomplete="off" />
+                                <a href="javascript:sendSms();" id="zphone" class="sms-btn">{$lang.get_verification_code}</a>
+                            </div>
+                            <div class="input-tip"></div>
+                        </div>
+
+                        <div class="item">
+                            <div class="item-info">
+                                <input type="hidden" name="flag" id="flag" value='forget' autocomplete="off" />
+                                <input type="hidden" name="seccode" id="seccode" value="{$sms_security_code}" autocomplete="off" />
+                                <input type="hidden" name="act" value="get_pwd_mobile" autocomplete="off" />
+                                <input type="submit" name="submit" class="btn-regist" value="{$lang.reset_password}" ectype="submitBtn" />
+                            </div>
+                        </div>
+                        </form>
+                    </div>
+                    
+                    <div class="form formWenti" id="form_getPassword2" style="display:none;">
+                        <form action="user.php" method="post" name="getWentiPassword" ectype="form">
+                        <div class="item last">
+                            <div class="item-info">
+                                <input name="user_name" type="text" class="text" value="" placeholder="{$lang.username}" autocomplete="off" />
+                                <i class="i-name"></i>
+                            </div>
+                            <div class="input-tip"></div>
+                        </div>
+                        <!-- {foreach from=$extend_info_list item=field} -->
+                        <!-- {if $field.id eq 6} -->
+                        <div class="item">
+                            <div class="item-info">
+                                <div id="divselect" class="divselect">
+                                  <div class="cite">{$lang.passwd_question}</div>
+                                  <ul>
+                                     {foreach from=$passwd_questions item=val key=key}
+                                     <li><a href="javascript:;" data-value="{$key}">{$val}</a></li>
+                                     {/foreach}
+                                  </ul>
+                                </div>
+                                <input name="sel_question" type="hidden" value="" id="passwd_quesetion" autocomplete="off">
+                                <input name="is_passwd_questions" type="hidden" value="1" autocomplete="off" />
+                            </div>
+                            <div class="input-tip"></div>
+                        </div>
+                        <div class="item">
+                            <div class="item-info">
+                                <input name="passwd_answer" type="text" size="25" class="text" maxlengt='20' placeholder="{$lang.passwd_answer}" autocomplete="off" />
+                            </div>
+                            <div class="input-tip"></div>
+                        </div>
+                        <!-- {/if} -->
+                        <!-- {/foreach} -->
+                        <!-- 判断是否启用验证码{if $enabled_captcha} -->
+                        <div class="item">
+                            <div class="item-info">
+                                <i class="i-captcha"></i>
+                                <input type="text" id="captcha" name="captcha" maxlength="6" class="text text-4 captcha_text" value="" placeholder="{$lang.comment_captcha}" autocomplete="off" />
+                                <img src="captcha_verify.php?captcha=get_pwd_question&{$rand}" alt="captcha" name="img_captcha" class="fl ml5" onClick="this.src='captcha_verify.php?captcha=get_pwd_question&'+Math.random()" data-key="psw_question" />
+                            </div>
+                            <div class="input-tip"></div>
+                        </div>
+                        <!-- {/if} -->
+                        <div class="item">
+                            <div class="item-info">
+                                <input type="hidden" name="act" value="check_answer" autocomplete="off" />
+                                <input type="submit" name="submit" class="btn-regist" value="{$lang.reset_password}" ectype="submitBtn" />
+                            </div>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--{/if}-->
+
+<!-- {if $action eq 'reset_password'} --> 
+<div class="ecsc-registLogin ecsc-getPassword">
+    <div class="registLogin borderBottom1">
+        <div class="registLogin-header w1000">
+            <a href="./index.php" class="logo"><img src="{$user_login_logo}" /></a>
+            <b></b>
+            <span class="registLogin-header-fr">{$lang.Have_account}<a href="user.php" class="jump">{$lang.login_here}</a></span>
+        </div>
+    </div>
+    <div class="registLogin-layout w1000">
+        <div class="regist-banner"><a href="#" target="_blank"><img src="images/regist-banner.jpg" /></a></div>
+        <div class="regist-wrap">
+            <div class="regist-form">
+                <div class="mt">
+                    <ul class="tab">
+                        <li class="curr">{$lang.new_password}</li>
+                    </ul>
+                </div>
+                <div class="mc">
+                    <div class="form formtwo">
+                        <form action="user.php" method="post" name="getPassword2" ectype="form">
+                        <div class="item">
+                            <div class="item-info">
+                                <input type="password" style="display:none"/>
+                                <input name="new_password" type="password" size="25" class="text" id="pwd" placeholder="{$lang.new_password}" autocomplete="off" />
+                                <i class="i-pass"></i>
+                            </div>
+                            <div class="input-tip"></div>
+                        </div>
+                        <div class="item">
+                            <div class="item-info">
+                                <input type="password"   style="display:none"/>
+                                <input name="confirm_password" type="password" size="25"  class="text " placeholder="{$lang.confirm_password}" autocomplete="off" />
+                                <i class="i-pass"></i>
+                            </div>
+                            <div class="input-tip"></div>
+                        </div>
+                        <!-- 判断是否启用验证码{if $enabled_captcha} -->
+                        <div class="item">
+                            <div class="item-info">
+                                <input type="text" id="captcha" name="captcha" maxlength="6" class="text text-1 text-4" placeholder="{$lang.comment_captcha}" autocomplete="off" />
+                                <img src="captcha_verify.php?captcha=is_get_password&{$rand}" alt="captcha" name="img_captcha" class="fl ml5" onClick="this.src='captcha_verify.php?captcha=is_get_password&'+Math.random()" data-key="get_password" />
+                            </div>
+                            <div class="input-tip"></div>
+                        </div>
+                        <!-- {/if} -->
+                        <div class="item">
+                            <div class="item-info">
+                                <input type="hidden" name="act" value="act_edit_password" autocomplete="off" />
+                                <input type="hidden" name="uid" value="{$uid}" autocomplete="off" />
+                                <input type="hidden" name="code" value="{$code}" autocomplete="off" />
+                                <input type="submit" name="submit" value="{$lang.confirm_submit}" class="btn-regist" ectype="submitBtn" />	
+                            </div>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>    
+<!--{/if}-->
+<!-- #BeginLibraryItem "/library/page_footer_flow.lbi" --><!-- #EndLibraryItem -->
+</body>
+<script type="text/javascript" src="themes/<?php echo $GLOBALS['_CFG']['template']; ?>/js/focus.js"></script>
+<script type="text/javascript">
+$(function(){
+	if(document.getElementById("seccode")){
+		$("#seccode").val({$sms_security_code|default:0});
+	}
+	
+	<!--{if $action eq 'get_password'} 找回密码start-->
+	//找回密码方式切换
+	$("*[ectype='formWarp']").slide({titCell:"*[ectype='gpTab'] li",mainCell:"*[ectype='gpContent']",effect:"fade",trigger:"click",titOnClassName:"curr"});
+	
+	//找回密码，判断是否开启密码问题
+	var is_passwd_questions = $("input[name='is_passwd_questions']");
+	if(is_passwd_questions.length == 0){
+		$("#form_getPassword1").hide();
+		$("#form_getPassword2").hide();
+		$("#form_getPassword1").siblings().css({'width':'50%'});
+	}
+	<!--{/if} 找回密码end-->
+	
+	<!--{if $action eq 'register'} 找回密码start-->
+	//邮箱验证和手机验证切换
+	$("*[ectype='meSwitch']").on("click",function(){
+		var type = $(this).data("type");
+		
+		if(type == "phone"){
+			$("#email_yz,#code_email").show(); //邮箱验证 邮箱号和邮箱验证码显示
+			$("#phone_yz,#code_mobile").hide(); //邮箱验证 手机号码和短信隐藏
+			
+			$("input[name='register_type']").val(0); //邮箱验证标识
+			$("input[name='mobile_phone']").val(""); //手机号码清空
+			$("input[name='mobile_phone'],input[name='mobile_code']").addClass("ignore"); //邮箱验证 邮箱和邮箱验证码添加验证标识
+			$("input[name='email'],input[name='send_code']").removeClass("ignore"); //邮箱验证 手机号码和短信去除验证标识
+		}else{
+			$("#email_yz,#code_email").hide(); //手机验证 邮箱号和邮箱验证码隐藏
+			$("#phone_yz,#code_mobile").show(); //手机验证 手机号码和短信显示
+			
+			$("input[name='register_type']").val(1); //手机注册标识
+			$("input[name='mobile_phone'],input[name='mobile_code']").removeClass("ignore"); //手机验证 手机号码和短信验证标识
+			$("input[name='email'],input[name='send_code']").addClass("ignore"); //手机验证 邮箱和邮箱验证码去除验证标识
+		}
+	});
+	<!--{/if} 找回密码end-->
+	
+	//注册问题下拉
+	$.divselect("#divselect","#passwd_quesetion");
+});
+</script>
+</html>

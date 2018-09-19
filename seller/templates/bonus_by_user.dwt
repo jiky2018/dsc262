@@ -1,0 +1,184 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>{include file ='library/seller_html_head.lbi'}</head>
+
+<body>
+{include file ='library/seller_header.lbi'}
+<div class="ecsc-layout">
+    <div class="site wrapper">
+        {include file ='library/seller_menu_left.lbi'}
+        <div class="ecsc-layout-right">
+            <div class="main-content" id="mainContent">
+            	{include file ='library/url_here.lbi'}
+				{include file ='library/seller_menu_tab.lbi'}
+                <div class="ecsc-form-goods">
+                    <form name="theForm" action="bonus.php" method="post" id="username_form">
+                    	<div class="step_content pb20 bbd1">
+                        	<div class="item">
+                            	<div class="label">{$lang.senduserrank}：</div>
+                                <div class="value">
+                                	<div class="imitate_select select_w170">
+                                        <div class="cite">{$lang.select_please}</div>
+                                        <ul>
+                                            <li><a href="javascript:;" data-value="0" class="ftx-01">{$lang.select_rank}</a></li>
+                                            {foreach from=$ranklist item=list key=key}
+                                            <li><a href="javascript:;" data-value="{$key}" class="ftx-01">{$list}</a></li>
+                                            {/foreach}
+                                        </ul>
+                                        <input name="rank_id" type="hidden" value="{$smarty.get.rank_id}"/>
+                                    </div>
+                                    <div class="form_prompt"></div>
+                                    <div class="clear"></div>
+                                    <div class="checkbox_item mt20">
+                                        <input type="checkbox" class="ui-checkbox" name="validated_email" id="validated_email" value="1">
+                                        <label class="ui-label" for="validated_email">{$lang.validated_email}</label>
+                                    </div>
+                                    <input type="submit" name="send_rank" value="{$lang.confirm_send_bonus}" class="sc-btn sc-blueBg-btn btn35 mt20" id="rankSubmit" />
+                                    <input type="hidden" name="act" value="send_by_user" />
+                                    <input type="hidden" name="id" value="{$id}" />
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="goods_search_div mt20 mb10">
+                            <input type="text" name="keyword" class="text w120 mr10" value="" placeholder="关键字" autocomplete="off" />
+                            <input type="button" class="sc-btn sc-blueBg-btn btn30" name="search" value="搜索" ectype="search" onclick="searchUser();" class="button" />
+                        </div>
+                        
+                        <div class="move_div">
+                            <div class="move_left">
+                                <h4>{$lang.userlist}</h4>
+                                <div class="move_info">
+                                    <div class="move_list" id="user_search">
+                                        <ul>
+                                        </ul>	
+                                    </div>
+                                </div>
+                                <div class="move_handle">
+                                    <a href="javascript:void(0);" id="sellectAll" class="sc-btn btn25 moveAll" ectype="moveAll"><span>全选</span></a>
+                                    <a href="javascript:void(0);" onclick="addUser()" class="sc-btn btn25 sc-blueBg-btn">确定</a>
+                                </div>
+                            </div>
+                            <div class="move_middle">
+                                <div class="move_point" onclick="addUser()"></div>
+                            </div>
+                            <div class="move_right">
+                                <h4>{$lang.send_to_user}</h4>
+                                <div class="move_info">
+                                    <div class="move_list" id="user">
+                                        <ul>
+                                        </ul>											
+                                    </div>
+                                </div>
+                                <div class="move_handle">
+                                    <a href="javascript:void(0);" id="selectAllUser" class="sc-btn btn25 moveAll" ectype="moveAll">全选</a>
+                                    <a href="javascript:void(0);" onclick="delUser()" class="sc-btn btn25 sc-blueBg-btn" >移除</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="button-bottom">
+                        	<div class="button_info">
+                                <input type="submit" name="send_user" value="{$lang.confirm_send_bonus}" class="sc-btn sc-blueBg-btn btn35 fn"/>
+                                <input type="hidden" name="id" value="{$id}" />
+                                <input type="hidden" name="act" value="send_by_user" />
+                            </div>
+                        </div>	
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{include file ='library/seller_footer.lbi'}
+<script type="text/javascript" language="JavaScript">
+    /**
+    * 按用户名搜索用户
+    */
+    function searchUser()
+    {
+		var eles = document.forms['theForm'].elements;
+		
+		/* 填充列表 */
+		var keywords = Utils.trim(eles['keyword'].value);
+		
+		$("#user_search").find("ul").html("<i class='icon-spinner icon-spin'></i>");
+		
+		setTimeout(function(){Ajax.call('bonus.php?is_ajax=1&act=search_users', 'keywords=' + keywords, searchUserResponse, "GET", "JSON");},300);
+
+    }
+
+    function searchUserResponse(result)
+    {
+		$(".move_list").perfectScrollbar("destroy");
+		$(".move_list").perfectScrollbar();
+		$("#user_search").find("li,i").remove();
+		
+		if (result.error == 0)
+		{
+			for (i = 0; i < result.content.length; i++)
+			{
+				$("#user_search").find("ul").append("<li><i class='sc_icon sc_icon_ok'></i><a href='javascript:void(0);' data-value="+result.content[i].user_id+">"+result.content[i].user_name+"</a><input type='hidden' name='user_search[]' value='"+result.content[i].user_id+"'></li>");
+			}
+		}
+    }
+
+    $("#sellectAll").click(function(){
+		$("#user_search").find("ul li").each(function(){
+			$(this).addClass('current');
+		});
+    })
+
+    $("#selectAllUser").click(function(){
+		$("#user").find("ul li").each(function(){
+			$(this).addClass('current');
+		});
+    });
+
+    function addUser()
+    {
+      $("#user_search").find("ul li").each(function(){
+		  var value = $(this).find("a").data("value");
+		  var length = $("#user").find("li a[data-value="+value+"]").length;
+		  if($(this).attr("class") == 'current' && length == 0){
+			  var user = $(this).text();
+			  var user_id = $(this).find("input").val();
+			  $("#user").find("ul").append("<li><i class='sc_icon sc_icon_no'></i><a href='javascript:void(0);' data-value='"+value+"'>"+user+"</a><input type='hidden' name='user[]' value='"+user_id+"'></li>")		  
+		  }
+      });
+    }
+
+    function delUser()
+    {
+		$("#user").children("ul").find("li").each(function(){
+			if($(this).attr("class") == 'current'){
+			  $(this).remove();
+			}
+		})
+    }
+	
+	//按用户等级发放红包
+	$("#rankSubmit").click(function(){
+		if($("#username_form").valid()){
+			$("#username_form").submit();
+		}
+	});
+	$('#username_form').validate({
+		errorPlacement:function(error, element){
+			var error_div = element.parents('div.value').find('div.form_prompt');
+			//element.parents('dl').find(".notic").hide();
+			error_div.append(error);
+		},
+		rules:{
+			status :{
+				required : true
+			}
+		},
+		messages:{
+			status:{
+				 required : '<i class="icon icon-exclamation-sign"></i>'+user_rank_empty
+			}
+		}			
+	});
+</script>
+</body>
+</html>

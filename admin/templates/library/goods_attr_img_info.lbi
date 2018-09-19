@@ -1,0 +1,92 @@
+<form id="fileForm" runat="server" enctype="multipart/form-data" method="post" action="dialog.php?act=add_attr_img">
+<div id="merge_dialog">
+	<div class="items">
+		<div class="item">
+			<div class="label">商品名称：</div>
+			<div class="value lh30">{$goods_info.goods_name}</div>
+		</div>
+        <div class="item">
+			<div class="label">商品类型名称：</div>
+			<div class="value lh30">{$attr_info.attr_name}</div>
+		</div>
+        <div class="item">
+			<div class="label">属性名称：</div>
+			<div class="value lh30">{$goods_attr_name}</div>
+		</div>
+        <div class="item">
+			<div class="label">属性图片：</div>
+			<div class="value lh30">
+                <div class="type-file-box mr0" style="width:100%;">
+                    <input type="button" name="button" id="button" class="type-file-button" value="">
+                    <input type="file" class="type-file-file" name="attr_img_flie" size="30" data-state="imgfile" hidefocus="true" value="">
+                    <div class="img_flie_{$goods_attr_id}">
+                    {if $goods_attr_info.attr_img_flie}
+                    <span class="show">
+                    <a href="{$goods_attr_info.attr_img_flie}" target="_blank" class="nyroModal" title="点击查看"><i class="icon icon-picture"></i></a>
+                    </span>
+                    {/if}
+                    <input type="text" name="textfile" class="type-file-text" value="" id="textfield" readonly>
+                    {if $goods_attr_info.attr_img_flie}
+                    <a href="javascript:void(0);" class="fl ml10" title="删除" onclick="if (confirm('{$lang.confirm_drop_img}')) delete_attr_gallery({$goods_id}, {$attr_id}, '{$goods_attr_name}', {$goods_attr_id})"><i class="icon icon-trash font14"></i></a>
+                    {/if}
+                    </div>
+                    <br>
+                    (建议大小：25px*25px)
+                </div>
+			</div>
+		</div>
+        <div class="item">
+			<div class="label">属性相册图：</div>
+			<div class="value lh30">
+                <input name="choose_attrImg" value="选择图片" type="button" onclick="get_choose_attrImg({$goods_id}, {$goods_attr_id})"class="btn btn25 red_btn mr10" />
+                {if $goods_attr_info.attr_gallery_flie}<a href="{$goods_attr_info.attr_gallery_flie}" id="attr_gallery_flie_{$goods_attr_id}" class="nyroModal" title="点击查看"><i class="icon icon-picture"></i></a>{/if}
+                <input type="hidden"  name="img_url" value="{$goods_attr_info.attr_gallery_flie}" id="imgUrl" />
+			</div>
+		</div>
+        <div class="item">
+			<div class="label">属性外链地址：</div>
+			<div class="value lh30">
+				<input name="attr_img_site" type="text" class="text" value="{$goods_attr_info.attr_img_site}" size="50" />
+			</div>
+		</div>
+        <div class="item">
+			<div class="label">商品默认选择：</div>
+			<div class="value lh30 checkbox_items">
+				<div class="checkbox_item">
+                    <input name="attr_checked" type="radio" value="0" class="ui-radio" id="attr_checked_0" {if $goods_attr_info.attr_checked eq 0} checked="checked"{/if} class="checkbox" />
+                    <label class="ui-radio-label" for="attr_checked_0">{$lang.no}</label>
+                </div>
+                <div class="checkbox_item">
+                    <input name="attr_checked" type="radio" value="1" class="ui-radio" id="attr_checked_1" {if $goods_attr_info.attr_checked eq 1} checked="checked"{/if} class="checkbox" />
+                    <label class="ui-radio-label" for="attr_checked_1">{$lang.yes}</label>
+                </div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="feedbox" style="display:none;">
+	<h2>选择属性图片<span class="close">✕</span></h2>
+    <div id="feedcontent"></div>
+</div>
+
+<input type="hidden" name="goods_id" value="{$goods_id}" />
+<input type="hidden" name="attr_id" value="{$attr_id}" />
+<input type="hidden" name="goods_attr_id" value="{$goods_attr_id}" />
+<input type="hidden" name="goods_attr_name" value="{$goods_attr_name}" />
+</form>
+
+<script type="text/javascript">
+$(function(){
+	$("#feedbox .close").click(function(){
+		var feedbox = $(this).parents('#feedbox');
+		var height = $(this).parents("#goods_dialog").height();
+		var feedboxHeight = feedbox.height();
+		var scrollHeight = $(window).height();
+		feedbox.hide();
+		$(this).parents("#goods_dialog").css({"top":(scrollHeight-(height-feedboxHeight))/2});
+	});
+	//点击查看图片
+	$('.nyroModal').nyroModal();
+});			
+</script>

@@ -1,0 +1,128 @@
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title"><a href="{$action_link.href}" class="s-back">{$lang.back}</a>登录管理 - {$ur_here}</div>
+        <div class="content">
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                	<li>填写在第三方申请的信息参数。</li>
+                    <li>{$lang.operation_prompt_content_common}</li>
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-content">
+                    <div class="mian-info">
+                        <form action="website.php" method="post" id="website_form">
+                            <div class="switch_info">
+								{foreach from=$info.config item=val key=key}
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}<span class="txt">{if $lang.$val.name}{$lang.$val.name}{else}{$val.name}{/if}</span>：</div>
+                                    <div class="label_value">
+										<input name="jntoo[{$val.name}]" ectype="jntoo" type="{$val.type}" value="{if $config.$val.name}{$config.$val.name}{else}{$$val.value}{/if}" size="45" class="text" />
+										{if $lang.help.$val.name}
+										<div class="notic" id="app_key_{$key}">{$lang.help.$val.name}</div>
+										{/if}
+                                        <div class="form_prompt"></div>
+                                    </div>
+                                </div>
+								{/foreach}
+                                <div class="item">
+                                    <div class="label">{$lang.require_field}<span class="txt">{$lang.user_rank}</span>：</div>
+                                    <div class="label_value">
+										<input name="rank_name" type="text" ectype="jntoo" value="{$rank.rank_name}" size="30" class="text" />
+                                        <div class="form_prompt"></div>
+										<div class="notic" id="user_rank">{$lang.help_rank_name}</div>
+                                        <input type="hidden" name="olb_rank_name" value="{$rank.rank_name}" />
+										<input type="hidden" name="rank_id" value="{$rank.rank_id}" />
+                                    </div>
+                                </div>								
+                                <div class="item">
+                                    <div class="label">{$lang.website_web}：</div>
+                                    <div class="label_value">
+										<a href="{$info.website}" target="_blank" class="blue">{$lang.once}</a>   
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="label">&nbsp;</div>
+                                    <div class="label_value info_btn">
+										<input type="hidden" name="type" value="{$type}" />
+										<input type="hidden" name="act" value="{$act}" />
+										<input type="submit" value="{$lang.button_submit}" class="button" id="submitBtn" />
+										<input type="button" onClick="window.history.go(-1)" value="{$lang.cancel}" class="button button_reset" />
+                                    </div>
+                                </div>								
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+		</div>
+    </div>
+	{include file ='library/pagefooter.lbi'}
+	{literal}
+	<script type="text/javascript">
+	$(function(){
+		//表单验证
+		$("#submitBtn").click(function(){
+			var fade = true;
+			$("input[ectype='jntoo']").each(function(index, element) {
+				var value = $(element).val();
+				var text = $(element).parents(".item").find(".label span.txt").html();
+				if(value == ""){
+					$(element).addClass("error");
+					$(element).siblings("div.form_prompt").html("<label class='error'><i class='icon icon-exclamation-sign'></i>请输入"+text+"</label>");
+					$(element).siblings("div.notic").hide();
+					fade = false;
+				}else{
+					fade = true;
+				}
+			});
+			
+			return fade;
+		});
+	})
+
+	function searchGoods()
+	{
+	  var filter = new Object;
+	  filter.keyword  = document.forms['theForm'].elements['keyword'].value;
+
+	  Ajax.call('tag_manage.php?is_ajax=1&act=search_goods', filter, searchGoodsResponse, 'GET', 'JSON');
+	}
+
+	function searchGoodsResponse(result)
+	{
+	  if (result.error == '1' && result.message != '')
+	  {
+		alert(result.message);
+		return;
+	  }
+
+	  var sel = document.forms['theForm'].elements['goods_id'];
+
+	  sel.length = 0;
+
+	  /* 创建 options */
+	  var goods = result.content;
+	  if (goods)
+	  {
+		for (i = 0; i < goods.length; i++)
+		{
+		  var opt = document.createElement("OPTION");
+		  opt.value = goods[i].goods_id;
+		  opt.text  = goods[i].goods_name;
+		  sel.options.add(opt);
+		}
+	  }
+
+	  return;
+	}
+	//-->
+	</script>
+	{/literal}
+</body>
+</html>

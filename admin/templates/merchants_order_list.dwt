@@ -1,0 +1,331 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+
+<body class="iframe_body">
+<div class="warpper">
+    <div class="title"><a href="merchants_commission.php?act=list" class="s-back"></a>{$lang.seller} - {$ur_here}</div>
+    <div class="content">
+        {include file="library/commission_tab.lbi"}
+        <div class="explanation" id="explanation">
+            <div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+            <ul>
+                <li>{$lang.operation_prompt_content.order_list.0}</li>
+                <li>{$lang.operation_prompt_content.order_list.1}</li>
+                <li>{$lang.operation_prompt_content.order_list.2}</li>
+                <li class="red">{$lang.operation_prompt_content.order_list.3}</li>
+                <li class="red">{$lang.operation_prompt_content.order_list.4}</li>
+                <li class="red">{$lang.operation_prompt_content.order_list.5}</li>
+                <li class="red">{$lang.operation_prompt_content.order_list.6}</li>
+            </ul>
+        </div>
+        <div class="flexilist">
+            <div class="common-head">
+                <div class="search mr0">
+                	<form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+                    <div class="imitate_select select_w120">
+                        <div class="cite">{$lang.settlement_state}</div>
+                        <ul>
+                           <li><a href="javascript:;" data-value="-1">{$lang.settlement_state}</a></li>
+                           <li><a href="javascript:;" data-value="1">{$lang.is_settlement}</a></li>
+                           <li><a href="javascript:;" data-value="0">{$lang.no_settlement}</a></li>
+                        </ul>
+                        <input name="state" type="hidden" value="-1">
+                    </div>
+                    
+                    <div id="text_time_start" class="text_time">
+                        <input type="text" readonly placeholder="{$lang.order_start_time}" autocomplete="off" class="text mr0" id="start_time_id" name="start_time">
+                    </div>
+                    <span class="bolang">&nbsp;&nbsp;~&nbsp;&nbsp;</span>
+                    <div id="text_time_end" class="text_time">
+                        <input type="text" readonly autocomplete="off" placeholder="{$lang.order_end_time}" class="text" id="end_time_id" value="" name="end_time">
+                    </div>
+                    <input type="submit" value="{$lang.search_word}" class="btn btn30 blue_btn_2" />
+                    </form>
+                </div>
+            </div>
+            
+            <div class="common-content">
+                <div class="list-div" id="listDiv" >
+                    {/if}
+                    <form method="post" action="" name="listForm" onsubmit="return confirm('{$lang.batch_confirm_settlement}');" style="position:relative;">
+                    <div class="commission-head-tit">
+                        <div class="fbutton"><a href="{$action_link.href}"><div class="csv" title="{$action_link.text}"><span><i class="icon icon-download-alt"></i>{$action_link.text}</span></div></a></div>
+                        <div class="total_row">
+                        	<div class="item">
+                                <span class="green">当前佣金模式：{if $filter.commission_model}{$lang.category_model}{else}{$lang.seller_model}{/if}</span>
+                                {if !$commission_model}<span>{$lang.percent_value}：<font class="red" id="all_brokerage_amount">{$percent_value}</font></span>{/if}
+    						</div>
+                            <div class="item">
+                                <span>{$lang.all_brokerage_amount}：<font class="red2" id="all_brokerage_amount">{$order_list.brokerage_amount.all}</font></span>
+                                
+                                {if $is_dir}
+                                <!--分销商品开关begin -->
+                                <span>{$lang.all_drp}：<font class="red" id="no_brokerage_amount">{$order_list.brokerage_amount.no_settlement}</font></span>
+                                <!--分销商品开关end -->
+                                {/if}
+                                <span>{$lang.is_brokerage_amount}：<font class="green" id="is_brokerage_amount">{$order_list.brokerage_amount.is_settlement}</font></span>
+                                <span>{$lang.no_brokerage_amount}：<font class="red" id="no_brokerage_amount">{$order_list.brokerage_amount.no_settlement}</font></span>
+                            </div>
+                        </div>
+                    </div>
+                    <table cellpadding="1" cellspacing="1">
+                        <thead>
+                            <tr>
+                                <th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars"></label></div></th>
+                                <th width="5%"><div class="tDiv">{$lang.order_sn}</div></th>
+                                <th width="10%"><div class="tDiv">{$lang.order_time}</div></th>
+                                <th width="15%"><div class="tDiv">{$lang.consignee}</div></th>
+                                
+                                <th width="9%"><div class="tDiv">{$lang.total_fee}</div></th>
+                                <th width="10%"><div class="tDiv">{$lang.effective_favorable}</div></th>
+                                <!--分销商品开关begin -->
+                                {if $is_dir}
+                                <th><div class="tDiv">{$lang.drp_comm}</div></th>
+                                {/if}
+                                <!--分销商品开关end -->
+                                
+                                <th width="7%"><div class="tDiv">{$lang.return_amount}</div></th>
+                                <th width="9%"><div class="tDiv">{$lang.effective_amount_into}</div></th>
+                                <th width="7%"><div class="tDiv">{$lang.brokerage_amount}</div></th>
+                                <th width="9%"><div class="tDiv">{$lang.all_status}</div></th>
+                                <th width="6%"><div class="tDiv" style="text-align:center">{$lang.settlement_state}</div></th>
+                                <th width="5%" class="handle">{$lang.handler}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {foreach from=$order_list item=order name=noorder}
+                            {if !$smarty.foreach.noorder.last}
+                            <tr>
+                            <td class="sign"><div class="tDiv"><input type="checkbox" name="checkboxes[]" value="{$order.order_id}" class="checkbox" id="checkbox_{$order.order_id}" /><label for="checkbox_{$order.order_id}" class="checkbox_stars"></label></div></td>
+                            <td>
+                                <div class="tDiv">
+                                    <p>{$order.order_sn}{if $order.return_amount > 0}<font class="red">({$lang.refund})</font>{/if}</p>
+                                    <p>{if $order.chargeoff_status neq 0}<font class="red">【账单：{$order.bill_sn}】</font>{/if}</p>
+                                </div>
+                            </td>
+                            <td><div class="tDiv">{$order.buyer|escape}<br />{$order.short_order_time}</div></td>	
+                            <td><div class="tDiv"><a href="mailto:{$order.email}">{$order.consignee|escape}</a>{if $order.tel} [TEL: {$order.tel|escape}]{/if} <br />{$order.address|escape}</div></td>
+                            <td>
+                                <div class="tDiv">
+                                    <p>{$order.formated_order_total_fee}</p>
+                                    <!-- {if $order.shipping_fee neq 0} -->
+                                    <p><em class="red">（含运费：{$order.formated_shipping_fee}）</em></p>
+                                    <!-- {/if} -->
+                                    
+                                    <!-- {if $order.is_settlement eq 1} -->
+                                    <p>
+                                    	{if !$order.account_log.percent_value && $order.is_rectified eq 1}
+                                        <div class="editSpanInput" ectype="editSpanInput">
+                                            <span onclick="listTable.edit(this, 'edit_percent_value', '{$order.order_id}'); return false;">{$order.account_log.percent_value|default:N/A}</span>
+                                            <i class="icon icon-edit" title="纠正比例"></i>
+										</div>
+                                        {else}
+                                    	<em class="red2">【店铺比例：{$order.percent_value}%】</em>
+                                        {/if}
+                                    </p>
+                                    <!-- {/if} -->
+                                </div>
+                            </td>
+                            <td>
+                                <div class="tDiv">
+                                    <p>折扣：-{$order.formated_discount}</p>
+                                    <p>优惠券：-{$order.formated_coupons}</p>
+                                    <p>积分：-{$order.formated_integral_money}</p>
+                                    <p>红包：-{$order.formated_bonus}</p>
+                                </div>
+                            </td>
+                            
+                            <!--分销商品开关begin -->
+                            {if $is_dir}
+                            <td><div class="tDiv">{$order.formated_drp_commission}</div></td>
+                            {/if}
+                            <!--分销商品开关end -->
+                                
+                            <td><div class="tDiv">{$order.formated_return_amount}{if $order.return_amount > 0}<a href="order.php?act=return_list&order_id={$order.order_id}&return_type=1" target="_blank" style="color:#930">(查看)</a>{/if}</div></td>
+                            <td>
+                                <div class="tDiv red">
+                                	{if $order.is_goods_rate eq 1}
+                                    	<p>{$order.formated_effective_amount}【订单】</p>
+                                        <p>{$order.goods_rate.format_total_fee}【商品】</p>
+                                    {else}
+                                    	<p>
+                                    	<!-- {if $order.shipping_fee neq 0} -->
+                                        {$order.formated_order_amount_field}
+                                        <br/> - {$order.formated_shipping_fee}
+                                        <br/> = {$order.formated_effective_amount}
+                                        <!-- {else} -->
+                                        {$order.formated_effective_amount}
+                                        </p>
+                                        <!-- {/if} -->
+                                    {/if}
+                                    <p><em class="org2">(不含运费)</em></p>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="tDiv red">
+                                    <p>
+                                    <!-- {if $order.shipping_fee neq 0} -->
+                                     + {$order.formated_effective_amount_price}
+                                    <br/> + {$order.formated_shipping_fee}
+                                    <br/>=
+                                    {$order.formated_brokerage_amount}
+                                    <!-- {else} -->
+                                    {$order.formated_brokerage_amount}
+                                    <!-- {/if} -->
+                                    </p>
+                                    {if $order.is_goods_rate}
+                                        <p>
+                                            <em style=" color:#31b4e1;">(部分商品比例)</em>
+                                        </p>
+                                    {/if}
+                                </div>
+                            </td>
+                            <td><div class="tDiv">{$lang.os[$order.order_status]}<br/>{$lang.ps[$order.pay_status]}<br/>{$lang.ss[$order.shipping_status]}</div></td>
+                            <td align="center">
+                                {if !$order.is_settlement}
+                                    <div class="tDiv">
+                                        <div style=" left:25%" class="switch mauto {if $order.is_settlement}active{/if}" {if !$order.is_settlement}onclick="listTable.switchBt(this, 'toggle_on_settlement', {$order.order_id})"{/if} title="{$lang.yes}">
+                                            <div class="circle"></div>
+                                        </div>
+                                        <input type="hidden" value="" name="is_settlement">
+                                    </div>
+                                {else}
+                                    <div class="tDiv"><img src="images/yes.png" class="pl3"></div>
+                                {/if}
+                            </td>
+                            <td class="handle">
+                                <div class="tDiv a2">
+                                    <a href="merchants_commission.php?act=handle_log&id={$order.order_id}&user_id={$user_id}" class="btn_see"><i class="sc_icon sc_icon_see"></i>操作日志</a>							
+                                </div>
+                            </td>
+                            </tr>
+                            {/if}
+                            {foreachelse}
+                            <tr><td class="no-records" colspan="14">{$lang.no_records}</td></tr>
+                            {/foreach}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="14">
+                                    <div class="tDiv">
+                                        <div class="tfoot_btninfo">
+                                            &nbsp;
+                                        </div>
+                                        <div class="list-page">
+                                            {include file="library/page.lbi"}
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    </form>
+                    {if $full_page}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="gj_search">
+    <div class="search-gao-list" id="searchBarOpen">
+        <i class="icon icon-zoom-in"></i>{$lang.advanced_search}
+    </div>
+    <div class="search-gao-bar">
+        <div class="handle-btn" id="searchBarClose"><i class="icon icon-zoom-out"></i>{$lang.pack_up}</div>
+        <div class="title"><h3>{$lang.advanced_search}</h3></div>
+        <form action="javascript:searchOrder()" name="searchHighForm">
+            <div class="searchContent">
+                <div class="layout-box">
+                    <dl>
+                        <dt>{$lang.order_sn}</dt>
+                        <dd><input type="text" value="" name="order_sn" id="order_sn" class="s-input-txt" autocomplete="off" /></dd>
+                    </dl>
+                    <dl>
+                        <dt>{$lang.consignee|escape}</dt>
+                        <dd><input type="text" value="" name="consignee" id="consignee" class="s-input-txt" autocomplete="off" /></dd>
+                    </dl>
+                    <dl>
+                        <dt>订单分类</dt>
+                        <dd>
+                            <div id="order_cat" class="imitate_select select_w145">
+                              <div class="cite">{$lang.select_please}</div>
+                              <ul>
+                                 <li><a href="javascript:;" data-value="">{$lang.select_please}</a></li>
+                                 <li><a href="javascript:;" data-value="stages">白条订单</a></li>
+                                 <li><a href="javascript:;" data-value="zc">众筹订单</a></li>
+                                 <li><a href="javascript:;" data-value="store">门店订单</a></li>
+                                 <li><a href="javascript:;" data-value="other">促销订单</a></li>
+                                 <li><a href="javascript:;" data-value="dbdd">夺宝订单</a></li>
+                                 <li><a href="javascript:;" data-value="msdd">秒杀订单</a></li>
+                                 <li><a href="javascript:;" data-value="tgdd">团购订单</a></li>
+                                 <li><a href="javascript:;" data-value="pmdd">拍卖订单</a></li>
+                                 <li><a href="javascript:;" data-value="jfdd">积分订单</a></li>
+                                 <li><a href="javascript:;" data-value="ysdd">预售订单</a></li>
+                              </ul>
+                            <input name="order_cat" type="hidden" value="" id="order_cat_val">
+                            </div>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+            <div class="bot_btn">
+                <input type="submit" class="btn red_btn" name="tj_search" value="{$lang.button_inquire}" /><input type="reset" class="btn btn_reset" name="reset" value="{$lang.button_reset_alt}" />
+            </div>
+        </form>
+    </div>
+</div>
+<input name="bill_seller" type="hidden" value="{$user_id|default:0}" />
+{include file ='library/pagefooter.lbi'}
+ <script type="text/javascript" src="js/jquery.purebox.js"></script>
+<script type="text/javascript">
+    //检查结算账单
+    checkBill();
+
+	//分页传值
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+	listTable.query = "order_query";
+
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+	function order_downloadList(){
+            page_downloadList("{$page_count}",'merchants_commission','ajax_download','merchants_commission','merchant_download','订单结算导出弹窗');
+        }
+
+	//日期选择插件调用start sunle
+	var opts1 = {
+		'targetId':'start_time_id',//时间写入对象的id
+		'triggerId':['start_time_id'],//触发事件的对象id
+		'alignId':'text_time_start',//日历对齐对象
+		'format':'-',//时间格式 默认'YYYY-MM-DD HH:MM:SS'
+		'min':'' //最小时间
+	},opts2 = {
+		'targetId':'end_time_id',
+		'triggerId':['end_time_id'],
+		'alignId':'text_time_end',
+		'format':'-',
+		'min':''
+	}
+	xvDate(opts1);
+	xvDate(opts2);
+	//日期选择插件调用end sunle
+	
+	$.gjSearch("-240px");  //高级搜索
+	
+	function searchOrder()
+    {		
+		listTable.filter = [];
+		listTable.filter['id'] = {$user_id|default:0};
+        listTable.filter['order_sn'] = Utils.trim(document.forms['searchHighForm'].elements['order_sn'].value);
+        listTable.filter['consignee'] = Utils.trim(document.forms['searchHighForm'].elements['consignee'].value);
+        listTable.filter['order_cat'] = Utils.trim(document.forms['searchHighForm'].elements['order_cat'].value);
+        listTable.filter['page'] = 1;
+        listTable.loadList();
+    }
+</script>
+</body>
+</html>
+{/if}

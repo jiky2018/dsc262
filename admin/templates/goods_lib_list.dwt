@@ -1,0 +1,512 @@
+{if $full_page}
+<!doctype html>
+<html>
+<head>{include file ='library/admin_html_head.lbi'}</head>
+<body class="iframe_body">
+	<div class="warpper">
+    	<div class="title">{$lang.goods_alt} - {$ur_here}</div>
+        <div class="content">		
+        	<div class="explanation" id="explanation">
+            	<div class="ex_tit"><i class="sc_icon"></i><h4>{$lang.operating_hints}</h4><span id="explanationZoom" title="{$lang.fold_tips}"></span></div>
+                <ul>
+                    {if $standard_goods}
+                    <li>该页面展示了标准商品库的商品信息，可对商品进行编辑、删除操作。</li>
+                    <li class="red">此页数据与供应商商品同步，请谨慎操作</li>
+                    <li class="red">供应商商品库商品是提供给商家导入此商品为普通商品销售的商品列表</li>
+                    {else}
+                	<li>{$lang.operation_prompt_content.list.0}</li>
+                    <li>{$lang.operation_prompt_content.list.1}</li>
+                    {/if}
+                </ul>
+            </div>
+            <div class="flexilist">
+                <div class="common-head">
+                	{if !$standard_goods}
+                    <div class="fl">
+						<a href="goods_lib.php?act=add{if $code eq 'virtual_card'}&extension_code=virtual_card{/if}"><div class="fbutton"><div class="add" title="{$lang.add_product}"><span><i class="icon icon-plus"></i>{$lang.add_product}</span></div></div></a>
+                        <a href="goods_lib_batch.php?act=add"><div class="fbutton"><div class="edit" title="{$lang.batch_file}"><span><i class="icon icon-upload-alt"></i>{$lang.batch_file}</span></div></div></a>
+						<a href="goods_lib.php?act=import_seller_goods"><div class="fbutton"><div class="edit" title="{$lang.dr_seller_goods}"><span><i class="icon icon-upload-alt"></i>{$lang.dr_seller_goods}</span></div></div></a>
+                    </div>
+                    {/if}
+                    <div class="refresh">
+                    	<div class="refresh_tit" title="{$lang.refresh_data}"><i class="icon icon-refresh"></i></div>
+                    	<div class="refresh_span">{$lang.refresh_common}{$record_count}{$lang.record}</div>
+                    </div>
+					<div class="search">
+                    	<form action="javascript:;" name="searchForm" onSubmit="searchGoodsname(this);">
+                    	<div class="input">
+                        	<input type="text" name="keyword" class="text nofocus w140" placeholder="{$lang.goods_search_placeholder}" autocomplete="off">
+							<input type="submit" class="btn" name="secrch_btn" ectype="secrch_btn" value="" />
+                        </div>
+                        </form>
+                    </div>					
+                </div>
+                <div class="common-content">
+					<form method="post" action="" name="listForm" onsubmit="return confirmSubmit(this)">
+                    <div class="list-div" id="listDiv">
+                    	{/if}
+                        <div class="flexigrid ht_goods_list{if $add_handler} xn_goods_list{/if}">
+                    	<table cellpadding="0" cellspacing="0" border="0">
+                        	<thead>
+                            	<tr>
+                                	<th width="3%" class="sign"><div class="tDiv"><input type="checkbox" name="all_list" class="checkbox" id="all_list" /><label for="all_list" class="checkbox_stars"></label></div></th>
+                                	<th width="5%" class="sky_id"><div class="tDiv"><a href="javascript:listTable.sort('goods_id');">{$lang.record_id}</a>{$sort_goods_id}</div></th>
+                                    <th width="20%"><div class="tDiv"><a href="javascript:listTable.sort('goods_name');">{$lang.goods_name}</a>{$sort_goods_name}</div></th>
+                                    {if $standard_goods}
+                                    <th width="11%"><div class="tDiv">{$lang.suppliers_name}</div></th>
+                                    {/if}
+                                    <th width="11%"><div class="tDiv">{if !$standard_goods}{$lang.goods_lib_cat}{else}{$lang.wholesale_cat}{/if}</div></th>
+									<th width="11%"><div class="tDiv">{$lang.shop_price}</div></th>
+                                    <th width="12%"><div class="tDiv">{$lang.goods_sn}</div></th>
+                                    <th width="6%"><div class="tDiv"><a href="javascript:listTable.sort('sort_order');">{$lang.sort_order}</a>{$sort_sort_order}</div></th>
+                                    <th width="8%"><div class="tDiv">{$lang.on_sale}</div></th>
+									<th width="12%" class="handle">{$lang.handler}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+								{foreach from=$goods_list item=goods}
+                            	<tr>
+                                    <td class="sign">
+                                    <div class="tDiv">
+										<input type="checkbox" name="checkboxes[]" value="{$goods.goods_id}" class="checkbox" id="checkbox_{$goods.goods_id}" />
+										<label for="checkbox_{$goods.goods_id}" class="checkbox_stars"></label>
+									</div>
+                                    </td>
+                                    <td class="sky_id"><div class="tDiv">{$goods.goods_id}</div></td>
+                                    <td>
+                                    	<div class="tDiv goods_list_info">
+											<div class="img"><img src="{$goods.goods_thumb}" width="68" height="68" /></div>
+                                            <div class="desc">
+                                        	<div class="name">
+                                                <span onclick="listTable.edit(this, 'edit_goods_name', {$goods.goods_id})" title="{$goods.goods_name|escape:html}" data-toggle="tooltip" class="span">{$goods.goods_name|escape:html}</span>
+                                            </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    {if $standard_goods}
+                                    <td>
+                                        <div class="tDiv">
+                                            <span class="label">{$goods.suppliers_name}</span>
+                                        </div>
+                                    </td>
+                                    {/if}
+                                    <td>
+                                        <div class="tDiv">
+                                            <span class="label">{$goods.lib_cat_name}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="tDiv">
+                                            <span class="label">{$goods.shop_price}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                    	<div class="tDiv">
+											<span>{$goods.goods_sn}</span>
+                                    	</div>
+                                    </td>
+                                    <td><div class="tDiv"><span onclick="listTable.edit(this, 'edit_sort_order', {$goods.goods_id})">{$goods.sort_order}</span></div></td>
+                                    <td>
+                                    	<div class="tDiv">
+                                        	<div class="switch {if $goods.is_on_sale}active{/if}" title="{if $goods.is_on_sale}是{else}否{/if}" onclick="listTable.switchBt(this, 'toggle_on_sale', {$goods.goods_id})">
+                                            	<div class="circle"></div>
+                                            </div>
+                                            <input type="hidden" value="0" name="">
+                                        </div>
+                                    </td>                                    
+								
+									<td class="handle">
+                                        <div class="tDiv ht_tdiv" style="padding-bottom:0px;">
+                                            <p>
+                                                {if !$standard_goods}
+                                            	<a href="goods_lib.php?act=edit&goods_id={$goods.goods_id}{if $code neq 'real_goods'}&extension_code={$code}{/if}" class="btn_edit"><i class="icon icon-edit"></i>{$lang.edit}</a>
+                                            	{else}
+                                                <a href="../wholesale_goods.php?id={$goods.goods_id}" target="_blank" class="btn_see"><i class="sc_icon sc_icon_see"></i>{$lang.view}</a>
+                                                {/if}
+                                            	<a href="javascript:;" onclick="listTable.remove({$goods.goods_id}, '{$lang.drop_goods_confirm}')" class="btn_trash"><i class="icon icon-trash"></i>{$lang.drop}</a>										
+                                            </p>
+                                        </div>
+                                    </td>
+                                </tr>
+								{foreachelse}
+								<tr><td class="no-records"  colspan="20">{$lang.no_records}</td></tr>								
+								{/foreach}
+                            </tbody>
+                            <tfoot>
+                            	<tr>
+                                	<td colspan="12">
+                                    	<div class="tDiv">
+                                    		{if !$standard_goods}
+                                            <div class="tfoot_btninfo">
+                                                <input type="hidden" name="act" value="batch" />
+                                                <!-- 操作类型 start -->
+                                                <div class="imitate_select select_w120">
+                                                    <div class="cite">{$lang.please_select}</div>
+                                                    <ul>
+                                                        <li><a href="javascript:changeAction();" data-value="" class="ftx-01">{$lang.select_please}</a></li>
+                                                        <li><a href="javascript:changeAction();" data-value="drop" class="ftx-01">{$lang.drop}</a></li>
+                                                        <li><a href="javascript:changeAction();" data-value="on_sale" class="ftx-01">{$lang.on_sale}</a></li>
+                                                        <li><a href="javascript:changeAction();" data-value="not_on_sale" class="ftx-01">{$lang.not_on_sale}</a></li>
+                                                    </ul>
+                                                    <input name="type" type="hidden" value="" id="">
+                                                </div>
+                                                <!-- 操作类型 end -->
+                                                <input type="submit" value="{$lang.button_submit}" id="btnSubmit" name="btnSubmit" class="btn btn_disabled" disabled="true" ectype="btnSubmit" />				
+                                            </div>
+                                            {/if}
+                                            <div class="list-page">{include file="library/page.lbi"}</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        </div>
+                        {if $full_page}
+                    </div>
+					</form>
+                </div>
+            </div>
+		</div>
+	</div>
+    {if $standard_goods}
+     <!--高级搜索 start-->
+	{include file="library/goods_search.lbi"}
+	<!--高级搜索 end-->
+    {/if}
+	{include file ='library/pagefooter.lbi'}
+	<script type="text/javascript">
+	listTable.recordCount = {$record_count|default:0};
+	listTable.pageCount = {$page_count|default:1};
+	
+	{foreach from=$filter item=item key=key}
+	listTable.filter.{$key} = '{$item}';
+	{/foreach}
+	/* 起始页通过商品一览点击进入自营/商家商品判断条件 */
+	listTable.filter.self = '{$self}';
+	listTable.filter.merchants = '{$merchants}';
+	
+	function movecatList(val, level)
+	{
+		var cat_id = val;
+		document.getElementById('target_cat').value = cat_id;
+		Ajax.call('goods.php?is_ajax=1&act=sel_cat_goodslist', 'cat_id='+cat_id+'&cat_level='+level, movecatListResponse, 'GET', 'JSON');
+	}
+
+	function movecatListResponse(result)
+	{
+		if (result.error == '1' && result.message != '')
+		{
+			alert(result.message);
+			return;
+		}
+		
+		var response = result.content;
+		var cat_level = result.cat_level;
+		
+		for(var i=cat_level;i<10;i++)
+		{
+			$("#move_cat_list"+Number(i+1)).remove();
+		}
+		
+		if(response)
+		{
+			$("#move_cat_list"+cat_level).after(response);
+		}
+		
+		return;
+	}
+
+	onload = function()
+	{
+		document.forms['listForm'].reset();
+	}
+
+	/**
+	* @param: bool ext 其他条件：用于转移分类
+	*/
+	function confirmSubmit(frm, ext)
+	{
+		if (frm.elements['type'].value == 'trash')
+		{
+			return confirm(batch_trash_confirm);
+		}
+		else if (frm.elements['type'].value == 'not_on_sale')
+		{
+			return confirm(batch_no_on_sale);
+		}
+		else if (frm.elements['type'].value == 'move_to')
+		{
+			ext = (ext == undefined) ? true : ext;
+			return ext && document.getElementById('target_cat').value != 0;
+		}
+		else if (frm.elements['type'].value == '')
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+
+	function changeAction()
+	{
+		var frm = document.forms['listForm'];
+	
+		// 切换分类列表的显示
+		$("#move_cat_list").css({'display':frm.elements['type'].value == 'move_to' ? '' : 'none'});
+	
+		// 切换商品审核列表的显示
+		$("#review_status").css({'display':frm.elements['type'].value == 'review_to' ? '' : 'none'});
+	
+		if(frm.elements['type'].value != 'review_to'){
+			frm.elements['review_content'].style.display = 'none';
+		}
+	
+		// 供应商列表的显示
+		{if $suppliers_list > 0}
+			$("#suppliers_id").css({'display':frm.elements['type'].value == 'suppliers_move_to' ? '' : 'none'});
+		{/if}
+	}
+	  
+	//ecmoban模板堂 --zhuo  start
+	function get_review_status(){
+		var frm = document.forms['listForm'];
+		
+		if(frm.elements['type'].value == 'review_to'){
+			if(frm.elements['review_status'].value == 2){
+				frm.elements['review_content'].style.display = '';
+			}else{
+				frm.elements['review_content'].style.display = 'none';
+			}
+		}else{
+			frm.elements['review_content'].style.display = 'none';
+		}
+	}
+	//ecmoban模板堂 --zhuo  end
+	
+	//展开其他属性
+	function trigger(obj){
+		var _this = $(obj);
+		var parenttr = _this.parents('tr');
+		var tip = parenttr.siblings().find('.tip');
+		if(_this.hasClass('icon-down')){
+			_this.removeClass('icon-down');
+			parenttr.next().hide();
+		}else{
+			_this.addClass('icon-down');
+			parenttr.next().show();
+			tip.removeClass('icon-down');
+			tip.parents('tr').next().hide();
+		}
+	}
+	  
+	//仓库库存修改弹出框
+	$(document).on('click',"*[ectype='dialog']",function(){
+		var url =$(this).data('url');
+		var title = $(this).attr('title');
+		Ajax.call(url,'',dsc_warehouse, 'POST', 'JSON');
+		function dsc_warehouse(result){
+			pb({
+				id:"tipDialog",
+				title:title,
+				content:result.content,
+				drag:false,
+				ok_title:"{$lang.button_submit_alt}",
+				cl_title:"{$lang.cancel}"
+			});
+		}
+	});
+	
+	//单选勾选
+	function get_ajax_act(t, goods_id, act, FileName){
+		
+		if(t.checked == false){
+			t.value = 0;
+		}
+		
+		Ajax.call(FileName + '.php?act=' + act, 'id=' + goods_id + '&val=' + t.value, act_response, 'POST', 'JSON');
+	}
+	
+	function act_response(result){}
+	
+	function dropWarehouse(w_id)
+	{
+		Ajax.call('goods.php?is_ajax=1&act=drop_warehouse', "w_id="+w_id, dropWarehouseResponse, "GET", "JSON");
+	}
+	
+	function dropWarehouseResponse(result)
+	{
+		if (result.error == 0)
+		{
+		  document.getElementById('warehouse_' + result.content).style.display = 'none';
+		}
+	}
+	
+	function dropWarehouseArea(a_id)
+	{
+		Ajax.call('goods.php?is_ajax=1&act=drop_warehouse_area', "a_id="+a_id, dropWarehouseAreaResponse, "GET", "JSON");
+	}
+	
+	function dropWarehouseAreaResponse(result)
+	{
+		if (result.error == 0)
+		{
+		  document.getElementById('warehouse_area_' + result.content).style.display = 'none';
+		}
+	}
+	
+	//仓库/地区价格 start
+	$(document).on("click","input[name='goods_model_price']",function(){
+		var goods_id = $(this).data("goodsid");
+		
+		$.jqueryAjax('dialog.php', 'act=add_goods_model_price' + '&goods_id=' + goods_id, function(data){
+			var content = data.content;
+			pb({
+				id:"categroy_dialog",
+				title:"{$lang.w_r_price}",
+				width:864,
+				content:content,
+				ok_title:"{$lang.button_submit_alt}",
+				cl_title:"{$lang.cancel}",
+				drag:true,
+				foot:false
+			});
+		});
+	});
+	//仓库/地区价格 end
+	
+	//SKU/库存 start
+	$(document).on("click","a[ectype='add_sku']",function(){
+		var goods_id = $(this).data('goodsid');
+		var user_id = $(this).data('userid');
+		
+		$.jqueryAjax('dialog.php', 'act=add_sku' + '&goods_id=' + goods_id + '&user_id=' + user_id, function(data){
+			var content = data.content;
+			pb({
+				id:"categroy_dialog",
+				title:"{$lang.edit_goods_sku_info}",
+				width:863,
+				content:content,
+				ok_title:"{$lang.button_submit_alt}",
+				cl_title:"{$lang.cancel}",
+				drag:true,
+				foot:false
+			});
+		});
+	});
+	
+	//SKU/库存 start
+	$(document).on("click","a[ectype='add_attr_sku']",function(){
+		var goods_id = $(this).data('goodsid');
+		var product_id = $(this).data('product');
+		
+		$.jqueryAjax('dialog.php', 'act=add_attr_sku' + '&goods_id=' + goods_id + '&product_id=' + product_id, function(data){
+			var content = data.content;
+			pb({
+				id:"attr_sku_dialog",
+				title:"{$lang.edit_goods_sku_price}",
+				width:563,
+				content:content,
+				ok_title:"{$lang.button_submit_alt}",
+				cl_title:"{$lang.cancel}",
+				drag:true,
+				foot:true,
+				onOk:function(){
+					if(data.method){
+						insert_attr_warehouse_area_price(data.method);
+					}
+				}
+			});
+		});
+	});
+	
+	function insert_attr_warehouse_area_price(method){
+		var actionUrl = "dialog.php?act=" + method;  
+		$("#warehouseForm").ajaxSubmit({
+				type: "POST",
+				dataType: "JSON",
+				url: actionUrl,
+				data: { "action": "TemporaryImage" },
+				success: function (data) {
+				},
+				async: true  
+		 });
+	}
+	
+	//商品审核 start
+	$(document).on("click","a[ectype='review_status']",function(){
+		
+		var goods_name = $(this).data('goodsname');
+		var goods_id = $(this).data('goodsid');
+		var type = $(this).data('type');
+		
+		var content  = 	'<form id="reviewForm" enctype="multipart/form-data" method="post" action="dialog.php?act=update_review_status">' +
+						'<div class="item fl" style="padding:20px 0px 10px; width:333px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">' +
+							'商品名称：<em title="' + goods_name + '">' + goods_name + '</em>' +
+						'</div>' +
+						'<div class="item fl" style="width:333px">' +
+							'<div class="fl" style="padding-top:9px">{$lang.01_review_status}：</div>' +
+							'<div class="checkbox_items" style="padding-top:10px; width:80%">' +
+								'<div class="checkbox_item">' + 
+									'<input name="review_status" class="ui-radio review_status" id="pro_no" value="1" checked="checked" type="radio" onclick="handleReviewStatus(this);">' +
+									'<label for="pro_no" class="ui-radio-label">{$lang.not_audited}</label>' +
+								'</div>' +
+								'<div class="checkbox_item">' + 
+									'<input name="review_status" class="ui-radio review_status" id="pro_no" value="3" checked="checked" type="radio" onclick="handleReviewStatus(this);">' +
+									'<label for="pro_no" class="ui-radio-label">{$lang.audited_yes_adopt}</label>' +
+								'</div>' +
+								'<div class="checkbox_item mr15">' +
+									'<input name="review_status" class="ui-radio review_status" id="pro_yes" value="2" type="radio" onclick="handleReviewStatus(this);">' + 
+									'<label for="pro_yes" class="ui-radio-label">{$lang.audited_not_adopt}</label> ' +
+								'</div>' +
+							'</div>' +
+						'</div>' +
+						'<div class="item fl hide" id="review_content" style="padding:20px 0px; width:333px">' +
+							'<textarea name="review_content" value="" cols="60" rows="4" class="textarea"></textarea>' +
+						'</div>' +
+						'<input name="goods_id" type="hidden" value="' + goods_id + '">' + 
+						'<input name="type" type="hidden" value="' + type + '">' + 
+						'</form>';
+		pb({
+			id:"review_status_dialog",
+			title:"{$lang.01_review_status}",
+			width:403,
+			content:content,
+			ok_title:"{$lang.button_submit_alt}",
+			cl_title:"{$lang.cancel}",
+			drag:true,
+			foot:true,
+			onOk:function(){
+				insert_review_status();
+			}
+		});
+	});
+	
+	function insert_review_status(){
+		var actionUrl = "dialog.php?act=update_review_status";  
+		$("#reviewForm").ajaxSubmit({
+				type: "POST",
+				dataType: "JSON",
+				url: actionUrl,
+				data: { "action": "TemporaryImage" },
+				success: function (data) {
+					location.href = "goods.php?act=review_status&type=" + data.type;
+				},
+				async: true  
+		 });
+	}
+	
+	function handleReviewStatus(t){
+		if(t.value == 2){
+			$("#review_content").show();
+		}else{
+			$("#review_content").hide();
+			$(":input[name='review_content']").val('');
+		}
+	}
+	//商品审核 end
+	</script>
+</body>
+</html>
+{/if}

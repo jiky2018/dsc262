@@ -1,0 +1,42 @@
+
+<div class="list-page">
+	<div id="turn-page">
+	    <span class="page page_1">总计 <em id="totalRecords">{if $page['count']}{$page['count']}{else}0{/if}</em>个记录</span>
+	    <span class="page page_2">共<em id="totalPages">{if $page['page_count']}{$page['page_count']}{else}1{/if}</em>页</span>
+	    <!--<span>页当前第<em id="pageCurrent">1</em></span>-->
+	    <span class="page page_3"><i>每页</i><input type="text" size="3" id="pageSize" value="{$page_num}" onkeypress="return changePageSize(event);"></span>
+	    <span id="page-link">
+	        <a href="{if $page['page_first']}{$page['page_first']}{else}javascript:;{/if}" class="first" title="第一页"></a>
+	        <a href="{if $page['page_prev']}{$page['page_prev']}{else}javascript:;{/if}" class="prev" title="上一页"></a>
+	        <select id="gotoPage" onchange="location.href=this.value">
+            {if $page['page_number']}
+	            {foreach $page['page_number'] as $key=>$vo}
+                <option {if $page['page'] == $key} selected{/if} value="{$vo}">{$key}</option>
+                {/foreach}
+            {else}
+             <option selected value="1">1</option>
+            {/if}
+            </select>
+
+	        <a href="{if $page['page_next']}{$page['page_next']}{else}javascript:;{/if}" class="next" title="下一页"></a>
+	        <a href="{if $page['page_last']}{$page['page_last']}{else}javascript:;{/if}" class="last" title="最末页"></a>
+	    </span>
+	</div>
+</div>
+
+<script type="text/javascript">
+// 修改分页数量
+function changePageSize(e){
+    var keynum = window.event ? e.keyCode : e.which;
+    if (keynum == 13)
+    {
+        var page_num = $("#pageSize").val();
+        $.post("{url('index')}", {page_num:page_num}, function(data){
+            if(data.status > 0){
+                window.location.reload();
+            }
+        }, 'json');
+        return false;
+    }
+}
+</script>
